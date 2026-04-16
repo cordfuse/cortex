@@ -97,7 +97,7 @@ Tell the scribe:
 
 > Make the repo private.
 
-The scribe runs `scripts/make_private.py`, decrypts the PAT, and flips the repo to private via the GitHub API.
+The scribe runs `scripts/make_private.py`, decrypts the PAT, and flips the repo to private via the GitHub API. The encrypted vault (`cortex.secrets.enc`) is committed and pushed so your PAT travels with the repo.
 
 **5. Done**
 
