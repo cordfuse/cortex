@@ -17,7 +17,7 @@ GITIGNORE_PATH = os.path.join(ROOT, ".gitignore")
 
 REQUIRED_FILES = ["CORTEX.md", "GUARDRAILS.md", "DISCLAIMER.md", "ROE.md"]
 
-GITIGNORE_ENTRIES = ["cortex.config", "cortex.secrets.enc", ".env"]
+GITIGNORE_ENTRIES = ["cortex.config", ".env"]
 
 
 def detect_environment():
@@ -104,6 +104,14 @@ def main():
     if not env["git"]:
         print("\nERROR: git is required. Install it and run setup again.")
         sys.exit(1)
+
+    # Check cryptography package (required for secrets vault)
+    try:
+        import cryptography  # noqa: F401
+        print(f"  cryptography: OK")
+    except ImportError:
+        print(f"  cryptography: NOT INSTALLED")
+        print("  Run: pip install cryptography  (required for secrets vault)")
 
     # Write cortex.config
     write_config(env)
