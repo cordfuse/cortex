@@ -77,28 +77,15 @@ Say hello. The scribe takes it from there.
 
 ---
 
-### Mobile (Claude or ChatGPT project — recommended)
+### Mobile (Claude or ChatGPT project)
 
-**1. Create a Claude or ChatGPT project**
+The recommended way to use Cortex on mobile. Set up once — every new chat opens a session automatically.
 
-Paste the contents of `protocol/CORTEX-PROJECT.md` as the project system prompt.
-
-Create a `CONNECT.md` file with your repo URL and PAT and upload it to the project knowledge:
-
-```
-repo: https://github.com/you/your-repo-name
-pat: github_pat_...
-```
-
-Every new chat in the project clones your repo automatically and opens a Cortex session.
-
-**2. First-time setup — leave repo public initially**
+**1. Create your GitHub repo — leave it public for now**
 
 Click **[Use this template](../../generate)** on GitHub (mobile browser or GitHub app). Name it. Leave visibility set to **Public**. Create it.
 
-Open your Claude or ChatGPT project and say hello. The scribe clones it and is ready.
-
-**3. Generate a GitHub PAT**
+**2. Generate a GitHub PAT**
 
 On GitHub: Settings → Developer settings → Personal access tokens → Fine-grained tokens → Generate new token.
 
@@ -108,25 +95,37 @@ On GitHub: Settings → Developer settings → Personal access tokens → Fine-g
 
 Copy the token — starts with `github_pat_`. You only see it once.
 
-**4. Store the PAT**
+**3. Create your CONNECT.md**
 
-Tell the scribe:
+Create a file called `CONNECT.md` on your device with your repo URL and PAT:
 
-> Store my GitHub PAT. Ask me for the token and a passphrase.
+```
+repo: https://github.com/you/your-repo-name
+pat: github_pat_...
+```
 
-The scribe asks for both in chat. Reply with each. The encrypted vault is committed and pushed automatically.
+This file is never committed to the repo — keep it local or save it somewhere safe.
 
-**5. Make the repo private**
+**4. Create a Claude or ChatGPT project**
+
+- **System prompt:** open `protocol/CORTEX-PROJECT.md` in your repo and paste its contents
+- **Project knowledge:** upload your `CONNECT.md`
+
+**5. Open a new chat in the project**
+
+The scribe reads `CONNECT.md`, clones your repo, and is ready.
+
+> What's on your mind?
+
+**6. Make the repo private**
 
 The GitHub API is not accessible from Claude or ChatGPT mobile — flip it manually.
 
 On GitHub: your repo → Settings → scroll to Danger Zone → Change visibility → Make private.
 
-Update `CONNECT.md` in your project knowledge with the PAT so future sessions clone automatically.
+**7. Done**
 
-**6. Done**
-
-Your Cortex is live, private, and synced.
+Your Cortex is live, private, and synced. Every new chat in the project opens a session automatically.
 
 ---
 
