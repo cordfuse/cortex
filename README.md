@@ -24,12 +24,14 @@ Over time, Cortex becomes a corpus you can query. Patterns emerge. Connections s
 
 Cortex ships with 19 templates across every domain worth recording:
 
-**Personal:** daily log, event, person, theory/insight
-**Health:** therapy session, medication, symptoms, appointment
-**Life admin:** finance, inventory, supplies, tasks
-**Work:** work log, project, career
-**Creative:** idea, creative session
-**Analytical:** analysis, review
+| Category | Templates |
+|---|---|
+| Personal | daily log, event, person, theory/insight |
+| Health | therapy session, medication, symptoms, appointment |
+| Life admin | finance, inventory, supplies, tasks |
+| Work | work log, project, career |
+| Creative | idea, creative session |
+| Analytical | analysis, review |
 
 Use what fits. Ignore what doesn't. Add your own.
 
