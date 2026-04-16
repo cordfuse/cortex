@@ -181,37 +181,32 @@ def build():
         textColor=INK, spaceAfter=4*mm)
 
     story.append(Paragraph(
-        "Cortex is a private, AI-assisted record-keeper for your life — or your team's. "
-        "Instead of notes scattered across dozens of apps, everything goes into one place <i>you</i> own: "
-        "a secure private folder of plain text files stored in your own online account "
-        "<i>(think of it like a personal filing cabinet in the cloud, but one only you control)</i>. "
-        "An <i>AI scribe</i> (a conversational AI assistant like Claude or ChatGPT) listens as you talk, "
-        "organises what you say, and files it automatically. "
-        "Every session picks up where the last one left off — on any device, with any AI. "
-        "Nothing is sent to Cordfuse. Nothing is sold. The records are yours, forever.",
+        "Every AI chat starts from zero — you re-explain your life every single session. "
+        "Cortex fixes that. Talk to your <i>AI scribe</i> (a conversational AI assistant like Claude or ChatGPT), "
+        "it files everything into a private folder <i>(a git repository — a secure folder that tracks every change)</i> you own. "
+        "Next session, it reads your records and picks up where you left off. "
+        "Any device. Any major AI. Nothing sent to Cordfuse. The records are yours, forever.",
         plain
     ))
 
     story.append(Paragraph(
         "<b>The problem.</b> "
         "Your notes, health records, work logs, therapy insights, and creative ideas live in dozens of apps "
-        "that don't talk to each other and none of them are yours. "
-        "Every AI chat starts from zero — you re-explain your situation every single session. "
-        "Your most sensitive records are processed on servers you don't control, "
+        "that don't talk to each other — and none of them are yours. "
+        "Every AI chat starts from zero. Your most sensitive records are processed on servers you don't control, "
         "under privacy policies you didn't write. "
-        "Proprietary formats mean the day you want out, your history may not come with you. "
         "And the patterns that only emerge across months of entries? No tool shows you those.",
         plain
     ))
 
     story.append(Paragraph(
         "<b>What Cortex does about it.</b> "
-        "Everything goes into one private repository <i>(a secure folder that tracks every change)</i> you own — "
-        "plain text, readable by any tool, forever. "
-        "The scribe reads your recent records at session start, so every conversation picks up where the last one left off. "
-        "Records live in your account, not a vendor's — no upsell, no lock-in, no data harvesting. "
-        "Run fully offline if you need it: nothing leaves your machine. "
-        "And when you want to understand what months of entries add up to, just ask.",
+        "Everything goes into one private folder you own — plain text, readable by any tool, forever. "
+        "The scribe reads your recent records at session start so every conversation picks up where the last one left off. "
+        "No upsell. No lock-in. No data harvesting. "
+        "<b>Cloud</b> (GitHub + Claude or ChatGPT): frontier models, five-minute setup, smarter responses — "
+        "your records pass through your AI provider's servers. "
+        "<b>Local</b> (Ollama + self-hosted storage): nothing leaves your machine. Ever. Total privacy, more technical setup.",
         plain
     ))
 
