@@ -145,10 +145,19 @@ Available integrations:
 | Google Calendar | `python scripts/integrations/google.py calendar [--days 7]` |
 | Gmail | `python scripts/integrations/google.py gmail [--count 20]` |
 | Google Drive | `python scripts/integrations/google.py drive [--count 20]` |
+| Outlook Mail | `python scripts/integrations/microsoft.py mail [--count 20]` |
+| Outlook Calendar | `python scripts/integrations/microsoft.py calendar [--days 7]` |
+| OneDrive | `python scripts/integrations/microsoft.py onedrive [--count 20]` |
+| Microsoft Teams | `python scripts/integrations/microsoft.py teams [--count 20]` |
+| SharePoint | `python scripts/integrations/microsoft.py sharepoint [--count 20]` |
+| Microsoft To Do | `python scripts/integrations/microsoft.py todo` |
+| Microsoft Planner | `python scripts/integrations/microsoft.py planner` |
+| OneNote | `python scripts/integrations/microsoft.py onenote [--count 20]` |
 
 If credentials are not yet stored, direct the user to run:
 ```
-python scripts/integrations/google.py auth
+python scripts/integrations/google.py auth      # Google
+python scripts/integrations/microsoft.py auth   # Microsoft 365
 ```
 
 Never store or log credentials outside the vault. Never pass credentials as plain text in conversation.
