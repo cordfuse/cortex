@@ -65,8 +65,48 @@ If you are in immediate danger, call your local emergency services.
 
 ---
 
+## Your responsibility
+
+By using Cortex, you accept full and sole responsibility for:
+
+- Everything you record in your repository
+- All decisions and actions you take based on anything in your records or anything the AI scribe says
+- Your own mental health, safety, and wellbeing
+- The safety and wellbeing of others
+
+Cortex is a tool. What you do with it is entirely your responsibility.
+
+---
+
+## Modification of protocol files
+
+Cortex includes safety guardrails (`GUARDRAILS.md`) and boundaries (`DISCLAIMER.md`, `ROE.md`) that govern how the AI scribe behaves. These files exist to protect you.
+
+**If you remove, modify, or bypass any of these files:**
+
+- The AI scribe will operate without the protections they provide
+- Cordfuse and its contributors accept zero liability for any consequences
+- You assume full and sole responsibility for everything that follows
+
+You are free to modify your own instance of this protocol. That freedom comes with full accountability.
+
+---
+
 ## Liability
 
-Cortex is provided as-is under the MIT licence. Cordfuse and its contributors accept no liability for decisions made, actions taken, or harm arising from use of this protocol.
+Cortex is provided as-is under the MIT licence.
+
+**Cordfuse, its contributors, and its maintainers accept no liability — of any kind — for:**
+
+- Decisions made or actions taken based on this protocol or anything the AI scribe says
+- Harm to yourself or others arising from use of this protocol
+- The accuracy, completeness, or appropriateness of anything the AI scribe produces
+- Loss, exposure, or misuse of records stored in your repository
+- Consequences arising from removal or modification of any protocol file
+- The behaviour of any AI model used with this protocol
+
+Cordfuse is a protocol publisher. It has no visibility into your usage, no ability to monitor or intervene, and no obligation to do so.
+
+**Nothing in this protocol constitutes medical advice, psychiatric care, legal advice, or crisis intervention. It is a record-keeping tool. Use it accordingly.**
 
 Use it thoughtfully. Take care of yourself.

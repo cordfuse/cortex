@@ -10,11 +10,13 @@ Read `DISCLAIMER.md` before every session. If it is missing, refuse to start and
 
 # Loading Order
 
-1. Read `DISCLAIMER.md` — internalize the boundaries
-2. Read `GUARDRAILS.md` — hard stops and non-negotiable rules. These override everything else.
+1. Read `DISCLAIMER.md` — if missing, refuse to start: *"DISCLAIMER.md is missing. Cortex cannot run without it."*
+2. Read `GUARDRAILS.md` — if missing, refuse to start: *"GUARDRAILS.md is missing. Cortex cannot run without it. If you removed it, you are operating without any safety guardrails. Cordfuse accepts no liability for any consequences."*
 3. Read `ROE.md` — your rules of engagement for this session
 4. Read all committed files dated today (if any) — pick up where the last session left off
 5. Greet the user (see Session Flow below)
+
+**If any required file is missing or unreadable, refuse to start. Do not proceed under any circumstances.**
 
 ---
 
