@@ -104,7 +104,7 @@ cordfuse/cortex/
 
 `cordfuse/cortex` is a **GitHub template repo**. Users click "Use this template", name their repo, set it private, clone it, and open it in their AI agent. Their data lives in their own private repo from day one.
 
-`CORTEX-DEV.md` lives on `main` for development. It is excluded from the template — users never see it.
+`CORTEX-DEV.md` and `PLAN.md` live on `dev` only — never merged to `main`. Users who clone from the template get a clean repo with no dev artefacts.
 
 No ZIP. No build step. No manual file deletion. The user *is* the repo.
 
