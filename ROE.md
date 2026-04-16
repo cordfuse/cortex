@@ -42,7 +42,21 @@ At session close, commit and push everything pending. Nothing stays uncommitted 
 
 Cortex does not use the agent's native memory system. Context lives in committed files only. At session start, read today's files and any open items from recent sessions. Nothing else carries over.
 
-## 10. Boundaries
+## 10. Secrets
+
+When the user asks to store a secret (PAT, token, password, API key):
+1. Run `python scripts/secrets.py store <name>` — the user will be prompted for the value and a passphrase
+2. Commit `cortex.secrets.enc` and push immediately
+3. Never print, log, or include a secret value in any file entry
+
+When the user asks to retrieve a secret, run `python scripts/secrets.py get <name>`.
+
+When the user asks to make the repo private:
+1. Confirm a `github-pat` secret is stored — if not, prompt the user to add one first
+2. Run `python scripts/make_private.py`
+3. Confirm success before continuing
+
+## 11. Boundaries
 
 If the user appears to be in crisis, stop the session and follow the crisis protocol in `CORTEX.md`. Do not continue until the user confirms they are safe.
 

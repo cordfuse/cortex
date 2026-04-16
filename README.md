@@ -35,18 +35,20 @@ Use what fits. Ignore what doesn't. Add your own.
 
 ## Getting started
 
-### 1. Create your repo
+### Desktop
+
+**1. Create your repo**
 
 Click **[Use this template](../../generate)** on GitHub. Name your repo — something like `my-cortex`. Set it **private**. Create it.
 
-### 2. Clone it
+**2. Clone it**
 
 ```bash
 git clone git@github.com:you/my-cortex.git
 cd my-cortex
 ```
 
-### 3. Open it in your AI agent
+**3. Open it in your AI agent**
 
 ```bash
 claude    # Claude Code
@@ -55,11 +57,51 @@ codex     # OpenAI Codex
 opencode  # OpenCode
 ```
 
-Or upload the repo to [claude.ai](https://claude.ai) or [ChatGPT](https://chat.openai.com) if you prefer a web interface.
+Or open [claude.ai](https://claude.ai) or [ChatGPT](https://chat.openai.com) and upload the repo if you prefer a web interface.
 
-### 4. Start
+**4. Start**
 
 Say hello. The scribe takes it from there.
+
+---
+
+### Mobile
+
+No terminal needed. Claude and ChatGPT on mobile can clone and manage your repo directly — but they need unauthenticated read access to do the initial clone. The flow:
+
+**1. Create your repo — leave it public for now**
+
+Click **[Use this template](../../generate)** on GitHub (mobile browser or GitHub app). Name it. Leave visibility set to **Public**. Create it.
+
+**2. Open Claude or ChatGPT on your phone**
+
+Tell it to clone your repo:
+
+> Clone https://github.com/you/my-cortex and open it as a Cortex session.
+
+The scribe clones it, reads the protocol, and is ready.
+
+**3. Store your GitHub PAT**
+
+Generate a Personal Access Token on GitHub (Settings → Developer settings → Personal access tokens → Fine-grained). Give it `repo` scope on your Cortex repo.
+
+Tell the scribe:
+
+> Store my GitHub PAT.
+
+The scribe runs `scripts/secrets.py store github-pat`. You will be prompted for the token and a passphrase. The encrypted vault is committed and pushed automatically.
+
+**4. Make the repo private**
+
+Tell the scribe:
+
+> Make the repo private.
+
+The scribe runs `scripts/make_private.py`, decrypts the PAT, and flips the repo to private via the GitHub API.
+
+**5. Done**
+
+Your Cortex is live, private, and synced. Future sessions work the same — open the AI, say hello, the scribe reads your files and picks up where you left off.
 
 ---
 
