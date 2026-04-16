@@ -16,256 +16,708 @@ from reportlab.lib.units import mm
 from reportlab.lib import colors
 from reportlab.lib.styles import ParagraphStyle
 from reportlab.platypus import (
-    SimpleDocTemplate, Paragraph, Spacer, HRFlowable, Table, TableStyle
+    SimpleDocTemplate, Paragraph, Spacer, HRFlowable,
+    Table, TableStyle, KeepTogether
 )
-from reportlab.lib.enums import TA_LEFT, TA_CENTER
+from reportlab.lib.enums import TA_LEFT, TA_CENTER, TA_RIGHT
 
-# --- Palette ---
-INK        = colors.HexColor("#1a1a2e")   # near-black
-ACCENT     = colors.HexColor("#4f46e5")   # indigo
-LIGHT_RULE = colors.HexColor("#e2e2f0")
-MUTED      = colors.HexColor("#5c5c7a")
-TAG_BG     = colors.HexColor("#f0effc")
+# ── Palette ──────────────────────────────────────────────────────────────────
+INK        = colors.HexColor("#16213e")
+ACCENT     = colors.HexColor("#4f46e5")
+ACCENT_DK  = colors.HexColor("#3730a3")
+ACCENT_LT  = colors.HexColor("#ede9fe")
+PROBLEM    = colors.HexColor("#be123c")
+PROBLEM_LT = colors.HexColor("#fff1f2")
+SUCCESS    = colors.HexColor("#15803d")
+SUCCESS_LT = colors.HexColor("#f0fdf4")
+RULE       = colors.HexColor("#e2e2f0")
+MUTED      = colors.HexColor("#64748b")
+WHITE      = colors.white
+TAG_BG     = colors.HexColor("#f8f7ff")
+STRIPE     = colors.HexColor("#f9f9fd")
+HEAD_BG    = colors.HexColor("#4f46e5")
 
-# --- Styles ---
-def styles():
+W_PAGE = A4[0] - 44*mm   # usable width
+
+# ── Style factory ─────────────────────────────────────────────────────────────
+def S():
     return {
-        "title": ParagraphStyle(
-            "title",
-            fontName="Helvetica-Bold",
-            fontSize=28,
-            leading=34,
-            textColor=INK,
-            spaceAfter=2*mm,
-        ),
-        "subtitle": ParagraphStyle(
-            "subtitle",
-            fontName="Helvetica",
-            fontSize=13,
-            leading=18,
-            textColor=MUTED,
-            spaceAfter=6*mm,
-        ),
-        "section": ParagraphStyle(
-            "section",
-            fontName="Helvetica-Bold",
-            fontSize=11,
-            leading=16,
-            textColor=ACCENT,
-            spaceBefore=7*mm,
-            spaceAfter=2*mm,
-            textTransform="uppercase",
-            letterSpacing=1.2,
-        ),
-        "body": ParagraphStyle(
-            "body",
-            fontName="Helvetica",
-            fontSize=10,
-            leading=15,
-            textColor=INK,
-            spaceAfter=3*mm,
-        ),
-        "bullet": ParagraphStyle(
-            "bullet",
-            fontName="Helvetica",
-            fontSize=10,
-            leading=15,
-            textColor=INK,
-            leftIndent=8*mm,
-            bulletIndent=2*mm,
-            spaceAfter=1.5*mm,
-        ),
-        "bold_lead": ParagraphStyle(
-            "bold_lead",
-            fontName="Helvetica-Bold",
-            fontSize=10,
-            leading=15,
-            textColor=INK,
-            spaceAfter=1*mm,
-        ),
-        "caption": ParagraphStyle(
-            "caption",
-            fontName="Helvetica-Oblique",
-            fontSize=8.5,
-            leading=12,
-            textColor=MUTED,
-            spaceBefore=6*mm,
-            alignment=TA_CENTER,
-        ),
+        "title": ParagraphStyle("title",
+            fontName="Helvetica-Bold", fontSize=32, leading=38,
+            textColor=WHITE, spaceAfter=1*mm),
+        "tagline": ParagraphStyle("tagline",
+            fontName="Helvetica", fontSize=13, leading=18,
+            textColor=colors.HexColor("#c7d2fe"), spaceAfter=0),
+        "section_label": ParagraphStyle("section_label",
+            fontName="Helvetica-Bold", fontSize=10.5, leading=14,
+            textColor=WHITE),
+        "body": ParagraphStyle("body",
+            fontName="Helvetica", fontSize=10, leading=15.5,
+            textColor=INK, spaceAfter=3*mm),
+        "body_sm": ParagraphStyle("body_sm",
+            fontName="Helvetica", fontSize=9.5, leading=14.5,
+            textColor=INK),
+        "body_muted": ParagraphStyle("body_muted",
+            fontName="Helvetica", fontSize=9.5, leading=14,
+            textColor=MUTED),
+        "bullet": ParagraphStyle("bullet",
+            fontName="Helvetica", fontSize=10, leading=15,
+            textColor=INK, leftIndent=6*mm, spaceAfter=1.5*mm),
+        "bullet_sm": ParagraphStyle("bullet_sm",
+            fontName="Helvetica", fontSize=9.5, leading=14,
+            textColor=INK, leftIndent=4*mm, spaceAfter=1*mm),
+        "bold_lead": ParagraphStyle("bold_lead",
+            fontName="Helvetica-Bold", fontSize=10, leading=15,
+            textColor=INK, spaceAfter=1*mm),
+        "problem": ParagraphStyle("problem",
+            fontName="Helvetica", fontSize=9.5, leading=14,
+            textColor=PROBLEM),
+        "solution": ParagraphStyle("solution",
+            fontName="Helvetica", fontSize=9.5, leading=14,
+            textColor=SUCCESS),
+        "caption": ParagraphStyle("caption",
+            fontName="Helvetica-Oblique", fontSize=8, leading=12,
+            textColor=MUTED, alignment=TA_CENTER),
+        "table_head": ParagraphStyle("table_head",
+            fontName="Helvetica-Bold", fontSize=9.5, leading=13,
+            textColor=WHITE),
+        "table_cell": ParagraphStyle("table_cell",
+            fontName="Helvetica", fontSize=9.5, leading=14,
+            textColor=INK),
+        "table_cell_bold": ParagraphStyle("table_cell_bold",
+            fontName="Helvetica-Bold", fontSize=9.5, leading=14,
+            textColor=INK),
+        "step_num": ParagraphStyle("step_num",
+            fontName="Helvetica-Bold", fontSize=13, leading=16,
+            textColor=ACCENT),
+        "step_text": ParagraphStyle("step_text",
+            fontName="Helvetica", fontSize=10, leading=15,
+            textColor=INK),
     }
 
+
+# ── Helpers ───────────────────────────────────────────────────────────────────
+
+def section_box(label, styles):
+    """Indigo full-width heading box."""
+    t = Table(
+        [[Paragraph(label.upper(), styles["section_label"])]],
+        colWidths=[W_PAGE]
+    )
+    t.setStyle(TableStyle([
+        ("BACKGROUND",   (0,0), (-1,-1), HEAD_BG),
+        ("LEFTPADDING",  (0,0), (-1,-1), 5*mm),
+        ("RIGHTPADDING", (0,0), (-1,-1), 5*mm),
+        ("TOPPADDING",   (0,0), (-1,-1), 3.5*mm),
+        ("BOTTOMPADDING",(0,0), (-1,-1), 3.5*mm),
+        ("ROUNDEDCORNERS", [3]),
+    ]))
+    return t
+
+
+def spacer(h=3):
+    return Spacer(1, h*mm)
+
+
+def rule(color=RULE):
+    return HRFlowable(width=W_PAGE, thickness=0.5, color=color, spaceAfter=3*mm, spaceBefore=1*mm)
+
+
+def bullet(text, styles, key="bullet"):
+    return Paragraph(f"\u2022\u2002{text}", styles[key])
+
+
+def p(text, styles, key="body"):
+    return Paragraph(text, styles[key])
+
+
+# ── Build ─────────────────────────────────────────────────────────────────────
 
 def build():
     doc = SimpleDocTemplate(
         OUTPUT,
         pagesize=A4,
-        leftMargin=22*mm,
-        rightMargin=22*mm,
-        topMargin=22*mm,
-        bottomMargin=22*mm,
+        leftMargin=22*mm, rightMargin=22*mm,
+        topMargin=18*mm, bottomMargin=18*mm,
         title="Cortex — Overview",
         author="Cordfuse",
     )
 
-    S = styles()
-    W = A4[0] - 44*mm   # usable width
-    story = []
+    styles = S()
+    story  = []
 
-    # ── Header ──────────────────────────────────────────────────────────────
-    story.append(Paragraph("Cortex", S["title"]))
-    story.append(Paragraph(
-        "A private record of your life — or your team's.&nbsp; Git-driven. AI-scribed.",
-        S["subtitle"]
-    ))
-    story.append(HRFlowable(width=W, thickness=1, color=ACCENT, spaceAfter=4*mm))
+    # ════════════════════════════════════════════════════════════════════
+    # HERO BANNER
+    # ════════════════════════════════════════════════════════════════════
+    hero = Table(
+        [[
+            Paragraph("Cortex", styles["title"]),
+            ""
+        ],[
+            Paragraph(
+                "A private record of your life — or your team's.&nbsp; "
+                "Git-driven. AI-scribed.",
+                styles["tagline"]),
+            ""
+        ]],
+        colWidths=[W_PAGE * 0.78, W_PAGE * 0.22]
+    )
+    hero.setStyle(TableStyle([
+        ("BACKGROUND",    (0,0), (-1,-1), HEAD_BG),
+        ("LEFTPADDING",   (0,0), (-1,-1), 6*mm),
+        ("RIGHTPADDING",  (0,0), (-1,-1), 4*mm),
+        ("TOPPADDING",    (0,0), (0,0),   5*mm),
+        ("BOTTOMPADDING", (0,1), (-1,-1), 5*mm),
+        ("TOPPADDING",    (0,1), (-1,-1), 1*mm),
+        ("SPAN",          (0,0), (0,0)),
+        ("VALIGN",        (0,0), (-1,-1), "MIDDLE"),
+    ]))
+    story.append(hero)
+    story.append(spacer(3))
 
-    # ── The problem ──────────────────────────────────────────────────────────
-    story.append(Paragraph("The Problem", S["section"]))
-    story.append(Paragraph(
-        "Your life happens across a hundred apps — none of them talk to each other, "
-        "none of them are yours, and none of them have any idea who you are.",
-        S["body"]
-    ))
-    for line in [
-        "Notes rot in silos.",
-        "Health records disappear when you switch providers.",
-        "Work logs don't connect to personal patterns.",
-        "Therapy insights evaporate between sessions.",
-        "Every AI conversation starts from zero.",
-    ]:
-        story.append(Paragraph(f"\u2022&nbsp;&nbsp;{line}", S["bullet"]))
+    # ════════════════════════════════════════════════════════════════════
+    # PROBLEM vs SOLUTION  (two-column comparison)
+    # ════════════════════════════════════════════════════════════════════
+    story.append(KeepTogether([
+        section_box("The Problem — and What Cortex Does About It", styles),
+        spacer(3),
+    ]))
 
-    story.append(Spacer(1, 3*mm))
-    story.append(Paragraph(
-        "Existing tools are either too simple, too clinical, or too locked-in — "
-        "and the AI tools that could help process your most sensitive records on "
-        "servers you don't control, under privacy policies you didn't write.",
-        S["body"]
-    ))
+    col = (W_PAGE - 4*mm) / 2
 
-    # ── What Cortex does differently ─────────────────────────────────────────
-    story.append(Paragraph("What Cortex Does Differently", S["section"]))
-
-    points = [
-        ("You own everything.",
-         "Records live in your private git repository — not a vendor's database. "
-         "Plain text files. Readable by any tool, forever. Portable the day you want out."),
-        ("The AI is a scribe, not a product.",
-         "It listens, organises, and files. It follows a protocol you can read and modify. "
-         "No upsell, no monetised insights, no lock-in."),
-        ("Context that carries.",
-         "At session start the scribe reads your recent records. It knows what you were "
-         "working through, what's unresolved, what patterns have been building. "
-         "Every session picks up where the last one left off."),
-        ("Analysis on demand.",
-         "Ask the scribe to look across your records and tell you what it sees. "
-         "Patterns, connections, escalations, progress — the kind of insight that "
-         "only emerges when everything is in one place."),
-        ("Private by default, offline if you need it.",
-         "Run fully local with a self-hosted AI and git server. Nothing leaves your machine."),
+    problems = [
+        ("Notes rot in app silos",
+         "Your notes, health records, work logs and journal "
+         "entries all live in different apps that never talk to each other."),
+        ("Every AI chat starts from zero",
+         "No AI tool remembers what you told it last week. "
+         "You re-explain your situation every single session."),
+        ("You don't own your data",
+         "Your most personal records live on vendor servers, "
+         "under privacy policies written by lawyers, not you."),
+        ("Sensitive data processed by third parties",
+         "Cloud AI tools send your records to servers you don't control. "
+         "Subpoenas, breaches, and policy changes are out of your hands."),
+        ("Lock-in is invisible until it hurts",
+         "Proprietary formats and closed APIs mean the day you "
+         "want out, you often can't take your history with you."),
+        ("No pattern-level insight",
+         "Individual entries are useful. Seeing what they add up to "
+         "over months is where the real value is — and no tool does that."),
     ]
 
-    for bold, rest in points:
-        story.append(Paragraph(f"<b>{bold}</b>&nbsp; {rest}", S["body"]))
+    solutions = [
+        ("One repo, everything connected",
+         "All records in one private git repository — dated files, "
+         "plain markdown, readable by any tool now and in twenty years."),
+        ("Context that carries across every session",
+         "At session start the scribe reads your recent records. "
+         "It knows what's unresolved. Every session picks up where you left off."),
+        ("You own everything — permanently",
+         "Records live in your repo. No vendor can delete them, "
+         "sell them, or lock them away. Fork it. Move it. It's yours."),
+        ("Private by default, offline if you need it",
+         "Run fully local with Ollama and a self-hosted git server. "
+         "Nothing leaves your machine. No AI provider ever sees your records."),
+        ("Plain markdown, forever portable",
+         "No proprietary format. No export button needed. "
+         "Read it with any text editor, today or in a decade."),
+        ("Analysis on demand",
+         "Ask the scribe to look across everything and tell you what it sees — "
+         "patterns, escalations, connections, progress. The full picture."),
+    ]
 
-    # ── Solo or collaborative ────────────────────────────────────────────────
-    story.append(Paragraph("Solo or Collaborative", S["section"]))
-    story.append(Paragraph(
-        "Cortex works for one person. It also works for any number of people sharing a repo. "
-        "Clone the same repository, run your own AI agent against it, commit your entries. "
-        "Everyone pushes, everyone pulls, everyone sees the full record. "
-        "Git handles the collaboration. The AI handles the scribing.",
-        S["body"]
-    ))
+    def ps_para(title, body, title_color):
+        title_style = ParagraphStyle("_t",
+            fontName="Helvetica-Bold", fontSize=9.5, leading=13,
+            textColor=title_color, spaceAfter=2)
+        body_style = ParagraphStyle("_b",
+            fontName="Helvetica", fontSize=9, leading=13,
+            textColor=MUTED)
+        return [Paragraph(title, title_style), Paragraph(body, body_style)]
+
+    # header row
+    hdr = Table(
+        [[
+            Paragraph("THE PROBLEM", styles["table_head"]),
+            Paragraph("THE CORTEX ANSWER", styles["table_head"]),
+        ]],
+        colWidths=[col, col], rowHeights=[8*mm]
+    )
+    hdr.setStyle(TableStyle([
+        ("BACKGROUND",    (0,0), (0,0), PROBLEM),
+        ("BACKGROUND",    (1,0), (1,0), SUCCESS),
+        ("LEFTPADDING",   (0,0), (-1,-1), 4*mm),
+        ("RIGHTPADDING",  (0,0), (-1,-1), 4*mm),
+        ("TOPPADDING",    (0,0), (-1,-1), 2*mm),
+        ("BOTTOMPADDING", (0,0), (-1,-1), 2*mm),
+        ("VALIGN",        (0,0), (-1,-1), "MIDDLE"),
+        ("LINEAFTER",     (0,0), (0,-1), 1, WHITE),
+    ]))
+    story.append(hdr)
+
+    for i, (prob, sol) in enumerate(zip(problems, solutions)):
+        row_bg_p = PROBLEM_LT if i % 2 == 0 else WHITE
+        row_bg_s = SUCCESS_LT if i % 2 == 0 else WHITE
+        row = Table(
+            [[
+                ps_para(prob[0], prob[1], PROBLEM),
+                ps_para(sol[0],  sol[1],  SUCCESS),
+            ]],
+            colWidths=[col, col]
+        )
+        row.setStyle(TableStyle([
+            ("BACKGROUND",    (0,0), (0,0), row_bg_p),
+            ("BACKGROUND",    (1,0), (1,0), row_bg_s),
+            ("LEFTPADDING",   (0,0), (-1,-1), 4*mm),
+            ("RIGHTPADDING",  (0,0), (-1,-1), 4*mm),
+            ("TOPPADDING",    (0,0), (-1,-1), 3*mm),
+            ("BOTTOMPADDING", (0,0), (-1,-1), 3*mm),
+            ("VALIGN",        (0,0), (-1,-1), "TOP"),
+            ("LINEAFTER",     (0,0), (0,-1), 0.5, RULE),
+            ("LINEBELOW",     (0,0), (-1,-1), 0.5, RULE),
+        ]))
+        story.append(row)
+
+    story.append(spacer(3))
+
+    # ════════════════════════════════════════════════════════════════════
+    # HOW IT WORKS
+    # ════════════════════════════════════════════════════════════════════
+    story.append(KeepTogether([
+        section_box("How It Works", styles),
+        spacer(3),
+        p(
+            "You open Cortex in your AI agent of choice and talk. "
+            "The scribe listens, asks clarifying questions, and organises what you say into "
+            "structured dated files in your private git repository. "
+            "At session end, everything is committed and pushed automatically. "
+            "Your records are yours — permanently, portably, privately.",
+            styles
+        ),
+    ]))
+
+    steps = [
+        ("1", "Open your repo in any AI agent — Claude Code, Gemini CLI, OpenCode, Qwen, or Claude Desktop. On mobile, open your Cortex project in Claude or ChatGPT."),
+        ("2", "Say hello. The scribe reads your recent records and picks up where you left off."),
+        ("3", "Talk. Work through whatever's on your mind. The scribe listens, reflects back, and asks one clarifying question at a time."),
+        ("4", "When something is worth filing, the scribe flags it: <i>File this?</i> — and handles the rest."),
+        ("5", "At session end: everything is committed and pushed. Open items are surfaced. You're done."),
+    ]
+
+    step_rows = []
+    for num, text in steps:
+        step_rows.append([
+            Paragraph(num, styles["step_num"]),
+            Paragraph(text, styles["step_text"]),
+        ])
+
+    step_table = Table(step_rows, colWidths=[10*mm, W_PAGE - 10*mm])
+    step_table.setStyle(TableStyle([
+        ("VALIGN",        (0,0), (-1,-1), "TOP"),
+        ("LEFTPADDING",   (0,0), (0,-1),  0),
+        ("RIGHTPADDING",  (0,0), (-1,-1), 3*mm),
+        ("TOPPADDING",    (0,0), (-1,-1), 1.5*mm),
+        ("BOTTOMPADDING", (0,0), (-1,-1), 2*mm),
+        ("LINEBELOW",     (0,0), (-1,-2), 0.4, RULE),
+    ]))
+    story.append(step_table)
+    story.append(spacer(3))
+
+    # ════════════════════════════════════════════════════════════════════
+    # SOLO OR COLLABORATIVE
+    # ════════════════════════════════════════════════════════════════════
+    story.append(KeepTogether([
+        section_box("Solo or Collaborative", styles),
+        spacer(3),
+        p(
+            "Cortex works for one person. It also works for any number of people sharing a repo. "
+            "Clone the same repository, run your own AI agent against it, commit your entries. "
+            "Everyone pushes, everyone pulls, everyone sees the full record. "
+            "<b>Git handles the collaboration. The AI handles the scribing.</b>",
+            styles
+        ),
+        p(
+            "Each person can use a different AI. One uses Claude, another uses ChatGPT, another "
+            "uses Qwen. Same repo. Same protocol. Same truth.",
+            styles
+        ),
+    ]))
 
     use_cases = [
-        "A couple's shared health journal",
-        "A team's decision log",
-        "A family's care record",
-        "A band's creative sessions",
-        "A startup's retrospectives",
-    ]
-    for uc in use_cases:
-        story.append(Paragraph(f"\u2022&nbsp;&nbsp;{uc}", S["bullet"]))
-
-    story.append(Spacer(1, 2*mm))
-    story.append(Paragraph(
-        "Each person can use a different AI. One uses Claude, another uses ChatGPT, "
-        "another uses Qwen. Same repo. Same protocol. Same truth.",
-        S["body"]
-    ))
-
-    # ── What it covers ───────────────────────────────────────────────────────
-    story.append(Paragraph("What It Covers", S["section"]))
-    story.append(Paragraph(
-        "Cortex ships with 19 templates across every domain worth recording:",
-        S["body"]
-    ))
-
-    table_data = [
-        [Paragraph("<b>Category</b>", S["body"]), Paragraph("<b>Templates</b>", S["body"])],
-        ["Personal",    "Daily log, event, person, theory / insight"],
-        ["Health",      "Therapy session, medication, symptoms, appointment"],
-        ["Life admin",  "Finance, inventory, supplies, tasks"],
-        ["Work",        "Work log, project, career"],
-        ["Creative",    "Idea, creative session"],
-        ["Analytical",  "Analysis, review"],
+        ("A couple's shared health journal",    "Both partners log appointments, symptoms, and medications. One AI session each. Full shared picture."),
+        ("A team's decision log",               "Every significant call recorded with context and rationale. No more 'why did we decide that?'"),
+        ("A family's care record",              "Multiple family members logging care for an elderly parent. One repo, full history, any device."),
+        ("A band's creative sessions",          "Lyrics, ideas, rehearsal notes, session recordings — all scribed and committed after every session."),
+        ("A startup's retrospectives",          "Sprint reviews, incident post-mortems, hiring decisions — a permanent institutional memory."),
+        ("A therapist's session notes",         "Private, portable, owned by the practitioner. No vendor lock-in, no cloud exposure."),
     ]
 
-    col_w = [40*mm, W - 40*mm]
-    table = Table(table_data, colWidths=col_w)
-    table.setStyle(TableStyle([
-        ("BACKGROUND",  (0, 0), (-1, 0), TAG_BG),
-        ("TEXTCOLOR",   (0, 0), (-1, 0), ACCENT),
-        ("FONTNAME",    (0, 0), (-1, 0), "Helvetica-Bold"),
-        ("FONTSIZE",    (0, 0), (-1, -1), 9.5),
-        ("LEADING",     (0, 0), (-1, -1), 14),
-        ("ROWBACKGROUNDS", (0, 1), (-1, -1), [colors.white, colors.HexColor("#f8f8fc")]),
-        ("GRID",        (0, 0), (-1, -1), 0.4, LIGHT_RULE),
-        ("LEFTPADDING",  (0, 0), (-1, -1), 5),
-        ("RIGHTPADDING", (0, 0), (-1, -1), 5),
-        ("TOPPADDING",   (0, 0), (-1, -1), 4),
-        ("BOTTOMPADDING",(0, 0), (-1, -1), 4),
+    uc_data = [[Paragraph("<b>Use Case</b>", styles["table_head"]),
+                Paragraph("<b>What it looks like</b>", styles["table_head"])]]
+    for title, desc in use_cases:
+        uc_data.append([
+            Paragraph(title, styles["table_cell_bold"]),
+            Paragraph(desc,  styles["table_cell"]),
+        ])
+
+    uc_col = [55*mm, W_PAGE - 55*mm]
+    uc_table = Table(uc_data, colWidths=uc_col)
+    uc_table.setStyle(TableStyle([
+        ("BACKGROUND",      (0,0), (-1,0),  HEAD_BG),
+        ("ROWBACKGROUNDS",  (0,1), (-1,-1), [WHITE, STRIPE]),
+        ("GRID",            (0,0), (-1,-1), 0.4, RULE),
+        ("LEFTPADDING",     (0,0), (-1,-1), 4*mm),
+        ("RIGHTPADDING",    (0,0), (-1,-1), 4*mm),
+        ("TOPPADDING",      (0,0), (-1,-1), 3*mm),
+        ("BOTTOMPADDING",   (0,0), (-1,-1), 3*mm),
+        ("VALIGN",          (0,0), (-1,-1), "TOP"),
     ]))
-    story.append(table)
+    story.append(uc_table)
+    story.append(spacer(3))
 
-    # ── Works with ───────────────────────────────────────────────────────────
-    story.append(Paragraph("Works With", S["section"]))
-    story.append(Paragraph(
-        "Any major AI agent — Claude, ChatGPT, Gemini CLI, OpenCode, Qwen — "
-        "on any device. Desktop, mobile, or fully offline. "
-        "Switch agents mid-session. Pick up on your phone what you started on your desktop.",
-        S["body"]
-    ))
+    # ════════════════════════════════════════════════════════════════════
+    # WHAT IT COVERS
+    # ════════════════════════════════════════════════════════════════════
+    story.append(KeepTogether([
+        section_box("What It Covers — 19 Templates", styles),
+        spacer(3),
+        p("Cortex ships with templates across every domain worth recording. Use what fits. Ignore what doesn't. Add your own.", styles),
+    ]))
 
-    # ── Get started ──────────────────────────────────────────────────────────
-    story.append(Paragraph("Get Started", S["section"]))
-    steps = [
-        "Create a private repository from the Cortex template on GitHub.",
-        "Clone it to your device.",
-        "Open it in your AI agent of choice and say hello.",
-        "The scribe takes it from there.",
+    templates = [
+        ("Personal",    "Daily log",         "Dated record of the day — mood, events, reflections, energy."),
+        ("Personal",    "Event",             "A specific episode worth capturing in detail."),
+        ("Personal",    "Person",            "A record for someone in your life — history, context, relationship notes."),
+        ("Personal",    "Theory / insight",  "A pattern or idea you've noticed that deserves its own file."),
+        ("Health",      "Therapy session",   "Session notes — what was covered, what surfaced, what to carry forward."),
+        ("Health",      "Medication",        "Drug, dose, schedule, effects, changes over time."),
+        ("Health",      "Symptoms",          "Onset, severity, duration, triggers — a timestamped record."),
+        ("Health",      "Appointment",       "Pre/post notes, questions asked, answers given, follow-ups."),
+        ("Life admin",  "Finance",           "Expenses, decisions, budgets, income events."),
+        ("Life admin",  "Inventory",         "What you own, where it is, condition, purchase date."),
+        ("Life admin",  "Supplies",          "Consumables tracking — when to reorder, what ran out."),
+        ("Life admin",  "Tasks",             "Action items with context, not just a to-do list."),
+        ("Work",        "Work log",          "Daily work record — what was done, what's blocked, what matters."),
+        ("Work",        "Project",           "Project context, goals, decisions, stakeholders, status."),
+        ("Work",        "Career",            "Milestones, feedback, decisions, aspirations over time."),
+        ("Creative",    "Idea",              "A single idea captured before it evaporates."),
+        ("Creative",    "Creative session",  "A working session — what was made, what direction emerged."),
+        ("Analytical",  "Analysis",          "A structured look across records — patterns, connections, findings."),
+        ("Analytical",  "Review",            "A periodic review — what's changed, what's working, what isn't."),
     ]
-    for i, step in enumerate(steps, 1):
-        story.append(Paragraph(f"{i}.&nbsp;&nbsp;{step}", S["bullet"]))
 
-    story.append(Spacer(1, 2*mm))
-    story.append(Paragraph(
-        "Mobile users: set up a Claude or ChatGPT project with the included system prompt "
-        "and your repository credentials. Every new chat opens a session automatically — "
-        "no terminal, no setup.",
-        S["body"]
+    tmpl_data = [[
+        Paragraph("<b>Category</b>",    styles["table_head"]),
+        Paragraph("<b>Template</b>",    styles["table_head"]),
+        Paragraph("<b>What it captures</b>", styles["table_head"]),
+    ]]
+    current_cat = None
+    for cat, name, desc in templates:
+        cat_label = cat if cat != current_cat else ""
+        current_cat = cat
+        tmpl_data.append([
+            Paragraph(cat_label, styles["table_cell_bold"]),
+            Paragraph(name,      styles["table_cell_bold"]),
+            Paragraph(desc,      styles["table_cell"]),
+        ])
+
+    tmpl_cols = [28*mm, 36*mm, W_PAGE - 64*mm]
+    tmpl_table = Table(tmpl_data, colWidths=tmpl_cols)
+
+    # Alternating rows + category colour bands
+    cat_indices = {"Personal": 1, "Health": 5, "Life admin": 9, "Work": 13, "Creative": 16, "Analytical": 18}
+    row_styles = [
+        ("BACKGROUND",    (0,0), (-1,0),  HEAD_BG),
+        ("GRID",          (0,0), (-1,-1), 0.4, RULE),
+        ("LEFTPADDING",   (0,0), (-1,-1), 4*mm),
+        ("RIGHTPADDING",  (0,0), (-1,-1), 4*mm),
+        ("TOPPADDING",    (0,0), (-1,-1), 2.5*mm),
+        ("BOTTOMPADDING", (0,0), (-1,-1), 2.5*mm),
+        ("VALIGN",        (0,0), (-1,-1), "TOP"),
+        ("ROWBACKGROUNDS",(0,1), (-1,-1), [WHITE, STRIPE]),
+    ]
+    tmpl_table.setStyle(TableStyle(row_styles))
+    story.append(tmpl_table)
+    story.append(spacer(3))
+
+    # ════════════════════════════════════════════════════════════════════
+    # WORKS WITH  +  CLOUD VS OFFLINE
+    # ════════════════════════════════════════════════════════════════════
+    story.append(KeepTogether([
+        section_box("Works With Any Major AI — On Any Device", styles),
+        spacer(3),
+        p(
+            "Cortex is AI-agnostic. Run it with whichever agent you already use. "
+            "Switch mid-session if you want. The protocol is the same everywhere — "
+            "the repo is the source of truth, not the agent.",
+            styles
+        ),
+    ]))
+
+    agents = [
+        ("Claude Code",     "Desktop CLI",   "Full tool-calling, auto-commit, full protocol support."),
+        ("Claude Desktop",  "Desktop app",   "No terminal needed. Add repo as a project. Easiest desktop entry point."),
+        ("Claude (mobile)", "iOS / Android", "Via Claude project + CONNECT.md. Auto-session on every new chat."),
+        ("ChatGPT (mobile)","iOS / Android", "Via ChatGPT project + CONNECT.md. Same setup as Claude mobile."),
+        ("Gemini CLI",      "Desktop CLI",   "Full protocol support via GEMINI.md entry point."),
+        ("OpenCode",        "Desktop CLI",   "Full protocol support via OPENCODE.md entry point."),
+        ("Qwen Code",       "Desktop CLI",   "Full protocol support via QWEN.md entry point."),
+        ("Ollama (local)",  "Any device",    "Fully offline. Self-hosted git + local model. Nothing leaves the machine."),
+    ]
+
+    ag_data = [[
+        Paragraph("<b>Agent</b>",    styles["table_head"]),
+        Paragraph("<b>Platform</b>", styles["table_head"]),
+        Paragraph("<b>Notes</b>",    styles["table_head"]),
+    ]]
+    for name, plat, note in agents:
+        ag_data.append([
+            Paragraph(name, styles["table_cell_bold"]),
+            Paragraph(plat, styles["table_cell"]),
+            Paragraph(note, styles["table_cell"]),
+        ])
+
+    ag_cols = [36*mm, 32*mm, W_PAGE - 68*mm]
+    ag_table = Table(ag_data, colWidths=ag_cols)
+    ag_table.setStyle(TableStyle([
+        ("BACKGROUND",     (0,0), (-1,0),  HEAD_BG),
+        ("ROWBACKGROUNDS", (0,1), (-1,-1), [WHITE, STRIPE]),
+        ("GRID",           (0,0), (-1,-1), 0.4, RULE),
+        ("LEFTPADDING",    (0,0), (-1,-1), 4*mm),
+        ("RIGHTPADDING",   (0,0), (-1,-1), 4*mm),
+        ("TOPPADDING",     (0,0), (-1,-1), 2.5*mm),
+        ("BOTTOMPADDING",  (0,0), (-1,-1), 2.5*mm),
+        ("VALIGN",         (0,0), (-1,-1), "TOP"),
+    ]))
+    story.append(ag_table)
+    story.append(spacer(3))
+
+    # Gemini web note
+    story.append(p(
+        "<i>Note: Gemini web and mobile do not support the project + tool-calling flow "
+        "required by Cortex. Use Claude or ChatGPT on mobile.</i>",
+        styles, "body_muted"
+    ))
+    story.append(spacer(3))
+
+    # Cloud vs Offline
+    story.append(KeepTogether([
+        section_box("Cloud vs Offline", styles),
+        spacer(3),
+    ]))
+
+    cv_data = [[
+        Paragraph("<b>Cloud (default)</b>",     styles["table_head"]),
+        Paragraph("<b>Offline / self-hosted</b>", styles["table_head"]),
+    ]]
+    cloud_points = [
+        "GitHub, GitLab, or any hosted git provider",
+        "Claude, ChatGPT, Gemini, or any hosted AI",
+        "Five-minute setup from template to first session",
+        "Syncs across all your devices automatically",
+        "Frontier models follow guardrails most reliably",
+        "<b>Tradeoff:</b> AI provider processes records under their privacy policy. Hosted git can be subpoenaed.",
+    ]
+    offline_points = [
+        "Local repo or self-hosted Gitea / Forgejo / GitLab CE",
+        "Ollama running a local model with tool calling",
+        "Nothing leaves your machine — ever",
+        "Works fully air-gapped",
+        "No AI provider, no subpoena exposure on git host",
+        "<b>Tradeoff:</b> Harder to set up. Local models less reliable at instruction-following.",
+    ]
+    for cp, op in zip(cloud_points, offline_points):
+        cv_data.append([
+            Paragraph(f"\u2022\u2002{cp}", styles["body_sm"]),
+            Paragraph(f"\u2022\u2002{op}", styles["body_sm"]),
+        ])
+
+    cv_cols = [W_PAGE/2, W_PAGE/2]
+    cv_table = Table(cv_data, colWidths=cv_cols)
+    cv_table.setStyle(TableStyle([
+        ("BACKGROUND",    (0,0), (0,0),  colors.HexColor("#1d4ed8")),
+        ("BACKGROUND",    (1,0), (1,0),  colors.HexColor("#166534")),
+        ("ROWBACKGROUNDS",(0,1), (-1,-1), [WHITE, STRIPE]),
+        ("GRID",          (0,0), (-1,-1), 0.4, RULE),
+        ("LEFTPADDING",   (0,0), (-1,-1), 4*mm),
+        ("RIGHTPADDING",  (0,0), (-1,-1), 4*mm),
+        ("TOPPADDING",    (0,0), (-1,-1), 2.5*mm),
+        ("BOTTOMPADDING", (0,0), (-1,-1), 2.5*mm),
+        ("VALIGN",        (0,0), (-1,-1), "TOP"),
+        ("LINEAFTER",     (0,0), (0,-1), 0.5, RULE),
+    ]))
+    story.append(cv_table)
+    story.append(spacer(3))
+
+    # ════════════════════════════════════════════════════════════════════
+    # PRIVACY
+    # ════════════════════════════════════════════════════════════════════
+    story.append(KeepTogether([
+        section_box("Privacy", styles),
+        spacer(3),
+    ]))
+
+    privacy = [
+        ("Cordfuse has zero access to your records",
+         "No telemetry, no analytics, no data collection of any kind. The protocol is open source — you can read exactly what it does."),
+        ("Your repo is yours",
+         "Private, portable, permanent. Git history is immutable — even deleted files remain in commit history. If you need true erasure, run offline."),
+        ("Hosted git can be subpoenaed",
+         "A private GitHub or GitLab repo is not beyond the reach of law enforcement. If this is a concern, run a self-hosted git server."),
+        ("AI providers process what you send them",
+         "When you use a hosted AI (Claude, ChatGPT, etc.), your records pass through their infrastructure. Review their privacy policies. For maximum privacy, run Ollama locally."),
+    ]
+
+    for title, body in privacy:
+        priv_row = Table(
+            [[Paragraph(f"<b>{title}</b>", styles["bold_lead"]),
+              Paragraph(body, styles["body_sm"])]],
+            colWidths=[52*mm, W_PAGE - 52*mm]
+        )
+        priv_row.setStyle(TableStyle([
+            ("VALIGN",        (0,0), (-1,-1), "TOP"),
+            ("LEFTPADDING",   (0,0), (-1,-1), 0),
+            ("RIGHTPADDING",  (0,0), (-1,-1), 3*mm),
+            ("TOPPADDING",    (0,0), (-1,-1), 1.5*mm),
+            ("BOTTOMPADDING", (0,0), (-1,-1), 2.5*mm),
+            ("LINEBELOW",     (0,0), (-1,-1), 0.4, RULE),
+        ]))
+        story.append(priv_row)
+
+    story.append(spacer(3))
+
+    # ════════════════════════════════════════════════════════════════════
+    # GET STARTED
+    # ════════════════════════════════════════════════════════════════════
+    story.append(section_box("Get Started", styles))
+    story.append(spacer(3))
+
+    # Desktop + Mobile side by side
+    desktop_steps = [
+        "Click <b>Use this template</b> on GitHub and create a private repo.",
+        "Clone it: <font face='Courier' size='9'>git clone git@github.com:you/your-repo.git</font>",
+        "Open it in your agent: <font face='Courier' size='9'>claude</font> / <font face='Courier' size='9'>gemini</font> / <font face='Courier' size='9'>opencode</font>",
+        "Say hello.",
+    ]
+    mobile_steps = [
+        "Create a GitHub repo from the template (can be public initially).",
+        "Generate a GitHub Personal Access Token with repo read/write.",
+        "Create <b>CONNECT.md</b> with your repo URL and PAT.",
+        "Create a Claude or ChatGPT project — paste the system prompt from <b>protocol/CORTEX-PROJECT.md</b>, upload CONNECT.md as project knowledge.",
+        "Open a new chat. The scribe clones your repo and is ready.",
+        "Flip the repo to private on GitHub.",
+    ]
+
+    def numbered_list(items, styles):
+        rows = []
+        for i, item in enumerate(items, 1):
+            rows.append([
+                Paragraph(f"<b>{i}</b>", styles["step_num"]),
+                Paragraph(item, styles["body_sm"]),
+            ])
+        t = Table(rows, colWidths=[7*mm, None])
+        t.setStyle(TableStyle([
+            ("VALIGN",        (0,0), (-1,-1), "TOP"),
+            ("LEFTPADDING",   (0,0), (0,-1),  0),
+            ("RIGHTPADDING",  (0,0), (-1,-1), 2*mm),
+            ("TOPPADDING",    (0,0), (-1,-1), 1*mm),
+            ("BOTTOMPADDING", (0,0), (-1,-1), 1.5*mm),
+        ]))
+        return t
+
+    gs_col = (W_PAGE - 4*mm) / 2
+
+    gs_head = Table(
+        [[Paragraph("<b>Desktop</b>", styles["table_head"]),
+          Paragraph("<b>Mobile (Claude or ChatGPT project)</b>", styles["table_head"])]],
+        colWidths=[gs_col, gs_col]
+    )
+    gs_head.setStyle(TableStyle([
+        ("BACKGROUND",    (0,0), (0,0),  colors.HexColor("#374151")),
+        ("BACKGROUND",    (1,0), (1,0),  colors.HexColor("#374151")),
+        ("LEFTPADDING",   (0,0), (-1,-1), 4*mm),
+        ("RIGHTPADDING",  (0,0), (-1,-1), 4*mm),
+        ("TOPPADDING",    (0,0), (-1,-1), 3*mm),
+        ("BOTTOMPADDING", (0,0), (-1,-1), 3*mm),
+        ("LINEAFTER",     (0,0), (0,-1), 0.5, WHITE),
+    ]))
+    story.append(gs_head)
+
+    gs_body = Table(
+        [[numbered_list(desktop_steps, styles),
+          numbered_list(mobile_steps,  styles)]],
+        colWidths=[gs_col, gs_col]
+    )
+    gs_body.setStyle(TableStyle([
+        ("BACKGROUND",    (0,0), (-1,-1), TAG_BG),
+        ("LEFTPADDING",   (0,0), (-1,-1), 4*mm),
+        ("RIGHTPADDING",  (0,0), (-1,-1), 4*mm),
+        ("TOPPADDING",    (0,0), (-1,-1), 3*mm),
+        ("BOTTOMPADDING", (0,0), (-1,-1), 3*mm),
+        ("VALIGN",        (0,0), (-1,-1), "TOP"),
+        ("LINEAFTER",     (0,0), (0,-1), 0.5, RULE),
+        ("BOX",           (0,0), (-1,-1), 0.4, RULE),
+    ]))
+    story.append(gs_body)
+    story.append(spacer(3))
+
+    story.append(p(
+        "<b>Returning sessions — desktop:</b> <font face='Courier' size='9'>cd your-repo &amp;&amp; claude</font> — say hello.<br/>"
+        "<b>Returning sessions — mobile:</b> open a new chat in your Cortex project. The scribe clones the repo and picks up where you left off.",
+        styles, "body_sm"
     ))
 
-    # ── Rule ─────────────────────────────────────────────────────────────────
-    story.append(Spacer(1, 4*mm))
-    story.append(HRFlowable(width=W, thickness=0.5, color=LIGHT_RULE, spaceAfter=4*mm))
+    story.append(spacer(3))
 
-    story.append(Paragraph(
-        "github.com/cordfuse/cortex&nbsp;&nbsp;·&nbsp;&nbsp;MIT licence&nbsp;&nbsp;·&nbsp;&nbsp;"
-        "Nothing in Cortex constitutes medical, legal, or psychiatric advice.",
-        S["caption"]
-    ))
+    # ════════════════════════════════════════════════════════════════════
+    # GUARDRAILS NOTE
+    # ════════════════════════════════════════════════════════════════════
+    guard = Table(
+        [[Paragraph(
+            "<b>Guardrails</b>&nbsp;&nbsp; Cortex ships with <font face='Courier' size='9'>protocol/GUARDRAILS.md</font> — "
+            "hard stops governing how the scribe behaves. They cover crisis situations, intent to harm, "
+            "crime disclosure, child safety, and jailbreak attempts. "
+            "The scribe will refuse to start if this file is missing. "
+            "Cordfuse accepts zero liability if you remove or modify it.",
+            styles["body_sm"]
+        )]],
+        colWidths=[W_PAGE]
+    )
+    guard.setStyle(TableStyle([
+        ("BACKGROUND",    (0,0), (-1,-1), colors.HexColor("#fef9c3")),
+        ("LEFTPADDING",   (0,0), (-1,-1), 5*mm),
+        ("RIGHTPADDING",  (0,0), (-1,-1), 5*mm),
+        ("TOPPADDING",    (0,0), (-1,-1), 3.5*mm),
+        ("BOTTOMPADDING", (0,0), (-1,-1), 3.5*mm),
+        ("BOX",           (0,0), (-1,-1), 0.6, colors.HexColor("#ca8a04")),
+    ]))
+    story.append(guard)
+    story.append(spacer(4))
+
+    # ════════════════════════════════════════════════════════════════════
+    # FOOTER
+    # ════════════════════════════════════════════════════════════════════
+    rule()
+    footer = Table(
+        [[
+            Paragraph("github.com/cordfuse/cortex", styles["body_muted"]),
+            Paragraph("MIT licence", styles["body_muted"]),
+            Paragraph(
+                "Nothing in Cortex constitutes medical, legal, or psychiatric advice.",
+                ParagraphStyle("fr", fontName="Helvetica-Oblique", fontSize=8,
+                               textColor=MUTED, alignment=TA_RIGHT)),
+        ]],
+        colWidths=[W_PAGE*0.35, W_PAGE*0.15, W_PAGE*0.5]
+    )
+    footer.setStyle(TableStyle([
+        ("LINEABOVE",   (0,0), (-1,-1), 0.5, RULE),
+        ("TOPPADDING",  (0,0), (-1,-1), 3*mm),
+        ("LEFTPADDING", (0,0), (0,-1),  0),
+        ("RIGHTPADDING",(2,0), (-1,-1), 0),
+        ("VALIGN",      (0,0), (-1,-1), "MIDDLE"),
+    ]))
+    story.append(footer)
 
     doc.build(story)
     print(f"Written: {OUTPUT}")
