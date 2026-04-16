@@ -156,6 +156,72 @@ Cortex supports two deployment models. Both are valid. Both are documented in th
 
 ---
 
+## Tooling roadmap
+
+Cortex ships with a `scripts/` directory containing environment-aware tools. On first setup, the scribe detects the available environment (bash, PowerShell, Python) and writes it to `cortex.config` (gitignored — machine-specific). All scripts are selected or generated for that environment.
+
+### v1.0 — Foundational
+
+| Tool | What it does |
+|---|---|
+| `setup` | Environment detection, writes `cortex.config`, creates `.gitignore`, verifies repo structure |
+| `healthcheck` | Verifies CORTEX.md, GUARDRAILS.md, DISCLAIMER.md, ROE.md all exist. Scribe calls this at session start before loading. |
+
+### v1.1 — Secrets and data
+
+| Tool | What it does |
+|---|---|
+| `secrets` | AES-256-GCM encrypt/decrypt for credentials. PBKDF2 key derivation from passphrase. Secrets stored as encrypted JSON in `cortex.secrets.enc`. One passphrase unlocks all. Scribe UX: "store this secret: google-oauth" → asks for value → asks for passphrase → encrypts and commits. |
+| `import` | stdin or file → dated cortex entry. Paste a transcript, drop in a document, feed it an export. Scribe formats it into the correct template. |
+| `search` | grep across all entries by keyword, date range, or template type. Essential when the corpus grows. |
+
+### v1.2 — Power tools
+
+| Tool | What it does |
+|---|---|
+| `export` | Date range → PDF or HTML. Share entries with a therapist, archive a period, print a review. |
+| `stats` | Entry count by type, word count, activity over time. Useful for review sessions. |
+| `purge` | Surgically removes a specific file from all git history. See below. |
+
+### v1.3 — Connectors
+
+| Tool | What it does |
+|---|---|
+| `connector-template` | Boilerplate for building new connectors. Standard interface: auth → fetch → transform to markdown → write to repo. |
+| `connect-google` | Google Calendar + Gmail ingestion via OAuth. Writes dated markdown entries. |
+| `connect-facebook` | Facebook data export parser. Converts exported JSON to dated entries. |
+| `connect-health` | Apple Health / Google Fit ingestion. |
+
+---
+
+## Purge — design notes
+
+The `purge` tool addresses a real need: sometimes a user records something they later need genuinely gone — not just deleted from the working tree, but from git history entirely.
+
+**What it does:**
+
+1. User: "purge `2026-01-08-diagnosis.md`"
+2. Scribe warns: "This rewrites git history and force-pushes. It cannot be undone. Confirm?"
+3. Runs `git filter-repo --path <file> --invert-paths` — removes the file from every commit
+4. Force-pushes to origin
+5. Confirms removal
+
+**What it cannot do:**
+
+- Reach into anyone else's clone of the repo
+- Remove content already processed by the AI provider (Anthropic, Google, OpenAI retain session logs under their own policy)
+- Remove content cached by the git host — GitHub may retain orphaned objects; contact their support for full removal
+
+**The honest note for the README:**
+
+> Purging a file rewrites your local and remote git history. It does not affect content already processed by your AI provider or cached by your git host. For complete removal from a hosted platform, contact their support directly.
+
+**This reinforces the offline argument.** If true erasure matters, run Cortex on local git with a local LLM. Nothing leaves your machine to begin with.
+
+**Dependency:** `git filter-repo` (Python script, widely available — `pip install git-filter-repo` or package manager).
+
+---
+
 ## What success looks like
 
 Someone dealing with a new diagnosis, a hard relationship, or a rough patch clones this repo in five minutes, opens it in Claude, and has a place to put the hard stuff that is theirs — private, permanent, structured. No app, no subscription, no company reading their records.
