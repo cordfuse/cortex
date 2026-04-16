@@ -80,8 +80,29 @@ ROE.md                 # Rules of engagement
 CLAUDE.md              # One-liner → CORTEX.md
 GEMINI.md              # Same
 AGENTS.md              # Same
-templates/             # Blank templates for each file type
-YYYY-MM-DD-[topic].md  # Dated entries — flat, one topic per file
+scripts/               # Environment-aware tools (setup, healthcheck, secrets, etc.)
+templates/             # Blank templates
+  day.md               # Daily log
+  event.md             # Significant event or episode
+  person.md            # Person in your life
+  theory.md            # Insight or pattern
+  session.md           # Therapy or coaching session
+  medication.md        # Medication log
+  symptoms.md          # Physical or mental symptoms
+  appointment.md       # Medical or other appointment
+  finance.md           # Monthly finance log
+  inventory.md         # Home or asset inventory
+  supplies.md          # Groceries or supplies
+  tasks.md             # Task list
+  work.md              # Work log
+  project.md           # Project record
+  career.md            # Career and goals
+  idea.md              # Creative or strategic idea
+  creative.md          # Creative session log
+  analysis.md          # AI-generated pattern analysis
+  review.md            # Weekly, monthly, or quarterly review
+examples/              # Anonymised example entries
+YYYY-MM-DD-[topic].md  # Your dated entries — flat, one topic per file
 ```
 
 ---
