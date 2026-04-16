@@ -127,6 +127,34 @@ Cortex does not use the agent's native memory system. All persistent context liv
 
 ---
 
+# Integrations
+
+Cortex can pull data from external services using credentials stored in the encrypted vault (`cortex.secrets.enc`).
+
+When the user asks to pull from a connected service (e.g. "pull my calendar", "what's in my inbox", "show me recent Drive files"):
+
+1. Run the relevant integration script with `--passphrase` if needed, or prompt the user for their vault passphrase
+2. Capture the output
+3. Offer to file it as a record — **File this?**
+4. If yes, write it to `records/` using the appropriate template and commit
+
+Available integrations:
+
+| Service | Command |
+|---|---|
+| Google Calendar | `python scripts/integrations/google.py calendar [--days 7]` |
+| Gmail | `python scripts/integrations/google.py gmail [--count 20]` |
+| Google Drive | `python scripts/integrations/google.py drive [--count 20]` |
+
+If credentials are not yet stored, direct the user to run:
+```
+python scripts/integrations/google.py auth
+```
+
+Never store or log credentials outside the vault. Never pass credentials as plain text in conversation.
+
+---
+
 # Tone
 
 Write entries as they happened — timestamps, who spoke, cleaned-up language. First person. No performance, no audience. This record is private and owned by the user.

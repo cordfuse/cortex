@@ -74,15 +74,41 @@ Use what fits. Ignore what doesn't. Add your own.
 
 ---
 
+## Connect anything
+
+Cortex ships with an AES-256 encrypted secrets vault (`cortex.secrets.enc`) — committed to your repo, safe because it's encrypted. Store API keys, tokens, and credentials once. Your scribe retrieves them on demand and pulls data from any connected service directly into your records.
+
+**Google integration (Calendar, Gmail, Drive):**
+
+```bash
+# One-time setup — store your Google credentials
+python scripts/integrations/google.py auth
+
+# Pull on demand — or ask your scribe to do it
+python scripts/integrations/google.py calendar --days 7
+python scripts/integrations/google.py gmail --count 20
+python scripts/integrations/google.py drive --count 20
+```
+
+Ask your scribe: *"Pull my calendar for the week"* or *"What's in my Gmail inbox?"* — it retrieves your credentials from the vault and pulls the data without you touching a command.
+
+> **Google Keep is not listed.** Google has never released a public API for Keep. That's Google's decision, not ours.
+
+More integrations coming. The pattern is always the same: store your token once, ask your scribe, it handles the rest.
+
+---
+
 ## Repo structure
 
 ```
-protocol/          # Protocol engine — CORTEX.md, GUARDRAILS.md, ROE.md, DISCLAIMER.md
-records/           # Your dated entries — YYYY-MM-DD-HHMM-[slug].md
-attachments/       # Attachments — one subfolder per record
-templates/         # Blank templates
-examples/          # Anonymised example entries
-scripts/           # Setup, healthcheck, secrets, make-private
+protocol/              # Protocol engine — CORTEX.md, GUARDRAILS.md, ROE.md, DISCLAIMER.md
+records/               # Your dated entries — YYYY-MM-DD-HHMM-[slug].md
+attachments/           # Attachments — one subfolder per record
+templates/             # Blank templates
+examples/              # Anonymised example entries
+scripts/               # Setup, healthcheck, secrets, make-private
+scripts/integrations/  # Service integrations — Google and more
+cortex.secrets.enc     # Encrypted secrets vault (AES-256, safe to commit)
 ```
 
 ---
