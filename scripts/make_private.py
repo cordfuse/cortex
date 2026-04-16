@@ -17,6 +17,7 @@ import os
 import sys
 import json
 import getpass
+import argparse
 import subprocess
 import urllib.request
 import urllib.error
@@ -62,11 +63,15 @@ def parse_owner_repo(remote_url: str) -> tuple:
 
 
 def main():
+    parser = argparse.ArgumentParser(description="Flip Cortex repo to private via GitHub API")
+    parser.add_argument("--passphrase", default=None, help="Vault passphrase (prompted if omitted)")
+    args = parser.parse_args()
+
     remote_url = get_remote_url()
     owner, repo = parse_owner_repo(remote_url)
     print(f"Repo: {owner}/{repo}")
 
-    passphrase = getpass.getpass("Vault passphrase: ")
+    passphrase = args.passphrase or getpass.getpass("Vault passphrase: ")
     vault = decrypt_vault(passphrase)
 
     if "github-pat" not in vault:
