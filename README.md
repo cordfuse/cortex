@@ -1,20 +1,52 @@
 # Cortex
 
-A private record of your life. Git-driven. AI-scribed.
+A private record of your life — or your team's. Git-driven. AI-scribed.
 
 Works on any device, with any major AI. Claude mobile, ChatGPT mobile, Claude Code, Gemini CLI, OpenCode — same repo, same records, same protocol everywhere. Switch agents mid-session, pick up on your phone what you started on your desktop. The data is yours and it goes where you go.
-
-Cortex is a personal record-keeping protocol — a structured, private system for logging and making sense of your thoughts, experiences, health, relationships, work, and anything else worth recording. The AI acts as a scribe and sounding board. You own the data. Nothing is sent anywhere you don't control.
-
-It is not therapy. It is not a journal app. It is not a coach. It is a protocol — and the distinction matters.
 
 > **Read [protocol/DISCLAIMER.md](protocol/DISCLAIMER.md) before you start. Seriously.**
 
 ---
 
+## The problem
+
+Your life happens across a hundred apps — none of them talk to each other, none of them are yours, and none of them have any idea who you are.
+
+Notes rot in silos. Health records disappear when you switch providers. Work logs don't connect to personal patterns. Therapy insights evaporate between sessions. Every AI conversation starts from zero.
+
+Existing tools are either too simple, too clinical, or too locked-in — and the AI tools that could help process your most sensitive records on servers you don't control, under privacy policies you didn't write.
+
+---
+
+## What Cortex does differently
+
+**You own everything.** Records live in your private git repository — not a vendor's database. Plain markdown. Readable by any tool, forever. Portable the day you want out.
+
+**The AI is a scribe, not a product.** It listens, organises, and files. It follows a protocol you can read and modify. No upsell, no monetised insights, no lock-in.
+
+**Context that carries.** At session start the scribe reads your recent records. It knows what you were working through, what's unresolved, what patterns have been building. Every session picks up where the last one left off.
+
+**Analysis on demand.** Ask the scribe to look across your records and tell you what it sees. Patterns, connections, escalations, progress — the kind of insight that only emerges when everything is in one place.
+
+**Private by default, offline if you need it.** Run fully local with Ollama and a self-hosted git server. Nothing leaves your machine.
+
+---
+
+## Solo or collaborative
+
+Cortex works for one person. It also works for any number of people sharing a repo.
+
+Clone the same repo, run your own AI agent against it, commit your entries. Everyone pushes, everyone pulls, everyone sees the full record. Git handles the collaboration. The AI handles the scribing.
+
+A couple's shared health journal. A team's decision log. A band's creative sessions. A family's care record. A startup's retrospectives. Any group that needs a shared, AI-scribed, permanent record — owned by the group, not a platform.
+
+Each person can use a different AI. One uses Claude, another uses ChatGPT, another uses Qwen. Same repo. Same protocol. Same truth.
+
+---
+
 ## What it does
 
-You open Cortex in your AI agent and talk. The scribe listens, asks clarifying questions, and organises what you say into structured dated files in your private git repository. Records live in `records/`, attachments in `attachments/`. At session end, everything is committed and pushed. Your records are yours — permanently, portably, privately.
+You open Cortex in your AI agent and talk. The scribe listens, asks clarifying questions, and organises what you say into structured dated files in your private git repository. Records live in `records/`, attachments in `attachments/`. At session end, everything is committed and pushed.
 
 Over time, Cortex becomes a corpus you can query. Patterns emerge. Connections surface. The analysis template exists for exactly this — the AI looks across your records and tells you what it sees.
 
