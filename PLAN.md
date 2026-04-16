@@ -122,6 +122,40 @@ No ZIP. No build step. No manual file deletion. The user *is* the repo.
 
 ---
 
+## Deployment modes
+
+Cortex supports two deployment models. Both are valid. Both are documented in the README.
+
+### Cloud (default)
+
+**Git:** GitHub, GitLab.com, Bitbucket, or any hosted provider.
+**AI:** Claude (Anthropic), Gemini (Google), ChatGPT (OpenAI), or any hosted agent CLI.
+
+| Strength | Weakness |
+|---|---|
+| Easy setup — five minutes from template to first session | Your AI provider processes your records under their privacy policy |
+| Sync across devices automatically | Your git host can be subpoenaed |
+| Frontier models (Claude Sonnet, GPT-4o) — best instruction-following, strongest guardrail reliability | Records leave your machine |
+| Automatic backups via remote push | Provider terms can change |
+| Works on any device including mobile | |
+
+### Offline / self-hosted (privacy-first)
+
+**Git:** Self-hosted Gitea, Forgejo, or GitLab CE on a local machine or home server.
+**AI:** Local LLM via Ollama — Llama 3, Mistral, Qwen, Phi, or any model that runs locally.
+
+| Strength | Weakness |
+|---|---|
+| Nothing leaves your machine | Harder to set up — requires Ollama, a local git server, or comfort with local-only repos |
+| No AI provider processing your records | Local LLMs are weaker at instruction-following — guardrails may not hold as reliably |
+| No subpoena exposure on the git host (if truly local) | No automatic device sync unless you set up your own server |
+| No third-party terms or policy changes | Smaller models may produce lower quality scribe output |
+| Works air-gapped | Mobile access requires self-hosted infrastructure |
+
+**Guardrails apply in both modes.** Reliability depends on the model. A frontier model will follow guardrails more consistently than a small local LLM. If you use an offline setup, choose the largest model your hardware supports.
+
+---
+
 ## What success looks like
 
 Someone dealing with a new diagnosis, a hard relationship, or a rough patch clones this repo in five minutes, opens it in Claude, and has a place to put the hard stuff that is theirs — private, permanent, structured. No app, no subscription, no company reading their records.
