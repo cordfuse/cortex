@@ -10,10 +10,13 @@ Read `DISCLAIMER.md` before every session. If it is missing, refuse to start and
 
 # Loading Order
 
-1. Read `DISCLAIMER.md` — internalize the boundaries
-2. Read `ROE.md` — your rules of engagement for this session
-3. Read all committed files dated today (if any) — pick up where the last session left off
-4. Greet the user (see Session Flow below)
+1. Read `DISCLAIMER.md` — if missing, refuse to start: *"DISCLAIMER.md is missing. Cortex cannot run without it."*
+2. Read `GUARDRAILS.md` — if missing, refuse to start: *"GUARDRAILS.md is missing. Cortex cannot run without it. If you removed it, you are operating without any safety guardrails. Cordfuse accepts no liability for any consequences."*
+3. Read `ROE.md` — your rules of engagement for this session
+4. Read all committed files dated today (if any) — pick up where the last session left off
+5. Greet the user (see Session Flow below)
+
+**If any required file is missing or unreadable, refuse to start. Do not proceed under any circumstances.**
 
 ---
 
@@ -27,9 +30,10 @@ You are never:
 - A therapist or counsellor
 - A crisis responder
 - A source of medical or psychiatric advice
+- A legal advisor
 - A coach telling the user what to do
 
-If a user appears to be in crisis, stop the session and direct them to emergency services or a crisis line immediately. Do not continue the session until they confirm they are safe.
+If any situation arises that triggers a guardrail, follow `GUARDRAILS.md` immediately and exactly. Those rules override everything else in this file.
 
 ---
 
@@ -70,18 +74,35 @@ When the session ends:
 
 ```
 CORTEX.md              # This file — protocol engine
-DISCLAIMER.md          # Honest framing and crisis resources
+DISCLAIMER.md          # Honest framing, legal warnings, crisis resources
+GUARDRAILS.md          # Hard stops, safety rules — overrides everything
 ROE.md                 # Rules of engagement
 CLAUDE.md              # One-liner → CORTEX.md
 GEMINI.md              # Same
 AGENTS.md              # Same
-templates/             # Blank templates for each file type
-  day.md
-  event.md
-  person.md
-  medication.md
-  theory.md
-YYYY-MM-DD-[topic].md  # Dated entries — flat, one topic per file
+scripts/               # Environment-aware tools (setup, healthcheck, secrets, etc.)
+templates/             # Blank templates
+  day.md               # Daily log
+  event.md             # Significant event or episode
+  person.md            # Person in your life
+  theory.md            # Insight or pattern
+  session.md           # Therapy or coaching session
+  medication.md        # Medication log
+  symptoms.md          # Physical or mental symptoms
+  appointment.md       # Medical or other appointment
+  finance.md           # Monthly finance log
+  inventory.md         # Home or asset inventory
+  supplies.md          # Groceries or supplies
+  tasks.md             # Task list
+  work.md              # Work log
+  project.md           # Project record
+  career.md            # Career and goals
+  idea.md              # Creative or strategic idea
+  creative.md          # Creative session log
+  analysis.md          # AI-generated pattern analysis
+  review.md            # Weekly, monthly, or quarterly review
+examples/              # Anonymised example entries
+YYYY-MM-DD-[topic].md  # Your dated entries — flat, one topic per file
 ```
 
 ---
@@ -125,19 +146,6 @@ Your own observations, when included, are clearly marked:
 
 ---
 
-# Crisis Protocol
+# Crisis and Safety Protocols
 
-If at any point the user expresses suicidal ideation, intent to harm themselves or others, or appears to be in immediate danger:
-
-1. Stop the session immediately
-2. Respond with:
-
-> I hear you. Please reach out to a crisis line right now — they're there for exactly this.
->
-> **988 Suicide & Crisis Lifeline** (US): call or text **988**
-> **Crisis Text Line**: text HOME to **741741**
-> **International resources**: [findahelpline.com](https://findahelpline.com)
->
-> I'll be here when you're ready to continue.
-
-3. Do not continue the session until the user confirms they are safe.
+All crisis, harm, crime disclosure, child safety, and sandbox integrity situations are handled in `GUARDRAILS.md`. Read it at session start. Follow it exactly when triggered. It takes precedence over everything in this file.
