@@ -21,21 +21,21 @@ from reportlab.platypus import (
 )
 from reportlab.lib.enums import TA_LEFT, TA_CENTER, TA_RIGHT
 
-# ── Palette ──────────────────────────────────────────────────────────────────
-INK        = colors.HexColor("#16213e")
-ACCENT     = colors.HexColor("#4f46e5")
-ACCENT_DK  = colors.HexColor("#3730a3")
-ACCENT_LT  = colors.HexColor("#ede9fe")
-PROBLEM    = colors.HexColor("#be123c")
-PROBLEM_LT = colors.HexColor("#fff1f2")
-SUCCESS    = colors.HexColor("#15803d")
-SUCCESS_LT = colors.HexColor("#f0fdf4")
-RULE       = colors.HexColor("#e2e2f0")
-MUTED      = colors.HexColor("#64748b")
+# ── Palette (greyscale) ───────────────────────────────────────────────────────
+INK        = colors.HexColor("#1a1a1a")
+ACCENT     = colors.HexColor("#1a1a1a")
+ACCENT_DK  = colors.HexColor("#1a1a1a")
+ACCENT_LT  = colors.HexColor("#eeeeee")
+PROBLEM    = colors.HexColor("#444444")
+PROBLEM_LT = colors.HexColor("#f2f2f2")
+SUCCESS    = colors.HexColor("#444444")
+SUCCESS_LT = colors.HexColor("#f7f7f7")
+RULE       = colors.HexColor("#cccccc")
+MUTED      = colors.HexColor("#666666")
 WHITE      = colors.white
-TAG_BG     = colors.HexColor("#f8f7ff")
-STRIPE     = colors.HexColor("#f9f9fd")
-HEAD_BG    = colors.HexColor("#4f46e5")
+TAG_BG     = colors.HexColor("#f5f5f5")
+STRIPE     = colors.HexColor("#f8f8f8")
+HEAD_BG    = colors.HexColor("#2d2d2d")
 
 W_PAGE = A4[0] - 44*mm   # usable width
 
@@ -47,7 +47,7 @@ def S():
             textColor=WHITE, spaceAfter=1*mm),
         "tagline": ParagraphStyle("tagline",
             fontName="Helvetica", fontSize=13, leading=18,
-            textColor=colors.HexColor("#c7d2fe"), spaceAfter=0),
+            textColor=colors.HexColor("#cccccc"), spaceAfter=0),
         "section_label": ParagraphStyle("section_label",
             fontName="Helvetica-Bold", fontSize=10.5, leading=14,
             textColor=WHITE),
@@ -175,14 +175,11 @@ def build():
     story.append(hero)
     story.append(spacer(4))
 
-    # ── Intro paragraph ──────────────────────────────────────────────────────
-    intro_style = ParagraphStyle("intro",
+    # ── Intro + problem/solution paragraphs ──────────────────────────────────
+    plain = ParagraphStyle("plain",
         fontName="Helvetica", fontSize=10.5, leading=16.5,
-        textColor=INK, spaceAfter=3*mm,
-        borderPad=4*mm, borderColor=ACCENT_LT,
-        backColor=ACCENT_LT,
-        leftIndent=0, rightIndent=0,
-    )
+        textColor=INK, spaceAfter=4*mm)
+
     story.append(Paragraph(
         "Cortex is a private, AI-assisted record-keeper for your life — or your team's. "
         "Instead of notes scattered across dozens of apps, everything goes into one place <i>you</i> own: "
@@ -192,116 +189,33 @@ def build():
         "organises what you say, and files it automatically. "
         "Every session picks up where the last one left off — on any device, with any AI. "
         "Nothing is sent to Cordfuse. Nothing is sold. The records are yours, forever.",
-        intro_style
+        plain
     ))
-    story.append(spacer(3))
 
-    # ════════════════════════════════════════════════════════════════════
-    # PROBLEM vs SOLUTION  (two-column comparison)
-    # ════════════════════════════════════════════════════════════════════
-    story.append(PageBreak())
-    story.append(KeepTogether([
-        section_box("The Problem — and What Cortex Does About It", styles),
-        spacer(3),
-    ]))
+    story.append(Paragraph(
+        "<b>The problem.</b> "
+        "Your notes, health records, work logs, therapy insights, and creative ideas live in dozens of apps "
+        "that don't talk to each other and none of them are yours. "
+        "Every AI chat starts from zero — you re-explain your situation every single session. "
+        "Your most sensitive records are processed on servers you don't control, "
+        "under privacy policies you didn't write. "
+        "Proprietary formats mean the day you want out, your history may not come with you. "
+        "And the patterns that only emerge across months of entries? No tool shows you those.",
+        plain
+    ))
 
-    col = (W_PAGE - 4*mm) / 2
+    story.append(Paragraph(
+        "<b>What Cortex does about it.</b> "
+        "Everything goes into one private repository <i>(a secure folder that tracks every change)</i> you own — "
+        "plain text, readable by any tool, forever. "
+        "The scribe reads your recent records at session start, so every conversation picks up where the last one left off. "
+        "Records live in your account, not a vendor's — no upsell, no lock-in, no data harvesting. "
+        "Run fully offline if you need it: nothing leaves your machine. "
+        "And when you want to understand what months of entries add up to, just ask.",
+        plain
+    ))
 
-    problems = [
-        ("Notes rot in app silos",
-         "Your notes, health records, work logs and journal "
-         "entries all live in different apps that never talk to each other."),
-        ("Every AI chat starts from zero",
-         "No AI tool remembers what you told it last week. "
-         "You re-explain your situation every single session."),
-        ("You don't own your data",
-         "Your most personal records live on vendor servers, "
-         "under privacy policies written by lawyers, not you."),
-        ("Sensitive data processed by third parties",
-         "Cloud AI tools send your records to servers you don't control. "
-         "Subpoenas, breaches, and policy changes are out of your hands."),
-        ("Lock-in is invisible until it hurts",
-         "Proprietary formats and closed APIs mean the day you "
-         "want out, you often can't take your history with you."),
-        ("No pattern-level insight",
-         "Individual entries are useful. Seeing what they add up to "
-         "over months is where the real value is — and no tool does that."),
-    ]
-
-    solutions = [
-        ("One repo, everything connected",
-         "All records in one private repository <i>(a secure folder that tracks every change)</i> — "
-         "dated files, plain text, readable by any tool now and in twenty years."),
-        ("Context that carries across every session",
-         "At session start the AI scribe reads your recent records. "
-         "It knows what's unresolved. Every session picks up where you left off."),
-        ("You own everything — permanently",
-         "Records live in your own account. No vendor can delete them, "
-         "sell them, or lock them away. Move them anywhere. They're yours."),
-        ("Private by default, offline if you need it",
-         "Run fully local <i>(on your own computer, no internet required)</i> with a self-hosted AI. "
-         "Nothing ever leaves your machine."),
-        ("Plain text, forever portable",
-         "No proprietary format. No export button needed. "
-         "Read it with any text editor, today or in a decade."),
-        ("Analysis on demand",
-         "Ask the scribe to look across everything and tell you what it sees — "
-         "patterns, escalations, connections, progress. The full picture."),
-    ]
-
-    def ps_para(title, body, title_color):
-        title_style = ParagraphStyle("_t",
-            fontName="Helvetica-Bold", fontSize=9.5, leading=13,
-            textColor=title_color, spaceAfter=2)
-        body_style = ParagraphStyle("_b",
-            fontName="Helvetica", fontSize=9, leading=13,
-            textColor=MUTED)
-        return [Paragraph(title, title_style), Paragraph(body, body_style)]
-
-    # header row
-    hdr = Table(
-        [[
-            Paragraph("THE PROBLEM", styles["table_head"]),
-            Paragraph("THE CORTEX ANSWER", styles["table_head"]),
-        ]],
-        colWidths=[col, col], rowHeights=[8*mm]
-    )
-    hdr.setStyle(TableStyle([
-        ("BACKGROUND",    (0,0), (0,0), PROBLEM),
-        ("BACKGROUND",    (1,0), (1,0), SUCCESS),
-        ("LEFTPADDING",   (0,0), (-1,-1), 4*mm),
-        ("RIGHTPADDING",  (0,0), (-1,-1), 4*mm),
-        ("TOPPADDING",    (0,0), (-1,-1), 2*mm),
-        ("BOTTOMPADDING", (0,0), (-1,-1), 2*mm),
-        ("VALIGN",        (0,0), (-1,-1), "MIDDLE"),
-        ("LINEAFTER",     (0,0), (0,-1), 1, WHITE),
-    ]))
-    story.append(hdr)
-
-    for i, (prob, sol) in enumerate(zip(problems, solutions)):
-        row_bg_p = PROBLEM_LT if i % 2 == 0 else WHITE
-        row_bg_s = SUCCESS_LT if i % 2 == 0 else WHITE
-        row = Table(
-            [[
-                ps_para(prob[0], prob[1], PROBLEM),
-                ps_para(sol[0],  sol[1],  SUCCESS),
-            ]],
-            colWidths=[col, col]
-        )
-        row.setStyle(TableStyle([
-            ("BACKGROUND",    (0,0), (0,0), row_bg_p),
-            ("BACKGROUND",    (1,0), (1,0), row_bg_s),
-            ("LEFTPADDING",   (0,0), (-1,-1), 4*mm),
-            ("RIGHTPADDING",  (0,0), (-1,-1), 4*mm),
-            ("TOPPADDING",    (0,0), (-1,-1), 3*mm),
-            ("BOTTOMPADDING", (0,0), (-1,-1), 3*mm),
-            ("VALIGN",        (0,0), (-1,-1), "TOP"),
-            ("LINEAFTER",     (0,0), (0,-1), 0.5, RULE),
-            ("LINEBELOW",     (0,0), (-1,-1), 0.5, RULE),
-        ]))
-        story.append(row)
-
-    story.append(spacer(3))
+    story.append(spacer(2))
 
     # ════════════════════════════════════════════════════════════════════
     # HOW IT WORKS
@@ -565,8 +479,8 @@ def build():
     cv_cols = [W_PAGE/2, W_PAGE/2]
     cv_table = Table(cv_data, colWidths=cv_cols)
     cv_table.setStyle(TableStyle([
-        ("BACKGROUND",    (0,0), (0,0),  colors.HexColor("#1d4ed8")),
-        ("BACKGROUND",    (1,0), (1,0),  colors.HexColor("#166534")),
+        ("BACKGROUND",    (0,0), (0,0),  colors.HexColor("#333333")),
+        ("BACKGROUND",    (1,0), (1,0),  colors.HexColor("#555555")),
         ("ROWBACKGROUNDS",(0,1), (-1,-1), [WHITE, STRIPE]),
         ("GRID",          (0,0), (-1,-1), 0.4, RULE),
         ("LEFTPADDING",   (0,0), (-1,-1), 4*mm),
@@ -664,8 +578,8 @@ def build():
         colWidths=[gs_col, gs_col]
     )
     gs_head.setStyle(TableStyle([
-        ("BACKGROUND",    (0,0), (0,0),  colors.HexColor("#374151")),
-        ("BACKGROUND",    (1,0), (1,0),  colors.HexColor("#374151")),
+        ("BACKGROUND",    (0,0), (0,0),  colors.HexColor("#444444")),
+        ("BACKGROUND",    (1,0), (1,0),  colors.HexColor("#444444")),
         ("LEFTPADDING",   (0,0), (-1,-1), 4*mm),
         ("RIGHTPADDING",  (0,0), (-1,-1), 4*mm),
         ("TOPPADDING",    (0,0), (-1,-1), 3*mm),
@@ -715,12 +629,12 @@ def build():
         colWidths=[W_PAGE]
     )
     guard.setStyle(TableStyle([
-        ("BACKGROUND",    (0,0), (-1,-1), colors.HexColor("#fef9c3")),
+        ("BACKGROUND",    (0,0), (-1,-1), colors.HexColor("#f0f0f0")),
         ("LEFTPADDING",   (0,0), (-1,-1), 5*mm),
         ("RIGHTPADDING",  (0,0), (-1,-1), 5*mm),
         ("TOPPADDING",    (0,0), (-1,-1), 3.5*mm),
         ("BOTTOMPADDING", (0,0), (-1,-1), 3.5*mm),
-        ("BOX",           (0,0), (-1,-1), 0.6, colors.HexColor("#ca8a04")),
+        ("BOX",           (0,0), (-1,-1), 0.6, colors.HexColor("#888888")),
     ]))
     story.append(guard)
     story.append(spacer(4))
