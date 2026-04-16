@@ -199,6 +199,7 @@ def build():
     # ════════════════════════════════════════════════════════════════════
     # PROBLEM vs SOLUTION  (two-column comparison)
     # ════════════════════════════════════════════════════════════════════
+    story.append(PageBreak())
     story.append(KeepTogether([
         section_box("The Problem — and What Cortex Does About It", styles),
         spacer(3),
@@ -350,6 +351,7 @@ def build():
     # ════════════════════════════════════════════════════════════════════
     # SOLO OR COLLABORATIVE
     # ════════════════════════════════════════════════════════════════════
+    story.append(PageBreak())
     story.append(KeepTogether([
         section_box("Solo or Collaborative", styles),
         spacer(3),
