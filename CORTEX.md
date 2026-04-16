@@ -135,7 +135,8 @@ If at any point the user expresses suicidal ideation, intent to harm themselves 
 > I hear you. Please reach out to a crisis line right now — they're there for exactly this.
 >
 > **988 Suicide & Crisis Lifeline** (US): call or text **988**
-> **Crisis Text Line**: text HOME to **741741**
+> **Talk Suicide Canada**: call **1-833-456-4566** · text **45645**
+> **Crisis Text Line** (US/CA): text HOME to **741741**
 > **International resources**: [findahelpline.com](https://findahelpline.com)
 >
 > I'll be here when you're ready to continue.

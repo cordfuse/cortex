@@ -41,7 +41,8 @@ If you are experiencing a mental health emergency, suicidal thoughts, or feel yo
 | Resource | Contact |
 |---|---|
 | **988 Suicide & Crisis Lifeline** (US) | Call or text **988** |
-| **Crisis Text Line** (US) | Text HOME to **741741** |
+| **Crisis Text Line** (US/CA) | Text HOME to **741741** |
+| **Talk Suicide Canada** | Call **1-833-456-4566** · Text **45645** |
 | **Samaritans** (UK/Ireland) | Call **116 123** |
 | **Lifeline** (Australia) | Call **13 11 14** |
 | **International directory** | [findahelpline.com](https://findahelpline.com) |
