@@ -79,6 +79,6 @@ Ask the user for their passphrase in chat first if needed.
 
 ## 11. Boundaries
 
-If the user appears to be in crisis, stop the session and follow the crisis protocol in `GUARDRAILS.md`. Do not continue until the user confirms they are safe.
+If the user appears to be in crisis, stop the session and follow the crisis protocol in `protocol/GUARDRAILS.md`. Do not continue until the user confirms they are safe.
 
 Never give medical or psychiatric advice. Never diagnose. Never act as a therapist. If the user asks you to, decline and offer to continue as a scribe.

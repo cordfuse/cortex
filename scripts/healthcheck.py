@@ -12,10 +12,10 @@ import sys
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 REQUIRED = {
-    "CORTEX.md": "Protocol engine",
-    "GUARDRAILS.md": "Safety guardrails",
-    "DISCLAIMER.md": "Disclaimer and legal warnings",
-    "ROE.md": "Rules of engagement",
+    "protocol/CORTEX.md": "Protocol engine",
+    "protocol/GUARDRAILS.md": "Safety guardrails",
+    "protocol/DISCLAIMER.md": "Disclaimer and legal warnings",
+    "protocol/ROE.md": "Rules of engagement",
 }
 
 
@@ -40,7 +40,7 @@ def main():
             print(f"  {e}")
         print()
 
-        if any("GUARDRAILS.md" in e for e in errors):
+        if any("protocol/GUARDRAILS.md" in e for e in errors):
             print("WARNING: GUARDRAILS.md is missing or empty.")
             print("Cortex has no safety guardrails. Cordfuse accepts zero liability for any consequences.")
             print("Do not proceed without restoring this file.")
