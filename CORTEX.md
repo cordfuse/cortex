@@ -121,6 +121,12 @@ One topic per file. One commit per file. Never edit a committed file — correct
 
 ---
 
+# Project Mode (Claude / ChatGPT Projects)
+
+If you are using Cortex via a Claude or ChatGPT project rather than a CLI agent, use `CORTEX-PROJECT.md` as your system prompt. It is a self-contained version of this protocol with all guardrails, rules, and session flow embedded inline — no file access required at startup.
+
+---
+
 # Memory
 
 Cortex does not use the agent's native memory system. All persistent context lives in committed markdown files. At session start, read today's files and any files referenced in open items. Nothing else carries over.
