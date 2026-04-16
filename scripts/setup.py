@@ -135,6 +135,25 @@ def main():
     else:
         print("Git repo: OK")
 
+        # Check for upstream remote
+        remotes = subprocess.run(
+            ["git", "remote"],
+            cwd=ROOT, capture_output=True, text=True
+        ).stdout.splitlines()
+
+        if "upstream" not in remotes:
+            subprocess.run(
+                ["git", "remote", "add", "upstream", "https://github.com/cordfuse/cortex.git"],
+                cwd=ROOT, capture_output=True
+            )
+            print("Added upstream remote: https://github.com/cordfuse/cortex.git")
+            print("To update protocol, templates, and scripts:")
+            print("  git fetch upstream")
+            print("  git checkout upstream/main -- protocol/ templates/ scripts/")
+            print("  git commit -m \"sync: cortex vX.X.X\"")
+        else:
+            print("Upstream remote: OK")
+
     print("\nSetup complete. Open this directory in your AI agent and say hello.")
 
 

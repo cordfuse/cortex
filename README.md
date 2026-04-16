@@ -143,6 +143,28 @@ Your Cortex is live, private, and synced. Every new chat in the project opens a 
 
 ---
 
+### Updating
+
+GitHub template repos have no upstream link — new versions of Cortex won't reach you automatically. Add the upstream remote once (setup.py does this for you), then pull updates when a new version ships.
+
+**Add upstream (once):**
+
+```bash
+git remote add upstream https://github.com/cordfuse/cortex.git
+```
+
+**Update protocol, templates, and scripts:**
+
+```bash
+git fetch upstream
+git checkout upstream/main -- protocol/ templates/ scripts/
+git commit -m "sync: cortex vX.X.X"
+```
+
+Your `records/` and `attachments/` are never touched. Only protocol files, templates, and scripts are updated.
+
+---
+
 ## Cloud vs offline
 
 Two ways to run Cortex. Both are valid. Choose based on your privacy needs.
