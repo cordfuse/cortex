@@ -126,11 +126,7 @@ Say hello. The scribe reads today's files and picks up where you left off.
 
 Start a new chat and tell it:
 
-> Clone https://github.com/you/your-repo-name and open it as a Cortex session.
-
-The repo is private now — the scribe will need your PAT to clone it. Tell it:
-
-> My GitHub PAT is [your token]. Use it to clone the repo.
+> This is a private GitHub repo. Clone https://github.com/you/your-repo-name using my PAT — ask me for it now. Then open it as a Cortex session.
 
 Once cloned, say hello. The scribe reads today's files and picks up where you left off.
 
