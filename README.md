@@ -78,23 +78,34 @@ Use what fits. Ignore what doesn't. Add your own.
 
 Cortex ships with an AES-256 encrypted secrets vault (`cortex.secrets.enc`) — committed to your repo, safe because it's encrypted. Store API keys, tokens, and credentials once. Your scribe retrieves them on demand and pulls data from any connected service directly into your records.
 
-**Google integration (Calendar, Gmail, Drive):**
+Store API credentials once in the encrypted vault. Ask your scribe to pull data on demand — it retrieves credentials, calls the service, and offers to file the result. The pattern is always the same: store your token once, ask your scribe, it handles the rest.
+
+**Google** (Calendar, Gmail, Drive):
 
 ```bash
-# One-time setup — store your Google credentials
-python scripts/integrations/google.py auth
-
-# Pull on demand — or ask your scribe to do it
+python scripts/integrations/google.py auth        # one-time setup
 python scripts/integrations/google.py calendar --days 7
 python scripts/integrations/google.py gmail --count 20
 python scripts/integrations/google.py drive --count 20
 ```
 
-Ask your scribe: *"Pull my calendar for the week"* or *"What's in my Gmail inbox?"* — it retrieves your credentials from the vault and pulls the data without you touching a command.
+**Microsoft 365** (Mail, Calendar, OneDrive, Teams, SharePoint, To Do, Planner, OneNote):
+
+```bash
+python scripts/integrations/microsoft.py auth     # one-time setup — one Azure app covers everything
+python scripts/integrations/microsoft.py mail
+python scripts/integrations/microsoft.py calendar --days 7
+python scripts/integrations/microsoft.py onedrive
+python scripts/integrations/microsoft.py teams
+python scripts/integrations/microsoft.py sharepoint
+python scripts/integrations/microsoft.py todo
+python scripts/integrations/microsoft.py planner
+python scripts/integrations/microsoft.py onenote
+```
+
+Ask your scribe: *"Pull my calendar"*, *"What's unread in Teams?"*, *"Show my open To Do tasks"* — it handles the rest.
 
 > **Google Keep is not listed.** Google has never released a public API for Keep. That's Google's decision, not ours.
-
-More integrations coming. The pattern is always the same: store your token once, ask your scribe, it handles the rest.
 
 ---
 
