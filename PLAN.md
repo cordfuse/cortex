@@ -100,15 +100,23 @@ cordfuse/cortex/
 
 ---
 
+## Distribution model
+
+`cordfuse/cortex` is a **GitHub template repo**. Users click "Use this template", name their repo, set it private, clone it, and open it in their AI agent. Their data lives in their own private repo from day one.
+
+`CORTEX-DEV.md` lives on `main` for development. It is excluded from the template — users never see it.
+
+No ZIP. No build step. No manual file deletion. The user *is* the repo.
+
 ## Launch plan
 
 1. Scaffold repo structure and templates
 2. Write README — product framing, honest, no fluff
 3. Write DISCLAIMER.md — thorough, not performative
 4. Generalize ROE.md from personal cortex
-5. Write agent files (CLAUDE.md, GEMINI.md, AGENTS.md)
-6. Write template files with clear placeholder guidance
-7. Write anonymised example files
+5. Write template files with clear placeholder guidance
+6. Write anonymised example files
+7. Configure template repo exclusions (CORTEX-DEV.md, PLAN.md)
 8. Add to cordfuse org profile README
 9. Announce — Steve Krisjanovs, Cordfuse
 
