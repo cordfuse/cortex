@@ -79,8 +79,11 @@ Two ways to run Cortex. Both are valid. Choose based on your privacy needs.
 
 ### Offline / self-hosted
 
-**Git:** [Gitea](https://gitea.io), [Forgejo](https://forgejo.org), or [GitLab CE](https://gitlab.com/oss/packages) on your own hardware.
-**AI:** [Ollama](https://ollama.com) with a local model (Llama 3, Mistral, Qwen, Phi).
+**Git:** Local repo, or self-hosted [Gitea](https://gitea.io) / [Forgejo](https://forgejo.org) / [GitLab CE](https://gitlab.com/oss/packages).
+**AI:** [Ollama](https://ollama.com) running a local model with tool calling (Llama 3, Mistral, Qwen, Phi).
+**Interface:** [Open WebUI](https://openwebui.com) or any frontend that exposes the model's tool calling.
+
+The model calls tools directly — writes files, commits, pushes — same as a cloud model does. Full Cortex capability, nothing leaves your machine.
 
 - Nothing leaves your machine
 - No AI provider processing your records

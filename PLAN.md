@@ -141,18 +141,21 @@ Cortex supports two deployment models. Both are valid. Both are documented in th
 
 ### Offline / self-hosted (privacy-first)
 
-**Git:** Self-hosted Gitea, Forgejo, or GitLab CE on a local machine or home server.
-**AI:** Local LLM via Ollama — Llama 3, Mistral, Qwen, Phi, or any model that runs locally.
+**Git:** Self-hosted Gitea, Forgejo, or GitLab CE — or a local repo with no remote at all.
+**AI:** Ollama running a local model (Llama 3, Mistral, Qwen, Phi, etc.) with tool calling enabled.
+**Interface:** Open WebUI, or any frontend that exposes the model's tool calling.
+
+The model calls tools directly — write files, git commit, git push — same as Claude does in a cloud session. The chat interface (Open WebUI) is just the frontend. Full Cortex capability, nothing leaves the machine.
 
 | Strength | Weakness |
 |---|---|
-| Nothing leaves your machine | Harder to set up — requires Ollama, a local git server, or comfort with local-only repos |
+| Nothing leaves your machine | Harder to set up — requires Ollama and a local git repo or self-hosted server |
 | No AI provider processing your records | Local LLMs are weaker at instruction-following — guardrails may not hold as reliably |
-| No subpoena exposure on the git host (if truly local) | No automatic device sync unless you set up your own server |
-| No third-party terms or policy changes | Smaller models may produce lower quality scribe output |
-| Works air-gapped | Mobile access requires self-hosted infrastructure |
+| No subpoena exposure on the git host (if truly local) | Smaller models may produce lower quality scribe output |
+| No third-party terms or policy changes | Mobile access requires self-hosted infrastructure |
+| Works air-gapped | |
 
-**Guardrails apply in both modes.** Reliability depends on the model. A frontier model will follow guardrails more consistently than a small local LLM. If you use an offline setup, choose the largest model your hardware supports.
+**Guardrails apply in both modes.** Reliability depends on the model. A frontier model will follow guardrails more consistently than a small local LLM. Choose the largest model your hardware supports.
 
 ---
 
