@@ -17,7 +17,7 @@ from reportlab.lib import colors
 from reportlab.lib.styles import ParagraphStyle
 from reportlab.platypus import (
     SimpleDocTemplate, Paragraph, Spacer, HRFlowable,
-    Table, TableStyle, KeepTogether
+    Table, TableStyle, KeepTogether, PageBreak
 )
 from reportlab.lib.enums import TA_LEFT, TA_CENTER, TA_RIGHT
 
@@ -173,6 +173,27 @@ def build():
         ("VALIGN",        (0,0), (-1,-1), "MIDDLE"),
     ]))
     story.append(hero)
+    story.append(spacer(4))
+
+    # ── Intro paragraph ──────────────────────────────────────────────────────
+    intro_style = ParagraphStyle("intro",
+        fontName="Helvetica", fontSize=10.5, leading=16.5,
+        textColor=INK, spaceAfter=3*mm,
+        borderPad=4*mm, borderColor=ACCENT_LT,
+        backColor=ACCENT_LT,
+        leftIndent=0, rightIndent=0,
+    )
+    story.append(Paragraph(
+        "Cortex is a private, AI-assisted record-keeper for your life — or your team's. "
+        "Instead of notes scattered across dozens of apps, everything goes into one place <i>you</i> own: "
+        "a secure private folder of plain text files stored in your own online account "
+        "<i>(think of it like a personal filing cabinet in the cloud, but one only you control)</i>. "
+        "An <i>AI scribe</i> (a conversational AI assistant like Claude or ChatGPT) listens as you talk, "
+        "organises what you say, and files it automatically. "
+        "Every session picks up where the last one left off — on any device, with any AI. "
+        "Nothing is sent to Cordfuse. Nothing is sold. The records are yours, forever.",
+        intro_style
+    ))
     story.append(spacer(3))
 
     # ════════════════════════════════════════════════════════════════════
@@ -208,18 +229,18 @@ def build():
 
     solutions = [
         ("One repo, everything connected",
-         "All records in one private git repository — dated files, "
-         "plain markdown, readable by any tool now and in twenty years."),
+         "All records in one private repository <i>(a secure folder that tracks every change)</i> — "
+         "dated files, plain text, readable by any tool now and in twenty years."),
         ("Context that carries across every session",
-         "At session start the scribe reads your recent records. "
+         "At session start the AI scribe reads your recent records. "
          "It knows what's unresolved. Every session picks up where you left off."),
         ("You own everything — permanently",
-         "Records live in your repo. No vendor can delete them, "
-         "sell them, or lock them away. Fork it. Move it. It's yours."),
+         "Records live in your own account. No vendor can delete them, "
+         "sell them, or lock them away. Move them anywhere. They're yours."),
         ("Private by default, offline if you need it",
-         "Run fully local with Ollama and a self-hosted git server. "
-         "Nothing leaves your machine. No AI provider ever sees your records."),
-        ("Plain markdown, forever portable",
+         "Run fully local <i>(on your own computer, no internet required)</i> with a self-hosted AI. "
+         "Nothing ever leaves your machine."),
+        ("Plain text, forever portable",
          "No proprietary format. No export button needed. "
          "Read it with any text editor, today or in a decade."),
         ("Analysis on demand",
@@ -284,14 +305,16 @@ def build():
     # ════════════════════════════════════════════════════════════════════
     # HOW IT WORKS
     # ════════════════════════════════════════════════════════════════════
+    story.append(PageBreak())
     story.append(KeepTogether([
         section_box("How It Works", styles),
         spacer(3),
         p(
-            "You open Cortex in your AI agent of choice and talk. "
+            "You open Cortex in your AI agent <i>(a conversational AI assistant — Claude, ChatGPT, "
+            "Gemini, or similar)</i> and talk. "
             "The scribe listens, asks clarifying questions, and organises what you say into "
-            "structured dated files in your private git repository. "
-            "At session end, everything is committed and pushed automatically. "
+            "structured dated files in your private repository <i>(your secure personal folder of records)</i>. "
+            "At session end, everything is saved and synced automatically. "
             "Your records are yours — permanently, portably, privately.",
             styles
         ),
@@ -302,7 +325,7 @@ def build():
         ("2", "Say hello. The scribe reads your recent records and picks up where you left off."),
         ("3", "Talk. Work through whatever's on your mind. The scribe listens, reflects back, and asks one clarifying question at a time."),
         ("4", "When something is worth filing, the scribe flags it: <i>File this?</i> — and handles the rest."),
-        ("5", "At session end: everything is committed and pushed. Open items are surfaced. You're done."),
+        ("5", "At session end: everything is saved and synced <i>(committed and pushed — meaning saved with a timestamp and backed up to your online account)</i>. Open items are surfaced. You're done."),
     ]
 
     step_rows = []
@@ -331,15 +354,16 @@ def build():
         section_box("Solo or Collaborative", styles),
         spacer(3),
         p(
-            "Cortex works for one person. It also works for any number of people sharing a repo. "
-            "Clone the same repository, run your own AI agent against it, commit your entries. "
-            "Everyone pushes, everyone pulls, everyone sees the full record. "
-            "<b>Git handles the collaboration. The AI handles the scribing.</b>",
+            "Cortex works for one person. It also works for any number of people sharing a repository "
+            "<i>(a shared folder of records everyone can add to)</i>. "
+            "Everyone runs their own AI assistant against it and adds their entries. "
+            "Everyone sees the full record. "
+            "<b>The version control software handles the collaboration. The AI handles the scribing.</b>",
             styles
         ),
         p(
             "Each person can use a different AI. One uses Claude, another uses ChatGPT, another "
-            "uses Qwen. Same repo. Same protocol. Same truth.",
+            "uses Qwen. Same folder. Same protocol. Same truth.",
             styles
         ),
     ]))
@@ -379,6 +403,7 @@ def build():
     # ════════════════════════════════════════════════════════════════════
     # WHAT IT COVERS
     # ════════════════════════════════════════════════════════════════════
+    story.append(PageBreak())
     story.append(KeepTogether([
         section_box("What It Covers — 19 Templates", styles),
         spacer(3),
@@ -444,26 +469,27 @@ def build():
     # ════════════════════════════════════════════════════════════════════
     # WORKS WITH  +  CLOUD VS OFFLINE
     # ════════════════════════════════════════════════════════════════════
+    story.append(PageBreak())
     story.append(KeepTogether([
         section_box("Works With Any Major AI — On Any Device", styles),
         spacer(3),
         p(
-            "Cortex is AI-agnostic. Run it with whichever agent you already use. "
-            "Switch mid-session if you want. The protocol is the same everywhere — "
-            "the repo is the source of truth, not the agent.",
+            "Cortex works with any major AI assistant <i>(Claude, ChatGPT, Gemini, and others)</i>. "
+            "Switch between them any time — mid-session if you want. "
+            "The protocol is the same everywhere. Your records folder is the source of truth, not the AI.",
             styles
         ),
     ]))
 
     agents = [
-        ("Claude Code",     "Desktop CLI",   "Full tool-calling, auto-commit, full protocol support."),
-        ("Claude Desktop",  "Desktop app",   "No terminal needed. Add repo as a project. Easiest desktop entry point."),
-        ("Claude (mobile)", "iOS / Android", "Via Claude project + CONNECT.md. Auto-session on every new chat."),
-        ("ChatGPT (mobile)","iOS / Android", "Via ChatGPT project + CONNECT.md. Same setup as Claude mobile."),
-        ("Gemini CLI",      "Desktop CLI",   "Full protocol support via GEMINI.md entry point."),
-        ("OpenCode",        "Desktop CLI",   "Full protocol support via OPENCODE.md entry point."),
-        ("Qwen Code",       "Desktop CLI",   "Full protocol support via QWEN.md entry point."),
-        ("Ollama (local)",  "Any device",    "Fully offline. Self-hosted git + local model. Nothing leaves the machine."),
+        ("Claude Code",     "Desktop CLI\n(command line)",  "Full tool use, auto-save, full protocol support."),
+        ("Claude Desktop",  "Desktop app",                  "No command line needed. Add your folder as a project. Easiest desktop entry point."),
+        ("Claude (mobile)", "iOS / Android",                "Via Claude project + a credentials file. Auto-session on every new chat."),
+        ("ChatGPT (mobile)","iOS / Android",                "Via ChatGPT project + a credentials file. Same setup as Claude mobile."),
+        ("Gemini CLI",      "Desktop CLI\n(command line)",  "Full protocol support."),
+        ("OpenCode",        "Desktop CLI\n(command line)",  "Full protocol support."),
+        ("Qwen Code",       "Desktop CLI\n(command line)",  "Full protocol support."),
+        ("Ollama (local)",  "Any device",                   "Fully offline — runs on your own computer. Self-hosted storage. Nothing leaves the machine."),
     ]
 
     ag_data = [[
@@ -502,6 +528,7 @@ def build():
     story.append(spacer(3))
 
     # Cloud vs Offline
+    story.append(PageBreak())
     story.append(KeepTogether([
         section_box("Cloud vs Offline", styles),
         spacer(3),
@@ -512,20 +539,20 @@ def build():
         Paragraph("<b>Offline / self-hosted</b>", styles["table_head"]),
     ]]
     cloud_points = [
-        "GitHub, GitLab, or any hosted git provider",
-        "Claude, ChatGPT, Gemini, or any hosted AI",
-        "Five-minute setup from template to first session",
+        "GitHub or GitLab <i>(secure online services for storing your records)</i>",
+        "Claude, ChatGPT, Gemini, or any hosted AI assistant",
+        "Five-minute setup — from template to first session",
         "Syncs across all your devices automatically",
-        "Frontier models follow guardrails most reliably",
-        "<b>Tradeoff:</b> AI provider processes records under their privacy policy. Hosted git can be subpoenaed.",
+        "Top-tier AI models — most reliable instruction-following",
+        "<b>Tradeoff:</b> Your AI provider processes records under their privacy policy. Your online storage account can be subpoenaed.",
     ]
     offline_points = [
-        "Local repo or self-hosted Gitea / Forgejo / GitLab CE",
-        "Ollama running a local model with tool calling",
+        "Your own computer or a private server you run yourself",
+        "Ollama <i>(free software that runs AI models locally on your computer)</i>",
         "Nothing leaves your machine — ever",
-        "Works fully air-gapped",
-        "No AI provider, no subpoena exposure on git host",
-        "<b>Tradeoff:</b> Harder to set up. Local models less reliable at instruction-following.",
+        "Works with no internet connection at all",
+        "No third-party AI provider. No legal exposure on your storage.",
+        "<b>Tradeoff:</b> More technical to set up. Local AI models are less reliable at following instructions.",
     ]
     for cp, op in zip(cloud_points, offline_points):
         cv_data.append([
@@ -560,13 +587,13 @@ def build():
 
     privacy = [
         ("Cordfuse has zero access to your records",
-         "No telemetry, no analytics, no data collection of any kind. The protocol is open source — you can read exactly what it does."),
-        ("Your repo is yours",
-         "Private, portable, permanent. Git history is immutable — even deleted files remain in commit history. If you need true erasure, run offline."),
-        ("Hosted git can be subpoenaed",
-         "A private GitHub or GitLab repo is not beyond the reach of law enforcement. If this is a concern, run a self-hosted git server."),
+         "No telemetry, no analytics, no data collection of any kind. The protocol is open source <i>(publicly readable code)</i> — you can see exactly what it does."),
+        ("Your records folder is yours",
+         "Private, portable, permanent. Every change is logged — even deleted files remain in the history. If you need true erasure, run the offline version."),
+        ("Online storage accounts can be subpoenaed",
+         "A private account on GitHub or GitLab is not beyond the reach of law enforcement. If this matters to you, run your own private server."),
         ("AI providers process what you send them",
-         "When you use a hosted AI (Claude, ChatGPT, etc.), your records pass through their infrastructure. Review their privacy policies. For maximum privacy, run Ollama locally."),
+         "When you use a hosted AI (Claude, ChatGPT, etc.), your records pass through their servers. Review their privacy policies. For maximum privacy, run Ollama locally on your own machine."),
     ]
 
     for title, body in privacy:
@@ -590,23 +617,24 @@ def build():
     # ════════════════════════════════════════════════════════════════════
     # GET STARTED
     # ════════════════════════════════════════════════════════════════════
+    story.append(PageBreak())
     story.append(section_box("Get Started", styles))
     story.append(spacer(3))
 
     # Desktop + Mobile side by side
     desktop_steps = [
-        "Click <b>Use this template</b> on GitHub and create a private repo.",
-        "Clone it: <font face='Courier' size='9'>git clone git@github.com:you/your-repo.git</font>",
-        "Open it in your agent: <font face='Courier' size='9'>claude</font> / <font face='Courier' size='9'>gemini</font> / <font face='Courier' size='9'>opencode</font>",
+        "Click <b>Use this template</b> on GitHub <i>(a free online service for storing files)</i> and create a private folder for your records.",
+        "Download it to your computer: <font face='Courier' size='9'>git clone git@github.com:you/your-repo.git</font>",
+        "Open it in your AI agent <i>(command line assistant)</i>: <font face='Courier' size='9'>claude</font> / <font face='Courier' size='9'>gemini</font> / <font face='Courier' size='9'>opencode</font>",
         "Say hello.",
     ]
     mobile_steps = [
-        "Create a GitHub repo from the template (can be public initially).",
-        "Generate a GitHub Personal Access Token with repo read/write.",
-        "Create <b>CONNECT.md</b> with your repo URL and PAT.",
-        "Create a Claude or ChatGPT project — paste the system prompt from <b>protocol/CORTEX-PROJECT.md</b>, upload CONNECT.md as project knowledge.",
-        "Open a new chat. The scribe clones your repo and is ready.",
-        "Flip the repo to private on GitHub.",
+        "Create a records folder on GitHub from the Cortex template <i>(can be public at first — you'll lock it down at the end)</i>.",
+        "Generate a GitHub Personal Access Token <i>(PAT — a secure password that lets the AI read and write your records)</i>.",
+        "Create a small file called <b>CONNECT.md</b> with your folder address and PAT — this is your AI's key to your records.",
+        "Create a Claude or ChatGPT project — paste the system prompt from <b>CORTEX-PROJECT.md</b> and upload your CONNECT.md as project knowledge <i>(a file the AI reads at the start of every chat)</i>.",
+        "Open a new chat. The AI downloads your records folder and is ready.",
+        "Go back to GitHub and set your records folder to private.",
     ]
 
     def numbered_list(items, styles):
