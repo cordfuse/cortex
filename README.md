@@ -87,6 +87,8 @@ python scripts/integrations/google.py auth        # one-time setup
 python scripts/integrations/google.py calendar --days 7
 python scripts/integrations/google.py gmail --count 20
 python scripts/integrations/google.py drive --count 20
+python scripts/integrations/google.py tasks
+python scripts/integrations/google.py contacts
 ```
 
 **Microsoft 365** (Mail, Calendar, OneDrive, Teams, SharePoint, To Do, Planner, OneNote) — [setup guide](docs/setup-microsoft.md):

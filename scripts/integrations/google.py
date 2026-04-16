@@ -1,28 +1,24 @@
 #!/usr/bin/env python3
 """
-Cortex Google integration — Calendar, Gmail, Drive.
+Cortex Google integration — Calendar, Gmail, Drive, Tasks, Contacts.
 
 Credentials are stored in the Cortex secrets vault (cortex.secrets.enc).
 Run once to set up:
-  python scripts/secrets.py store google_client_id
-  python scripts/secrets.py store google_client_secret
-  python scripts/secrets.py store google_refresh_token
-
-To get a refresh token, run:
   python scripts/integrations/google.py auth
 
 Usage:
+  python scripts/integrations/google.py auth [--passphrase <p>]
   python scripts/integrations/google.py calendar [--days 7] [--passphrase <p>]
   python scripts/integrations/google.py gmail [--count 20] [--passphrase <p>]
   python scripts/integrations/google.py drive [--count 20] [--passphrase <p>]
-  python scripts/integrations/google.py auth [--passphrase <p>]
+  python scripts/integrations/google.py tasks [--passphrase <p>]
+  python scripts/integrations/google.py contacts [--count 50] [--passphrase <p>]
 
 Requires: pip install google-auth google-auth-oauthlib google-api-python-client
 """
 
 import os
 import sys
-import json
 import argparse
 import subprocess
 from datetime import datetime, timezone, timedelta
@@ -33,6 +29,8 @@ SCOPES = [
     "https://www.googleapis.com/auth/calendar.readonly",
     "https://www.googleapis.com/auth/gmail.readonly",
     "https://www.googleapis.com/auth/drive.readonly",
+    "https://www.googleapis.com/auth/tasks.readonly",
+    "https://www.googleapis.com/auth/contacts.readonly",
 ]
 
 try:
@@ -45,6 +43,8 @@ except ImportError:
     print("Run: pip install google-auth google-auth-oauthlib google-api-python-client")
     sys.exit(1)
 
+
+# ── Vault helpers ─────────────────────────────────────────────────────────────
 
 def get_secret(name: str, passphrase: str) -> str:
     secrets_script = os.path.join(ROOT, "scripts", "secrets.py")
@@ -85,12 +85,11 @@ def get_credentials(passphrase: str) -> Credentials:
     return creds
 
 
-def cmd_auth(passphrase: str):
-    """Interactive OAuth flow — run once to generate a refresh token."""
-    import getpass as gp
+# ── Auth ──────────────────────────────────────────────────────────────────────
 
+def cmd_auth(passphrase: str):
     print("Google OAuth setup")
-    print("You need a Google Cloud project with Calendar, Gmail, and Drive APIs enabled.")
+    print("Requires a Google Cloud project with Calendar, Gmail, Drive, Tasks, and People APIs enabled.")
     print("https://console.cloud.google.com/apis/credentials\n")
 
     client_id = input("Client ID: ").strip()
@@ -117,6 +116,8 @@ def cmd_auth(passphrase: str):
     print("Commit cortex.secrets.enc to persist across devices.")
 
 
+# ── Calendar ──────────────────────────────────────────────────────────────────
+
 def cmd_calendar(days: int, passphrase: str):
     creds = get_credentials(passphrase)
     service = build("calendar", "v3", credentials=creds)
@@ -135,7 +136,6 @@ def cmd_calendar(days: int, passphrase: str):
     ).execute()
 
     events = result.get("items", [])
-
     if not events:
         print(f"No events in the next {days} days.")
         return
@@ -154,6 +154,8 @@ def cmd_calendar(days: int, passphrase: str):
         print(f"- {dt_fmt}: {summary}{loc_str}")
 
 
+# ── Gmail ─────────────────────────────────────────────────────────────────────
+
 def cmd_gmail(count: int, passphrase: str):
     creds = get_credentials(passphrase)
     service = build("gmail", "v1", credentials=creds)
@@ -166,7 +168,6 @@ def cmd_gmail(count: int, passphrase: str):
     ).execute()
 
     messages = result.get("messages", [])
-
     if not messages:
         print("No unread messages.")
         return
@@ -193,6 +194,8 @@ def cmd_gmail(count: int, passphrase: str):
         print()
 
 
+# ── Drive ─────────────────────────────────────────────────────────────────────
+
 def cmd_drive(count: int, passphrase: str):
     creds = get_credentials(passphrase)
     service = build("drive", "v3", credentials=creds)
@@ -205,7 +208,6 @@ def cmd_drive(count: int, passphrase: str):
     ).execute()
 
     files = result.get("files", [])
-
     if not files:
         print("No files found.")
         return
@@ -230,6 +232,82 @@ def cmd_drive(count: int, passphrase: str):
         print(f"- [{name}]({link}) ({label}) — modified {modified}")
 
 
+# ── Tasks ─────────────────────────────────────────────────────────────────────
+
+def cmd_tasks(passphrase: str):
+    creds = get_credentials(passphrase)
+    service = build("tasks", "v1", credentials=creds)
+
+    lists_result = service.tasklists().list(maxResults=20).execute()
+    task_lists = lists_result.get("items", [])
+
+    if not task_lists:
+        print("No task lists found.")
+        return
+
+    print("# Google Tasks\n")
+    for lst in task_lists:
+        list_id = lst.get("id")
+        list_title = lst.get("title", "")
+        tasks_result = service.tasks().list(
+            tasklist=list_id,
+            showCompleted=False,
+            maxResults=20,
+        ).execute()
+        tasks = tasks_result.get("items", [])
+        if not tasks:
+            continue
+        print(f"**{list_title}**")
+        for t in tasks:
+            title = t.get("title", "")
+            due = t.get("due", "")
+            due_str = ""
+            if due:
+                due_str = f" (due {datetime.fromisoformat(due.replace('Z', '+00:00')).strftime('%d %b')})"
+            notes = t.get("notes", "")
+            note_str = f"\n    {notes}" if notes else ""
+            print(f"  - {title}{due_str}{note_str}")
+        print()
+
+
+# ── Contacts ──────────────────────────────────────────────────────────────────
+
+def cmd_contacts(count: int, passphrase: str):
+    creds = get_credentials(passphrase)
+    service = build("people", "v1", credentials=creds)
+
+    result = service.people().connections().list(
+        resourceName="people/me",
+        pageSize=count,
+        personFields="names,emailAddresses,phoneNumbers,organizations",
+        sortOrder="LAST_MODIFIED_DESCENDING",
+    ).execute()
+
+    connections = result.get("connections", [])
+    if not connections:
+        print("No contacts found.")
+        return
+
+    print(f"# Google Contacts — {len(connections)} recently modified\n")
+    for person in connections:
+        names = person.get("names", [])
+        name = names[0].get("displayName", "(no name)") if names else "(no name)"
+
+        emails = person.get("emailAddresses", [])
+        email_str = emails[0].get("value", "") if emails else ""
+
+        phones = person.get("phoneNumbers", [])
+        phone_str = phones[0].get("value", "") if phones else ""
+
+        orgs = person.get("organizations", [])
+        org_str = orgs[0].get("name", "") if orgs else ""
+
+        details = " | ".join(filter(None, [email_str, phone_str, org_str]))
+        print(f"- **{name}**{' — ' + details if details else ''}")
+
+
+# ── Main ──────────────────────────────────────────────────────────────────────
+
 def prompt_passphrase() -> str:
     import getpass
     return getpass.getpass("Vault passphrase: ")
@@ -240,7 +318,7 @@ def main():
     parser.add_argument("--passphrase", default=None)
     sub = parser.add_subparsers(dest="cmd")
 
-    p_auth = sub.add_parser("auth", help="OAuth setup — run once")
+    sub.add_parser("auth", help="OAuth setup — run once")
 
     p_cal = sub.add_parser("calendar", help="Upcoming calendar events")
     p_cal.add_argument("--days", type=int, default=7)
@@ -250,6 +328,11 @@ def main():
 
     p_drive = sub.add_parser("drive", help="Recently modified Drive files")
     p_drive.add_argument("--count", type=int, default=20)
+
+    sub.add_parser("tasks", help="Open Google Tasks")
+
+    p_contacts = sub.add_parser("contacts", help="Recently modified contacts")
+    p_contacts.add_argument("--count", type=int, default=50)
 
     args = parser.parse_args()
 
@@ -267,6 +350,10 @@ def main():
         cmd_gmail(args.count, passphrase)
     elif args.cmd == "drive":
         cmd_drive(args.count, passphrase)
+    elif args.cmd == "tasks":
+        cmd_tasks(passphrase)
+    elif args.cmd == "contacts":
+        cmd_contacts(args.count, passphrase)
 
 
 if __name__ == "__main__":

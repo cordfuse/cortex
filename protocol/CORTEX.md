@@ -145,6 +145,8 @@ Available integrations:
 | Google Calendar | `python scripts/integrations/google.py calendar [--days 7]` |
 | Gmail | `python scripts/integrations/google.py gmail [--count 20]` |
 | Google Drive | `python scripts/integrations/google.py drive [--count 20]` |
+| Google Tasks | `python scripts/integrations/google.py tasks` |
+| Google Contacts | `python scripts/integrations/google.py contacts [--count 50]` |
 | Outlook Mail | `python scripts/integrations/microsoft.py mail [--count 20]` |
 | Outlook Calendar | `python scripts/integrations/microsoft.py calendar [--days 7]` |
 | OneDrive | `python scripts/integrations/microsoft.py onedrive [--count 20]` |

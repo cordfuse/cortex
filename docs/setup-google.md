@@ -1,6 +1,6 @@
 # Google Integration Setup
 
-One-time setup. Takes about 5 minutes.
+One-time setup. Takes about 5 minutes. Covers Calendar, Gmail, Drive, Tasks, and Contacts.
 
 ---
 
@@ -21,6 +21,8 @@ In your new project:
    - **Google Calendar API**
    - **Gmail API**
    - **Google Drive API**
+   - **Google Tasks API**
+   - **People API**
 
 ---
 
@@ -57,6 +59,8 @@ Enter your Client ID and Client Secret when prompted. A browser window will open
 python scripts/integrations/google.py calendar --days 7
 python scripts/integrations/google.py gmail --count 20
 python scripts/integrations/google.py drive --count 20
+python scripts/integrations/google.py tasks
+python scripts/integrations/google.py contacts
 ```
 
 Or just ask your scribe: *"Pull my calendar for the week."*
