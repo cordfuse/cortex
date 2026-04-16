@@ -4,10 +4,13 @@ Cortex secrets vault.
 AES-256-GCM encrypted key/value store. Vault file committed to repo — safe because encrypted.
 
 Usage:
-  python scripts/secrets.py store <name>        # prompt for value and passphrase
-  python scripts/secrets.py get <name>          # decrypt and print value
-  python scripts/secrets.py list                # list stored secret names (not values)
-  python scripts/secrets.py delete <name>       # remove a secret from the vault
+  python scripts/secrets.py store <name> [--value <v>] [--passphrase <p>]
+  python scripts/secrets.py get <name> [--passphrase <p>]
+  python scripts/secrets.py list [--passphrase <p>]
+  python scripts/secrets.py delete <name> [--passphrase <p>]
+
+If --value or --passphrase are omitted, they are prompted interactively.
+Use the flags when running from an AI agent that cannot handle interactive prompts.
 
 Requires: pip install cryptography
 """
@@ -17,6 +20,7 @@ import sys
 import json
 import base64
 import getpass
+import argparse
 
 try:
     from cryptography.hazmat.primitives.ciphers.aead import AESGCM
@@ -76,22 +80,31 @@ def save_vault(data: dict, passphrase: str):
         f.write(blob)
 
 
-def cmd_store(name: str):
-    value = getpass.getpass(f"Value for '{name}': ")
+def prompt(label: str, confirm_label: str = None) -> str:
+    value = getpass.getpass(f"{label}: ")
+    if confirm_label:
+        confirm = getpass.getpass(f"{confirm_label}: ")
+        if value != confirm:
+            print("ERROR: Values do not match.")
+            sys.exit(1)
+    return value
+
+
+def cmd_store(name: str, value: str = None, passphrase: str = None):
+    if value is None:
+        value = prompt(f"Value for '{name}'")
     if not value:
         print("ERROR: Value cannot be empty.")
         sys.exit(1)
 
     if os.path.exists(VAULT_PATH):
-        passphrase = getpass.getpass("Vault passphrase: ")
+        if passphrase is None:
+            passphrase = prompt("Vault passphrase")
         vault = decrypt_vault(passphrase)
     else:
         print("No vault found — creating a new one.")
-        passphrase = getpass.getpass("Choose a passphrase: ")
-        confirm = getpass.getpass("Confirm passphrase: ")
-        if passphrase != confirm:
-            print("ERROR: Passphrases do not match.")
-            sys.exit(1)
+        if passphrase is None:
+            passphrase = prompt("Choose a passphrase", "Confirm passphrase")
         vault = {}
 
     vault[name] = value
@@ -100,11 +113,12 @@ def cmd_store(name: str):
     print("Commit and push to persist across devices.")
 
 
-def cmd_get(name: str):
+def cmd_get(name: str, passphrase: str = None):
     if not os.path.exists(VAULT_PATH):
         print("ERROR: No vault found.")
         sys.exit(1)
-    passphrase = getpass.getpass("Vault passphrase: ")
+    if passphrase is None:
+        passphrase = prompt("Vault passphrase")
     vault = decrypt_vault(passphrase)
     if name not in vault:
         print(f"ERROR: No secret named '{name}'.")
@@ -112,11 +126,12 @@ def cmd_get(name: str):
     print(vault[name])
 
 
-def cmd_list():
+def cmd_list(passphrase: str = None):
     if not os.path.exists(VAULT_PATH):
         print("No vault found.")
         return
-    passphrase = getpass.getpass("Vault passphrase: ")
+    if passphrase is None:
+        passphrase = prompt("Vault passphrase")
     vault = decrypt_vault(passphrase)
     if not vault:
         print("Vault is empty.")
@@ -126,11 +141,12 @@ def cmd_list():
         print(f"  {k}")
 
 
-def cmd_delete(name: str):
+def cmd_delete(name: str, passphrase: str = None):
     if not os.path.exists(VAULT_PATH):
         print("ERROR: No vault found.")
         sys.exit(1)
-    passphrase = getpass.getpass("Vault passphrase: ")
+    if passphrase is None:
+        passphrase = prompt("Vault passphrase")
     vault = decrypt_vault(passphrase)
     if name not in vault:
         print(f"ERROR: No secret named '{name}'.")
@@ -141,23 +157,37 @@ def cmd_delete(name: str):
 
 
 def main():
-    args = sys.argv[1:]
-    if not args:
-        print(__doc__)
-        sys.exit(1)
+    parser = argparse.ArgumentParser(description="Cortex secrets vault", add_help=True)
+    sub = parser.add_subparsers(dest="cmd")
 
-    cmd = args[0]
+    p_store = sub.add_parser("store")
+    p_store.add_argument("name")
+    p_store.add_argument("--value", default=None)
+    p_store.add_argument("--passphrase", default=None)
 
-    if cmd == "store" and len(args) == 2:
-        cmd_store(args[1])
-    elif cmd == "get" and len(args) == 2:
-        cmd_get(args[1])
-    elif cmd == "list" and len(args) == 1:
-        cmd_list()
-    elif cmd == "delete" and len(args) == 2:
-        cmd_delete(args[1])
+    p_get = sub.add_parser("get")
+    p_get.add_argument("name")
+    p_get.add_argument("--passphrase", default=None)
+
+    p_list = sub.add_parser("list")
+    p_list.add_argument("--passphrase", default=None)
+
+    p_delete = sub.add_parser("delete")
+    p_delete.add_argument("name")
+    p_delete.add_argument("--passphrase", default=None)
+
+    args = parser.parse_args()
+
+    if args.cmd == "store":
+        cmd_store(args.name, value=args.value, passphrase=args.passphrase)
+    elif args.cmd == "get":
+        cmd_get(args.name, passphrase=args.passphrase)
+    elif args.cmd == "list":
+        cmd_list(passphrase=args.passphrase)
+    elif args.cmd == "delete":
+        cmd_delete(args.name, passphrase=args.passphrase)
     else:
-        print(__doc__)
+        parser.print_help()
         sys.exit(1)
 
 
