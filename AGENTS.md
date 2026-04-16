@@ -1,1 +1,1 @@
-IMPORTANT: If CORTEX-DEV.md exists in this directory, read and follow it. Otherwise read and follow CORTEX.md.
+IMPORTANT: Read and follow all instructions in ./CORTEX.md before responding to the user.
