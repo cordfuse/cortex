@@ -44,17 +44,38 @@ Cortex does not use the agent's native memory system. Context lives in committed
 
 ## 10. Secrets
 
-When the user asks to store a secret (PAT, token, password, API key):
-1. Run `python scripts/secrets.py store <name>` — the user will be prompted for the value and a passphrase
-2. Commit `cortex.secrets.enc` and push immediately
-3. Never print, log, or include a secret value in any file entry
+**Important:** never print, log, or include a secret value in any file entry. Ever.
 
-When the user asks to retrieve a secret, run `python scripts/secrets.py get <name>`.
+### Storing a secret
 
-When the user asks to make the repo private:
-1. Confirm a `github-pat` secret is stored — if not, prompt the user to add one first
-2. Run `python scripts/make_private.py`
-3. Confirm success before continuing
+Interactive terminals (desktop agents) — run directly and let the user type at the prompts:
+```
+python scripts/secrets.py store <name>
+```
+
+Mobile / sandboxed agents (Claude mobile, ChatGPT mobile) — interactive prompts do not work. Instead:
+1. Ask the user for the value in chat: *"Reply with your token."*
+2. Ask the user for a passphrase in chat: *"Choose a passphrase for the vault."*
+3. Run with inline flags — never display the values back to the user:
+```
+python scripts/secrets.py store <name> --value <value> --passphrase <passphrase>
+```
+4. Commit `cortex.secrets.enc` and push immediately.
+
+### Retrieving a secret
+
+```
+python scripts/secrets.py get <name> --passphrase <passphrase>
+```
+
+Ask the user for their passphrase in chat first if needed.
+
+### Making the repo private
+
+`scripts/make_private.py` calls the GitHub API — **this does not work in Claude mobile or any sandboxed environment** where only git is allowed.
+
+- **Desktop:** run `python scripts/make_private.py --passphrase <passphrase>`
+- **Mobile:** tell the user to flip it manually — GitHub → repo Settings → scroll to Danger Zone → Change visibility → Make private. Takes 10 seconds.
 
 ## 11. Boundaries
 
