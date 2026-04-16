@@ -1,8 +1,13 @@
 # Cortex
 
-A private record of your life — or your team's. Git-driven. AI-scribed.
+**Your AI remembers everything. You own the records.**
 
-Works on any device, with any major AI. Claude mobile, ChatGPT mobile, Claude Code, Gemini CLI, OpenCode — same repo, same records, same protocol everywhere. Switch agents mid-session, pick up on your phone what you started on your desktop. The data is yours and it goes where you go.
+Every AI chat starts from zero — you re-explain your life every single session. Cortex fixes that. Talk to your AI scribe, it files everything into a private git repo you own. Next session, it reads your records and picks up where you left off. Any device. Any major AI. Nothing sent to Cordfuse.
+
+**Cloud** (GitHub + Claude/ChatGPT): frontier models, five-minute setup, smarter responses. Your records pass through your AI provider's servers.  
+**Local** (Ollama + self-hosted git): nothing leaves your machine. Ever. Total privacy, more technical setup.
+
+[→ Read the overview PDF](https://github.com/cordfuse/cortex/raw/main/cortex-overview.pdf)
 
 > **Read [protocol/DISCLAIMER.md](protocol/DISCLAIMER.md) before you start. Seriously.**
 
