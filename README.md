@@ -107,7 +107,32 @@ On GitHub: your repo → Settings → scroll to Danger Zone → Change visibilit
 
 **6. Done**
 
-Your Cortex is live, private, and synced. Future sessions: open Claude or ChatGPT, give it your repo URL, say hello. The scribe reads your files and picks up where you left off.
+Your Cortex is live, private, and synced.
+
+---
+
+### Returning sessions
+
+Every session after setup works the same way regardless of device.
+
+**Desktop (CLI agent):**
+```bash
+cd my-cortex
+claude    # or gemini, opencode, etc.
+```
+Say hello. The scribe reads today's files and picks up where you left off.
+
+**Mobile (Claude or ChatGPT):**
+
+Start a new chat and tell it:
+
+> Clone https://github.com/you/your-repo-name and open it as a Cortex session.
+
+The repo is private now — the scribe will need your PAT to clone it. Tell it:
+
+> My GitHub PAT is [your token]. Use it to clone the repo.
+
+Once cloned, say hello. The scribe reads today's files and picks up where you left off.
 
 ---
 
