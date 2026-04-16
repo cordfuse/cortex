@@ -80,7 +80,7 @@ Cortex ships with an AES-256 encrypted secrets vault (`cortex.secrets.enc`) — 
 
 Store API credentials once in the encrypted vault. Ask your scribe to pull data on demand — it retrieves credentials, calls the service, and offers to file the result. The pattern is always the same: store your token once, ask your scribe, it handles the rest.
 
-**Google** (Calendar, Gmail, Drive):
+**Google** (Calendar, Gmail, Drive) — [setup guide](docs/setup-google.md):
 
 ```bash
 python scripts/integrations/google.py auth        # one-time setup
@@ -89,7 +89,7 @@ python scripts/integrations/google.py gmail --count 20
 python scripts/integrations/google.py drive --count 20
 ```
 
-**Microsoft 365** (Mail, Calendar, OneDrive, Teams, SharePoint, To Do, Planner, OneNote):
+**Microsoft 365** (Mail, Calendar, OneDrive, Teams, SharePoint, To Do, Planner, OneNote) — [setup guide](docs/setup-microsoft.md):
 
 ```bash
 python scripts/integrations/microsoft.py auth     # one-time setup — one Azure app covers everything
