@@ -68,10 +68,13 @@ cd your-repo-name
 **3. Open it in your AI agent**
 
 ```bash
-claude    # Claude Code
+claude    # Claude Code (CLI)
 gemini    # Gemini CLI
 opencode  # OpenCode
+qwen      # Qwen Code
 ```
+
+Not a developer? **Claude Desktop** ([claude.ai/download](https://claude.ai/download)) is the easiest entry point — open the app, add your repo as a project, no terminal needed.
 
 Or open [claude.ai](https://claude.ai) or [ChatGPT](https://chat.openai.com) and upload the repo if you prefer a web interface.
 

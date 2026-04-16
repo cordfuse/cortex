@@ -84,9 +84,11 @@ attachments/           # Attachments for records — one subfolder per record
 templates/             # Blank templates
 examples/              # Anonymised example entries
 scripts/               # Environment-aware tools (setup, healthcheck, secrets, etc.)
-CLAUDE.md              # One-liner → protocol/CORTEX.md
-GEMINI.md              # Same
-AGENTS.md              # Same
+CLAUDE.md              # Claude Code + Claude Desktop
+GEMINI.md              # Gemini CLI
+AGENTS.md              # OpenAI Codex + generic agents
+OPENCODE.md            # OpenCode
+QWEN.md                # Qwen Code
 README.md
 LICENSE
 version.txt
