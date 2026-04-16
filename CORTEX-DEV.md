@@ -70,14 +70,44 @@ git push
 
 ---
 
-## Release
+## Branch Rules
 
-Cortex has no build step — it ships as-is. A release is just a git tag:
+**`dev`** — where all development happens. `CORTEX-DEV.md` and `PLAN.md` live here permanently. Never merge these to `main`.
+
+**`main`** — always user-ready. The GitHub template uses this branch. Only user-facing files belong here:
+- `CORTEX.md`
+- `DISCLAIMER.md`
+- `ROE.md`
+- `CLAUDE.md`, `GEMINI.md`, `AGENTS.md`
+- `templates/`
+- `examples/`
+- `README.md`
+- `version.txt`
+
+### Merging dev → main
+
+Never merge the full branch. Cherry-pick or manually apply only user-facing changes:
 
 ```bash
+git checkout main
+git checkout dev -- CORTEX.md ROE.md DISCLAIMER.md README.md templates/ examples/ version.txt
+git commit -m "merge: <description>"
+git push
+```
+
+`CORTEX-DEV.md` and `PLAN.md` stay on `dev`. Always.
+
+---
+
+## Release
+
+Cortex has no build step — it ships as-is. Tag from `main`:
+
+```bash
+git checkout main
 VERSION=$(cat version.txt)
 git tag "v${VERSION}"
 git push origin "v${VERSION}"
 ```
 
-Update `version.txt` before tagging. Write release notes manually after the tag is pushed.
+Update `version.txt` on `dev` first, merge it to `main`, then tag. Write release notes manually after the tag is pushed.
