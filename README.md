@@ -71,37 +71,43 @@ No terminal needed. Claude and ChatGPT on mobile can clone and manage your repo 
 
 **1. Create your repo — leave it public for now**
 
-Click **[Use this template](../../generate)** on GitHub (mobile browser or GitHub app). Name it. Leave visibility set to **Public**. Create it.
+Click **[Use this template](../../generate)** on GitHub (mobile browser or GitHub app). Name it whatever you like. Leave visibility set to **Public**. Create it.
 
 **2. Open Claude or ChatGPT on your phone**
 
-Tell it to clone your repo:
+Tell it to clone your repo (replace with your actual URL):
 
-> Clone https://github.com/you/my-cortex and open it as a Cortex session.
+> Clone https://github.com/you/your-repo-name and open it as a Cortex session.
 
 The scribe clones it, reads the protocol, and is ready.
 
-**3. Store your GitHub PAT**
+**3. Generate a GitHub PAT**
 
-Generate a Personal Access Token on GitHub (Settings → Developer settings → Personal access tokens → Fine-grained). Give it `repo` scope on your Cortex repo.
+On GitHub: Settings → Developer settings → Personal access tokens → Fine-grained tokens → Generate new token.
+
+- Name it anything (e.g. `cortex-mobile`)
+- Repository access: your Cortex repo only
+- Permissions: Contents → Read and write, Administration → Read and write
+
+Copy the token — starts with `github_pat_`. You only see it once.
+
+**4. Store the PAT**
 
 Tell the scribe:
 
-> Store my GitHub PAT.
+> Store my GitHub PAT. Ask me for the token and a passphrase.
 
-The scribe runs `scripts/secrets.py store github-pat`. You will be prompted for the token and a passphrase. The encrypted vault is committed and pushed automatically.
+The scribe will ask for both in chat. Reply with each when prompted. The encrypted vault is committed and pushed automatically.
 
-**4. Make the repo private**
+**5. Make the repo private**
 
-Tell the scribe:
+The GitHub API is not accessible from Claude or ChatGPT mobile — you need to do this step manually.
 
-> Make the repo private.
+On GitHub: your repo → Settings → scroll to Danger Zone → Change visibility → Make private.
 
-The scribe runs `scripts/make_private.py`, decrypts the PAT, and flips the repo to private via the GitHub API. The encrypted vault (`cortex.secrets.enc`) is committed and pushed so your PAT travels with the repo.
+**6. Done**
 
-**5. Done**
-
-Your Cortex is live, private, and synced. Future sessions work the same — open the AI, say hello, the scribe reads your files and picks up where you left off.
+Your Cortex is live, private, and synced. Future sessions: open Claude or ChatGPT, give it your repo URL, say hello. The scribe reads your files and picks up where you left off.
 
 ---
 
