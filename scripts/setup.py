@@ -15,7 +15,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CONFIG_PATH = os.path.join(ROOT, "cortex.config")
 GITIGNORE_PATH = os.path.join(ROOT, ".gitignore")
 
-REQUIRED_FILES = ["CORTEX.md", "GUARDRAILS.md", "DISCLAIMER.md", "ROE.md"]
+REQUIRED_FILES = ["protocol/CORTEX.md", "protocol/GUARDRAILS.md", "protocol/DISCLAIMER.md", "protocol/ROE.md"]
 
 GITIGNORE_ENTRIES = ["cortex.config", ".env"]
 
