@@ -2,6 +2,8 @@
 
 A private record of your life. Git-driven. AI-scribed.
 
+Works on any device, with any major AI. Claude mobile, ChatGPT mobile, Claude Code, Gemini CLI, OpenCode — same repo, same records, same protocol everywhere. Switch agents mid-session, pick up on your phone what you started on your desktop. The data is yours and it goes where you go.
+
 Cortex is a personal record-keeping protocol — a structured, private system for logging and making sense of your thoughts, experiences, health, relationships, work, and anything else worth recording. The AI acts as a scribe and sounding board. You own the data. Nothing is sent anywhere you don't control.
 
 It is not therapy. It is not a journal app. It is not a coach. It is a protocol — and the distinction matters.
