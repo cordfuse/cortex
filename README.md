@@ -79,6 +79,8 @@ Say hello. The scribe takes it from there.
 
 ### Mobile (Claude or ChatGPT project)
 
+> **Note:** Gemini web and mobile do not support the project + tool-calling flow required by Cortex. Use Claude or ChatGPT on mobile.
+
 The recommended way to use Cortex on mobile. Set up once — every new chat opens a session automatically.
 
 **1. Create your GitHub repo — leave it public for now**
