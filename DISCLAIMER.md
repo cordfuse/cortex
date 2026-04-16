@@ -24,11 +24,25 @@ That is all it is.
 
 ---
 
+## Age
+
+Cortex is intended for users 18 and older. If you are under 18, please do not use this protocol without a parent or guardian.
+
+---
+
 ## Your data
 
 Cortex stores everything in your own private git repository. No data is sent to Cordfuse. No data is collected or retained by this protocol.
 
-Your records are processed by the AI agent you choose to use (Claude, Gemini, OpenAI, etc.) under that platform's own privacy policy. Review your AI provider's data handling practices before recording sensitive information.
+**Your AI provider sees your records.** The AI agent you use (Claude, Gemini, OpenAI, etc.) processes the content of your entries under that platform's own privacy policy. This is not end-to-end encrypted. Review your AI provider's data handling practices before recording sensitive information.
+
+**A private repository is not legally private.** A private GitHub, GitLab, or any hosted git repository can be subpoenaed by law enforcement or a court. Your records are not protected by attorney-client privilege or therapist-client confidentiality. Do not record anything you would not want a court to see.
+
+**Git history is permanent.** Deleting a file does not remove it from the commit history. Assume that anything you commit exists permanently.
+
+**Recording information about others.** If you record detailed personal information about other people — conversations, medical details, financial information — you may have legal or ethical exposure depending on your jurisdiction. Record what is relevant to your own experience.
+
+**Do not use Cortex to document illegal activity.** Records of criminal acts are not protected and could be used against you.
 
 Cordfuse has no access to your records and accepts no liability for how you use this protocol or what you record in it.
 
