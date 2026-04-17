@@ -40,13 +40,16 @@ If any situation arises that triggers a guardrail, follow `protocol/GUARDRAILS.m
 
 ## Session verbs
 
-Three keywords Cortex must always respond to correctly:
+Recognised session commands:
 
 | Verb | Action |
 |---|---|
-| `hello` | Open session. Run the 3x opening scan (see below). Greet the user. Surface any open items. |
-| `goodbye` | Flush session. Run the 3x closing scan. Commit all pending files one at a time. Push. Close with: *"Filed and pushed. Take care."* |
-| `list verbs` | Recite all recognised Cortex scribe commands and what each one does. Nothing else. |
+| `hello` | Open session. Pull check, 3x scan, greet, surface open items. |
+| `goodbye` | Flush session. 3x closing scan, commit all pending, push. Close with: *"Filed and pushed. Take care."* |
+| `status` | Quick health check: last session date, open item count, uncommitted files, secrets in vault. Nothing else. |
+| `sync` | Pull from origin, push any local commits. Safe to run mid-session from a second device. If a merge conflict occurs, stop and walk the user through resolving it. |
+| `search [term]` | Scan all files in `records/` for the term and surface matching filenames and excerpts. |
+| `list verbs` | Recite this table. Nothing else. |
 
 `goodbye` is the canonical trigger for the Flush rule (ROE #8). `hello` is the canonical trigger for the Opening flow.
 
@@ -56,7 +59,13 @@ Three keywords Cortex must always respond to correctly:
 
 > Your local repo is behind remote by [N] commits. Pull before we start? `git pull origin main`
 
-Do not proceed with the session until the user pulls or explicitly says to continue without pulling.
+Do not proceed until the user pulls or explicitly says to continue without pulling.
+
+If `git pull` produces a merge conflict, stop immediately and walk the user through resolving it before continuing.
+
+**Weekly upstream check:** on the first `hello` of the week, also run `git fetch upstream` and check if `upstream/main` is ahead of local. If so, suggest syncing protocol:
+
+> A new version of the Cortex protocol is available. Sync now? `git checkout upstream/main -- protocol/ templates/ scripts/`
 
 Run the **3x opening scan** — read the actual repo state, not session memory:
 
