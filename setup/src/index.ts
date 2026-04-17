@@ -1,9 +1,11 @@
 #!/usr/bin/env bun
 import { spawnSync } from "child_process";
-import { existsSync } from "fs";
+import { existsSync, mkdirSync, createWriteStream } from "fs";
 import { homedir, platform } from "os";
 import { join } from "path";
 import * as readline from "readline";
+import * as https from "https";
+import * as fs from "fs";
 
 // ── ANSI helpers ──────────────────────────────────────────────────────────────
 
@@ -25,50 +27,123 @@ const bold = (s: string) => `${c.bold}${s}${c.reset}`;
 const dim  = (s: string) => `${c.dim}${s}${c.reset}`;
 const cyan = (s: string) => `${c.cyan}${s}${c.reset}`;
 
+const IS_WIN   = platform() === "win32";
+const IS_MAC   = platform() === "darwin";
+const IS_LINUX = platform() === "linux";
+
 const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
 
 function ask(question: string): Promise<string> {
   return new Promise(resolve => rl.question(question, resolve));
 }
 
-function askSecret(question: string): Promise<string> {
-  return new Promise(resolve => {
-    process.stdout.write(question);
-    process.stdin.setRawMode?.(true);
-    process.stdin.resume();
-    process.stdin.setEncoding("utf8");
-    let input = "";
-    process.stdin.on("data", function handler(ch: string) {
-      if (ch === "\n" || ch === "\r" || ch === "\u0003") {
-        process.stdin.setRawMode?.(false);
-        process.stdin.pause();
-        process.stdin.removeListener("data", handler);
-        process.stdout.write("\n");
-        resolve(input);
-      } else if (ch === "\u007f") {
-        if (input.length > 0) input = input.slice(0, -1);
-      } else {
-        input += ch;
-        process.stdout.write("*");
-      }
-    });
-  });
-}
-
 function run(cmd: string, args: string[], cwd?: string): boolean {
-  const result = spawnSync(cmd, args, { cwd, stdio: "inherit", shell: platform() === "win32" });
+  const result = spawnSync(cmd, args, { cwd, stdio: "inherit", shell: IS_WIN });
   return result.status === 0;
 }
 
 function check(cmd: string, args: string[] = ["--version"]): string | null {
-  const result = spawnSync(cmd, args, { stdio: "pipe", shell: platform() === "win32" });
+  const result = spawnSync(cmd, args, { stdio: "pipe", shell: IS_WIN });
   if (result.status === 0) return result.stdout.toString().trim().split("\n")[0];
   return null;
 }
 
 function openUrl(url: string) {
-  const cmd = platform() === "win32" ? "start" : platform() === "darwin" ? "open" : "xdg-open";
+  const cmd = IS_WIN ? "start" : IS_MAC ? "open" : "xdg-open";
   spawnSync(cmd, [url], { shell: true, stdio: "ignore" });
+}
+
+function downloadFile(url: string, dest: string): Promise<void> {
+  return new Promise((resolve, reject) => {
+    const file = createWriteStream(dest);
+    const request = (u: string) => {
+      https.get(u, res => {
+        if (res.statusCode === 301 || res.statusCode === 302) {
+          request(res.headers.location!);
+          return;
+        }
+        res.pipe(file);
+        file.on("finish", () => { file.close(); resolve(); });
+      }).on("error", reject);
+    };
+    request(url);
+  });
+}
+
+// ── Dependency installers ─────────────────────────────────────────────────────
+
+async function installGit(): Promise<boolean> {
+  console.log(`  ${dim("Installing git...")}`);
+
+  if (IS_WIN) {
+    const tmp = join(homedir(), "AppData", "Local", "Temp", "git-installer.exe");
+    console.log(`  ${dim("Downloading Git for Windows...")}`);
+    await downloadFile(
+      "https://github.com/git-for-windows/git/releases/download/v2.45.1.windows.1/Git-2.45.1-64-bit.exe",
+      tmp
+    );
+    return run(tmp, ["/VERYSILENT", "/NORESTART", "/NOCANCEL", "/SP-", "/CLOSEAPPLICATIONS", "/RESTARTAPPLICATIONS", "/COMPONENTS=icons,ext\\reg\\shellhere,assoc,assoc_sh"]);
+  }
+
+  if (IS_MAC) {
+    console.log(`  ${dim("Triggering Xcode Command Line Tools install...")}`);
+    console.log(`  ${dim("A system dialog will appear — click Install.")}`);
+    run("xcode-select", ["--install"]);
+    console.log();
+    await ask("  Press Enter once the installation completes... ");
+    return !!check("git");
+  }
+
+  if (IS_LINUX) {
+    // Detect package manager
+    if (check("apt-get", ["--version"])) {
+      return run("sudo", ["apt-get", "install", "-y", "git"]);
+    } else if (check("dnf", ["--version"])) {
+      return run("sudo", ["dnf", "install", "-y", "git"]);
+    } else if (check("pacman", ["--version"])) {
+      return run("sudo", ["pacman", "-S", "--noconfirm", "git"]);
+    }
+  }
+
+  return false;
+}
+
+async function installPython(): Promise<boolean> {
+  console.log(`  ${dim("Installing Python...")}`);
+
+  if (IS_WIN) {
+    const tmp = join(homedir(), "AppData", "Local", "Temp", "python-installer.exe");
+    console.log(`  ${dim("Downloading Python for Windows...")}`);
+    await downloadFile(
+      "https://www.python.org/ftp/python/3.12.4/python-3.12.4-amd64.exe",
+      tmp
+    );
+    return run(tmp, ["/quiet", "InstallAllUsers=0", "PrependPath=1", "Include_test=0"]);
+  }
+
+  if (IS_MAC) {
+    if (check("brew")) {
+      return run("brew", ["install", "python3"]);
+    }
+    // No Homebrew — open Python download page
+    console.log(`  ${dim("Opening Python download page...")}`);
+    openUrl("https://www.python.org/downloads/macos/");
+    console.log();
+    await ask("  Press Enter once Python is installed... ");
+    return !!(check("python3") || check("python"));
+  }
+
+  if (IS_LINUX) {
+    if (check("apt-get", ["--version"])) {
+      return run("sudo", ["apt-get", "install", "-y", "python3", "python3-pip"]);
+    } else if (check("dnf", ["--version"])) {
+      return run("sudo", ["dnf", "install", "-y", "python3", "python3-pip"]);
+    } else if (check("pacman", ["--version"])) {
+      return run("sudo", ["pacman", "-S", "--noconfirm", "python", "python-pip"]);
+    }
+  }
+
+  return false;
 }
 
 // ── Main ──────────────────────────────────────────────────────────────────────
@@ -87,35 +162,46 @@ async function main() {
   console.log(bold("── Step 1: Prerequisites ──────────────────────────────────────"));
   console.log();
 
-  const gitVersion = check("git");
+  // git
+  let gitVersion = check("git");
   if (!gitVersion) {
-    console.log(err("git not found."));
-    console.log("  Install git from https://git-scm.com and re-run this wizard.");
-    process.exit(1);
+    console.log(warn("git not found — installing..."));
+    const installed = await installGit();
+    gitVersion = check("git");
+    if (!installed || !gitVersion) {
+      console.log(err("git installation failed."));
+      console.log("  Please install git manually from https://git-scm.com and re-run.");
+      process.exit(1);
+    }
   }
   console.log(ok(`git — ${dim(gitVersion)}`));
 
-  const pythonCmd = check("python3") ? "python3" : check("python") ? "python" : null;
+  // python
+  let pythonCmd = check("python3") ? "python3" : check("python") ? "python" : null;
   if (!pythonCmd) {
-    console.log(err("Python not found."));
-    console.log("  Install Python 3 from https://python.org and re-run this wizard.");
-    process.exit(1);
+    console.log(warn("Python not found — installing..."));
+    const installed = await installPython();
+    pythonCmd = check("python3") ? "python3" : check("python") ? "python" : null;
+    if (!installed || !pythonCmd) {
+      console.log(err("Python installation failed."));
+      console.log("  Please install Python 3 manually from https://python.org and re-run.");
+      process.exit(1);
+    }
   }
   const pyVersion = check(pythonCmd) ?? "";
   console.log(ok(`Python — ${dim(pyVersion)}`));
 
-  // Check for at least one AI agent CLI
+  // AI agent CLI
   const agents = [
-    { cmd: "claude",    label: "Claude Code" },
-    { cmd: "gemini",    label: "Gemini CLI"  },
-    { cmd: "opencode",  label: "OpenCode"    },
+    { cmd: "claude",   label: "Claude Code" },
+    { cmd: "gemini",   label: "Gemini CLI"  },
+    { cmd: "opencode", label: "OpenCode"    },
   ];
   const foundAgents = agents.filter(a => check(a.cmd, ["--version"]) || check(a.cmd, ["--help"]));
 
   if (foundAgents.length === 0) {
     console.log(warn("No AI agent CLI found."));
-    console.log("  You'll need one to run Cortex. Recommended: Claude Code");
-    console.log("  Install: https://claude.ai/download");
+    console.log("  Recommended: Claude Code — https://claude.ai/download");
     console.log();
     const cont = await ask("  Continue anyway? [y/N] ");
     if (cont.toLowerCase() !== "y") process.exit(0);
@@ -183,7 +269,10 @@ async function main() {
   console.log();
 
   const pipCmd = check("pip3") ? "pip3" : "pip";
-  const deps = ["google-auth", "google-auth-oauthlib", "google-api-python-client", "msal", "requests", "cryptography"];
+  const deps = [
+    "google-auth", "google-auth-oauthlib", "google-api-python-client",
+    "msal", "requests", "cryptography"
+  ];
   console.log(`  Installing: ${dim(deps.join(", "))}`);
   console.log();
   run(pipCmd, ["install", "--quiet", "--user", ...deps]);
@@ -194,8 +283,8 @@ async function main() {
 
   console.log(bold("── Step 5: Google integration (optional) ──────────────────────"));
   console.log();
-  console.log(`  Connect Calendar, Gmail, Drive, Tasks, and Contacts.`);
-  console.log(`  ${dim("You'll need a Google Cloud project — setup guide: docs/setup-google.md")}`);
+  console.log("  Connect Calendar, Gmail, Drive, Tasks, and Contacts.");
+  console.log(`  ${dim("Setup guide: docs/setup-google.md in your repo")}`);
   console.log();
 
   const setupGoogle = await ask("  Set up Google integration now? [y/N] ");
@@ -208,12 +297,12 @@ async function main() {
 
   console.log();
 
-  // ── Step 6: Microsoft 365 integration ─────────────────────────────────────
+  // ── Step 6: Microsoft 365 ─────────────────────────────────────────────────
 
   console.log(bold("── Step 6: Microsoft 365 integration (optional) ───────────────"));
   console.log();
-  console.log(`  Connect Outlook, Calendar, OneDrive, Teams, SharePoint, To Do, Planner, OneNote.`);
-  console.log(`  ${dim("You'll need an Azure app registration — setup guide: docs/setup-microsoft.md")}`);
+  console.log("  Connect Outlook, Calendar, OneDrive, Teams, SharePoint, To Do, Planner, OneNote.");
+  console.log(`  ${dim("Setup guide: docs/setup-microsoft.md in your repo")}`);
   console.log();
 
   const setupMsft = await ask("  Set up Microsoft 365 integration now? [y/N] ");
@@ -243,7 +332,7 @@ async function main() {
   }
 
   console.log();
-  console.log(`  Say hello. The scribe takes it from there.`);
+  console.log("  Say hello. The scribe takes it from there.");
   console.log();
 
   rl.close();
