@@ -9,6 +9,34 @@ Every AI chat starts from zero — you re-explain your life every single session
 
 [→ Read the overview PDF](https://github.com/cordfuse/cortex/raw/main/cortex-overview.pdf)
 
+---
+
+## Not a developer? Download the setup wizard
+
+`cortex-setup` walks you through everything — no terminal knowledge required.
+
+**Windows:** [Download cortex-setup.exe](https://github.com/cordfuse/cortex/releases/latest/download/cortex-setup.exe)
+
+**macOS:**
+```bash
+brew tap cordfuse/cordfuse
+brew install cortex-setup
+cortex-setup
+```
+Or [download the .pkg](https://github.com/cordfuse/cortex/releases/latest) — right-click → Open to bypass Gatekeeper.
+
+**Linux (Debian/Ubuntu):**
+```bash
+sudo dpkg -i cortex-setup_*_amd64.deb
+```
+**Linux (Fedora/RHEL):**
+```bash
+sudo rpm -i cortex-setup-*.x86_64.rpm
+```
+[→ All downloads](https://github.com/cordfuse/cortex/releases/latest)
+
+---
+
 > **Read [protocol/DISCLAIMER.md](protocol/DISCLAIMER.md) before you start. Seriously.**
 
 ---
