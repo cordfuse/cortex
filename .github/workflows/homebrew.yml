@@ -1,0 +1,79 @@
+name: Update Homebrew Formula
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  update-formula:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get version and hashes
+        id: assets
+        run: |
+          # Read version from released version.txt
+          VERSION=$(curl -sL "https://raw.githubusercontent.com/cordfuse/cortex/main/version.txt" | tr -d '[:space:]')
+          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+
+          # Download macOS binaries and compute sha256
+          curl -sL "https://github.com/cordfuse/cortex/releases/download/${{ github.ref_name }}/cortex-setup-mac-arm64" -o cortex-setup-mac-arm64
+          curl -sL "https://github.com/cordfuse/cortex/releases/download/${{ github.ref_name }}/cortex-setup-mac-x64" -o cortex-setup-mac-x64
+
+          echo "SHA256_ARM64=$(sha256sum cortex-setup-mac-arm64 | awk '{print $1}')" >> $GITHUB_OUTPUT
+          echo "SHA256_X64=$(sha256sum cortex-setup-mac-x64 | awk '{print $1}')" >> $GITHUB_OUTPUT
+
+      - name: Checkout homebrew tap
+        uses: actions/checkout@v4
+        with:
+          repository: cordfuse/homebrew-cordfuse
+          token: ${{ secrets.HOMEBREW_TAP_TOKEN }}
+          path: homebrew-cordfuse
+
+      - name: Update formula
+        run: |
+          VERSION=${{ steps.assets.outputs.VERSION }}
+          SHA256_ARM64=${{ steps.assets.outputs.SHA256_ARM64 }}
+          SHA256_X64=${{ steps.assets.outputs.SHA256_X64 }}
+          TAG=${{ github.ref_name }}
+
+          cat > homebrew-cordfuse/Formula/cortex-setup.rb << EOF
+          # Formula for homebrew-cordfuse tap: cordfuse/homebrew-cordfuse
+          # To install:
+          #   brew tap cordfuse/cordfuse
+          #   brew install cortex-setup
+
+          class CortexSetup < Formula
+            desc "First-time setup wizard for Cortex — private AI-scribed record-keeping"
+            homepage "https://github.com/cordfuse/cortex"
+            version "$VERSION"
+            license "MIT"
+
+            on_macos do
+              on_arm do
+                url "https://github.com/cordfuse/cortex/releases/download/$TAG/cortex-setup-mac-arm64"
+                sha256 "$SHA256_ARM64"
+              end
+              on_intel do
+                url "https://github.com/cordfuse/cortex/releases/download/$TAG/cortex-setup-mac-x64"
+                sha256 "$SHA256_X64"
+              end
+            end
+
+            def install
+              bin.install Dir["cortex-setup-mac-*"].first => "cortex-setup"
+            end
+
+            test do
+              assert_match "Cortex", shell_output("#{bin}/cortex-setup --help 2>&1 || true")
+            end
+          end
+          EOF
+
+      - name: Commit and push
+        run: |
+          cd homebrew-cordfuse
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add Formula/cortex-setup.rb
+          git commit -m "cortex-setup: v${{ steps.assets.outputs.VERSION }}"
+          git push
