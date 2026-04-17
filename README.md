@@ -59,6 +59,10 @@ Existing tools are either too simple, too clinical, or too locked-in — and the
 
 **Context that carries.** At session start the scribe reads your recent records. It knows what you were working through, what's unresolved, what patterns have been building. Every session picks up where the last one left off.
 
+**Always in sync.** Every `hello` checks that your local repo is up to date before the session starts. Works across as many devices as you have.
+
+**Extensible.** Ship with built-in session commands. Define your own in `VERBS.md` — `/weekly`, `/bills`, `/checkin`, anything you want.
+
 **Analysis on demand.** Ask the scribe to look across your records and tell you what it sees. Patterns, connections, escalations, progress — the kind of insight that only emerges when everything is in one place.
 
 **Private by default, offline if you need it.** Run fully local with Ollama and a self-hosted git server. Nothing leaves your machine.
@@ -79,9 +83,40 @@ Each person can use a different AI. One uses Claude, another uses ChatGPT, anoth
 
 ## What it does
 
-You open Cortex in your AI agent and talk. The scribe listens, asks clarifying questions, and organises what you say into structured dated files in your private git repository. Records live in `records/`, attachments in `attachments/`. At session end, everything is committed and pushed.
+You open Cortex in your AI agent and talk. The scribe listens, asks clarifying questions, and organises what you say into structured dated files in your private git repository. Records live in `records/`, attachments in `attachments/`, source documents in `docs/`. At session end, everything is committed and pushed.
 
 Over time, Cortex becomes a corpus you can query. Patterns emerge. Connections surface. The analysis template exists for exactly this — the AI looks across your records and tells you what it sees.
+
+---
+
+## Session commands
+
+Cortex has built-in session verbs and supports user-defined custom verbs.
+
+### Built-in
+
+| Verb | What it does |
+|---|---|
+| `hello` | Open session — syncs with remote, scans for open items, greets you |
+| `goodbye` | Close session — commits everything pending, pushes, surfaces unresolved items |
+| `status` | Quick health check: last session, open items, uncommitted files, vault contents |
+| `sync` | Pull + push mid-session — useful when switching devices |
+| `search [term]` | Search all records for a keyword |
+| `list verbs` | Show all built-in and custom verbs |
+
+### Your own verbs
+
+Define custom session commands in `VERBS.md`. Call them with a `/` prefix — guaranteed never to conflict with built-ins.
+
+```markdown
+## /weekly
+Read all records from the past 7 days. Surface patterns and open items. Ask if I want to file a summary.
+
+## /bills
+Pull my Google Calendar for due dates. Cross-reference my household-payments record. List what's due this week.
+```
+
+Then just say `/weekly` or `/bills` in any session.
 
 ---
 
@@ -106,9 +141,11 @@ Use what fits. Ignore what doesn't. Add your own.
 
 Cortex ships with an AES-256 encrypted secrets vault (`cortex.secrets.enc`) — committed to your repo, safe because it's encrypted. Store API keys, tokens, and credentials once. Your scribe retrieves them on demand and pulls data from any connected service directly into your records.
 
+`SECRETS.md` is a plain-text index of vault key names (no values) — so the scribe always knows what's available without touching the encrypted file.
+
 Store API credentials once in the encrypted vault. Ask your scribe to pull data on demand — it retrieves credentials, calls the service, and offers to file the result. The pattern is always the same: store your token once, ask your scribe, it handles the rest.
 
-**Google** (Calendar, Gmail, Drive) — [setup guide](docs/setup-google.md):
+**Google** (Calendar, Gmail, Drive, Tasks, Contacts) — [setup guide](docs/setup-google.md):
 
 ```bash
 python scripts/integrations/google.py auth        # one-time setup
@@ -145,10 +182,13 @@ Ask your scribe: *"Pull my calendar"*, *"What's unread in Teams?"*, *"Show my op
 protocol/              # Protocol engine — CORTEX.md, GUARDRAILS.md, ROE.md, DISCLAIMER.md
 records/               # Your dated entries — YYYY-MM-DD-HHMM-[slug].md
 attachments/           # Attachments — one subfolder per record
+docs/                  # Source documents — bills, invoices, screenshots, PDFs
 templates/             # Blank templates
 examples/              # Anonymised example entries
 scripts/               # Setup, healthcheck, secrets, make-private
-scripts/integrations/  # Service integrations — Google and more
+scripts/integrations/  # Service integrations — Google, Microsoft 365
+SECRETS.md             # Plain-text index of vault key names (no values)
+VERBS.md               # Your custom session verbs (/ prefix)
 cortex.secrets.enc     # Encrypted secrets vault (AES-256, safe to commit)
 ```
 
@@ -182,7 +222,7 @@ Not a developer? **Claude Desktop** ([claude.ai/download](https://claude.ai/down
 
 **4. Start**
 
-Say hello. The scribe takes it from there.
+Say `hello`. The scribe takes it from there.
 
 ---
 
@@ -242,7 +282,7 @@ Your Cortex is live, private, and synced. Every new chat in the project opens a 
 
 ### Returning sessions
 
-**Desktop:** `cd your-repo && claude` — say hello.
+**Desktop:** `cd your-repo && claude` — say `hello`.
 
 **Mobile project:** open a new chat in your Cortex project — the scribe clones the repo and picks up where you left off.
 
@@ -262,11 +302,11 @@ git remote add upstream https://github.com/cordfuse/cortex.git
 
 ```bash
 git fetch upstream
-git checkout upstream/main -- protocol/ templates/ scripts/
+git checkout upstream/main -- protocol/ templates/ scripts/ VERBS.md
 git commit -m "sync: cortex vX.X.X"
 ```
 
-Your `records/` and `attachments/` are never touched. Only protocol files, templates, and scripts are updated.
+Your `records/`, `attachments/`, `docs/`, and `SECRETS.md` are never touched. Only protocol files, templates, and scripts are updated.
 
 ---
 
