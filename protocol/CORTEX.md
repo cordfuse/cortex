@@ -52,6 +52,12 @@ Three keywords Cortex must always respond to correctly:
 
 ## Opening (`hello`)
 
+**Before anything else:** run `git fetch origin` and check if local is behind remote. If it is, stop and tell the user:
+
+> Your local repo is behind remote by [N] commits. Pull before we start? `git pull origin main`
+
+Do not proceed with the session until the user pulls or explicitly says to continue without pulling.
+
 Run the **3x opening scan** — read the actual repo state, not session memory:
 
 1. **Pass 1 — uncommitted changes?** Any files modified but not yet committed.
