@@ -1,0 +1,19 @@
+{
+  "name": "cortex-setup",
+  "version": "1.0.0",
+  "description": "First-time setup wizard for Cortex",
+  "author": "cordfuse",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cordfuse/cortex.git"
+  },
+  "scripts": {
+    "dev": "bun run src/index.ts",
+    "build": "bun build src/index.ts --compile --outfile cortex-setup",
+    "build:win": "bun build src/index.ts --compile --target=bun-windows-x64 --outfile cortex-setup-win-x64.exe",
+    "build:mac-arm": "bun build src/index.ts --compile --target=bun-darwin-arm64 --outfile cortex-setup-mac-arm64",
+    "build:mac-x64": "bun build src/index.ts --compile --target=bun-darwin-x64 --outfile cortex-setup-mac-x64",
+    "build:linux": "bun build src/index.ts --compile --target=bun-linux-x64 --outfile cortex-setup-linux-x64"
+  }
+}
