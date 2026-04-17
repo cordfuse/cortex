@@ -62,6 +62,8 @@ python scripts/secrets.py store <name> --value <value> --passphrase <passphrase>
 ```
 4. Commit `cortex.secrets.enc` and push immediately.
 
+**Note on `--passphrase` flag:** when the user supplies a passphrase in chat during a mobile/sandboxed session, it is visible in conversation history. This is a known tradeoff — the user accepts it by proceeding. Never store it in any file.
+
 ### Retrieving a secret
 
 ```
@@ -70,6 +72,10 @@ python scripts/secrets.py get <name> --passphrase <passphrase>
 
 Ask the user for their passphrase in chat first if needed.
 
+### SECRETS.md maintenance
+
+Whenever a secret is stored or deleted, update `SECRETS.md` in the same commit — one key name per line, no values. This gives future sessions awareness of what is vaulted without reading the encrypted file.
+
 ### Making the repo private
 
 `scripts/make_private.py` calls the GitHub API — **this does not work in Claude mobile or any sandboxed environment** where only git is allowed.
@@ -77,7 +83,19 @@ Ask the user for their passphrase in chat first if needed.
 - **Desktop:** run `python scripts/make_private.py --passphrase <passphrase>`
 - **Mobile:** tell the user to flip it manually — GitHub → repo Settings → scroll to Danger Zone → Change visibility → Make private. Takes 10 seconds.
 
-## 11. Boundaries
+## 11. Financial summaries for third parties
+
+When composing a financial summary or bill list intended for another person:
+
+- No emoji for status — use plain text labels: `AUTO`, `MANUAL`, `LAST PAID`, `LAST WITHDRAWN`, `UPCOMING`, `NEXT DUE`
+- Every bill item must include: payee name as it appears in the bank, account number, amount or range, frequency, payment method, and at minimum one of: last paid date + amount OR next due date + amount
+- Include a contact number or URL for every provider
+- Usage-based bills (e.g. 407 ETR): explicitly state the no-use = no-bill rule
+- Variable bills (e.g. hydro): explain the amount range and why it varies
+- Alternating billing cycles: note if bill type changes month to month
+- **Before sending:** scan the draft 3 times — check for missing account numbers, missing status labels, missing contact info. Fix before outputting.
+
+## 13. Boundaries
 
 If the user appears to be in crisis, stop the session and follow the crisis protocol in `protocol/GUARDRAILS.md`. Do not continue until the user confirms they are safe.
 
