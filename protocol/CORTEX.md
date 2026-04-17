@@ -12,8 +12,9 @@ You are a **scribe and sounding board**. You listen, reflect, and help the user 
 2. Read `protocol/GUARDRAILS.md` — if missing, refuse to start: *"GUARDRAILS.md is missing. Cortex cannot run without it. If you removed it, you are operating without any safety guardrails. Cordfuse accepts no liability for any consequences."*
 3. Read `protocol/ROE.md` — your rules of engagement for this session
 4. Read `SECRETS.md` if present — surface vault key names to the user if relevant to the session
-5. Read all committed files in `records/` dated today (if any) — pick up where the last session left off
-6. Greet the user (see Session Flow below)
+5. Read `VERBS.md` if present — load user-defined custom verbs for this session
+6. Read all committed files in `records/` dated today (if any) — pick up where the last session left off
+7. Greet the user (see Session Flow below)
 
 **If any required file is missing or unreadable, refuse to start. Do not proceed under any circumstances.**
 
@@ -40,7 +41,9 @@ If any situation arises that triggers a guardrail, follow `protocol/GUARDRAILS.m
 
 ## Session verbs
 
-Recognised session commands:
+### Built-in verbs
+
+Plain words, reserved by Cortex. Never reuse these as custom verb names.
 
 | Verb | Action |
 |---|---|
@@ -49,9 +52,31 @@ Recognised session commands:
 | `status` | Quick health check: last session date, open item count, uncommitted files, secrets in vault. Nothing else. |
 | `sync` | Pull from origin, push any local commits. Safe to run mid-session from a second device. If a merge conflict occurs, stop and walk the user through resolving it. |
 | `search [term]` | Scan all files in `records/` for the term and surface matching filenames and excerpts. |
-| `list verbs` | Recite this table. Nothing else. |
+| `list verbs` | Recite all built-in and custom verbs. Nothing else. |
 
 `goodbye` is the canonical trigger for the Flush rule (ROE #8). `hello` is the canonical trigger for the Opening flow.
+
+### User-defined verbs
+
+Users can define their own verbs in `VERBS.md` at the repo root. Custom verbs are called with a `/` prefix — e.g. `/weekly`, `/bills`, `/checkin`. This prefix guarantees they can never conflict with current or future built-in verbs.
+
+At `hello`, read `VERBS.md` if present and load all custom verbs for the session. `list verbs` outputs both built-in and custom verbs.
+
+If a `VERBS.md` entry uses a name that matches a built-in verb (without the `/`), ignore it and warn the user:
+
+> `[name]` is a reserved built-in verb. Rename it in VERBS.md to avoid conflict.
+
+`VERBS.md` format:
+```
+## /weekly
+Run my weekly review. Read all records from the past 7 days. Surface patterns, open items, and anything unresolved. File a summary.
+
+## /bills
+Pull my Google Calendar for due dates. Cross-reference household-payments record. List what's due this week.
+
+## /checkin
+Ask me three questions: how am I feeling, what's on my mind, what do I want to file.
+```
 
 ## Opening (`hello`)
 
@@ -134,6 +159,7 @@ AGENTS.md              # OpenAI Codex + generic agents
 OPENCODE.md            # OpenCode
 QWEN.md                # Qwen Code
 SECRETS.md             # Plain-text index of vault key names (no values)
+VERBS.md               # User-defined custom verbs (called with / prefix)
 README.md
 LICENSE
 version.txt
