@@ -3,7 +3,7 @@ name: Release cortex-setup
 on:
   push:
     tags:
-      - 'setup-v*'
+      - 'setup-release'
 
 permissions:
   contents: write
@@ -71,7 +71,7 @@ jobs:
       - name: Get version
         id: version
         shell: bash
-        run: echo "VERSION=${GITHUB_REF_NAME#setup-v}" >> $GITHUB_OUTPUT
+        run: echo "VERSION=$(cat version.txt | tr -d '[:space:]')" >> $GITHUB_OUTPUT
 
       # ── Windows — Inno Setup ──────────────────────────────────────────────
       - name: Download Windows binary
@@ -164,7 +164,7 @@ jobs:
 
       - name: Get version
         id: version
-        run: echo "VERSION=${GITHUB_REF_NAME#setup-v}" >> $GITHUB_OUTPUT
+        run: echo "VERSION=$(cat version.txt | tr -d '[:space:]')" >> $GITHUB_OUTPUT
 
       - name: Download all artifacts
         uses: actions/download-artifact@v4
@@ -175,7 +175,7 @@ jobs:
       - name: Create release
         uses: softprops/action-gh-release@v2
         with:
-          name: cortex-setup v${{ steps.version.outputs.VERSION }}
+          name: cortex-setup v${{ steps.version.outputs.VERSION }} (Cortex ${{ steps.version.outputs.VERSION }})
           body: |
             ## Cortex Setup v${{ steps.version.outputs.VERSION }}
 
@@ -215,7 +215,7 @@ jobs:
     steps:
       - name: Get version
         id: version
-        run: echo "VERSION=${GITHUB_REF_NAME#setup-v}" >> $GITHUB_OUTPUT
+        run: echo "VERSION=$(cat version.txt | tr -d '[:space:]')" >> $GITHUB_OUTPUT
 
       - name: Download macOS binaries for sha256
         uses: actions/download-artifact@v4
