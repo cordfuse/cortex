@@ -64,7 +64,7 @@ This lets the AI read and write to your private repo.
 
 GitHub → your profile photo → Settings → Developer settings → Personal access tokens → Fine-grained tokens → Generate new token.
 
-- Name: `cortex-mobile`
+- Name: `cortex` (or any name you'll recognise)
 - Repository access: only your cortex repo
 - Permissions: Contents → Read and write
 
