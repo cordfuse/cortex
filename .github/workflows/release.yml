@@ -1,163 +1,16 @@
-name: Release cortex-setup
+name: Release
 
 on:
   push:
     tags:
-      - 'setup-release'
+      - 'v*'
 
 permissions:
   contents: write
 
 jobs:
-  build-binaries:
-    name: Build ${{ matrix.target }}
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        include:
-          - os: ubuntu-latest
-            target: linux-x64
-            binary: cortex-setup-linux-x64
-            bun_target: bun-linux-x64
-          - os: windows-latest
-            target: win-x64
-            binary: cortex-setup-win-x64.exe
-            bun_target: bun-windows-x64
-          - os: macos-latest
-            target: mac-arm64
-            binary: cortex-setup-mac-arm64
-            bun_target: bun-darwin-arm64
-          - os: macos-latest
-            target: mac-x64
-            binary: cortex-setup-mac-x64
-            bun_target: bun-darwin-x64
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: oven-sh/setup-bun@v2
-        with:
-          bun-version: latest
-
-      - name: Build binary
-        working-directory: setup
-        run: bun build src/index.ts --compile --target=${{ matrix.bun_target }} --outfile ../${{ matrix.binary }}
-
-      - name: Upload binary artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: ${{ matrix.binary }}
-          path: ${{ matrix.binary }}
-
-  build-installers:
-    name: Build installers
-    needs: build-binaries
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        include:
-          - os: windows-latest
-            target: win
-          - os: macos-latest
-            target: mac
-          - os: ubuntu-latest
-            target: deb
-          - os: ubuntu-latest
-            target: rpm
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Get version
-        id: version
-        shell: bash
-        run: echo "VERSION=$(cat version.txt | tr -d '[:space:]')" >> $GITHUB_OUTPUT
-
-      # ── Windows — Inno Setup ──────────────────────────────────────────────
-      - name: Download Windows binary
-        if: matrix.target == 'win'
-        uses: actions/download-artifact@v4
-        with:
-          name: cortex-setup-win-x64.exe
-
-      - name: Build Windows installer
-        if: matrix.target == 'win'
-        shell: pwsh
-        run: |
-          choco install innosetup -y
-          iscc /DMyAppVersion="${{ steps.version.outputs.VERSION }}" installers\windows\setup.iss
-
-      - name: Upload Windows installer
-        if: matrix.target == 'win'
-        uses: actions/upload-artifact@v4
-        with:
-          name: cortex-setup-${{ steps.version.outputs.VERSION }}-windows
-          path: installers/windows/Output/*.exe
-
-      # ── macOS pkg ─────────────────────────────────────────────────────────
-      - name: Download macOS binaries
-        if: matrix.target == 'mac'
-        uses: actions/download-artifact@v4
-        with:
-          pattern: cortex-setup-mac-*
-          merge-multiple: true
-
-      - name: Build macOS pkg
-        if: matrix.target == 'mac'
-        run: |
-          chmod +x cortex-setup-mac-arm64 cortex-setup-mac-x64
-          bash installers/macos/build-pkg.sh ${{ steps.version.outputs.VERSION }}
-
-      - name: Upload macOS pkg
-        if: matrix.target == 'mac'
-        uses: actions/upload-artifact@v4
-        with:
-          name: cortex-setup-${{ steps.version.outputs.VERSION }}-macos
-          path: installers/macos/dist/*.pkg
-
-      # ── Linux .deb ────────────────────────────────────────────────────────
-      - name: Download Linux binary
-        if: matrix.target == 'deb'
-        uses: actions/download-artifact@v4
-        with:
-          name: cortex-setup-linux-x64
-
-      - name: Build .deb
-        if: matrix.target == 'deb'
-        run: bash installers/linux/build-deb.sh ${{ steps.version.outputs.VERSION }}
-
-      - name: Upload .deb
-        if: matrix.target == 'deb'
-        uses: actions/upload-artifact@v4
-        with:
-          name: cortex-setup-${{ steps.version.outputs.VERSION }}-linux-deb
-          path: installers/linux/dist/*.deb
-
-      # ── Linux .rpm ────────────────────────────────────────────────────────
-      - name: Download Linux binary (rpm)
-        if: matrix.target == 'rpm'
-        uses: actions/download-artifact@v4
-        with:
-          name: cortex-setup-linux-x64
-
-      - name: Install rpm tools
-        if: matrix.target == 'rpm'
-        run: sudo apt-get install -y rpm
-
-      - name: Build .rpm
-        if: matrix.target == 'rpm'
-        run: bash installers/linux/build-rpm.sh ${{ steps.version.outputs.VERSION }}
-
-      - name: Upload .rpm
-        if: matrix.target == 'rpm'
-        uses: actions/upload-artifact@v4
-        with:
-          name: cortex-setup-${{ steps.version.outputs.VERSION }}-linux-rpm
-          path: installers/linux/dist/*.rpm
-
   release:
-    name: Create GitHub Release
-    needs: build-installers
+    name: Create release
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -165,130 +18,76 @@ jobs:
       - name: Get version
         id: version
         run: echo "VERSION=$(cat version.txt | tr -d '[:space:]')" >> $GITHUB_OUTPUT
-
-      - name: Download all artifacts
-        uses: actions/download-artifact@v4
-        with:
-          path: release-assets
-          merge-multiple: true
 
       - name: Create release
         uses: softprops/action-gh-release@v2
         with:
-          name: cortex-setup v${{ steps.version.outputs.VERSION }} (Cortex ${{ steps.version.outputs.VERSION }})
+          name: Cortex v${{ steps.version.outputs.VERSION }}
           body: |
-            ## Cortex Setup v${{ steps.version.outputs.VERSION }}
-
-            First-time setup wizard — get from zero to first session in minutes.
-
-            ## Install
-
-            **Windows:** Download and run `cortex-setup.exe`
-
-            **macOS:** Download `cortex-setup-${{ steps.version.outputs.VERSION }}-macos.pkg`
-            > First time: right-click → Open to bypass Gatekeeper, or install via Homebrew:
-            > ```
-            > brew tap cordfuse/cordfuse
-            > brew install cortex-setup
-            > ```
-
-            **Linux (Debian/Ubuntu):**
-            ```
-            sudo dpkg -i cortex-setup_${{ steps.version.outputs.VERSION }}_amd64.deb
-            ```
-
-            **Linux (Fedora/RHEL):**
-            ```
-            sudo rpm -i cortex-setup-${{ steps.version.outputs.VERSION }}-1.x86_64.rpm
-            ```
+            # Cortex v${{ steps.version.outputs.VERSION }}
 
             ---
-            Run `cortex-setup` — the wizard handles the rest.
-          files: release-assets/**/*
+
+            ## How to install
+
+            ### Mac or Linux
+
+            Open Terminal. Paste this. Hit Enter.
+
+            ```bash
+            curl -fsSL https://github.com/cordfuse/cortex/releases/latest/download/install.sh | bash
+            ```
+
+            It will ask you two things:
+            1. Your repo URL (the GitHub repo you created from the Cortex template)
+            2. Where to put it on your computer (just hit Enter to use the default)
+
+            That's it.
+
+            ---
+
+            ### Windows
+
+            Open PowerShell. Paste this. Hit Enter.
+
+            ```powershell
+            iex (irm https://github.com/cordfuse/cortex/releases/latest/download/install.ps1)
+            ```
+
+            Same two questions. Same deal.
+
+            ---
+
+            ## Don't have a repo yet?
+
+            1. Go to https://github.com/cordfuse/cortex
+            2. Click the green **"Use this template"** button → **"Create a new repository"**
+            3. Give it a name (e.g. `cortex`), set it to **Private**, click **Create repository**
+            4. Copy your new repo's URL
+            5. Run the installer above and paste the URL when it asks
+
+            ---
+
+            ## Already set up on another machine?
+
+            Run the same installer. When it asks for your repo URL, give it the same one.
+            It will clone your existing records and repair your environment.
+            Nothing gets overwritten.
+
+            ---
+
+            ## What the installer does
+
+            - Checks what's installed on your machine (git, Python, etc.)
+            - Installs anything that's missing
+            - Asks for your repo URL and where to clone it
+            - Warns you if your repo is public (it should be private)
+            - Clones your repo
+            - Installs all Cortex dependencies
+
+            When it's done: open the folder in your AI agent (Claude, ChatGPT, etc.) and say **hello**.
+          files: |
+            install.sh
+            install.ps1
           draft: false
           prerelease: false
-
-  update-homebrew:
-    name: Update Homebrew formula
-    needs: release
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout cortex
-        uses: actions/checkout@v4
-
-      - name: Get version
-        id: version
-        run: echo "VERSION=$(cat version.txt | tr -d '[:space:]')" >> $GITHUB_OUTPUT
-
-      - name: Download macOS binaries for sha256
-        uses: actions/download-artifact@v4
-        with:
-          pattern: cortex-setup-mac-*
-          merge-multiple: true
-
-      - name: Compute sha256 hashes
-        id: hashes
-        run: |
-          echo "ARM64=$(sha256sum cortex-setup-mac-arm64 | awk '{print $1}')" >> $GITHUB_OUTPUT
-          echo "X64=$(sha256sum cortex-setup-mac-x64 | awk '{print $1}')" >> $GITHUB_OUTPUT
-
-      - name: Checkout homebrew tap
-        uses: actions/checkout@v4
-        with:
-          repository: cordfuse/homebrew-cordfuse
-          token: ${{ secrets.HOMEBREW_TAP_TOKEN }}
-          path: homebrew-cordfuse
-
-      - name: Update formula
-        run: |
-          VERSION=${{ steps.version.outputs.VERSION }}
-          SHA256_ARM64=${{ steps.hashes.outputs.ARM64 }}
-          SHA256_X64=${{ steps.hashes.outputs.X64 }}
-          TAG=${{ github.ref_name }}
-
-          cat > homebrew-cordfuse/Formula/cortex-setup.rb << 'FORMULA'
-          # Formula for homebrew-cordfuse tap: cordfuse/homebrew-cordfuse
-          # To install:
-          #   brew tap cordfuse/cordfuse
-          #   brew install cortex-setup
-
-          class CortexSetup < Formula
-            desc "First-time setup wizard for Cortex — private AI-scribed record-keeping"
-            homepage "https://github.com/cordfuse/cortex"
-            version "VERSION_PLACEHOLDER"
-            license "MIT"
-
-            on_macos do
-              on_arm do
-                url "https://github.com/cordfuse/cortex/releases/download/TAG_PLACEHOLDER/cortex-setup-mac-arm64"
-                sha256 "ARM64_PLACEHOLDER"
-              end
-              on_intel do
-                url "https://github.com/cordfuse/cortex/releases/download/TAG_PLACEHOLDER/cortex-setup-mac-x64"
-                sha256 "X64_PLACEHOLDER"
-              end
-            end
-
-            def install
-              bin.install Dir["cortex-setup-mac-*"].first => "cortex-setup"
-            end
-
-            test do
-              assert_match "Cortex", shell_output("#{bin}/cortex-setup --help 2>&1 || true")
-            end
-          end
-          FORMULA
-
-          sed -i "s/VERSION_PLACEHOLDER/$VERSION/" homebrew-cordfuse/Formula/cortex-setup.rb
-          sed -i "s/TAG_PLACEHOLDER/$TAG/g" homebrew-cordfuse/Formula/cortex-setup.rb
-          sed -i "s/ARM64_PLACEHOLDER/$SHA256_ARM64/" homebrew-cordfuse/Formula/cortex-setup.rb
-          sed -i "s/X64_PLACEHOLDER/$SHA256_X64/" homebrew-cordfuse/Formula/cortex-setup.rb
-
-      - name: Commit and push
-        run: |
-          cd homebrew-cordfuse
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add Formula/cortex-setup.rb
-          git commit -m "cortex-setup: v${{ steps.version.outputs.VERSION }}"
-          git push
