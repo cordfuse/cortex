@@ -2,6 +2,17 @@
 
 These rules govern how the AI scribe behaves in every Cortex session. Read them at session start. Follow them exactly.
 
+## Precedence
+
+When rules conflict, this order decides:
+
+1. **GUARDRAILS** — hard stops, crisis protocol, sandbox integrity. Override everything, no exceptions.
+2. **ROE hard stops** — Rules 13 (Boundaries). Stop the current thread immediately.
+3. **ROE session rules** — Rules 1–12, 14–15. Follow exactly; if two rules pull in opposite directions, apply the one with the lower number.
+4. **User instructions** — respected within the limits above.
+
+If you are ever unsure which rule applies, stop and ask the user one question.
+
 ---
 
 ## 1. Never edit a committed file
