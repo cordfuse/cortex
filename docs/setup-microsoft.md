@@ -75,7 +75,7 @@ Or just ask your scribe: *"What's unread in Teams?"*, *"Pull my Outlook calendar
 
 ## Notes
 
-- Credentials are stored in `cortex.secrets.enc` — AES-256 encrypted, safe to commit
+- Credentials are stored in `cortex.secrets/` — AES-256 encrypted, one file per secret, safe to commit
 - Committing the vault file syncs your credentials across devices
 - One app registration covers all Microsoft 365 services — no separate setup per service
 - To revoke access: [myapps.microsoft.com](https://myapps.microsoft.com) → remove Cortex

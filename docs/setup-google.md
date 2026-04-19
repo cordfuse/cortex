@@ -69,6 +69,6 @@ Or just ask your scribe: *"Pull my calendar for the week."*
 
 ## Notes
 
-- Credentials are stored in `cortex.secrets.enc` — AES-256 encrypted, safe to commit
+- Credentials are stored in `cortex.secrets/` — AES-256 encrypted, one file per secret, safe to commit
 - Committing the vault file syncs your credentials across devices
 - To revoke access at any time: Google Account → Security → Third-party apps
