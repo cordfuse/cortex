@@ -1,5 +1,7 @@
 # Cortex
 
+[![Donate to CAMH](https://img.shields.io/badge/Donate-CAMH%20Foundation-blue)](https://camhfoundation.ca/donate)
+
 **Your AI remembers everything. You own the records.**
 
 Every AI chat starts from zero — you re-explain your life every single session. Cortex fixes that. Talk to your AI scribe, it files everything into a private git repo you own. Next session, it reads your records and picks up where you left off. Any device. Any major AI. Nothing sent to Cordfuse.
@@ -8,6 +10,22 @@ Every AI chat starts from zero — you re-explain your life every single session
 **Local** (Ollama + self-hosted git): nothing leaves your machine. Ever. Total privacy, more technical setup.
 
 > **Read [protocol/DISCLAIMER.md](protocol/DISCLAIMER.md) before you start. Seriously.**
+
+---
+
+## Why this exists
+
+I built Cortex because I kept losing the thread.
+
+Every new doctor, every new therapist, every crisis worker — you start from zero. You re-explain your history, your medications, your patterns, your people. The context that took years to build evaporates between appointments. Every AI conversation is the same — it doesn't know you, and it never will unless you tell it again.
+
+For most things that's annoying. For mental health it's dangerous. The people who most need continuity are the ones least likely to get it.
+
+Cortex is a small fix to a big problem. You own your records. Your AI picks up where you left off. Nothing disappears.
+
+If this has been useful to you — or if you just believe mental health infrastructure deserves better — consider donating to [CAMH Foundation](https://camhfoundation.ca/donate), Canada's largest mental health hospital and research centre. That's where I'd put the money.
+
+— Steve Krisjanovs, Toronto
 
 ---
 
