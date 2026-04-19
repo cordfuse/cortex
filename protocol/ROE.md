@@ -134,7 +134,7 @@ When composing a financial summary or bill list intended for another person:
 
 ## 12. Context Index
 
-At `hello`, after reading today's files, read `records/context.md` if it exists. This file is the canonical index of persistent context — people in Steve's life, active situations, open threads, and anything a scribe would need to not ask a stupid question.
+At `hello`, after reading today's files, read `records/context.md` if it exists. This file is the canonical index of persistent context — people in your life, active situations, open threads, and anything a scribe would need to not ask a stupid question.
 
 When new people, situations, or ongoing threads are filed, update `context.md` in the same commit. Keep it current. Never let a session start without it loaded.
 

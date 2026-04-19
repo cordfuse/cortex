@@ -150,7 +150,7 @@ The following remotes are pre-approved. Git operations against them require no c
 
 ```
 github.com/cordfuse/cortex        # upstream protocol source
-github.com/steve-krisjanovs/cortex  # personal cortex repo
+[your-username]/[your-cortex-repo]  # your private cortex repo — update after cloning
 ```
 
 **Unknown remote:** if a git operation targets a remote not on this list, stop and ask:
