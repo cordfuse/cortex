@@ -2,6 +2,8 @@
 
 [![Donate to CAMH](https://img.shields.io/badge/Donate-CAMH%20Foundation-blue)](https://camhfoundation.ca/donate)
 
+**Not a developer?** [Read the plain English version →](README-simple.md)
+
 **Your AI remembers everything. You own the records.**
 
 Every AI chat starts from zero — you re-explain your life every single session. Cortex fixes that. Talk to your AI scribe, it files everything into a private git repo you own. Next session, it reads your records and picks up where you left off. Any device. Any major AI. Nothing sent to Cordfuse.
