@@ -137,8 +137,10 @@ templates/          # Blank templates
 scripts/            # Setup, vault, integrations
 cortex.secrets/     # Encrypted vault (committed, safe)
   vault.json        # Key index — names, descriptions, rotation date
-setup.sh            # Bootstrap — Linux/macOS
-setup.ps1           # Bootstrap — Windows
+install.sh          # Pipe installer — Linux/macOS (curl | bash)
+install.ps1         # Pipe installer — Windows (iex irm)
+setup.sh            # Re-run setup after already cloned — Linux/macOS
+setup.ps1           # Re-run setup after already cloned — Windows
 VERBS.md            # Your custom session verbs
 ```
 

@@ -12,16 +12,21 @@ Skip this step. Your records, vault, and verbs are already there.
 
 ---
 
-## Step 2 — Clone and run setup
+## Step 2 — Run the installer
+
+**macOS / Linux** — open Terminal and run:
 
 ```bash
-git clone https://github.com/you/your-repo-name.git
-cd your-repo-name
-bash setup.sh        # Linux/macOS — installs Python, git, rclone, tailscale, cryptography
-.\setup.ps1          # Windows
+curl -fsSL https://github.com/cordfuse/cortex/releases/latest/download/install.sh | bash
 ```
 
-`setup.sh` / `setup.ps1` handles everything: detects your OS, installs missing dependencies, writes `cortex.config`, and adds the upstream remote for future updates. Safe to re-run.
+**Windows** — open PowerShell and run:
+
+```powershell
+iex (irm https://github.com/cordfuse/cortex/releases/latest/download/install.ps1)
+```
+
+The installer will ask for your repo URL (paste the one you just created) and where to clone it. It handles everything else: clones your repo, installs git and Python if missing, and installs all dependencies. Safe to re-run at any time to repair your environment.
 
 ---
 
@@ -65,7 +70,7 @@ Say `hello`.
 
 ```bash
 git fetch upstream
-git checkout upstream/main -- protocol/ templates/ scripts/ setup.sh setup.ps1
+git checkout upstream/main -- protocol/ templates/ scripts/ setup.sh setup.ps1 install.sh install.ps1
 git commit -m "sync: cortex vX.X.X"
 ```
 
