@@ -57,6 +57,30 @@ Cortex does not use the agent's native memory system. Context lives in committed
 
 **Important:** never print, log, or include a secret value in any file entry. Ever.
 
+### One passphrase
+
+The vault uses one passphrase for everything. Never use different passphrases for different secrets. If the user supplies a passphrase that fails to decrypt an existing secret, stop:
+
+> Your vault uses one passphrase. This doesn't match what was used before — check it and try again.
+
+### Changing the passphrase
+
+```
+python scripts/secrets.py repassphrase
+```
+
+This re-encrypts every secret with the new passphrase in one operation. Commit and push immediately after.
+
+### Removing a secret
+
+```
+python scripts/secrets.py delete <name>
+```
+
+The script will ask the user to type the secret name to confirm. Deletion is permanent — it cannot be undone from git history once committed and pushed. Surface this to the user before proceeding:
+
+> Deleting a secret is permanent once pushed. Are you sure?
+
 ### Storing a secret
 
 Interactive terminals (desktop agents) — run directly and let the user type at the prompts:
