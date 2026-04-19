@@ -111,6 +111,27 @@ python scripts/secrets.py delete <name>                                 # remove
 python scripts/secrets.py repassphrase                                  # rotate the global passphrase
 ```
 
+### Connectors
+
+| Connector | Status | What it does |
+|---|---|---|
+| **Tailscale** | Built | Mesh VPN — reach your home network, NAS, or desktop from anywhere |
+| **rclone** | Built | Any filesystem — NAS, cloud storage, SFTP, local drives. 70+ backends |
+| **Google** | Built | Calendar, Gmail, Drive, Tasks, Contacts |
+| **Microsoft 365** | Built | Mail, Calendar, OneDrive, Teams, SharePoint, To Do, Planner, OneNote |
+| Notion | Roadmap | Pages, databases, tasks |
+| Apple iCloud | Roadmap | Calendar, Reminders, Notes |
+| Slack | Roadmap | Messages, channels, threads |
+| GitHub | Roadmap | Issues, PRs, notifications |
+| Linear | Roadmap | Issues, projects, cycles |
+| Apple Health | Roadmap | Activity, sleep, vitals |
+| Fitbit / Garmin | Roadmap | Activity, sleep, heart rate |
+| Spotify | Roadmap | Listening history, playlists |
+| Banking (OFX/CSV) | Roadmap | Transactions, balances |
+| WhatsApp / SMS | Roadmap | Message history (export-based) |
+
+> Want a connector that isn't listed? Open an issue.
+
 ### Tailscale — reach your home network from anywhere
 
 Cortex integrates with [Tailscale](https://tailscale.com) so you can reach your home server, NAS, or desktop from any device over a private mesh VPN.
