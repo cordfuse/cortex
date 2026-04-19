@@ -282,6 +282,7 @@ def main():
     # System deps
     if args.system:
         install_system_deps()
+        env = detect_environment()
 
     # Config + gitignore
     write_config(env)
