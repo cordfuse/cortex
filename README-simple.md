@@ -16,9 +16,7 @@ And unlike every other app that promises this — **you own the data. Not us. No
 
 ## Why I built this
 
-In April 2026 I was admitted to a psychiatric hospital in Burlington, Ontario.
-
-It wasn't my first time navigating the mental health system. And every time — every new doctor, every new crisis worker, every new therapist — I had to start over. Re-explain my history. My medications. My patterns. The people in my life. What works, what doesn't.
+I've spent time navigating the mental health system. Multiple doctors, crisis workers, therapists — and every time, I had to start over. Re-explain my history. My medications. My patterns. The people in my life. What works, what doesn't.
 
 The context I'd spent years building disappeared every time I walked through a new door.
 
