@@ -26,7 +26,7 @@ I know I'm not the only one who's felt this.
 
 If this has been useful to you — please consider donating to [CAMH Foundation](https://camhfoundation.ca/donate).
 
-— Steve Krisjanovs, Ontario, Canada
+— Steve Krisjanovs
 
 ---
 
