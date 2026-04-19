@@ -303,3 +303,16 @@ printf "${BOLD}${GREEN}Done.${RESET}\n"
 echo ""
 echo "  Open $CLONE_DEST in your AI agent and say hello."
 echo ""
+
+# ── Post-install public repo reminder ────────────────────────────────────────
+
+if $IS_PUBLIC; then
+    echo "  ┌─────────────────────────────────────────────────────────────────┐"
+    printf "  │ ${YELLOW}REMINDER: Your repo is still PUBLIC.${RESET}                            │\n"
+    echo "  │                                                                 │"
+    echo "  │  Your Cortex will store personal records. Make it private now:  │"
+    printf "  │  ${BOLD}${HTTPS_PROBE}/settings${RESET}   │\n"
+    echo "  │  Settings → Danger Zone → Change visibility → Make private      │"
+    echo "  └─────────────────────────────────────────────────────────────────┘"
+    echo ""
+fi

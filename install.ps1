@@ -253,3 +253,16 @@ Write-Host "Done." -ForegroundColor Green
 Write-Host ""
 Write-Host "  Open $CloneDest in your AI agent and say hello." -ForegroundColor White
 Write-Host ""
+
+# ── Post-install public repo reminder ─────────────────────────────────────────
+
+if ($IsPublic) {
+    Write-Host "  +-------------------------------------------------------------------+" -ForegroundColor Yellow
+    Write-Host "  |  REMINDER: Your repo is still PUBLIC.                             |" -ForegroundColor Yellow
+    Write-Host "  |                                                                   |" -ForegroundColor Yellow
+    Write-Host "  |  Your Cortex will store personal records. Make it private now:    |" -ForegroundColor Yellow
+    Write-Host "  |  $HttpsProbe/settings" -ForegroundColor Yellow
+    Write-Host "  |  Settings -> Danger Zone -> Change visibility -> Make private     |" -ForegroundColor Yellow
+    Write-Host "  +-------------------------------------------------------------------+" -ForegroundColor Yellow
+    Write-Host ""
+}
