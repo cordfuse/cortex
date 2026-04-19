@@ -177,6 +177,7 @@ Guardrails apply in both modes.
 
 - Git + Python 3.9+
 - An AI agent ([Claude Code](https://claude.ai/download), [Gemini CLI](https://github.com/google-gemini/gemini-cli), [OpenCode](https://opencode.ai)) or web interface (claude.ai, ChatGPT)
+- **Gemini web and mobile are not supported.** Gemini's web and mobile interfaces do not support the tool-calling and file access flow Cortex requires. Gemini CLI works fine.
 - For offline: [Ollama](https://ollama.com) + self-hosted git
 
 ---
