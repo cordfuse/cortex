@@ -217,73 +217,88 @@ VERBS.md                     # Your custom session verbs (/ prefix)
 
 ## Getting started
 
-### Desktop
+---
 
-**1. Create your repo**
+### Step 1 — Create your repo
+
+**New to Cortex:**
 
 Click **[Use this template](../../generate)** on GitHub. Name your repo. Set it **private**. Create it.
 
-**2. Clone and run setup**
+**Already have a Cortex repo (existing cordfuse user):**
 
-```bash
-git clone git@github.com:you/your-repo-name.git
-cd your-repo-name
-bash setup.sh        # Linux/macOS — installs dependencies, writes cortex.config
-.\setup.ps1          # Windows
-```
-
-**3. Open it in your AI agent**
-
-```bash
-claude    # Claude Code (CLI)
-gemini    # Gemini CLI
-opencode  # OpenCode
-qwen      # Qwen Code
-```
-
-Not a developer? **Claude Desktop** ([claude.ai/download](https://claude.ai/download)) is the easiest entry point — open the app, add your repo as a project, no terminal needed.
-
-**4. Start**
-
-Say `hello`. The scribe takes it from there.
+Skip this step. Use your existing repo — your records, vault, and verbs are already there.
 
 ---
 
-### Mobile (Claude or ChatGPT project)
+### Step 2 — Generate a GitHub PAT
 
-> **Note:** Gemini web and mobile do not support the project + tool-calling flow required by Cortex. Use Claude or ChatGPT on mobile.
-
-Set up once — every new chat opens a session automatically.
-
-**1. Create your GitHub repo**
-
-Click **[Use this template](../../generate)** on GitHub. Name it. Set it **private**. Create it.
-
-**2. Generate a GitHub PAT**
+You need this for mobile/web access and for any device that doesn't have SSH keys set up.
 
 GitHub → Settings → Developer settings → Personal access tokens → Fine-grained tokens → Generate new token.
 
 - Repository access: your Cortex repo only
-- Permissions: Contents → Read and write
+- Permissions: **Contents → Read and write**
 
-Copy the token — starts with `github_pat_`. You only see it once.
+Copy the token — starts with `github_pat_`. You only see it once. Store it somewhere safe (or in your vault later).
 
-**3. Create a Claude or ChatGPT project**
+---
 
-- **System prompt:** open `protocol/CORTEX-PROJECT.md` in your repo and paste its contents
-- **Project knowledge:** add a file with your repo URL and PAT (never commit this file)
+### Step 3 — Create your CONNECT.md
 
-**4. Open a new chat in the project**
+Create a file called `CONNECT.md` **on your device only — never commit this to the repo.**
 
-Say `hello`. The scribe clones your repo and picks up where you left off.
+```
+repo: https://github.com/you/your-repo-name
+pat: github_pat_...
+```
+
+This is how the scribe knows where your repo is and how to authenticate. Keep it local — in Notes, a password manager, or anywhere private.
+
+---
+
+### Step 4 — Set up your AI
+
+Choose your entry point:
+
+#### Agent CLI / Claude Desktop (desktop)
+
+```bash
+git clone https://github.com/you/your-repo-name.git
+cd your-repo-name
+bash setup.sh        # Linux/macOS
+.\setup.ps1          # Windows
+claude               # or: gemini, opencode, qwen
+```
+
+**Claude Desktop** ([claude.ai/download](https://claude.ai/download)) — open the app, add your repo folder as a project. No terminal needed.
+
+Say `hello`. Done.
+
+#### Claude project (mobile or web)
+
+> Gemini web and mobile do not support the tool-calling flow required by Cortex. Use Claude or ChatGPT.
+
+1. Create a new **Claude project** (claude.ai → Projects → New project)
+2. **System prompt:** open `protocol/CORTEX-PROJECT.md` in your repo and paste the full contents
+3. **Project knowledge:** upload your `CONNECT.md`
+4. Open a new chat in the project — say `hello`
+
+The scribe reads `CONNECT.md`, clones your repo over HTTPS using your PAT, and picks up where you left off. Every new chat in the project opens a fresh session automatically.
+
+#### ChatGPT project (mobile or web)
+
+Same as Claude — create a GPT, paste `protocol/CORTEX-PROJECT.md` as the system prompt, upload `CONNECT.md` to the knowledge base.
 
 ---
 
 ### Returning sessions
 
-**Desktop:** `cd your-repo && claude` — say `hello`.
+**Agent CLI:** `cd your-repo && claude` — say `hello`.
 
-**Mobile:** open a new chat in your Cortex project.
+**Claude Desktop:** open the project — say `hello`.
+
+**Claude / ChatGPT project:** open a new chat — the scribe picks up automatically.
 
 ---
 
