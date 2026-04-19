@@ -18,6 +18,14 @@ ok()   { printf "  ${GREEN}✓${RESET} %s\n" "$1"; }
 warn() { printf "  ${YELLOW}!${RESET} %s\n" "$1"; }
 err()  { printf "  ${RED}✗${RESET} %s\n" "$1" >&2; }
 
+open_url() {
+    if command -v open &>/dev/null; then
+        open "$1"
+    elif command -v xdg-open &>/dev/null; then
+        xdg-open "$1" &>/dev/null &
+    fi
+}
+
 # ── Prompt helpers (safe when stdin is a pipe) ────────────────────────────────
 
 ask() {
@@ -195,8 +203,14 @@ if $IS_PUBLIC && ! $USE_SSH; then
     warn "Your repo is PUBLIC."
     echo ""
     echo "  Cortex records are personal and sensitive — your repo should be private."
-    echo "  Make it private now at: ${HTTPS_PROBE}/settings"
+    echo "  Make it private at: ${HTTPS_PROBE}/settings"
     echo "  Settings → Danger Zone → Change visibility → Make private"
+    echo ""
+    printf "  Press Enter to open your repo settings in the browser (n to skip): " >/dev/tty
+    IFS= read -r _open_now </dev/tty
+    if [[ ! "$_open_now" =~ ^[Nn] ]]; then
+        open_url "${HTTPS_PROBE}/settings"
+    fi
     echo ""
     ask_yn CONT "Continue with a public repo anyway?"
     if [[ ! "$CONT" =~ ^[Yy] ]]; then
@@ -310,9 +324,15 @@ if $IS_PUBLIC; then
     echo "  ┌─────────────────────────────────────────────────────────────────┐"
     printf "  │ ${YELLOW}REMINDER: Your repo is still PUBLIC.${RESET}                            │\n"
     echo "  │                                                                 │"
-    echo "  │  Your Cortex will store personal records. Make it private now:  │"
-    printf "  │  ${BOLD}${HTTPS_PROBE}/settings${RESET}   │\n"
-    echo "  │  Settings → Danger Zone → Change visibility → Make private      │"
+    echo "  │  Your Cortex will store personal records. Make it private now.  │"
     echo "  └─────────────────────────────────────────────────────────────────┘"
+    echo ""
+    printf "  Press Enter to open your repo settings in the browser (n to skip): " >/dev/tty
+    IFS= read -r _open_reminder </dev/tty
+    if [[ ! "$_open_reminder" =~ ^[Nn] ]]; then
+        open_url "${HTTPS_PROBE}/settings"
+        echo ""
+        echo "  Settings → Danger Zone → Change visibility → Make private"
+    fi
     echo ""
 fi

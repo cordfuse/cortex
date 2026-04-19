@@ -140,7 +140,9 @@ if ($IsPublic -and -not $UseSsh) {
     Write-Host ""
     Write-Host "  Cortex records are personal and sensitive — your repo should be private." -ForegroundColor Yellow
     Write-Host "  Make it private at: $HttpsProbe/settings" -ForegroundColor Yellow
-    Write-Host "  Settings -> Danger Zone -> Change visibility -> Make private" -ForegroundColor Yellow
+    Write-Host ""
+    $openNow = Read-Host "  Press Enter to open your repo settings in the browser (n to skip)"
+    if ($openNow -notmatch "^[Nn]") { Start-Process "$HttpsProbe/settings" }
     Write-Host ""
     $cont = Read-Host "  Continue with a public repo anyway? [y/N]"
     if ($cont -notmatch "^[Yy]") {
@@ -259,10 +261,13 @@ Write-Host ""
 if ($IsPublic) {
     Write-Host "  +-------------------------------------------------------------------+" -ForegroundColor Yellow
     Write-Host "  |  REMINDER: Your repo is still PUBLIC.                             |" -ForegroundColor Yellow
-    Write-Host "  |                                                                   |" -ForegroundColor Yellow
-    Write-Host "  |  Your Cortex will store personal records. Make it private now:    |" -ForegroundColor Yellow
-    Write-Host "  |  $HttpsProbe/settings" -ForegroundColor Yellow
-    Write-Host "  |  Settings -> Danger Zone -> Change visibility -> Make private     |" -ForegroundColor Yellow
+    Write-Host "  |  Your Cortex will store personal records. Make it private now.    |" -ForegroundColor Yellow
     Write-Host "  +-------------------------------------------------------------------+" -ForegroundColor Yellow
+    Write-Host ""
+    $openReminder = Read-Host "  Press Enter to open your repo settings in the browser (n to skip)"
+    if ($openReminder -notmatch "^[Nn]") {
+        Start-Process "$HttpsProbe/settings"
+        Write-Host "  Settings -> Danger Zone -> Change visibility -> Make private" -ForegroundColor Yellow
+    }
     Write-Host ""
 }
