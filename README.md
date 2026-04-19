@@ -25,7 +25,7 @@ Cortex is a small fix to a big problem. You own your records. Your AI picks up w
 
 If this has been useful to you — or if you just believe mental health infrastructure deserves better — consider donating to [CAMH Foundation](https://camhfoundation.ca/donate), Canada's largest mental health hospital and research centre. That's where I'd put the money.
 
-— Steve Krisjanovs, Toronto
+— Steve Krisjanovs, Ontario, Canada
 
 ---
 
