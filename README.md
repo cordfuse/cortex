@@ -2,7 +2,7 @@
 
 [![Donate to CAMH](https://img.shields.io/badge/Donate-CAMH%20Foundation-blue)](https://camhfoundation.ca/donate)
 
-**Not a developer?** [Read the plain English version →](README-simple.md)
+**Not a developer?** [Read the plain English version →](README-SIMPLE.md)
 
 **Your AI remembers everything. You own the records.**
 
@@ -73,8 +73,8 @@ Each person can use a different AI. One uses Claude, another uses ChatGPT, anoth
 
 ## Getting started
 
-**[→ Desktop setup](docs/setup-desktop.md)** — agent CLI, Claude Desktop, any OS  
-**[→ Mobile & web setup](docs/setup-mobile.md)** — Claude project, ChatGPT project  
+**[→ Desktop setup](docs/SETUP-DESKTOP.md)** — agent CLI, Claude Desktop, any OS  
+**[→ Mobile & web setup](docs/SETUP-MOBILE.md)** — Claude project, ChatGPT project  
 
 Both guides cover new users and existing Cortex repos.
 
@@ -99,7 +99,7 @@ Define your own in `VERBS.md` with a `/` prefix — `/weekly`, `/bills`, `/check
 
 Cortex ships with an AES-256 encrypted secrets vault — one file per secret, committed to your repo, safe because everything is encrypted. One passphrase governs everything.
 
-**[→ Full connector reference](docs/connectors.md)**
+**[→ Full connector reference](docs/CONNECTORS.md)**
 
 | Connector | Status |
 |---|---|
