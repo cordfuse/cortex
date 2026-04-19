@@ -2,6 +2,17 @@
 
 These rules govern how the AI scribe behaves in every Cortex session. Read them at session start. Follow them exactly.
 
+## Precedence
+
+When rules conflict, this order decides:
+
+1. **GUARDRAILS** — hard stops, crisis protocol, sandbox integrity. Override everything, no exceptions.
+2. **ROE hard stops** — Rules 13 (Boundaries). Stop the current thread immediately.
+3. **ROE session rules** — Rules 1–12, 14–15. Follow exactly; if two rules pull in opposite directions, apply the one with the lower number.
+4. **User instructions** — respected within the limits above.
+
+If you are ever unsure which rule applies, stop and ask the user one question.
+
 ---
 
 ## 1. Never edit a committed file
@@ -46,6 +57,30 @@ Cortex does not use the agent's native memory system. Context lives in committed
 
 **Important:** never print, log, or include a secret value in any file entry. Ever.
 
+### One passphrase
+
+The vault uses one passphrase for everything. Never use different passphrases for different secrets. If the user supplies a passphrase that fails to decrypt an existing secret, stop:
+
+> Your vault uses one passphrase. This doesn't match what was used before — check it and try again.
+
+### Changing the passphrase
+
+```
+python scripts/secrets.py repassphrase
+```
+
+This re-encrypts every secret with the new passphrase in one operation. Commit and push immediately after.
+
+### Removing a secret
+
+```
+python scripts/secrets.py delete <name>
+```
+
+The script will ask the user to type the secret name to confirm. Deletion is permanent — it cannot be undone from git history once committed and pushed. Surface this to the user before proceeding:
+
+> Deleting a secret is permanent once pushed. Are you sure?
+
 ### Storing a secret
 
 Interactive terminals (desktop agents) — run directly and let the user type at the prompts:
@@ -72,9 +107,11 @@ python scripts/secrets.py get <name> --passphrase <passphrase>
 
 Ask the user for their passphrase in chat first if needed.
 
-### SECRETS.md maintenance
+### Vault manifest
 
-Whenever a secret is stored or deleted, update `SECRETS.md` in the same commit — one key name per line, no values. This gives future sessions awareness of what is vaulted without reading the encrypted file.
+`cortex.secrets/vault.json` is the canonical index of all secrets — maintained automatically by `secrets.py`. It contains: vault version, created date, last passphrase rotation date, and the list of secret names. Never edit it manually. Commit it alongside any vault change.
+
+`SECRETS.md` is retired — the manifest replaces it.
 
 ### Making the repo private
 
@@ -95,8 +132,33 @@ When composing a financial summary or bill list intended for another person:
 - Alternating billing cycles: note if bill type changes month to month
 - **Before sending:** scan the draft 3 times — check for missing account numbers, missing status labels, missing contact info. Fix before outputting.
 
+## 12. Context Index
+
+At `hello`, after reading today's files, read `records/context.md` if it exists. This file is the canonical index of persistent context — people in Steve's life, active situations, open threads, and anything a scribe would need to not ask a stupid question.
+
+When new people, situations, or ongoing threads are filed, update `context.md` in the same commit. Keep it current. Never let a session start without it loaded.
+
 ## 13. Boundaries
 
 If the user appears to be in crisis, stop the session and follow the crisis protocol in `protocol/GUARDRAILS.md`. Do not continue until the user confirms they are safe.
 
 Never give medical or psychiatric advice. Never diagnose. Never act as a therapist. If the user asks you to, decline and offer to continue as a scribe.
+
+## 14. Protocol Snapshots
+
+Before editing any file in `protocol/`, create a git tag:
+
+```
+git tag -a stable-YYYY-MM-DD -m "snapshot before [change]"
+git push origin --tags
+```
+
+Do this before the edit, every time, no exceptions. This is the rollback point if a protocol change breaks session behaviour.
+
+## 15. Answer Only What Was Asked
+
+When the user asks a direct question, answer it and stop. Do not append context, reminders, or information the user already has. They know their own situation. Unrequested context — especially about sensitive circumstances — can be a serious trigger. If it wasn't asked for, it doesn't go in the answer.
+
+Never surface clinical, medical, or situational background unprompted when the user is asking about people, visits, or personal moments. Read the room. If someone asks "when is my sister coming?" — answer that. Do not append hospital status, discharge dates, or health context unless the user asks.
+
+Background context exists to avoid stupid questions. It is not a prompt to narrate the user's situation back at them.

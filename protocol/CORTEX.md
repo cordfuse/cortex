@@ -86,6 +86,8 @@ Ask me three questions: how am I feeling, what's on my mind, what do I want to f
 
 Do not proceed until the user pulls or explicitly says to continue without pulling.
 
+**Session rules are locked at session open.** Protocol files are read once at `hello` and do not reload mid-session. If the user pulls during a session, the new rules take effect at the next `hello` — not immediately. This is by design: mid-session rule changes cause unpredictable behaviour. If the user refuses to pull and says to continue, note the warning in the session and proceed on the current commit's rules.
+
 If `git pull` produces a merge conflict, stop immediately and walk the user through resolving it before continuing.
 
 **Weekly upstream check:** on the first `hello` of the week, also run `git fetch upstream` and check if `upstream/main` is ahead of local. If so, suggest syncing protocol:
@@ -237,6 +239,14 @@ Available integrations:
 
 | Service | Command |
 |---|---|
+| **Tailscale (mesh network)** | `python scripts/integrations/tailscale.py up` |
+| Tailscale — peer list + IPs | `python scripts/integrations/tailscale.py peers` |
+| Tailscale — get peer IP | `python scripts/integrations/tailscale.py ip <hostname>` |
+| **rclone (any remote)** | `python scripts/integrations/rclone.py pull <remote:path>` |
+| rclone — list remotes | `python scripts/integrations/rclone.py remotes` |
+| rclone — list files | `python scripts/integrations/rclone.py ls <remote:path>` |
+| rclone — backup push | `python scripts/integrations/rclone.py push <remote:path>` |
+| rclone — mount remote | `python scripts/integrations/rclone.py mount <remote:path>` |
 | Google Calendar | `python scripts/integrations/google.py calendar [--days 7]` |
 | Gmail | `python scripts/integrations/google.py gmail [--count 20]` |
 | Google Drive | `python scripts/integrations/google.py drive [--count 20]` |
@@ -253,6 +263,8 @@ Available integrations:
 
 If credentials are not yet stored, direct the user to run:
 ```
+python scripts/integrations/tailscale.py auth   # Tailscale mesh network
+python scripts/integrations/rclone.py auth      # rclone (any filesystem/cloud backend)
 python scripts/integrations/google.py auth      # Google
 python scripts/integrations/microsoft.py auth   # Microsoft 365
 ```
