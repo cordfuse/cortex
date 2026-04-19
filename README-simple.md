@@ -16,15 +16,15 @@ And unlike every other app that promises this — **you own the data. Not us. No
 
 ## Why I built this
 
-I've spent time navigating the mental health system. Multiple doctors, crisis workers, therapists — and every time, I had to start over. Re-explain my history. My medications. My patterns. The people in my life. What works, what doesn't.
+I built Cortex because I kept losing the thread.
 
-The context I'd spent years building disappeared every time I walked through a new door.
+Every new doctor, every new appointment, every AI conversation — you start from zero. Re-explain your history. Your context. What matters, what doesn't. The understanding you'd built over time disappears the moment you walk through a new door.
 
 AI could fix this. These tools are extraordinary at holding context, spotting patterns, asking the right questions. But every conversation still starts from zero — because there's nowhere for that context to live between sessions.
 
-I built Cortex because I was tired of losing the thread. And because I know I'm not the only one.
+I know I'm not the only one who's felt this.
 
-If this helps you — or someone you know — please consider donating to [CAMH Foundation](https://camhfoundation.ca/donate). They do the work I can't.
+If this has been useful to you — please consider donating to [CAMH Foundation](https://camhfoundation.ca/donate).
 
 — Steve Krisjanovs, Ontario, Canada
 
