@@ -41,6 +41,7 @@ except ImportError:
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 VAULT_DIR = os.path.join(ROOT, "cortex.secrets")
+MANIFEST_PATH = os.path.join(VAULT_DIR, "vault.json")
 LEGACY_VAULT = os.path.join(ROOT, "cortex.secrets.enc")  # DEPRECATED — do not write to this
 
 PBKDF2_ITERATIONS = 600_000
@@ -96,10 +97,44 @@ def ensure_vault_dir():
     os.makedirs(VAULT_DIR, exist_ok=True)
 
 
+def now_iso() -> str:
+    return datetime.datetime.now(datetime.timezone.utc).isoformat()
+
+
+def read_manifest() -> dict:
+    if os.path.exists(MANIFEST_PATH):
+        with open(MANIFEST_PATH) as f:
+            return json.load(f)
+    return {"version": 2, "created_at": now_iso(), "passphrase_rotated_at": None, "secrets": {}}
+
+
+def write_manifest(passphrase_rotated: bool = False, name: str = None, description: str = None):
+    existing = read_manifest()
+    # Migrate old list format to dict format
+    existing_secrets = existing.get("secrets", {})
+    if isinstance(existing_secrets, list):
+        existing_secrets = {k: "" for k in existing_secrets}
+    # Remove entries for deleted files
+    names = perfile_names()
+    secrets = {k: existing_secrets.get(k, "") for k in names}
+    # Update description for the current key if provided
+    if name and description is not None:
+        secrets[name] = description
+    manifest = {
+        "version": 2,
+        "created_at": existing.get("created_at", now_iso()),
+        "passphrase_rotated_at": now_iso() if passphrase_rotated else existing.get("passphrase_rotated_at"),
+        "secrets": secrets,
+    }
+    with open(MANIFEST_PATH, "w") as f:
+        json.dump(manifest, f, indent=2)
+        f.write("\n")
+
+
 def perfile_names() -> list:
     if not os.path.isdir(VAULT_DIR):
         return []
-    return sorted(f[:-4] for f in os.listdir(VAULT_DIR) if f.endswith(".enc"))
+    return sorted(f[:-4] for f in os.listdir(VAULT_DIR) if f.endswith(".enc") and f != "vault.json")
 
 
 def perfile_get(name: str, passphrase: str) -> str:
@@ -202,7 +237,7 @@ def prompt(label: str, confirm_label: str = None) -> str:
     return value
 
 
-def cmd_store(name: str, value: str = None, passphrase: str = None):
+def cmd_store(name: str, value: str = None, passphrase: str = None, description: str = None):
     if value is None:
         value = prompt(f"Value for '{name}'")
     if not value:
@@ -220,6 +255,7 @@ def cmd_store(name: str, value: str = None, passphrase: str = None):
     blob = encrypt_value(value, passphrase)
     with open(path, "wb") as f:
         f.write(blob)
+    write_manifest(name=name, description=description or "")
     print(f"Stored '{name}' -> cortex.secrets/{name}.enc")
     print("Commit and push to persist across devices.")
 
@@ -235,9 +271,14 @@ def cmd_list(passphrase: str = None):
     if not names:
         print("No secrets stored.")
         return
+    manifest = read_manifest()
+    descriptions = manifest.get("secrets", {})
+    if isinstance(descriptions, list):
+        descriptions = {k: "" for k in descriptions}
     print("Stored secrets:")
     for n in names:
-        print(f"  {n}")
+        desc = descriptions.get(n, "")
+        print(f"  {n}" + (f"  — {desc}" if desc else ""))
 
 
 def cmd_delete(name: str, passphrase: str = None, force: bool = False):
@@ -249,6 +290,7 @@ def cmd_delete(name: str, passphrase: str = None, force: bool = False):
             print("Aborted.")
             sys.exit(0)
     unified_delete(name, passphrase)
+    write_manifest()
     print(f"Deleted '{name}'.")
 
 
@@ -276,6 +318,7 @@ def cmd_repassphrase(old_passphrase: str = None, new_passphrase: str = None):
         with open(path, "wb") as f:
             f.write(blob)
         print(f"  Re-encrypted '{name}'")
+    write_manifest(passphrase_rotated=True)
     print(f"\nAll {len(names)} secret(s) re-encrypted with new passphrase.")
     print("Commit and push to persist across devices.")
 
@@ -321,6 +364,7 @@ def main():
     p_store.add_argument("name")
     p_store.add_argument("--value", default=None)
     p_store.add_argument("--passphrase", default=None)
+    p_store.add_argument("--description", default=None, help="Short description of what this secret is")
 
     p_get = sub.add_parser("get")
     p_get.add_argument("name")
@@ -344,7 +388,7 @@ def main():
     args = parser.parse_args()
 
     if args.cmd == "store":
-        cmd_store(args.name, value=args.value, passphrase=args.passphrase)
+        cmd_store(args.name, value=args.value, passphrase=args.passphrase, description=args.description)
     elif args.cmd == "get":
         cmd_get(args.name, passphrase=args.passphrase)
     elif args.cmd == "list":

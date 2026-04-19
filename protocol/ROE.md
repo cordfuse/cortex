@@ -107,9 +107,11 @@ python scripts/secrets.py get <name> --passphrase <passphrase>
 
 Ask the user for their passphrase in chat first if needed.
 
-### SECRETS.md maintenance
+### Vault manifest
 
-Whenever a secret is stored or deleted, update `SECRETS.md` in the same commit — one key name per line, no values. This gives future sessions awareness of what is vaulted without reading the encrypted file.
+`cortex.secrets/vault.json` is the canonical index of all secrets — maintained automatically by `secrets.py`. It contains: vault version, created date, last passphrase rotation date, and the list of secret names. Never edit it manually. Commit it alongside any vault change.
+
+`SECRETS.md` is retired — the manifest replaces it.
 
 ### Making the repo private
 
