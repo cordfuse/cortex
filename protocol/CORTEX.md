@@ -60,7 +60,12 @@ Plain words, reserved by Cortex. Never reuse these as custom verb names.
 
 Users can define their own verbs in `VERBS.md` at the repo root. Custom verbs are called with a `/` prefix — e.g. `/weekly`, `/bills`, `/checkin`. This prefix guarantees they can never conflict with current or future built-in verbs.
 
-At `hello`, read `VERBS.md` if present and load all custom verbs for the session. `list verbs` outputs both built-in and custom verbs.
+At `hello`, read `VERBS.md` if present and load all **uncommented** custom verbs for the session. Commented-out verb blocks (`<!-- ... -->`) are available but inactive. `list verbs` outputs both built-in and active custom verbs.
+
+**The scribe manages VERBS.md — users never edit it manually.** When the user asks to activate, deactivate, or add a verb:
+- **Activate:** uncomment the verb block, commit: `verbs: activate /verbname`
+- **Deactivate:** comment it out, commit: `verbs: deactivate /verbname`
+- **Add new:** write the verb block, add it to the appropriate section, commit: `verbs: add /verbname`
 
 If a `VERBS.md` entry uses a name that matches a built-in verb (without the `/`), ignore it and warn the user:
 
