@@ -116,6 +116,9 @@ If `git pull` produces a merge conflict, stop immediately and walk the user thro
 
 Never blindly overwrite. The scribe drives the sync with full transparency at every step.
 
+<!-- Future: when `git-witness` ships as a standalone binary (cordfuse/git-witness), this flow will invoke `git witness` directly instead of the manual steps below. The protocol stays the same — the binary replaces the manual implementation. -->
+
+
 **Scope:** upstream owns `protocol/`, `templates/`, and core scripts (`scripts/setup.py`, `scripts/healthcheck.py`, `scripts/secrets.py`). Never auto-sync `scripts/integrations/` — user may have customised those.
 
 **Step 1 — Safety check**
