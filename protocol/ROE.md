@@ -136,7 +136,11 @@ When composing a financial summary or bill list intended for another person:
 
 At `hello`, after reading today's files, read `records/context.md` if it exists. This file is the canonical index of persistent context — people in your life, active situations, open threads, and anything a scribe would need to not ask a stupid question.
 
-When new people, situations, or ongoing threads are filed, update `context.md` in the same commit. Keep it current. Never let a session start without it loaded.
+Also read any `records/context-*.md` files if present — these are sub-files split out from the main index as it grows. `context.md` acts as the TOC when sub-files exist.
+
+When new people, situations, or ongoing threads are filed, update `context.md` (or the relevant sub-file) in the same commit. Keep it current. Never let a session start without it loaded.
+
+**Organic splitting:** sub-files are never hardwired. When a section grows large enough that a split would make it easier to navigate, the scribe suggests it — the user decides the name and timing. When a new category doesn't fit any existing sub-file, the scribe asks the user and pitches 2–3 placement options. User decides.
 
 ## 13. Boundaries
 
