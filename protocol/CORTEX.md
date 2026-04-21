@@ -101,9 +101,63 @@ Do not proceed until the user pulls or explicitly says to continue without pulli
 
 If `git pull` produces a merge conflict, stop immediately and walk the user through resolving it before continuing.
 
-**Weekly upstream check:** on the first `hello` of the week, also run `git fetch upstream` and check if `upstream/main` is ahead of local. If so, suggest syncing protocol:
+**Upstream version check — every `hello`:** run `git fetch upstream`, then compare `upstream/main:version.txt` against the local `.cortex-version` file. If the framework has a newer version, **stop and gate** — do not continue until the user responds:
 
-> A new version of the Cortex protocol is available. Sync now? `git checkout upstream/main -- protocol/ templates/ scripts/`
+> Framework v[X.Y.Z] is available. You're on v[A.B.C]. Sync now, or defer?
+
+- **Defer** (any natural language deferral) — note it and continue on current version. Surface again at next `hello` — never silently drop it.
+- **Sync** (any natural language confirmation) — run the AI-driven sync flow below.
+
+`.cortex-version` is a single-line file at repo root containing the framework version this instance last synced to (e.g. `3.1.0`). Created by the pipe installer at install time. If missing, treat as unsynced — prompt immediately.
+
+`git fetch upstream` is lightweight — no reason to throttle it. Missing a protocol update for a week is too long.
+
+### AI-driven sync flow
+
+Never blindly overwrite. The scribe drives the sync with full transparency at every step.
+
+<!-- Future: when `git-witness` ships as a standalone binary (cordfuse/git-witness), this flow will invoke `git witness` directly instead of the manual steps below. The protocol stays the same — the binary replaces the manual implementation. -->
+
+
+**Scope:** upstream owns `protocol/`, `templates/`, and core scripts (`scripts/setup.py`, `scripts/healthcheck.py`, `scripts/secrets.py`). Never auto-sync `scripts/integrations/` — user may have customised those.
+
+**Step 1 — Safety check**
+Before touching anything, check for uncommitted local changes in sync scope:
+```
+git diff HEAD -- protocol/ templates/ scripts/setup.py scripts/healthcheck.py scripts/secrets.py
+```
+If changes exist, stop:
+> You have uncommitted changes in [files]. Commit or stash them before syncing — otherwise they'll be lost.
+
+Do not proceed until clean or user explicitly says to overwrite.
+
+**Step 2 — Diff**
+Show the user exactly what upstream changed:
+```
+git diff HEAD upstream/main -- protocol/ templates/ scripts/setup.py scripts/healthcheck.py scripts/secrets.py
+```
+Summarise in plain English: which files changed, what the nature of each change is. Don't dump raw diffs — explain them.
+
+**Step 3 — Conflict check**
+For every file in scope, check if the user has local modifications that overlap with upstream changes. Flag each conflict explicitly:
+> `protocol/ROE.md` — upstream added Rule 17. You have local changes to Rule 15. These need to be merged manually.
+
+**Step 4 — Resolve conflicts**
+For each flagged conflict, the scribe proposes a resolution and explains the tradeoff. User approves or redirects. Apply one file at a time. Nothing lands without explicit acknowledgement.
+
+**Step 5 — Apply clean files**
+Files with no conflicts are applied directly:
+```
+git checkout upstream/main -- <file>
+```
+
+**Step 6 — Commit**
+After all conflicts resolved and all files applied:
+```
+git add protocol/ templates/ scripts/setup.py scripts/healthcheck.py scripts/secrets.py
+git commit -m "sync: framework vX.Y.Z"
+```
+Update `.cortex-version` in the same commit. Push.
 
 Run the **3x opening scan** — read the actual repo state, not session memory:
 

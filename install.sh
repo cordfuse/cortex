@@ -312,6 +312,39 @@ echo ""
 printf "${BOLD}Running setup...${RESET}\n"
 "$PYTHON" "$CLONE_DEST/scripts/setup.py" --system
 
+# ── Upstream remote + .cortex-version ────────────────────────────────────────
+
+printf "${BOLD}Wiring upstream framework...${RESET}\n"
+
+UPSTREAM_URL="https://github.com/cordfuse/cortex.git"
+
+if ! git -C "$CLONE_DEST" remote get-url upstream &>/dev/null 2>&1; then
+    git -C "$CLONE_DEST" remote add upstream "$UPSTREAM_URL"
+    ok "Upstream remote added (cordfuse/cortex)"
+else
+    ok "Upstream remote already set"
+fi
+
+git -C "$CLONE_DEST" fetch upstream --quiet 2>/dev/null || warn "Could not reach upstream — .cortex-version will be set from local version.txt"
+
+FRAMEWORK_VERSION=""
+if git -C "$CLONE_DEST" cat-file -e upstream/main:version.txt 2>/dev/null; then
+    FRAMEWORK_VERSION=$(git -C "$CLONE_DEST" show upstream/main:version.txt 2>/dev/null | tr -d '[:space:]')
+fi
+
+if [[ -z "$FRAMEWORK_VERSION" ]] && [[ -f "$CLONE_DEST/version.txt" ]]; then
+    FRAMEWORK_VERSION=$(cat "$CLONE_DEST/version.txt" | tr -d '[:space:]')
+fi
+
+if [[ -n "$FRAMEWORK_VERSION" ]]; then
+    echo "$FRAMEWORK_VERSION" > "$CLONE_DEST/.cortex-version"
+    git -C "$CLONE_DEST" add .cortex-version
+    git -C "$CLONE_DEST" commit -m "install: set .cortex-version to framework v${FRAMEWORK_VERSION}" --quiet
+    ok ".cortex-version set to v${FRAMEWORK_VERSION}"
+else
+    warn "Could not determine framework version — .cortex-version not written"
+fi
+
 echo ""
 printf "${BOLD}${GREEN}Done.${RESET}\n"
 echo ""
