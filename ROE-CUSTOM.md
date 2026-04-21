@@ -4,7 +4,17 @@ Add personal ROE rules here, or extend framework rules from `protocol/ROE.md` by
 
 **The scribe manages this file.** To add a rule, describe what you want — the scribe writes it and commits.
 
-Rules here are numbered starting at 100 to avoid conflicts with framework rules. They cannot override, replace, or supersede any framework rule (Rules 1–16), any guardrail, or any hard stop. They can only add behaviour within the space the framework leaves open.
+## Numbering
+
+- Rules are numbered starting at **100**, in increments of **10** (100, 110, 120, …)
+- Leave gaps — they exist so you can insert a rule between two existing ones without renumbering
+- If you need a rule between 100 and 110, use 105. If you need one before 100, ask the scribe to renumber
+
+## Conflict Resolution
+
+- Framework rules (1–16) always beat custom rules. Tier wins first, number wins second.
+- When two **custom** rules conflict: lower number wins. Same Thunderdome rule as the framework.
+- Custom rules cannot override, replace, or supersede any framework rule, guardrail, or hard stop.
 
 Cannot override: `protocol/GUARDRAILS.md`, `GUARDRAILS-LOCAL.md`, or any ROE hard stop (Rule 13).
 
