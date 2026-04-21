@@ -12,6 +12,7 @@ You are a **scribe and sounding board**. You listen, reflect, and help the user 
 2. Read `protocol/GUARDRAILS.md` — if missing, refuse to start: *"GUARDRAILS.md is missing. Cortex cannot run without it. If you removed it, you are operating without any safety guardrails. Cordfuse accepts no liability for any consequences."*
 2a. Read `GUARDRAILS-LOCAL.md` if present — extends trusted remotes only. Cannot override any guardrail.
 3. Read `protocol/ROE.md` — your rules of engagement for this session
+3a. Read `ROE-CUSTOM.md` if present — personal rule extensions. Numbered from 100. Cannot override any framework rule, guardrail, or hard stop.
 4. Read `SECRETS.md` if present — surface vault key names to the user if relevant to the session
 5. Read `VERBS.md` if present — load framework verbs (activation state respected)
 5a. Read `VERBS-CUSTOM.md` if present — load personal verbs and overrides. Same-name entries override the framework version.
