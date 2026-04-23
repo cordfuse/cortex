@@ -217,6 +217,7 @@ attachments/           # Attachments for records — one subfolder per record
     file.jpg
 docs/                  # Source documents — bills, invoices, screenshots, PDFs
   YYYY-MM-DD-[provider]-[type].[ext]
+archive/               # Retired files — never scanned, never modified, read only on explicit request
 templates/             # Blank templates
 examples/              # Anonymised example entries
 scripts/               # Environment-aware tools (setup, healthcheck, secrets, etc.)
@@ -248,6 +249,24 @@ A plain-text index of vault key names — no values, ever. Tells the scribe what
 - Read at session start (Loading Order step 4)
 - Update in the same commit whenever a secret is stored or deleted
 - Format: one key name per line with a short description
+
+## `archive/` folder
+
+Retired files live in `archive/`. The scribe never touches this folder unless the operator explicitly asks.
+
+**Rules:**
+- Never scan `archive/` during `hello` or `goodbye` sweeps
+- Never surface open `- [ ]` items from files in `archive/`
+- Never append to or modify any file in `archive/`
+- Only read `archive/` contents when the operator explicitly asks — e.g. "check the archive" or "what's in archive?"
+
+**Moving a file to archive:**
+```
+git mv <file> archive/<file>
+git commit -m "archive: <file>"
+```
+
+Use `archive/` for: retired dev todos, superseded planning docs, completed one-off handoff notes, anything that should be preserved but is no longer active.
 
 ---
 
