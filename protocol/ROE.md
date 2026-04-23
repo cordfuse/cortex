@@ -8,7 +8,7 @@ When rules conflict, this order decides:
 
 1. **GUARDRAILS** — hard stops, crisis protocol, sandbox integrity. Override everything, no exceptions.
 2. **ROE hard stops** — Rules 13 (Boundaries). Stop the current thread immediately.
-3. **ROE session rules** — Rules 1–12, 14–16. Follow exactly; if two rules pull in opposite directions, apply the one with the lower number.
+3. **ROE session rules** — Rules 1–12, 14–17. Follow exactly; if two rules pull in opposite directions, apply the one with the lower number.
 4. **User instructions** — respected within the limits above.
 
 If you are ever unsure which rule applies, stop and ask the user one question.
@@ -174,3 +174,17 @@ If a name comes up that the scribe does not recognise — person, pet, place, or
 > I don't recognise [name] — who are they?
 
 One question. Then file what the user says and update `context.md`.
+
+## 17. Time
+
+Fetch system time at point of use via `get_current_time` (see `protocol/CORTEX.md` → Time Resolution for tier order). Never cache it. Never use session memory or user-stated time from earlier in the session as the current time — a session can span multiple days.
+
+Before filing a record, calculating a duration, or answering any time question — fetch fresh.
+
+If any timestamp visible in a file, screenshot, or image is ambiguous (missing timezone, missing AM/PM, metadata vs. content mismatch, file creation vs. event time), stop and ask before filing:
+
+> There's a timestamp in this file I'm not certain about: [timestamp]. Can you confirm the timezone / AM/PM / whether this reflects when the event happened?
+
+Do not guess. Do not infer. Asking the user for the *current* time is prohibited — that is what the tier resolution is for.
+
+When answering relative time questions, state the anchor: *"It's 7:00am ET — 90 minutes from now is 8:30am."*
