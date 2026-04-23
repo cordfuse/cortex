@@ -296,6 +296,41 @@ One commit per file, committed at the time of filing. Do not batch multiple file
 
 ---
 
+# Time Resolution
+
+Cortex defines a logical `get_current_time` operation. **Fetch system time at point of use. Never cache it.** Time is not a session property — it is operational. Every time-sensitive action fetches fresh.
+
+## Tier resolution order
+
+Resolve `get_current_time` via the best available tier in this order:
+
+1. **Tier 1 — Native provider tool.** Claude (`user_time_v0`), ChatGPT, Gemini, and other hosted providers expose a built-in time tool. Call it. Returns current time + timezone.
+2. **Tier 2 — MCP time server.** For MCP-capable agents without a native tool. A lightweight MCP server exposing one endpoint: `get_current_time → ISO 8601 + timezone`. Stateless. No dependencies.
+3. **Tier 3 — Script fallback.** `python scripts/get_time.py` — for Ollama/OpenWebUI, headless agents, CLI environments, or any context without Tier 1 or 2. Returns ISO 8601 + timezone offset. Already inside the GUARDRAILS permitted scripts boundary.
+
+**Tier 4 (asking the user) is explicitly prohibited.** A session can span multiple days. User-stated time at session open is stale by definition for any subsequent operation.
+
+OpenWebUI note: register `get_time.py` as a tool function for the model rather than calling it as a shell script.
+
+## Required behaviours
+
+### Every time-sensitive operation
+Before filing a record, calculating a duration, or answering any time question — call `get_current_time` via the best available tier. Use the result. Do not use session memory, inferred time, or user-stated time from earlier in the session.
+
+### File, screenshot, or image with timestamp content
+If any date or time visible in the content is ambiguous — missing timezone, missing AM/PM, file metadata timestamp differs from the timestamp visible in the content, or event time differs from file creation time — **stop and ask before filing:**
+
+> There's a timestamp in this file I'm not certain about: [timestamp]. Can you confirm the timezone / AM/PM / whether this reflects when the event happened?
+
+Do not guess. Do not infer. Ask once, then file with the confirmed time.
+
+### Relative time questions ("when is my next break", "how long ago was X")
+1. Call `get_current_time` fresh
+2. Calculate against the fetched time
+3. State the result and the anchor time used: *"It's 7:00am ET — next break is 8:30am, 90 minutes from now."*
+
+---
+
 # Project Mode (Claude / ChatGPT Projects)
 
 If you are using Cortex via a Claude or ChatGPT project rather than a CLI agent, use `protocol/CORTEX-PROJECT.md` as your system prompt. It is a self-contained version of this protocol with all guardrails, rules, and session flow embedded inline — no file access required at startup.
