@@ -9,6 +9,8 @@ Format: `YYYY-MM-DD HH:MM TZ | file | what changed`
 <!-- Future: if this file grows large, rotate annually to cortex-changelog-YYYY.md -->
 
 ---
+2026-04-24 00:08 UTC | version.txt | bump to 3.3.1 — sync scope generalised to scripts/*.py (top-level glob)
+2026-04-24 00:08 UTC | protocol/CORTEX.md | sync flow scope: scripts/setup.py+healthcheck.py+secrets.py → 'scripts/*.py' glob; auto-pulls get_time.py and any future top-level framework scripts
 2026-04-23 23:15 UTC | version.txt | bump to 3.3.0 — Time Resolution contract + scripts/get_time.py + ROE Rule 17
 2026-04-23 23:15 UTC | protocol/ROE.md | Rule 17 (Time) — fetch fresh via get_current_time, ambiguity-ask, no Tier 4
 2026-04-23 23:15 UTC | protocol/CORTEX.md | Time Resolution section — get_current_time contract, tier order, point-of-use fetch, ambiguity-ask rule
