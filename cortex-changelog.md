@@ -9,6 +9,8 @@ Format: `YYYY-MM-DD HH:MM TZ | file | what changed`
 <!-- Future: if this file grows large, rotate annually to cortex-changelog-YYYY.md -->
 
 ---
+2026-04-24 23:15 UTC | version.txt | bump to 3.4.1
+2026-04-24 23:15 UTC | protocol/CORTEX.md | fix: silent load at hello — scribe outputs nothing during load sequence, no narration of confusion or raw counts, single clean greeting
 2026-04-24 16:07 UTC | version.txt | bump to 3.4.0 — personality system
 2026-04-24 16:07 UTC | personalities/ | ship 33 built-in personalities: Bob (default), Sherlock, + 31 library (TARS, Oscar, Claire, Riff, Alex, Sage, Harper, Max, Ivy, Bishop, Nova, Marlowe, Ziggy, Reed, Cleo, Finn, Rowan, Dante, Dr. Morgan, Dr. Quinn, Jordan, Arnold, Rabbi, Pastor, Father Thomas, Imam, Swami, Lama, Granthi, Daoist, Elder)
 2026-04-24 16:07 UTC | protocol/CORTEX.md | personality system: loading order step 3b, list personalities verb, full spec section (format, trait tables, archetypes, inheritance, scribe behaviour, warnings, provenance, ecosystem vocabulary)
