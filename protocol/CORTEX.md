@@ -116,13 +116,13 @@ If the framework has a newer version, **auto-sync silently** — no gate, no que
 
 **Scope — read from upstream at sync time.** Sync scope is defined by **upstream's** `protocol/CORTEX.md`, not your local copy. Run `git show upstream/main:protocol/CORTEX.md` and use the Scope paragraph from **that** file for this sync. This prevents scope-widening releases from being unable to bootstrap themselves.
 
-Current upstream scope: `protocol/`, `templates/`, and all top-level framework scripts (`scripts/*.py`). Never auto-sync `scripts/integrations/` — user may have customised those.
+Current upstream scope: `protocol/`, `templates/`, `scripts/*.py` (top-level only), and `personalities/PERSONALITY-*.md` (built-in personalities — all files matching this pattern). Never auto-sync `scripts/integrations/` or `personalities/PERSONALITY-CUSTOM-*.md` — user may have customised those.
 
 <!-- Future: when `git-witness` ships as a standalone binary (cordfuse/git-witness), this flow will invoke `git witness` directly. The protocol stays the same — the binary replaces the manual steps. -->
 
 **Step 1 — Check for uncommitted local changes in sync scope**
 ```
-git diff HEAD -- protocol/ templates/ 'scripts/*.py'
+git diff HEAD -- protocol/ templates/ 'scripts/*.py' 'personalities/PERSONALITY-[^C]*.md'
 ```
 If dirty: defer the sync. Note it in the greeting:
 > *Your Cortex has a framework update available (v[X.Y.Z]). Your protocol files have local changes — run `sync` when ready.*
@@ -132,9 +132,9 @@ Do not gate. Do not block the session. Continue on the current version.
 **Step 2 — Conflict check**
 Check if the user has locally modified any file that upstream also changed:
 ```
-git diff HEAD upstream/main -- protocol/ templates/ 'scripts/*.py'
+git diff HEAD upstream/main -- protocol/ templates/ 'scripts/*.py' 'personalities/PERSONALITY-[^C]*.md'
 ```
-Cross-reference with `git diff HEAD -- protocol/ templates/ 'scripts/*.py'` to find overlapping edits.
+Cross-reference with local changes to find overlapping edits.
 
 - **No conflicts** → proceed to Step 3.
 - **Conflicts found** → gate. Surface each conflict in plain English and wait:
@@ -145,12 +145,21 @@ Apply all files in scope from upstream:
 ```
 git checkout upstream/main -- protocol/ templates/ scripts/*.py
 ```
-Update `.cortex-version` to match upstream version, then commit and push:
+For personalities, apply each built-in file individually (preserves any PERSONALITY-CUSTOM-* files):
 ```
-git add protocol/ templates/ scripts/*.py .cortex-version
+git checkout upstream/main -- personalities/PERSONALITY-CASUAL.md personalities/PERSONALITY-VERBOSE.md [... all built-in files]
+```
+Or use: `git checkout upstream/main -- $(git ls-tree --name-only upstream/main personalities/ | grep 'PERSONALITY-[^C]')`
+
+Update `.cortex-version` to match upstream version. Then commit and push:
+```
+git add protocol/ templates/ scripts/*.py personalities/ .cortex-version
 git commit -m "sync: framework vX.Y.Z"
 git push origin main
 ```
+
+**Step 3b — context.md migration**
+After applying files, check if the live `context.md` is missing fields that the updated `templates/context.md` now defines. For each missing field, append it with its default value. Never overwrite existing values — additions only. Commit in the same sync commit.
 
 Note the update in the greeting (one line, inside the normal greeting — not a separate alert):
 > *Updated to v[X.Y.Z].*
