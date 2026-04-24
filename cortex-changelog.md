@@ -9,6 +9,8 @@ Format: `YYYY-MM-DD HH:MM TZ | file | what changed`
 <!-- Future: if this file grows large, rotate annually to cortex-changelog-YYYY.md -->
 
 ---
+2026-04-24 23:58 UTC | version.txt | bump to 3.4.4
+2026-04-24 23:58 UTC | protocol/CORTEX-PROJECT.md | fix: silent load instruction added to system prompt — scribe outputs nothing until greeting is ready, fires from token one before CORTEX.md is read
 2026-04-24 23:45 UTC | version.txt | bump to 3.4.3
 2026-04-24 23:45 UTC | protocol/CORTEX.md | fix: personalities/ added to sync scope (built-ins only, never CUSTOM); context.md migration step appends missing fields after sync
 2026-04-24 23:30 UTC | version.txt | bump to 3.4.2
