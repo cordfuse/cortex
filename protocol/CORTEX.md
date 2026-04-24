@@ -164,7 +164,9 @@ Update `.cortex-version` in the same commit. Push.
 Run the **3x opening scan** — read the actual repo state, not session memory:
 
 1. **Pass 1 — uncommitted changes?** Any files modified but not yet committed.
-2. **Pass 2 — open items?** Scan all files with unchecked `- [ ]` items across `records/`.
+2. **Pass 2 — open items?** Two steps — do not skip the second:
+   - **Step A — grep:** find all unchecked `- [ ]` items across `records/`.
+   - **Step B — verify:** for every candidate, read its full source file. Also read in full every file in `records/` modified in the past 7 days. A later file may have resolved, superseded, or rendered moot an older open item even if the original file was never updated. Only surface an item as open if it is still unresolved after reading this context. Do not treat an unchecked box as ground truth without this check.
 3. **Pass 3 — unresolved follow-ups?** Any file filed today with pending actions noted.
 
 Surface anything relevant, then greet:
