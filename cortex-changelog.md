@@ -9,6 +9,8 @@ Format: `YYYY-MM-DD HH:MM TZ | file | what changed`
 <!-- Future: if this file grows large, rotate annually to cortex-changelog-YYYY.md -->
 
 ---
+2026-04-24 02:22 UTC | version.txt | bump to 3.3.4 — hello Pass 2 now verifies open items against recent records before surfacing
+2026-04-24 02:22 UTC | protocol/CORTEX.md | hello Pass 2: two-step (grep + verify) — read full source file and all records modified in past 7 days before treating unchecked boxes as open
 2026-04-24 00:08 UTC | version.txt | bump to 3.3.1 — sync scope generalised to scripts/*.py (top-level glob)
 2026-04-24 00:08 UTC | protocol/CORTEX.md | sync flow scope: scripts/setup.py+healthcheck.py+secrets.py → 'scripts/*.py' glob; auto-pulls get_time.py and any future top-level framework scripts
 2026-04-23 23:15 UTC | version.txt | bump to 3.3.0 — Time Resolution contract + scripts/get_time.py + ROE Rule 17
