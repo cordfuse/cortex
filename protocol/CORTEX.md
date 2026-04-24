@@ -582,6 +582,16 @@ If `honesty < 40` AND `deference > 70` — warn at creation or tuning:
 
 ---
 
+## Ecosystem vocabulary
+
+The vice/virtue/archetype model is shared vocabulary across the Cordfuse ecosystem. Cortex borrows the model from Politik — same terms, same pairs, same archetypes. The format is different (Cortex: markdown, Politik: YAML runtime config) but the language is intentionally identical so that personality profiles can be read and referenced across repos without translation.
+
+When adding new traits or archetypes, keep the vocabulary consistent with Politik's Actor Capability Profile spec. Flag any divergence.
+
+Crosstalk: personality system applies when multi-actor work begins there. Flag at that time.
+
+---
+
 ## Record provenance
 
 Every filed record includes a provenance block at the bottom:

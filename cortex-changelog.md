@@ -9,6 +9,14 @@ Format: `YYYY-MM-DD HH:MM TZ | file | what changed`
 <!-- Future: if this file grows large, rotate annually to cortex-changelog-YYYY.md -->
 
 ---
+2026-04-24 16:07 UTC | version.txt | bump to 3.4.0 — personality system
+2026-04-24 16:07 UTC | personalities/ | ship 33 built-in personalities: Bob (default), Sherlock, + 31 library (TARS, Oscar, Claire, Riff, Alex, Sage, Harper, Max, Ivy, Bishop, Nova, Marlowe, Ziggy, Reed, Cleo, Finn, Rowan, Dante, Dr. Morgan, Dr. Quinn, Jordan, Arnold, Rabbi, Pastor, Father Thomas, Imam, Swami, Lama, Granthi, Daoist, Elder)
+2026-04-24 16:07 UTC | protocol/CORTEX.md | personality system: loading order step 3b, list personalities verb, full spec section (format, trait tables, archetypes, inheritance, scribe behaviour, warnings, provenance, ecosystem vocabulary)
+2026-04-24 16:07 UTC | templates/context.md | add personality:, provider:, model: fields
+2026-04-24 16:07 UTC | VERBS.md | add /personality verb — switch active personality, commits context.md
+2026-04-24 16:07 UTC | README.md | add personalities section: 33 built-ins, category table, hard rule callout, context.md snippet
+2026-04-24 16:07 UTC | protocol/CORTEX.md | during-session: record provenance block appended to every filed record (actor, provider, model, date)
+2026-04-24 16:07 UTC | protocol/CORTEX.md | personality spec: ecosystem vocabulary note — shared vice/virtue/archetype model with Politik, Crosstalk flag
 2026-04-24 02:33 UTC | version.txt | bump to 3.3.5 — no-code version bump to test upgrade gate end-to-end
 2026-04-24 02:22 UTC | version.txt | bump to 3.3.4 — hello Pass 2 now verifies open items against recent records before surfacing
 2026-04-24 02:22 UTC | protocol/CORTEX.md | hello Pass 2: two-step (grep + verify) — read full source file and all records modified in past 7 days before treating unchecked boxes as open

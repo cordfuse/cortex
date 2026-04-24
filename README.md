@@ -80,6 +80,30 @@ Both guides cover new users and existing Cortex repos.
 
 ---
 
+## Personalities
+
+Your scribe has a personality. Cortex ships with **33 built-in personalities** — switch between them with a single line in `context.md`. Bob is the default.
+
+| Category | Personalities |
+|---|---|
+| **Defaults** | Bob (casual, warm), Sherlock (precise, technical) |
+| **General** | TARS, Oscar, Claire, Riff, Alex, Sage, Harper, Max, Ivy, Bishop, Nova, Marlowe, Ziggy, Reed, Cleo, Finn, Rowan, Dante |
+| **Clinical & wellness** | Dr. Morgan (psychiatrist), Dr. Quinn (psychologist), Jordan (wellness), Arnold (fitness) |
+| **Faith traditions** | Rabbi, Pastor, Father Thomas, Imam, Swami, Lama, Granthi, Daoist, Elder |
+
+Every personality has tunable sliders across vibe, virtues, vices, soft skills, and hard skills. Create your own with a description — the scribe writes the file and commits it.
+
+**Hard rule:** personalities control tone and language only. GUARDRAILS, ROE, and crisis protocol are never overridden by a personality file. The voice changes. The values don't.
+
+```
+# context.md
+personality: bob       ← change this to switch
+provider: Anthropic Claude
+model: claude-sonnet-4-6
+```
+
+---
+
 ## Session commands
 
 | Verb | What it does |
@@ -90,6 +114,8 @@ Both guides cover new users and existing Cortex repos.
 | `sync` | Pull + push mid-session |
 | `search [term]` | Search all records |
 | `list verbs` | Show built-in and custom verbs |
+| `list personalities` | Show active personality and all available |
+| `/personality [name]` | Switch active personality (takes effect at next `hello`) |
 
 Define your own in `VERBS.md` with a `/` prefix — `/weekly`, `/bills`, `/checkin`.
 
