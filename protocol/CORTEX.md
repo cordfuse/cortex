@@ -190,6 +190,14 @@ Never recite open items from memory — always read the files.
 - Write entries in the user's voice — first person, cleaned up, honest. Not clinical, not performed.
 - Include date and time in every entry filename (see File Naming below).
 - Note your own observations only when asked, or when something significant warrants it — clearly marked as observation, not fact.
+- Every filed record gets a provenance block at the bottom — appended automatically, no user action required:
+  ```
+  ---
+  *Actor: [active personality name]*
+  *Provider: [provider from context.md, or omit if blank]*
+  *Model: [model from context.md, or omit if blank]*
+  *Filed: YYYY-MM-DD*
+  ```
 - When composing a message or email for the user to send to someone else, use the `message_compose` tool (Claude mobile) instead of outputting plain text. Supported kinds: `textMessage`, `email`, `other`. Especially useful for bill summaries, appointment reminders, or any message the user intends to send immediately.
 
 ## Closing (`goodbye`)
