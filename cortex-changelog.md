@@ -9,6 +9,8 @@ Format: `YYYY-MM-DD HH:MM TZ | file | what changed`
 <!-- Future: if this file grows large, rotate annually to cortex-changelog-YYYY.md -->
 
 ---
+2026-04-24 01:56 UTC | version.txt | bump to 3.3.3 — sync scope now read from upstream's CORTEX.md at sync time (fixes scope-widening bootstrap)
+2026-04-24 01:56 UTC | protocol/CORTEX.md | sync flow Scope: read from upstream's CORTEX.md at sync time, not local — prevents scope-widening releases from failing to bootstrap themselves
 2026-04-24 01:32 UTC | version.txt | bump to 3.3.2 — upstream gate self-heals when `upstream` remote is missing on fresh clones
 2026-04-24 01:32 UTC | protocol/CORTEX.md | Opening (`hello`): upstream version check now verifies `upstream` remote exists and auto-adds it if missing — fixes silent no-op on fresh personal-repo clones
 2026-04-24 00:08 UTC | version.txt | bump to 3.3.1 — sync scope generalised to scripts/*.py (top-level glob)

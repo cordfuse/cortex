@@ -119,7 +119,9 @@ Never blindly overwrite. The scribe drives the sync with full transparency at ev
 <!-- Future: when `git-witness` ships as a standalone binary (cordfuse/git-witness), this flow will invoke `git witness` directly instead of the manual steps below. The protocol stays the same — the binary replaces the manual implementation. -->
 
 
-**Scope:** upstream owns `protocol/`, `templates/`, and all top-level framework scripts (`scripts/*.py`). Never auto-sync `scripts/integrations/` — user may have customised those. The `scripts/*.py` glob matches only top-level entries; the `integrations/` subdirectory is excluded automatically.
+**Scope — read from upstream at sync time.** Sync scope is defined by **upstream's** `protocol/CORTEX.md`, not your local copy. Before Step 1, run `git show upstream/main:protocol/CORTEX.md` and use the Scope paragraph from **that** file for this sync. This prevents scope-widening releases from being unable to bootstrap themselves — the scribe always uses the scope definition shipping with the version it's syncing *to*, never the stale definition in the version it's syncing *from*. Steps 1, 2, and 6 below assume the current scope; if upstream's scope has widened, adjust the glob arguments accordingly.
+
+Current upstream scope: `protocol/`, `templates/`, and all top-level framework scripts (`scripts/*.py`). Never auto-sync `scripts/integrations/` — user may have customised those. The `scripts/*.py` glob matches only top-level entries; the `integrations/` subdirectory is excluded automatically.
 
 **Step 1 — Safety check**
 Before touching anything, check for uncommitted local changes in sync scope:
