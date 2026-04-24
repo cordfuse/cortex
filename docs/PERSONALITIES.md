@@ -8,7 +8,7 @@ Cortex ships with **33 built-in personalities**. Every personality is a named ch
 ```
 personality: bob
 ```
-Takes effect at the next `hello`. To switch mid-session: `/personality sherlock` — scribe updates `context.md` and commits.
+Both `personality:` and `actor:` are accepted — they are full aliases for the same field. Takes effect at the next `hello`. To switch mid-session: `/personality sherlock` or `/actor sherlock` — scribe updates `context.md` and commits.
 
 To see what's available: `list personalities`
 

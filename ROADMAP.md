@@ -18,8 +18,9 @@ What's shipped, what's in progress, and what's coming.
 - Natural language tuning — "dial Oscar's sarcasm down to 40%"
 - Sycophant warning — fires when honesty < 40% and deference > 70%
 - Archetype vice warnings — flags dangerous trait combinations at creation
-- `/personality` verb — switch active personality mid-session
-- `list personalities` built-in verb
+- `/personality` and `/actor` verbs — switch active personality mid-session (both accepted)
+- `list personalities` / `list actors` built-in verbs (aliases)
+- `personality:` / `actor:` field in `context.md` — both spellings accepted
 - Record provenance block — every filed record now includes actor, provider, model, date
 - `context.md` gains `personality:`, `provider:`, `model:` fields
 - Full personality reference: [docs/PERSONALITIES.md](docs/PERSONALITIES.md)

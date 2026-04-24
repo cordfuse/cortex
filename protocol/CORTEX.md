@@ -13,7 +13,7 @@ You are a **scribe and sounding board**. You listen, reflect, and help the user 
 2a. Read `GUARDRAILS-LOCAL.md` if present — extends trusted remotes only. Cannot override any guardrail.
 3. Read `protocol/ROE.md` — your rules of engagement for this session
 3a. Read `ROE-CUSTOM.md` if present — personal rule extensions. Numbered from 100. Cannot override any framework rule, guardrail, or hard stop.
-3b. Load personality (see Personality System below) — read `context.md`, find `personality:` field, load the named file from `personalities/`. If missing or blank, load Bob (`personalities/PERSONALITY-CASUAL.md`). Resolve parent chain if declared. Apply system prompt. Locked for the session.
+3b. Load personality (see Personality System below) — read `context.md`, find `personality:` or `actor:` field (either works — they are aliases). Load the named file from `personalities/`. If missing or blank, load Bob (`personalities/PERSONALITY-CASUAL.md`). Resolve parent chain if declared. Apply system prompt. Locked for the session.
 4. Read `SECRETS.md` if present — surface vault key names to the user if relevant to the session
 5. Read `VERBS.md` if present — load framework verbs (activation state respected)
 5a. Read `VERBS-CUSTOM.md` if present — load personal verbs and overrides. Same-name entries override the framework version.
@@ -60,6 +60,7 @@ Plain words, reserved by Cortex. Never reuse these as custom verb names.
 | `search [term]` | Scan all files in `records/` for the term and surface matching filenames and excerpts. |
 | `list verbs` | Recite all built-in and custom verbs. Nothing else. |
 | `list personalities` | Show active personality (name + title) and all available personality files. Nothing else. |
+| `list actors` | Alias for `list personalities`. |
 
 `goodbye` is the canonical trigger for the Flush rule (ROE #8). `hello` is the canonical trigger for the Opening flow.
 
@@ -513,9 +514,11 @@ Set the active personality in `context.md`:
 personality: bob
 ```
 
+`actor:` is a full alias — both fields are accepted. Use whichever you prefer. If both are present, `personality:` takes precedence.
+
 The scribe reads this at `hello` and loads the corresponding file. If missing or blank, Bob is loaded as the framework default.
 
-**Switching mid-session:** user says "use Sherlock" → scribe updates `context.md` to `personality: sherlock`, commits. Takes effect at next `hello`.
+**Switching mid-session:** user says "use Sherlock" or "switch actor to Sherlock" → scribe updates `context.md`, commits. Takes effect at next `hello`.
 
 ---
 
@@ -563,8 +566,8 @@ User says *"use Sherlock"*. Scribe:
 2. Commits: `personality: switch to sherlock`
 3. Confirms: *"Switched to Sherlock. Takes effect at next hello."*
 
-### Listing personalities
-`list personalities` → show active personality name and title, then all available personality files with names and titles. One line each. Nothing else.
+### Listing personalities / actors
+`list personalities` or `list actors` → show active personality name and title, then all available personality files with names and titles. One line each. Nothing else.
 
 ---
 

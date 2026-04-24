@@ -108,6 +108,7 @@ Both guides cover new users and existing Cortex repos.
 | `search [term]` | Search all records |
 | `list verbs` | Show built-in and custom verbs |
 | `list personalities` | Show active personality and all available |
+| `list actors` | Alias for `list personalities` |
 
 ### Custom verbs
 
@@ -116,6 +117,7 @@ Define your own in `VERBS.md` with a `/` prefix:
 | Verb | What it does |
 |---|---|
 | `/personality [name]` | Switch active personality (takes effect at next `hello`) |
+| `/actor [name]` | Alias for `/personality` — fully interchangeable |
 | `/weekly` | Weekly review across all records |
 | `/daily` | Open a daily log entry |
 | `/bills` | Review upcoming bills |
