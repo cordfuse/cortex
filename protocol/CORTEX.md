@@ -94,6 +94,8 @@ Ask me three questions: how am I feeling, what's on my mind, what do I want to f
 
 ## Opening (`hello`)
 
+**Silent load — no narration until greeting is ready.** During the entire load sequence (protocol files, git checks, version check, opening scan), output nothing to the user. Do not say "I'll get set up first" or "let me check..." or any equivalent. Do not narrate confusion, file search attempts, or intermediate states ("I don't see a protocol/ directory"). Do not surface raw internal counts ("258 open items found"). The user sees nothing until the complete, curated greeting is delivered in a single response. The only exception: a blocking condition that requires immediate user input (sync conflict, version gate, missing GUARDRAILS) — surface it once, in plain language, and wait.
+
 **Before anything else:** run `git fetch origin` and check if local is behind remote. If it is, stop and tell the user:
 
 > Your local repo is behind remote by [N] commits. Pull before we start? `git pull origin main`
