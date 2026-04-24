@@ -4,6 +4,18 @@ Read at every `hello`. Update in the same commit whenever people, situations, or
 
 ---
 
+## Scribe
+
+personality: bob
+provider: 
+model: 
+
+*`personality:` (or `actor:`) — name of active personality (file in `personalities/`). Bob is the default. Both spellings are accepted. Change via: "use Sherlock" or `/personality sherlock` or `/actor sherlock` — scribe updates this and commits, takes effect at next `hello`.*
+*`provider:` — your AI provider (e.g. Anthropic Claude, OpenAI ChatGPT, Google Gemini). Used for record provenance.*
+*`model:` — specific model in use (e.g. claude-sonnet-4-6, gpt-4o). Used for record provenance.*
+
+---
+
 ## People
 
 | Name | Who | Key Context |

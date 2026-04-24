@@ -12,7 +12,19 @@ Custom session commands — call them with a `/` prefix (e.g. `/weekly`).
 
 ## Available verbs
 
-> None active yet. Ask the scribe to activate any of the following, or describe a new one.
+---
+
+### Personality
+
+## /personality
+Switch active personality. Usage: `/personality bob`, `/personality sherlock`, `/personality [name]`. Scribe updates `personality:` in `context.md` and commits. Takes effect at next `hello`. To see what's available: `list personalities`.
+
+## /actor
+Alias for `/personality`. Usage: `/actor bob`, `/actor sherlock`, `/actor [name]`. Same behavior — scribe updates `context.md` and commits. `actor` and `personality` are fully interchangeable everywhere in Cortex.
+
+---
+
+> Activate any of the following, or describe a new one.
 
 ---
 
