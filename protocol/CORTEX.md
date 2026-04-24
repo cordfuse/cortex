@@ -106,65 +106,56 @@ Do not proceed until the user pulls or explicitly says to continue without pulli
 
 If `git pull` produces a merge conflict, stop immediately and walk the user through resolving it before continuing.
 
-**Upstream version check — every `hello`:** verify the `upstream` remote exists; if missing, add it: `git remote add upstream https://github.com/cordfuse/cortex.git`. Then run `git fetch upstream` and compare `upstream/main:version.txt` against the local `.cortex-version` file. If the framework has a newer version, **stop and gate** — do not continue until the user responds:
+**Upstream version check — every `hello`:** verify the `upstream` remote exists; if missing, add it: `git remote add upstream https://github.com/cordfuse/cortex.git`. Then run `git fetch upstream` and compare `upstream/main:version.txt` against the local `.cortex-version` file.
 
-> Framework v[X.Y.Z] is available. You're on v[A.B.C]. Sync now, or defer?
+`.cortex-version` is a single-line file at repo root containing the framework version this instance last synced to (e.g. `3.1.0`). If missing, treat as unsynced and run the auto-sync flow immediately.
 
-- **Defer** (any natural language deferral) — note it and continue on current version. Surface again at next `hello` — never silently drop it.
-- **Sync** (any natural language confirmation) — run the AI-driven sync flow below.
+If the framework has a newer version, **auto-sync silently** — no gate, no question. Users should never need to think about framework versioning. Run the auto-sync flow below. If it succeeds, note the update in the greeting and continue. Only gate if a genuine conflict requires human judgement.
 
-`.cortex-version` is a single-line file at repo root containing the framework version this instance last synced to (e.g. `3.1.0`). Created by the pipe installer at install time. If missing, treat as unsynced — prompt immediately.
+### Auto-sync flow
 
-`git fetch upstream` is lightweight — no reason to throttle it. Missing a protocol update for a week is too long.
+**Scope — read from upstream at sync time.** Sync scope is defined by **upstream's** `protocol/CORTEX.md`, not your local copy. Run `git show upstream/main:protocol/CORTEX.md` and use the Scope paragraph from **that** file for this sync. This prevents scope-widening releases from being unable to bootstrap themselves.
 
-### AI-driven sync flow
+Current upstream scope: `protocol/`, `templates/`, and all top-level framework scripts (`scripts/*.py`). Never auto-sync `scripts/integrations/` — user may have customised those.
 
-Never blindly overwrite. The scribe drives the sync with full transparency at every step.
+<!-- Future: when `git-witness` ships as a standalone binary (cordfuse/git-witness), this flow will invoke `git witness` directly. The protocol stays the same — the binary replaces the manual steps. -->
 
-<!-- Future: when `git-witness` ships as a standalone binary (cordfuse/git-witness), this flow will invoke `git witness` directly instead of the manual steps below. The protocol stays the same — the binary replaces the manual implementation. -->
-
-
-**Scope — read from upstream at sync time.** Sync scope is defined by **upstream's** `protocol/CORTEX.md`, not your local copy. Before Step 1, run `git show upstream/main:protocol/CORTEX.md` and use the Scope paragraph from **that** file for this sync. This prevents scope-widening releases from being unable to bootstrap themselves — the scribe always uses the scope definition shipping with the version it's syncing *to*, never the stale definition in the version it's syncing *from*. Steps 1, 2, and 6 below assume the current scope; if upstream's scope has widened, adjust the glob arguments accordingly.
-
-Current upstream scope: `protocol/`, `templates/`, and all top-level framework scripts (`scripts/*.py`). Never auto-sync `scripts/integrations/` — user may have customised those. The `scripts/*.py` glob matches only top-level entries; the `integrations/` subdirectory is excluded automatically.
-
-**Step 1 — Safety check**
-Before touching anything, check for uncommitted local changes in sync scope:
+**Step 1 — Check for uncommitted local changes in sync scope**
 ```
 git diff HEAD -- protocol/ templates/ 'scripts/*.py'
 ```
-If changes exist, stop:
-> You have uncommitted changes in [files]. Commit or stash them before syncing — otherwise they'll be lost.
+If dirty: defer the sync. Note it in the greeting:
+> *Your Cortex has a framework update available (v[X.Y.Z]). Your protocol files have local changes — run `sync` when ready.*
 
-Do not proceed until clean or user explicitly says to overwrite.
+Do not gate. Do not block the session. Continue on the current version.
 
-**Step 2 — Diff**
-Show the user exactly what upstream changed:
+**Step 2 — Conflict check**
+Check if the user has locally modified any file that upstream also changed:
 ```
 git diff HEAD upstream/main -- protocol/ templates/ 'scripts/*.py'
 ```
-Summarise in plain English: which files changed, what the nature of each change is. Don't dump raw diffs — explain them.
+Cross-reference with `git diff HEAD -- protocol/ templates/ 'scripts/*.py'` to find overlapping edits.
 
-**Step 3 — Conflict check**
-For every file in scope, check if the user has local modifications that overlap with upstream changes. Flag each conflict explicitly:
-> `protocol/ROE.md` — upstream added Rule 17. You have local changes to Rule 15. These need to be merged manually.
+- **No conflicts** → proceed to Step 3.
+- **Conflicts found** → gate. Surface each conflict in plain English and wait:
+  > *Framework update available, but `protocol/ROE.md` has local changes that conflict with upstream. Let's resolve before syncing.*
 
-**Step 4 — Resolve conflicts**
-For each flagged conflict, the scribe proposes a resolution and explains the tradeoff. User approves or redirects. Apply one file at a time. Nothing lands without explicit acknowledgement.
-
-**Step 5 — Apply clean files**
-Files with no conflicts are applied directly:
+**Step 3 — Apply and commit (clean path only)**
+Apply all files in scope from upstream:
 ```
-git checkout upstream/main -- <file>
+git checkout upstream/main -- protocol/ templates/ scripts/*.py
 ```
-
-**Step 6 — Commit**
-After all conflicts resolved and all files applied:
+Update `.cortex-version` to match upstream version, then commit and push:
 ```
-git add protocol/ templates/ scripts/*.py
+git add protocol/ templates/ scripts/*.py .cortex-version
 git commit -m "sync: framework vX.Y.Z"
+git push origin main
 ```
-Update `.cortex-version` in the same commit. Push.
+
+Note the update in the greeting (one line, inside the normal greeting — not a separate alert):
+> *Updated to v[X.Y.Z].*
+
+Then continue the session on the new protocol.
 
 **Personality is locked at session open.** The personality file is read once during Loading Order step 3b and does not reload mid-session. If the user switches personality during a session, the scribe updates `context.md` and commits — the change takes effect at the next `hello`.
 
