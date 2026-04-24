@@ -119,12 +119,12 @@ Never blindly overwrite. The scribe drives the sync with full transparency at ev
 <!-- Future: when `git-witness` ships as a standalone binary (cordfuse/git-witness), this flow will invoke `git witness` directly instead of the manual steps below. The protocol stays the same — the binary replaces the manual implementation. -->
 
 
-**Scope:** upstream owns `protocol/`, `templates/`, and core scripts (`scripts/setup.py`, `scripts/healthcheck.py`, `scripts/secrets.py`). Never auto-sync `scripts/integrations/` — user may have customised those.
+**Scope:** upstream owns `protocol/`, `templates/`, and all top-level framework scripts (`scripts/*.py`). Never auto-sync `scripts/integrations/` — user may have customised those. The `scripts/*.py` glob matches only top-level entries; the `integrations/` subdirectory is excluded automatically.
 
 **Step 1 — Safety check**
 Before touching anything, check for uncommitted local changes in sync scope:
 ```
-git diff HEAD -- protocol/ templates/ scripts/setup.py scripts/healthcheck.py scripts/secrets.py
+git diff HEAD -- protocol/ templates/ 'scripts/*.py'
 ```
 If changes exist, stop:
 > You have uncommitted changes in [files]. Commit or stash them before syncing — otherwise they'll be lost.
@@ -134,7 +134,7 @@ Do not proceed until clean or user explicitly says to overwrite.
 **Step 2 — Diff**
 Show the user exactly what upstream changed:
 ```
-git diff HEAD upstream/main -- protocol/ templates/ scripts/setup.py scripts/healthcheck.py scripts/secrets.py
+git diff HEAD upstream/main -- protocol/ templates/ 'scripts/*.py'
 ```
 Summarise in plain English: which files changed, what the nature of each change is. Don't dump raw diffs — explain them.
 
@@ -154,7 +154,7 @@ git checkout upstream/main -- <file>
 **Step 6 — Commit**
 After all conflicts resolved and all files applied:
 ```
-git add protocol/ templates/ scripts/setup.py scripts/healthcheck.py scripts/secrets.py
+git add protocol/ templates/ scripts/*.py
 git commit -m "sync: framework vX.Y.Z"
 ```
 Update `.cortex-version` in the same commit. Push.
