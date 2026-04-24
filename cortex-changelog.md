@@ -9,6 +9,8 @@ Format: `YYYY-MM-DD HH:MM TZ | file | what changed`
 <!-- Future: if this file grows large, rotate annually to cortex-changelog-YYYY.md -->
 
 ---
+2026-04-24 23:30 UTC | version.txt | bump to 3.4.2
+2026-04-24 23:30 UTC | protocol/CORTEX.md | fix: auto-sync framework updates silently at hello — clean updates apply automatically, noted in one greeting line; only real conflicts gate the session
 2026-04-24 23:15 UTC | version.txt | bump to 3.4.1
 2026-04-24 23:15 UTC | protocol/CORTEX.md | fix: silent load at hello — scribe outputs nothing during load sequence, no narration of confusion or raw counts, single clean greeting
 2026-04-24 16:07 UTC | version.txt | bump to 3.4.0 — personality system
