@@ -101,7 +101,7 @@ Do not proceed until the user pulls or explicitly says to continue without pulli
 
 If `git pull` produces a merge conflict, stop immediately and walk the user through resolving it before continuing.
 
-**Upstream version check — every `hello`:** run `git fetch upstream`, then compare `upstream/main:version.txt` against the local `.cortex-version` file. If the framework has a newer version, **stop and gate** — do not continue until the user responds:
+**Upstream version check — every `hello`:** verify the `upstream` remote exists; if missing, add it: `git remote add upstream https://github.com/cordfuse/cortex.git`. Then run `git fetch upstream` and compare `upstream/main:version.txt` against the local `.cortex-version` file. If the framework has a newer version, **stop and gate** — do not continue until the user responds:
 
 > Framework v[X.Y.Z] is available. You're on v[A.B.C]. Sync now, or defer?
 
