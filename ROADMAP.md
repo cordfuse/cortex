@@ -2,14 +2,23 @@
 
 What's shipped, what's in progress, and what's coming.
 
-**Current version:** 3.4.0 — [Changelog](cortex-changelog.md)
+**Current version:** 3.4.9 — [Changelog](cortex-changelog.md)
 
 ---
 
 ## Shipped
 
-### v3.4.0 — Personality System *(current)*
+### v3.4.9 — Test Sprint Patch *(current)*
+- **Architectural rule: natural language only, no slash-prefixed verbs.** AI client UIs (Claude web, ChatGPT, Gemini web) intercept slash prefixes — slash verbs silently fail. Cortex routes natural language.
+- **Greeting introduces active actor.** Name + title + switch hint as first lines. Solves the "who am I talking to" problem at session open.
+- **`list personalities` / `list actors` rendering fixed.** `## name` field verbatim (TARS not Tars, Sherlock not Verbose), canonical category grouping (Defaults / General / Clinical / Faith), deterministic output template.
+- **Provenance block requires datetime + timezone.** Aligns with v3.3.0 Time Resolution and ROE Rule 17. `Filed: 2026-04-25 17:30 EDT` instead of date-only.
+- **ROE Rule 18: plain text output only.** No emoji or unicode pictographs — render as black boxes on ChromeOS Penguin Chrome.
+- **Honesty/deference clarification.** `honesty` is a virtue; `deference` is the only axis. Closes spec ambiguity.
+
+### v3.4.0 — Personality System
 - **33 built-in personalities** — Bob (default), Sherlock, + 31 library
+  - Validated in 2026-04-25 test sprint: voice differentiation real (Bob vs Sherlock distinct), natural-language creation produces high-quality system prompts, archetype + sycophant warnings fire correctly, dynamic vice re-evaluation on edits
 - Tunable trait model: vibe, virtues, vices, soft skills, hard skills — all percentage sliders
 - Vice/virtue mirror pairs (pride↔integrity, cowardice↔courage, etc.)
 - Archetype system: HARDLINER, DIPLOMAT, ANALYST, CREATIVE, LONE_WOLF, TEAM_PLAYER, JOKESTER
