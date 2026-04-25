@@ -9,6 +9,9 @@ Format: `YYYY-MM-DD HH:MM TZ | file | what changed`
 <!-- Future: if this file grows large, rotate annually to cortex-changelog-YYYY.md -->
 
 ---
+2026-04-25 00:15 UTC | version.txt | bump to 3.4.5
+2026-04-25 00:15 UTC | protocol/CORTEX.md | feat: user-controlled upgrade gate — ask/always/never preference, skipped_versions list, sync verb always on demand
+2026-04-25 00:15 UTC | templates/cortex-upgrade.md | new: upgrade preferences template
 2026-04-24 23:58 UTC | version.txt | bump to 3.4.4
 2026-04-24 23:58 UTC | protocol/CORTEX-PROJECT.md | fix: silent load instruction added to system prompt — scribe outputs nothing until greeting is ready, fires from token one before CORTEX.md is read
 2026-04-24 23:45 UTC | version.txt | bump to 3.4.3
