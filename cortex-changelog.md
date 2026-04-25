@@ -9,6 +9,10 @@ Format: `YYYY-MM-DD HH:MM TZ | file | what changed`
 <!-- Future: if this file grows large, rotate annually to cortex-changelog-YYYY.md -->
 
 ---
+2026-04-25 23:29 UTC | version.txt | bump to 3.4.11 — revert v3.4.10 step 3c (provider/model auto-fill); runtime property, not configuration
+2026-04-25 23:29 UTC | protocol/CORTEX.md | revert Loading Order step 3c — no auto-fill of provider/model in context.md
+2026-04-25 23:29 UTC | protocol/CORTEX.md | provenance block reads provider/model from scribe real-time self-knowledge, never from context.md
+2026-04-25 23:29 UTC | templates/context.md | remove provider:/model: from Scribe section — runtime properties don't belong in config
 2026-04-25 23:16 UTC | version.txt | bump to 3.4.10 — v3.4.9 post-merge test patch + smoke-break time bug fix
 2026-04-25 23:16 UTC | protocol/CORTEX.md | list personalities/actors — exclusive category map, no duplicate rendering (v3.4.10 finding #1)
 2026-04-25 23:16 UTC | protocol/CORTEX.md | provenance block omits empty Provider/Model lines instead of rendering blank (v3.4.10 finding #2)
