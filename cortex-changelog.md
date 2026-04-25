@@ -9,6 +9,8 @@ Format: `YYYY-MM-DD HH:MM TZ | file | what changed`
 <!-- Future: if this file grows large, rotate annually to cortex-changelog-YYYY.md -->
 
 ---
+2026-04-25 01:15 UTC | version.txt | bump to 3.4.8
+2026-04-25 01:15 UTC | protocol/CORTEX.md | CRITICAL fix: docs/ glob removed from sync scope — replaced with explicit named framework files only; blind docs/ sync would delete user personal documents
 2026-04-25 00:45 UTC | version.txt | bump to 3.4.7
 2026-04-25 00:45 UTC | README.md | warning banner + -CUSTOM.md companion table; docs/ added to sync scope; *-CUSTOM.md excluded from sync
 2026-04-25 00:45 UTC | templates/ | new: README-CUSTOM.md, PERSONALITIES-CUSTOM.md, CONNECTORS-CUSTOM.md
