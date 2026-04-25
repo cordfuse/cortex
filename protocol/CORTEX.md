@@ -236,8 +236,9 @@ Never recite open items from memory — always read the files.
   *Actor: [active personality name]*
   *Provider: [provider from context.md, or omit if blank]*
   *Model: [model from context.md, or omit if blank]*
-  *Filed: YYYY-MM-DD*
+  *Filed: YYYY-MM-DD HH:MM TZ*
   ```
+  **`Filed:` must include time and timezone.** Use the `get_current_time` contract (see Time Resolution). Date-only filing is forbidden — multiple records can land in one day, and without time + tz the intra-day chronological order is unrecoverable. This aligns with v3.3.0 Time Resolution and ROE Rule 17. Example: `*Filed: 2026-04-25 17:30 EDT*`.
 - When composing a message or email for the user to send to someone else, use the `message_compose` tool (Claude mobile) instead of outputting plain text. Supported kinds: `textMessage`, `email`, `other`. Especially useful for bill summaries, appointment reminders, or any message the user intends to send immediately.
 
 ## Closing (`goodbye`)
