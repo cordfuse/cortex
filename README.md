@@ -248,6 +248,7 @@ Guardrails apply in both modes.
 - Git + Python 3.9+
 - An AI agent ([Claude Code](https://claude.ai/download), [Gemini CLI](https://github.com/google-gemini/gemini-cli), [OpenCode](https://opencode.ai)) or web interface (claude.ai, ChatGPT)
 - **Use the strongest model your provider offers.** Cortex's protocol is complex — weaker models narrate their work, miss instructions, and surface raw internal state to the user. Claude Opus and GPT-4o outperform smaller models significantly on instruction-following. This is the single biggest lever on experience quality.
+- **Session startup is verbose — this is expected and cannot be suppressed.** When you open a new chat and say `hello`, the AI reads your protocol files, checks your repo state, and runs an opening scan before greeting you. You will see tool-call activity during this process. This is the AI doing its job — not an error. The greeting itself is clean. The loading activity is a limitation of how AI providers expose tool use in their interfaces and is outside Cordfuse's control.
 - **Gemini web and mobile are not supported.** Gemini's web and mobile interfaces do not support the tool-calling and file access flow Cortex requires. Gemini CLI works fine.
 - **ChatGPT compatibility is untested.** The protocol is designed to be provider-agnostic but has only been validated on Claude to date. ChatGPT may behave differently — reports welcome.
 - For offline: [Ollama](https://ollama.com) + self-hosted git

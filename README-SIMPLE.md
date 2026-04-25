@@ -113,6 +113,8 @@ Every time you open a new chat in your project, the AI reads your repo, checks w
 
 You talk. It files. Next session, it remembers.
 
+> **Heads up:** When you first open a chat and say `hello`, you'll see the AI working — reading files, checking things. This is normal and expected. It's not broken. The greeting at the end is what matters. This loading activity is how AI assistants work and isn't something Cortex can hide.
+
 ---
 
 ## Is my data safe?
