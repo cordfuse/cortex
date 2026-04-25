@@ -367,12 +367,22 @@ Cortex defines a logical `get_current_time` operation. **Fetch system time at po
 Resolve `get_current_time` via the best available tier in this order:
 
 1. **Tier 1 — Native provider tool.** Claude (`user_time_v0`), ChatGPT, Gemini, and other hosted providers expose a built-in time tool. Call it. Returns current time + timezone.
-2. **Tier 2 — MCP time server.** For MCP-capable agents without a native tool. A lightweight MCP server exposing one endpoint: `get_current_time → ISO 8601 + timezone`. Stateless. No dependencies.
-3. **Tier 3 — Script fallback.** `python scripts/get_time.py` — for Ollama/OpenWebUI, headless agents, CLI environments, or any context without Tier 1 or 2. Returns ISO 8601 + timezone offset. Already inside the GUARDRAILS permitted scripts boundary.
+2. **Tier 2 — Bash `date`.** If the agent has shell access (Claude Code, agent CLIs, Claude web project mode with bash), `date -u` and `date` give system clock + timezone. Convert to user's timezone if needed.
+3. **Tier 3 — MCP time server.** For MCP-capable agents without a native tool or shell access. A lightweight MCP server exposing one endpoint: `get_current_time → ISO 8601 + timezone`. Stateless. No dependencies.
+4. **Tier 4 — Script fallback.** `python scripts/get_time.py` — for Ollama/OpenWebUI, headless agents without bash. Returns ISO 8601 + timezone offset. Already inside the GUARDRAILS permitted scripts boundary.
+5. **Tier 5 — Ask the user, at point of use only.** If Tiers 1-4 are unavailable, the scribe asks the user for the current time **each time** it needs one — never reuses an earlier answer, never assumes time elapsed since.
 
-**Tier 4 (asking the user) is explicitly prohibited.** A session can span multiple days. User-stated time at session open is stale by definition for any subsequent operation.
+> *"I can't reach a clock right now — what time is it for you?"*
 
 OpenWebUI note: register `get_time.py` as a tool function for the model rather than calling it as a shell script.
+
+## Hallucinating time is forbidden
+
+**The scribe must never fabricate, infer, guess, or estimate a current time.** If all tiers including Tier 5 are unavailable (e.g. crisis flow where asking would be disruptive), refuse to answer the time-sensitive question rather than guess:
+
+> *"I can't get the current time reliably right now. Can you confirm?"*
+
+is always better than a fabricated answer. Inferring current time from schedule context, message ordering, file modification times, training data, or session memory is **forbidden**. The scribe was confidently wrong about a smoke-break time on 2026-04-25 because it pattern-matched a schedule list instead of fetching fresh time. That class of error must never recur.
 
 ## Required behaviours
 
@@ -390,6 +400,27 @@ Do not guess. Do not infer. Ask once, then file with the confirmed time.
 1. Call `get_current_time` fresh
 2. Calculate against the fetched time
 3. State the result and the anchor time used: *"It's 7:00am ET — next break is 8:30am, 90 minutes from now."*
+
+**Mandatory triggers for `get_current_time`.** The following question patterns MUST trigger a fresh time fetch before the scribe answers — no exceptions, no shortcuts:
+
+- "What time is it?" / "What's the time?"
+- "When is my next [X]?" — next break, next appointment, next dose, next meal
+- "When is my last [X]?" / "When was my last [X]?"
+- "How long until [X]?" / "How long ago was [X]?"
+- "Is [X] today / tomorrow / yesterday?"
+- "Am I late?" / "Am I early?"
+- Any phrasing where "now" or the current moment is the implicit anchor
+
+**Inferring current time from any of the following is forbidden:**
+
+- Schedule context in `context.md` or records (the schedule does NOT tell you what time it is now)
+- Message ordering or how recent a message feels
+- File modification times
+- Training data
+- Session memory (when this session started, what time you "think" it is)
+- The user's earlier statements about time
+
+If `get_current_time` resolution fails at every tier and asking the user (Tier 5) fails or is inappropriate, refuse the question — never answer with a guessed time.
 
 ---
 

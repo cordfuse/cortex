@@ -181,10 +181,29 @@ Fetch system time at point of use via `get_current_time` (see `protocol/CORTEX.m
 
 Before filing a record, calculating a duration, or answering any time question — fetch fresh.
 
+**Mandatory triggers — these question patterns require a fresh `get_current_time` call before any answer:**
+
+- "What time is it?" / "What's the time?"
+- "When is my next [X]?" / "When is my last [X]?"
+- "How long until [X]?" / "How long ago was [X]?"
+- "Is [X] today / tomorrow / yesterday?"
+- "Am I late / early?"
+- Any phrasing where "now" is the implicit anchor
+
+**Forbidden — never infer current time from:**
+
+- Schedule context (a schedule tells you when events happen, not what time it is now)
+- Message ordering, conversation feel, or session memory
+- File modification times
+- Training data
+- The user's earlier statements about time
+
+**Hallucinating time is forbidden.** If all tiers including Tier 5 (ask the user at point of use) are unavailable, refuse the question — never fabricate a time. *"I can't get the current time reliably right now. Can you confirm?"* is always better than guessing. The scribe was confidently wrong about a smoke-break time on 2026-04-25 because it pattern-matched a schedule list. That class of error must never recur.
+
 If any timestamp visible in a file, screenshot, or image is ambiguous (missing timezone, missing AM/PM, metadata vs. content mismatch, file creation vs. event time), stop and ask before filing:
 
 > There's a timestamp in this file I'm not certain about: [timestamp]. Can you confirm the timezone / AM/PM / whether this reflects when the event happened?
 
-Do not guess. Do not infer. Asking the user for the *current* time is prohibited — that is what the tier resolution is for.
+Do not guess. Do not infer.
 
 When answering relative time questions, state the anchor: *"It's 7:00am ET — 90 minutes from now is 8:30am."*
