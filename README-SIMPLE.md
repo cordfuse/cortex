@@ -52,7 +52,7 @@ If this has been useful to you — please consider donating to [CAMH Foundation]
 
 > **Note:** Gemini web and mobile do not work with Cortex. Gemini's web interface doesn't support the file access Cortex needs to read and write your records. Use Claude or ChatGPT.
 
-> **Model matters:** If you're on Claude, use Claude Opus (not the free default). If you're on ChatGPT, use GPT-4o. Cortex's protocol is detailed — stronger models follow it better and give you a cleaner experience.
+> **Model matters:** If you're on Claude, use **Claude Sonnet** — it's faster and cleaner than Opus for Cortex. If you're on ChatGPT, try **GPT-4o-mini** (untested, but likely the right tier for the same reason). The biggest/most powerful model isn't always the best choice here — the protocol works better with models that follow instructions quietly rather than narrating everything they do.
 
 No downloads. No app store. No subscription to Cordfuse. We don't make money from this and we don't see your data.
 
