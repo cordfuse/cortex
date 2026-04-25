@@ -6,7 +6,13 @@
 
 **Not a developer?** [Read the plain English version →](README-SIMPLE.md)
 
-> **Your notes:** [README.local.md](README.local.md) — add personal context, links, or notes here. This file is yours and never overwritten by framework updates.
+> ⚠️ **Framework files — do not edit.** This file and all linked docs are overwritten when the framework updates. Put your personal notes in the `-CUSTOM.md` companions instead — they follow the same pattern as `VERBS-CUSTOM.md` and `ROE-CUSTOM.md` and are never touched by the framework.
+>
+> | Your notes | Framework doc |
+> |---|---|
+> | [README-CUSTOM.md](README-CUSTOM.md) | This file |
+> | [docs/PERSONALITIES-CUSTOM.md](docs/PERSONALITIES-CUSTOM.md) | [docs/PERSONALITIES.md](docs/PERSONALITIES.md) |
+> | [docs/CONNECTORS-CUSTOM.md](docs/CONNECTORS-CUSTOM.md) | [docs/CONNECTORS.md](docs/CONNECTORS.md) |
 
 **Your AI remembers everything. You own the records.**
 

@@ -133,7 +133,7 @@ The `sync` verb always runs the sync flow on demand, regardless of upgrade prefe
 
 **Scope — read from upstream at sync time.** Sync scope is defined by **upstream's** `protocol/CORTEX.md`, not your local copy. Run `git show upstream/main:protocol/CORTEX.md` and use the Scope paragraph from **that** file for this sync. This prevents scope-widening releases from being unable to bootstrap themselves.
 
-Current upstream scope: `protocol/`, `templates/`, `scripts/*.py` (top-level only), `personalities/PERSONALITY-*.md` (built-in personalities), `README.md`, and `README-SIMPLE.md`. Never auto-sync `scripts/integrations/`, `personalities/PERSONALITY-CUSTOM-*.md`, or `README.local.md` — user may have customised those.
+Current upstream scope: `protocol/`, `templates/`, `scripts/*.py` (top-level only), `personalities/PERSONALITY-*.md` (built-in personalities), `README.md`, `README-SIMPLE.md`, `ROADMAP.md`, and `docs/` (all framework docs). Never auto-sync `scripts/integrations/`, `personalities/PERSONALITY-CUSTOM-*.md`, or any `*-CUSTOM.md` file anywhere in the repo — those are user-owned and must never be overwritten.
 
 <!-- Future: when `git-witness` ships as a standalone binary (cordfuse/git-witness), this flow will invoke `git witness` directly. The protocol stays the same — the binary replaces the manual steps. -->
 
