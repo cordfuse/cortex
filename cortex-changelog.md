@@ -9,6 +9,10 @@ Format: `YYYY-MM-DD HH:MM TZ | file | what changed`
 <!-- Future: if this file grows large, rotate annually to cortex-changelog-YYYY.md -->
 
 ---
+2026-04-25 00:30 UTC | version.txt | bump to 3.4.6
+2026-04-25 00:30 UTC | README.md | link to README.local.md added at top; README.md added to sync scope
+2026-04-25 00:30 UTC | templates/README.local.md | new: starter template for personal notes, never synced by framework
+2026-04-25 00:30 UTC | protocol/CORTEX.md | sync scope expanded: README.md, README-SIMPLE.md added; README.local.md explicitly excluded
 2026-04-25 00:15 UTC | version.txt | bump to 3.4.5
 2026-04-25 00:15 UTC | protocol/CORTEX.md | feat: user-controlled upgrade gate — ask/always/never preference, skipped_versions list, sync verb always on demand
 2026-04-25 00:15 UTC | templates/cortex-upgrade.md | new: upgrade preferences template
