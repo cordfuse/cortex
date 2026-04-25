@@ -133,7 +133,15 @@ The `sync` verb always runs the sync flow on demand, regardless of upgrade prefe
 
 **Scope — read from upstream at sync time.** Sync scope is defined by **upstream's** `protocol/CORTEX.md`, not your local copy. Run `git show upstream/main:protocol/CORTEX.md` and use the Scope paragraph from **that** file for this sync. This prevents scope-widening releases from being unable to bootstrap themselves.
 
-Current upstream scope: `protocol/`, `templates/`, `scripts/*.py` (top-level only), `personalities/PERSONALITY-*.md` (built-in personalities), `README.md`, `README-SIMPLE.md`, `ROADMAP.md`, and `docs/` (all framework docs). Never auto-sync `scripts/integrations/`, `personalities/PERSONALITY-CUSTOM-*.md`, or any `*-CUSTOM.md` file anywhere in the repo — those are user-owned and must never be overwritten.
+Current upstream scope — explicit file list (never glob `docs/` — users store personal files there):
+- `protocol/` (all files)
+- `templates/` (all files)
+- `scripts/*.py` (top-level only — never `scripts/integrations/`)
+- `personalities/PERSONALITY-[^C]*.md` (built-in personalities only — never `PERSONALITY-CUSTOM-*`)
+- `README.md`, `README-SIMPLE.md`, `ROADMAP.md`
+- `docs/PERSONALITIES.md`, `docs/CONNECTORS.md`, `docs/SETUP-DESKTOP.md`, `docs/SETUP-MOBILE.md`
+
+Never sync: `scripts/integrations/`, `personalities/PERSONALITY-CUSTOM-*.md`, any `*-CUSTOM.md` file, or anything in `docs/` not listed above. Users store personal documents in `docs/` — a blind `git checkout upstream/main -- docs/` would delete them.
 
 <!-- Future: when `git-witness` ships as a standalone binary (cordfuse/git-witness), this flow will invoke `git witness` directly. The protocol stays the same — the binary replaces the manual steps. -->
 
