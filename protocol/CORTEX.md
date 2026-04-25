@@ -235,11 +235,21 @@ Never recite open items from memory — always read the files.
   ```
   ---
   *Actor: [active personality name]*
-  *Provider: [provider from context.md, or omit if blank]*
-  *Model: [model from context.md, or omit if blank]*
+  *Provider: [provider from context.md]*
+  *Model: [model from context.md]*
   *Filed: YYYY-MM-DD HH:MM TZ*
   ```
   **`Filed:` must include time and timezone.** Use the `get_current_time` contract (see Time Resolution). Date-only filing is forbidden — multiple records can land in one day, and without time + tz the intra-day chronological order is unrecoverable. This aligns with v3.3.0 Time Resolution and ROE Rule 17. Example: `*Filed: 2026-04-25 17:30 EDT*`.
+
+  **Empty fields must be omitted, not rendered blank.** If `provider:` or `model:` is blank in `context.md` (and Loading Order step 3c didn't auto-fill them), drop the entire line from the provenance block. Do NOT render `*Provider: *` or `*Model: *` with empty values — that looks broken. The block contracts cleanly:
+
+  ```
+  ---
+  *Actor: Bob*
+  *Filed: 2026-04-25 17:30 EDT*
+  ```
+
+  is valid output when provider and model are unknown. `Actor:` and `Filed:` are mandatory and never omitted.
 - When composing a message or email for the user to send to someone else, use the `message_compose` tool (Claude mobile) instead of outputting plain text. Supported kinds: `textMessage`, `email`, `other`. Especially useful for bill summaries, appointment reminders, or any message the user intends to send immediately.
 
 ## Closing (`goodbye`)
