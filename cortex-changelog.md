@@ -11,7 +11,6 @@ Format: `YYYY-MM-DD HH:MM TZ | file | what changed`
 ---
 2026-04-25 21:14 UTC | version.txt | bump to 3.4.9 — v3.4.0 test sprint patch
 2026-04-25 21:14 UTC | protocol/CORTEX.md | clarify honesty is a virtue, deference is the only axis (sprint finding #9)
-2026-04-25 21:14 UTC | protocol/ROE.md | new Rule 18 — plain text output only, no emoji or unicode pictographs (sprint finding #8)
 2026-04-25 21:14 UTC | protocol/CORTEX.md | provenance block requires datetime + timezone (sprint finding #7)
 2026-04-25 21:14 UTC | protocol/CORTEX.md | hello greeting introduces active actor + switch hint as first two lines (sprint finding #6)
 2026-04-25 21:14 UTC | protocol/CORTEX.md | list personalities/actors — name field verbatim, categories, canonical output template (sprint findings #2-5)
