@@ -544,6 +544,8 @@ Ported from Politik's Human Flaw Thesis. Mirror virtues and vices — every stre
 
 Sycophant combination: `honesty < 40` AND `deference > 70`. See warnings below.
 
+> **Honesty placement:** `honesty` is a **virtue** (lives under `## virtues`), not an axis. It pairs with the sycophant warning but is structurally a virtue trait. Custom personality files must place `honesty` under `## virtues`. The only field under `## axes` is `deference`.
+
 ---
 
 ## Activation
