@@ -9,6 +9,12 @@ Format: `YYYY-MM-DD HH:MM TZ | file | what changed`
 <!-- Future: if this file grows large, rotate annually to cortex-changelog-YYYY.md -->
 
 ---
+2026-04-25 23:16 UTC | version.txt | bump to 3.4.10 — v3.4.9 post-merge test patch + smoke-break time bug fix
+2026-04-25 23:16 UTC | protocol/CORTEX.md | list personalities/actors — exclusive category map, no duplicate rendering (v3.4.10 finding #1)
+2026-04-25 23:16 UTC | protocol/CORTEX.md | provenance block omits empty Provider/Model lines instead of rendering blank (v3.4.10 finding #2)
+2026-04-25 23:16 UTC | protocol/CORTEX.md | Loading Order step 3c — auto-fill provider/model in context.md at hello if blank (v3.4.10 finding #4)
+2026-04-25 23:16 UTC | protocol/CORTEX.md | Time Resolution — Tier 2 (bash date) added, Tier 5 (ask user at point of use) added, mandatory triggers list, never hallucinate (v3.4.10 finding #5+#6)
+2026-04-25 23:16 UTC | protocol/ROE.md | Rule 17 — mandatory get_current_time triggers, forbidden inference sources, hallucinating time forbidden (v3.4.10 finding #5+#6)
 2026-04-25 21:14 UTC | version.txt | bump to 3.4.9 — v3.4.0 test sprint patch
 2026-04-25 21:14 UTC | protocol/CORTEX.md | clarify honesty is a virtue, deference is the only axis (sprint finding #9)
 2026-04-25 21:14 UTC | protocol/CORTEX.md | provenance block requires datetime + timezone (sprint finding #7)
