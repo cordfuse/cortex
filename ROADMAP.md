@@ -2,13 +2,20 @@
 
 What's shipped, what's in progress, and what's coming.
 
-**Current version:** 3.4.9 — [Changelog](cortex-changelog.md)
+**Current version:** 3.4.10 — [Changelog](cortex-changelog.md)
 
 ---
 
 ## Shipped
 
-### v3.4.9 — Test Sprint Patch *(current)*
+### v3.4.10 — Time Resolution Hardening + Post-Merge Polish *(current)*
+- **Time Resolution overhaul.** Tier 2 (bash `date`) added between native tools and MCP — works in Claude web project mode and most agent CLIs. Tier 5 (ask user at point of use) added as the explicit fallback when all higher tiers fail. **Hallucinating time is now forbidden** by both CORTEX.md and ROE Rule 17.
+- **Mandatory triggers for `get_current_time`.** "What time is it", "when is my next X", "how long until / ago", "is X today/tomorrow", "am I late" — all now require a fresh fetch. Inferring current time from schedule context, message ordering, file mod times, or session memory is explicitly forbidden.
+- **Auto-detect provider/model at hello.** Loading Order step 3c — if `context.md` Scribe section has blank `provider:` or `model:`, the scribe self-populates from its own model card and commits. The scribe IS the AI; it knows what it is. User no longer has to paste this by hand.
+- **Provenance block omits empty fields.** Empty `Provider:` and `Model:` lines no longer render as `*Provider: *` — they drop entirely. Block contracts cleanly when only `Actor:` and `Filed:` are populated.
+- **`list personalities` deduplicates.** Each personality appears in exactly one category section. Arnold no longer rendered in both General and Clinical & wellness.
+
+### v3.4.9 — Test Sprint Patch
 - **Architectural rule: natural language only, no slash-prefixed verbs.** AI client UIs (Claude web, ChatGPT, Gemini web) intercept slash prefixes — slash verbs silently fail. Cortex routes natural language.
 - **Greeting introduces active actor.** Name + title + switch hint as first lines. Solves the "who am I talking to" problem at session open.
 - **`list personalities` / `list actors` rendering fixed.** `## name` field verbatim (TARS not Tars, Sherlock not Verbose), canonical category grouping (Defaults / General / Clinical / Faith), deterministic output template.
