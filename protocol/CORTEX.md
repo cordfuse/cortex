@@ -66,29 +66,31 @@ Plain words, reserved by Cortex. Never reuse these as custom verb names.
 
 ### User-defined verbs
 
-Users can define their own verbs in `VERBS.md` at the repo root. Custom verbs are called with a `/` prefix — e.g. `/weekly`, `/bills`, `/checkin`. This prefix guarantees they can never conflict with current or future built-in verbs.
+Users can define their own verbs in `VERBS.md` at the repo root. **Custom verbs are invoked by natural language — no prefix.** The scribe is the parser; it routes intent. Examples: *"weekly review"*, *"log meds"*, *"check calendar"*.
+
+> **No slash prefixes.** Slash-prefixed verbs (`/weekly`, `/personality`, etc.) are not used. Many AI client UIs — Claude web, ChatGPT, Gemini web — intercept slash prefixes as their own native commands before the scribe ever sees them, so slash verbs silently fail. Inference does not need an explicit command parser; the scribe routes natural language.
 
 At `hello`, read `VERBS.md` if present and load all **uncommented** custom verbs for the session. Commented-out verb blocks (`<!-- ... -->`) are available but inactive. `list verbs` outputs both built-in and active custom verbs.
 
 **The scribe manages VERBS.md — users never edit it manually.** `VERBS.md` is a framework file. The only permitted operations on it are activation and deactivation:
-- **Activate:** uncomment the verb block, commit: `verbs: activate /verbname`
-- **Deactivate:** comment it out, commit: `verbs: deactivate /verbname`
+- **Activate:** uncomment the verb block, commit: `verbs: activate [verbname]`
+- **Deactivate:** comment it out, commit: `verbs: deactivate [verbname]`
 
-**Adding new verbs or overriding framework verb behaviour goes in `VERBS-CUSTOM.md` — never in `VERBS.md`.** If the user asks to change what a framework verb does, or add a verb not in the framework, write it to `VERBS-CUSTOM.md` and commit: `verbs: add /verbname` or `verbs: override /verbname`.
+**Adding new verbs or overriding framework verb behaviour goes in `VERBS-CUSTOM.md` — never in `VERBS.md`.** If the user asks to change what a framework verb does, or add a verb not in the framework, write it to `VERBS-CUSTOM.md` and commit: `verbs: add [verbname]` or `verbs: override [verbname]`.
 
-If a `VERBS.md` entry uses a name that matches a built-in verb (without the `/`), ignore it and warn the user:
+**Built-in verb name reservation.** Custom verb names must not match any built-in verb name: `hello`, `goodbye`, `status`, `sync`, `search`, `list verbs`, `list personalities`, `list actors`. If a `VERBS.md` or `VERBS-CUSTOM.md` entry uses a reserved name, ignore it and warn the user:
 
 > `[name]` is a reserved built-in verb. Rename it in VERBS.md to avoid conflict.
 
 `VERBS.md` format:
 ```
-## /weekly
+## weekly review
 Run my weekly review. Read all records from the past 7 days. Surface patterns, open items, and anything unresolved. File a summary.
 
-## /bills
+## bills
 Pull my Google Calendar for due dates. Cross-reference household-payments record. List what's due this week.
 
-## /checkin
+## checkin
 Ask me three questions: how am I feeling, what's on my mind, what do I want to file.
 ```
 

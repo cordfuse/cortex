@@ -18,7 +18,7 @@ What's shipped, what's in progress, and what's coming.
 - Natural language tuning — "dial Oscar's sarcasm down to 40%"
 - Sycophant warning — fires when honesty < 40% and deference > 70%
 - Archetype vice warnings — flags dangerous trait combinations at creation
-- `/personality` and `/actor` verbs — switch active personality mid-session (both accepted)
+- `switch personality` / `change actor` / `use [name]` — natural-language verbs to switch active personality (both `personality:` and `actor:` field aliases accepted)
 - `list personalities` / `list actors` built-in verbs (aliases)
 - `personality:` / `actor:` field in `context.md` — both spellings accepted
 - Record provenance block — every filed record now includes actor, provider, model, date
@@ -88,7 +88,7 @@ What's shipped, what's in progress, and what's coming.
 - [ ] Setup wizard — writes starter `.claude/settings.json` at end of setup (git, gh, docker, npm, mkdir — prevents silent hangs on mobile)
 - [ ] Egress proxy / web fetcher — `scripts/integrations/fetcher.py` for fetching arbitrary URLs inside the permitted scripts boundary
 - [ ] Fail-gracefully rule — any script calling external services catches network errors and prints manual fallback
-- [ ] `/donate` verb — surfaces CAMH Foundation link
+- [ ] `donate` verb — surfaces CAMH Foundation link
 
 ### v3.7.0 — Federation
 - [ ] Multiple isolated Cortex repos linked through a root with read-only pointers
