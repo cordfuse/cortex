@@ -6,6 +6,8 @@
 
 **Not a developer?** [Read the plain English version →](README-SIMPLE.md)
 
+> **Your notes:** [README.local.md](README.local.md) — add personal context, links, or notes here. This file is yours and never overwritten by framework updates.
+
 **Your AI remembers everything. You own the records.**
 
 Every AI chat starts from zero — you re-explain your life every single session. Cortex fixes that. Talk to your AI scribe, it files everything into a private git repo you own. Next session, it reads your records and picks up where you left off. Any device. Any major AI. Nothing sent to Cordfuse.
