@@ -658,7 +658,8 @@ User says *"use Sherlock"*. Scribe:
 
 1. **Use the `## name` field verbatim.** Do not use the filename slug. Do not title-case, lowercase, or otherwise transform. `TARS` stays `TARS`. `Sherlock` stays `Sherlock`. `Dr. Morgan` stays `Dr. Morgan`. The name field is the source of truth for display.
 2. **Render with categories.** Built-in personalities are grouped per the canonical category map below. Any personality file matching `PERSONALITY-CUSTOM-*.md` goes under `Custom`. Personalities not in the canonical map and not matching `PERSONALITY-CUSTOM-*` default to `Custom`.
-3. **Mark the active one.** Append ` ← active` to the active personality wherever it appears in the categorised list.
+3. **Each personality appears exactly once.** The category map is exclusive — no personality may be rendered in more than one section, even if their domain overlaps multiple categories (e.g. Arnold is fitness-adjacent to wellness but lives in Clinical & wellness *only*, not General). One personality, one section, every time.
+4. **Mark the active one.** Append ` ← active` to the active personality wherever it appears in the categorised list.
 
 **Canonical category map (built-ins):**
 
