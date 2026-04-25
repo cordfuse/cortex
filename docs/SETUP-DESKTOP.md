@@ -49,7 +49,7 @@ qwen        # Qwen Code
 hello
 ```
 
-The scribe reads your protocol files, scans for open items, and picks up where you left off.
+The scribe sets up silently and greets you. No narration — just: **What's on your mind?**
 
 ---
 

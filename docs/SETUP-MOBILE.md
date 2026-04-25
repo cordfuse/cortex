@@ -72,7 +72,7 @@ Open your repo on GitHub. Navigate to `protocol/CORTEX-PROJECT.md`. Copy the ful
 hello
 ```
 
-The scribe reads `CONNECT.md`, clones your repo over HTTPS using your PAT, scans for open items, and picks up where you left off.
+The scribe sets up silently and greets you. No narration — just: **What's on your mind?**
 
 ---
 
