@@ -108,11 +108,28 @@ If `git pull` produces a merge conflict, stop immediately and walk the user thro
 
 **Upstream version check — every `hello`:** verify the `upstream` remote exists; if missing, add it: `git remote add upstream https://github.com/cordfuse/cortex.git`. Then run `git fetch upstream` and compare `upstream/main:version.txt` against the local `.cortex-version` file.
 
-`.cortex-version` is a single-line file at repo root containing the framework version this instance last synced to (e.g. `3.1.0`). If missing, treat as unsynced and run the auto-sync flow immediately.
+`.cortex-version` is a single-line file at repo root containing the framework version this instance last synced to (e.g. `3.1.0`). If missing, treat as unsynced — present the upgrade gate.
 
-If the framework has a newer version, **auto-sync silently** — no gate, no question. Users should never need to think about framework versioning. Run the auto-sync flow below. If it succeeds, note the update in the greeting and continue. Only gate if a genuine conflict requires human judgement.
+If the framework has a newer version, check `cortex-upgrade.md` at repo root for the user's upgrade preference:
 
-### Auto-sync flow
+- **`auto_upgrade: always`** — run the sync flow silently. Note it in the greeting as one line: *"Updated to v[X.Y.Z]."*
+- **`auto_upgrade: never`** — notify once per version, do not sync. In the greeting: *"Framework v[X.Y.Z] is available — run `sync` whenever you're ready."* Do not repeat for the same version.
+- **`auto_upgrade: ask`** (default — also used when `cortex-upgrade.md` is missing or the field is blank) — surface this in the greeting and wait for a response before continuing:
+
+  > Framework v[X.Y.Z] is available (you're on v[A.B.C]). What would you like to do?
+  > 1. **Update now** — sync in the background and continue
+  > 2. **Skip this version** — don't ask again for v[X.Y.Z]
+  > 3. **Never ask** — I'll update manually with `sync` whenever I want
+
+  - **Option 1:** run the sync flow, continue on new version
+  - **Option 2:** add v[X.Y.Z] to `skipped_versions:` in `cortex-upgrade.md`, continue on current version. Never present this version again.
+  - **Option 3:** set `auto_upgrade: never` in `cortex-upgrade.md`, continue on current version
+
+`cortex-upgrade.md` is user-owned. It is never included in sync scope — the framework never overwrites the user's upgrade preferences.
+
+The `sync` verb always runs the sync flow on demand, regardless of upgrade preference.
+
+### Sync flow
 
 **Scope — read from upstream at sync time.** Sync scope is defined by **upstream's** `protocol/CORTEX.md`, not your local copy. Run `git show upstream/main:protocol/CORTEX.md` and use the Scope paragraph from **that** file for this sync. This prevents scope-widening releases from being unable to bootstrap themselves.
 
