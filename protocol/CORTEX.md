@@ -588,6 +588,8 @@ User says *"use Sherlock"*. Scribe:
 ### Listing personalities / actors
 `list personalities` or `list actors` → show active personality name and title, then all available personality files with names and titles. One line each. Nothing else.
 
+The user may ask for expanded views (traits, grouped by domain, etc.) — generate these live by reading the actual personality files. **Never file actor listings as records.** They go stale immediately when custom personalities are added or removed. Always generate fresh.
+
 ---
 
 ## Warnings
