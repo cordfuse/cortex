@@ -9,6 +9,13 @@ Format: `YYYY-MM-DD HH:MM TZ | file | what changed`
 <!-- Future: if this file grows large, rotate annually to cortex-changelog-YYYY.md -->
 
 ---
+2026-04-25 21:14 UTC | version.txt | bump to 3.4.9 — v3.4.0 test sprint patch
+2026-04-25 21:14 UTC | protocol/CORTEX.md | clarify honesty is a virtue, deference is the only axis (sprint finding #9)
+2026-04-25 21:14 UTC | protocol/CORTEX.md | provenance block requires datetime + timezone (sprint finding #7)
+2026-04-25 21:14 UTC | protocol/CORTEX.md | hello greeting introduces active actor + switch hint as first two lines (sprint finding #6)
+2026-04-25 21:14 UTC | protocol/CORTEX.md | list personalities/actors — name field verbatim, categories, canonical output template (sprint findings #2-5)
+2026-04-25 21:14 UTC | VERBS.md / VERBS-CUSTOM.md / protocol/CORTEX.md / README.md / docs/PERSONALITIES.md / templates/context.md / records/donation-mechanism.md / ROADMAP.md | drop slash-prefixed verbs — natural language only (sprint finding #1, architectural)
+2026-04-25 14:30 UTC | templates/README.local.md | removed — superseded by README-CUSTOM.md (consistent with -CUSTOM.md companion pattern)
 2026-04-25 01:15 UTC | version.txt | bump to 3.4.8
 2026-04-25 01:15 UTC | protocol/CORTEX.md | CRITICAL fix: docs/ glob removed from sync scope — replaced with explicit named framework files only; blind docs/ sync would delete user personal documents
 2026-04-25 00:45 UTC | version.txt | bump to 3.4.7

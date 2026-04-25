@@ -1,6 +1,6 @@
 # Cortex
 
-[![Version](https://img.shields.io/badge/version-3.4.0-blue)](cortex-changelog.md)
+[![Version](https://img.shields.io/badge/version-3.4.9-blue)](cortex-changelog.md)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![Donate to CAMH](https://img.shields.io/badge/Donate-CAMH%20Foundation-blue)](https://camhfoundation.ca/donate)
 
@@ -60,7 +60,7 @@ If this has been useful to you — or if you just believe mental health infrastr
 
 **Your scribe has a personality.** 33 built-in personalities — from Bob (warm, funny, plain English) to Sherlock (precise, methodical) to Dr. Quinn (psychologist listening style) to Lama (Buddhist equanimity). Switch with one line. Create your own in plain English. [Full personality reference →](docs/PERSONALITIES.md)
 
-**Extensible.** Built-in session commands. Define your own in `VERBS.md` — `/weekly`, `/bills`, `/checkin`, anything you want.
+**Extensible.** Built-in session commands. Define your own in `VERBS.md` — `weekly review`, `bills`, `checkin`, anything you want. **Natural language only — no slash prefixes** (Claude web and other clients hijack `/`).
 
 **Analysis on demand.** Ask the scribe to look across your records and tell you what it sees. Patterns, connections, escalations, progress.
 
@@ -120,15 +120,14 @@ Both guides cover new users and existing Cortex repos.
 
 ### Custom verbs
 
-Define your own in `VERBS.md` with a `/` prefix:
+Define your own in `VERBS.md`. Invoke by name in natural language — no slash prefix:
 
 | Verb | What it does |
 |---|---|
-| `/personality [name]` | Switch active personality (takes effect at next `hello`) |
-| `/actor [name]` | Alias for `/personality` — fully interchangeable |
-| `/weekly` | Weekly review across all records |
-| `/daily` | Open a daily log entry |
-| `/bills` | Review upcoming bills |
+| `switch personality to [name]` | Switch active personality (takes effect at next `hello`). Aliases: *change actor*, *use [name]* |
+| `weekly review` | Weekly review across all records |
+| `daily log` | Open a daily log entry |
+| `bills` | Review upcoming bills |
 | *...and any verb you define* | |
 
 ---

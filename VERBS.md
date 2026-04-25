@@ -1,12 +1,14 @@
 # Custom Verbs
 
-Custom session commands — call them with a `/` prefix (e.g. `/weekly`).
+Custom session commands the scribe knows about. Invoked by **natural language** — say what you want, the scribe routes the intent.
 
-**To activate a verb:** just ask — *"activate /weekly"* or *"turn on /calendar"*. The scribe enables it and commits.  
-**To deactivate:** *"deactivate /meds"*. The scribe disables it and commits.  
+**To activate a verb:** just ask — *"activate weekly review"* or *"turn on calendar"*. The scribe enables it and commits.
+**To deactivate:** *"deactivate medication logging"* or *"turn off meds"*. The scribe disables it and commits.
 **To add your own:** describe what you want — the scribe writes it, adds it here, and commits.
 
 `list verbs` shows everything currently active alongside the built-ins.
+
+> **No slash prefixes.** Cortex uses natural language. `/weekly` etc. are not used — many AI client UIs (Claude web, ChatGPT, Gemini web) intercept slash prefixes as their own native commands before the scribe ever sees them. Custom verb names must not collide with built-in verb names (`hello`, `goodbye`, `status`, `sync`, `search`, `list verbs`, `list personalities`, `list actors`).
 
 ---
 
@@ -16,11 +18,8 @@ Custom session commands — call them with a `/` prefix (e.g. `/weekly`).
 
 ### Personality
 
-## /personality
-Switch active personality. Usage: `/personality bob`, `/personality sherlock`, `/personality [name]`. Scribe updates `personality:` in `context.md` and commits. Takes effect at next `hello`. To see what's available: `list personalities`.
-
-## /actor
-Alias for `/personality`. Usage: `/actor bob`, `/actor sherlock`, `/actor [name]`. Same behavior — scribe updates `context.md` and commits. `actor` and `personality` are fully interchangeable everywhere in Cortex.
+## switch personality
+Switch active personality. Usage: *"switch personality to bob"*, *"change actor to sherlock"*, *"use [name]"*. Scribe updates `personality:` in `context.md` and commits. Takes effect at next `hello`. To see what's available: `list personalities`. (Aliases: *change actor*, *use*.)
 
 ---
 
@@ -31,28 +30,28 @@ Alias for `/personality`. Usage: `/actor bob`, `/actor sherlock`, `/actor [name]
 ### Health & daily life
 
 <!--
-## /daily
+## daily log
 Open a daily log entry. Ask how I'm doing, what happened today, anything worth filing. Use the day template.
 
-## /meds
+## meds
 Log medications taken today — name, dose, time, any notes. Use the medication template.
 
-## /symptoms
+## symptoms
 Log current symptoms — what, when, severity, context. Use the symptoms template.
 
-## /mood
+## mood
 Quick mood and energy snapshot. One or two questions, then file a short entry.
 
-## /sleep
+## sleep
 Log last night's sleep — hours, quality, anything notable on waking.
 
-## /vitals
+## vitals
 Log health vitals — blood pressure, blood sugar, weight, or whatever I track. Ask what I'm logging.
 
-## /appt
-Log an appointment — who, when, what was discussed, any follow-ups. Use the appointment template.
+## appointment
+Log an appointment — who, when, what was discussed, any follow-ups. Use the appointment template. (Alias: *appt*.)
 
-## /therapy
+## therapy
 Log a therapy session — what came up, what shifted, anything to follow. Use the session template.
 -->
 
@@ -61,22 +60,22 @@ Log a therapy session — what came up, what shifted, anything to follow. Use th
 ### Work & projects
 
 <!--
-## /standup
+## standup
 Run a quick standup: what I did yesterday, what I'm doing today, any blockers. File as a tasks entry.
 
-## /tasks
+## tasks
 Review and update my open task list. Pull existing tasks records, ask what's done, what's new, what's stuck.
 
-## /project
+## project
 Log progress on a project. Ask which project, what happened, what's next. Use the project template.
 
-## /decision
+## decision
 Log a decision — what it was, why, what alternatives were considered. Use the analysis template.
 
-## /win
+## win
 Log an achievement or win, big or small. No filing pressure — just get it on record.
 
-## /idea
+## idea
 Fast idea capture. Ask what the idea is, file it immediately, no polish required.
 -->
 
@@ -85,13 +84,13 @@ Fast idea capture. Ask what the idea is, file it immediately, no polish required
 ### Finance
 
 <!--
-## /bills
+## bills
 Review upcoming bills. Cross-reference my finance records. List what's due this week with amounts and methods.
 
-## /spend
+## spend
 Log a purchase or expense — what, amount, category, notes.
 
-## /budget
+## budget
 Review current financial picture. Pull recent finance records and summarise.
 -->
 
@@ -100,19 +99,19 @@ Review current financial picture. Pull recent finance records and summarise.
 ### Reflection
 
 <!--
-## /weekly
-Weekly review. Read all records from the past 7 days. Surface patterns, open items, anything unresolved. Ask if I want to file a summary.
+## weekly review
+Read all records from the past 7 days. Surface patterns, open items, anything unresolved. Ask if I want to file a summary. (Alias: *weekly*.)
 
-## /monthly
-Monthly review. Read all records from the past 30 days. Summarise themes, progress, and anything I want to carry forward.
+## monthly review
+Read all records from the past 30 days. Summarise themes, progress, and anything I want to carry forward. (Alias: *monthly*.)
 
-## /patterns
+## patterns
 Look across all records and tell me what you see — recurring themes, escalations, connections I might have missed.
 
-## /open
-List every open, unresolved, or flagged item across all records. Nothing filed, just a list.
+## open items
+List every open, unresolved, or flagged item across all records. Nothing filed, just a list. (Alias: *open*.)
 
-## /vent
+## vent
 I need to talk. Listen, reflect, don't advise. File only if I ask.
 -->
 
@@ -122,31 +121,31 @@ I need to talk. Listen, reflect, don't advise. File only if I ask.
 > Requires the relevant integration to be set up. See [docs/CONNECTORS.md](docs/CONNECTORS.md).
 
 <!--
-## /calendar
+## calendar
 Pull this week's calendar events from Google or Microsoft 365. Summarise and ask if anything needs filing.
 
-## /mail
+## mail
 Pull and summarise recent emails from Gmail or Outlook. Flag anything that needs action.
 
-## /tasks-sync
-Pull open tasks from Google Tasks or Microsoft To Do. Merge with my current tasks record.
+## sync tasks
+Pull open tasks from Google Tasks or Microsoft To Do. Merge with my current tasks record. (Alias: *tasks-sync*.)
 
-## /drive
+## drive
 Check recent files in Google Drive or OneDrive. Ask if anything needs to come into docs/.
 
-## /contacts
+## contacts
 Look up a person in Google or Microsoft contacts. Useful for filing person records.
 
-## /nas
+## nas
 Connect to my home NAS via Tailscale and rclone. Browse available files or pull into docs/.
 
-## /backup
+## backup
 Push my docs/ folder to remote storage via rclone.
 
-## /pull-files
-Pull files from a configured rclone remote into docs/.
+## pull files
+Pull files from a configured rclone remote into docs/. (Alias: *pull-files*.)
 
-## /vpn
+## vpn
 Check Tailscale status. Bring it up if it's down.
 -->
 

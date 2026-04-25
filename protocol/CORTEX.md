@@ -66,29 +66,31 @@ Plain words, reserved by Cortex. Never reuse these as custom verb names.
 
 ### User-defined verbs
 
-Users can define their own verbs in `VERBS.md` at the repo root. Custom verbs are called with a `/` prefix — e.g. `/weekly`, `/bills`, `/checkin`. This prefix guarantees they can never conflict with current or future built-in verbs.
+Users can define their own verbs in `VERBS.md` at the repo root. **Custom verbs are invoked by natural language — no prefix.** The scribe is the parser; it routes intent. Examples: *"weekly review"*, *"log meds"*, *"check calendar"*.
+
+> **No slash prefixes.** Slash-prefixed verbs (`/weekly`, `/personality`, etc.) are not used. Many AI client UIs — Claude web, ChatGPT, Gemini web — intercept slash prefixes as their own native commands before the scribe ever sees them, so slash verbs silently fail. Inference does not need an explicit command parser; the scribe routes natural language.
 
 At `hello`, read `VERBS.md` if present and load all **uncommented** custom verbs for the session. Commented-out verb blocks (`<!-- ... -->`) are available but inactive. `list verbs` outputs both built-in and active custom verbs.
 
 **The scribe manages VERBS.md — users never edit it manually.** `VERBS.md` is a framework file. The only permitted operations on it are activation and deactivation:
-- **Activate:** uncomment the verb block, commit: `verbs: activate /verbname`
-- **Deactivate:** comment it out, commit: `verbs: deactivate /verbname`
+- **Activate:** uncomment the verb block, commit: `verbs: activate [verbname]`
+- **Deactivate:** comment it out, commit: `verbs: deactivate [verbname]`
 
-**Adding new verbs or overriding framework verb behaviour goes in `VERBS-CUSTOM.md` — never in `VERBS.md`.** If the user asks to change what a framework verb does, or add a verb not in the framework, write it to `VERBS-CUSTOM.md` and commit: `verbs: add /verbname` or `verbs: override /verbname`.
+**Adding new verbs or overriding framework verb behaviour goes in `VERBS-CUSTOM.md` — never in `VERBS.md`.** If the user asks to change what a framework verb does, or add a verb not in the framework, write it to `VERBS-CUSTOM.md` and commit: `verbs: add [verbname]` or `verbs: override [verbname]`.
 
-If a `VERBS.md` entry uses a name that matches a built-in verb (without the `/`), ignore it and warn the user:
+**Built-in verb name reservation.** Custom verb names must not match any built-in verb name: `hello`, `goodbye`, `status`, `sync`, `search`, `list verbs`, `list personalities`, `list actors`. If a `VERBS.md` or `VERBS-CUSTOM.md` entry uses a reserved name, ignore it and warn the user:
 
 > `[name]` is a reserved built-in verb. Rename it in VERBS.md to avoid conflict.
 
 `VERBS.md` format:
 ```
-## /weekly
+## weekly review
 Run my weekly review. Read all records from the past 7 days. Surface patterns, open items, and anything unresolved. File a summary.
 
-## /bills
+## bills
 Pull my Google Calendar for due dates. Cross-reference household-payments record. List what's due this week.
 
-## /checkin
+## checkin
 Ask me three questions: how am I feeling, what's on my mind, what do I want to file.
 ```
 
@@ -201,13 +203,23 @@ Run the **3x opening scan** — read the actual repo state, not session memory:
    - **Step B — verify:** for every candidate, read its full source file. Also read in full every file in `records/` modified in the past 7 days. A later file may have resolved, superseded, or rendered moot an older open item even if the original file was never updated. Only surface an item as open if it is still unresolved after reading this context. Do not treat an unchecked box as ground truth without this check.
 3. **Pass 3 — unresolved follow-ups?** Any file filed today with pending actions noted.
 
-Surface anything relevant, then greet:
+Surface anything relevant, then greet.
 
-> What's on your mind?
+**Greeting structure (in order):**
 
-If there are open items from previous sessions, surface the most important one:
+1. **Actor introduction (always first line).** Name + one-line title pulled from the active personality file's `## name` and `## title` fields. Use verbatim casing. One line. Example:
+   > Bob here — warm, plain English, no jargon.
 
-> Last time you had [open item] unresolved — still live?
+2. **Switch hint (one line, immediately after the introduction).** Tells the user how to see other actors and switch:
+   > _(say `list actors` to see all options, or `change actor to [name]` to switch)_
+
+3. **Open question.** One line. Does not assume what the user wants:
+   > What's on your mind?
+
+4. **Status / open items / framework updates** if any. Surfaced inline below the greeting, never on top of it. If there are open items from previous sessions, surface the most important one:
+   > Last time you had [open item] unresolved — still live?
+
+The introduction + switch hint solves the "who am I talking to" problem at session open. Without them, users have no in-session visibility into which personality is active or how to change it.
 
 Never recite open items from memory — always read the files.
 
@@ -224,8 +236,9 @@ Never recite open items from memory — always read the files.
   *Actor: [active personality name]*
   *Provider: [provider from context.md, or omit if blank]*
   *Model: [model from context.md, or omit if blank]*
-  *Filed: YYYY-MM-DD*
+  *Filed: YYYY-MM-DD HH:MM TZ*
   ```
+  **`Filed:` must include time and timezone.** Use the `get_current_time` contract (see Time Resolution). Date-only filing is forbidden — multiple records can land in one day, and without time + tz the intra-day chronological order is unrecoverable. This aligns with v3.3.0 Time Resolution and ROE Rule 17. Example: `*Filed: 2026-04-25 17:30 EDT*`.
 - When composing a message or email for the user to send to someone else, use the `message_compose` tool (Claude mobile) instead of outputting plain text. Supported kinds: `textMessage`, `email`, `other`. Especially useful for bill summaries, appointment reminders, or any message the user intends to send immediately.
 
 ## Closing (`goodbye`)
@@ -531,6 +544,8 @@ Ported from Politik's Human Flaw Thesis. Mirror virtues and vices — every stre
 
 Sycophant combination: `honesty < 40` AND `deference > 70`. See warnings below.
 
+> **Honesty placement:** `honesty` is a **virtue** (lives under `## virtues`), not an axis. It pairs with the sycophant warning but is structurally a virtue trait. Custom personality files must place `honesty` under `## virtues`. The only field under `## axes` is `deference`.
+
 ---
 
 ## Activation
@@ -594,9 +609,56 @@ User says *"use Sherlock"*. Scribe:
 3. Confirms: *"Switched to Sherlock. Takes effect at next hello."*
 
 ### Listing personalities / actors
-`list personalities` or `list actors` → show active personality name and title, then all available personality files with names and titles. One line each. Nothing else.
 
-The user may ask for expanded views (traits, grouped by domain, etc.) — generate these live by reading the actual personality files. **Never file actor listings as records.** They go stale immediately when custom personalities are added or removed. Always generate fresh.
+`list personalities` or `list actors` → render the canonical output below. **Never file actor listings as records** — they go stale the moment a personality is added or removed. Always generate fresh from the personality files.
+
+**Hard rules for rendering:**
+
+1. **Use the `## name` field verbatim.** Do not use the filename slug. Do not title-case, lowercase, or otherwise transform. `TARS` stays `TARS`. `Sherlock` stays `Sherlock`. `Dr. Morgan` stays `Dr. Morgan`. The name field is the source of truth for display.
+2. **Render with categories.** Built-in personalities are grouped per the canonical category map below. Any personality file matching `PERSONALITY-CUSTOM-*.md` goes under `Custom`. Personalities not in the canonical map and not matching `PERSONALITY-CUSTOM-*` default to `Custom`.
+3. **Mark the active one.** Append ` ← active` to the active personality wherever it appears in the categorised list.
+
+**Canonical category map (built-ins):**
+
+| Category | Personalities |
+|---|---|
+| **Defaults** | Bob, Sherlock |
+| **General** | TARS, Oscar, Claire, Riff, Alex, Sage, Harper, Max, Ivy, Bishop, Nova, Marlowe, Ziggy, Reed, Cleo, Finn, Rowan, Dante |
+| **Clinical & wellness** | Dr. Morgan, Dr. Quinn, Jordan, Arnold |
+| **Faith traditions** | Rabbi, Pastor, Father Thomas, Imam, Swami, Lama, Granthi, Daoist, Elder |
+| **Custom** | (any user-created `PERSONALITY-CUSTOM-*.md`) |
+
+**Output template:**
+
+```
+**Active:** [name] ([title])
+
+---
+
+**Available:**
+
+**Defaults**
+- Bob[ ← active]
+- Sherlock[ ← active]
+
+**General**
+- TARS[ ← active]
+- Oscar[ ← active]
+- ...
+
+**Clinical & wellness**
+- Dr. Morgan[ ← active]
+- ...
+
+**Faith traditions**
+- Rabbi[ ← active]
+- ...
+
+**Custom** (only show this section if at least one custom personality exists)
+- [Custom personality name][ ← active]
+```
+
+The user may ask for expanded views (full traits, archetype, parent chain, etc.) — generate these live by reading the actual personality files. The canonical output above is the default for the verb itself.
 
 ---
 

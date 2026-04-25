@@ -4,7 +4,7 @@
 
 Bake a donation mechanism directly into the Cortex session experience — not as a monetization play, but as a quiet advocate for mental health.
 
-A custom verb `/donate` surfaces a link and a one-liner. No popup, no guilt, no pressure. Just there when you want it.
+A custom verb `donate` surfaces a link and a one-liner. No popup, no guilt, no pressure. Just there when you want it.
 
 The donation goes to a specific mental health nonprofit — not to Cordfuse.
 
@@ -23,10 +23,10 @@ Rationale: specific, reputable, Canadian, directly connected to the lived experi
 
 ## Implementation
 
-### `/donate` verb (VERBS.md default entry)
+### `donate` verb (VERBS.md default entry)
 
 ```markdown
-## /donate
+## donate
 Surface the Cortex donation link — a one-liner about why it's there and a direct link to CAMH Foundation.
 ```
 

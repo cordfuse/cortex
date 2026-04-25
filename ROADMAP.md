@@ -2,14 +2,22 @@
 
 What's shipped, what's in progress, and what's coming.
 
-**Current version:** 3.4.0 — [Changelog](cortex-changelog.md)
+**Current version:** 3.4.9 — [Changelog](cortex-changelog.md)
 
 ---
 
 ## Shipped
 
-### v3.4.0 — Personality System *(current)*
+### v3.4.9 — Test Sprint Patch *(current)*
+- **Architectural rule: natural language only, no slash-prefixed verbs.** AI client UIs (Claude web, ChatGPT, Gemini web) intercept slash prefixes — slash verbs silently fail. Cortex routes natural language.
+- **Greeting introduces active actor.** Name + title + switch hint as first lines. Solves the "who am I talking to" problem at session open.
+- **`list personalities` / `list actors` rendering fixed.** `## name` field verbatim (TARS not Tars, Sherlock not Verbose), canonical category grouping (Defaults / General / Clinical / Faith), deterministic output template.
+- **Provenance block requires datetime + timezone.** Aligns with v3.3.0 Time Resolution and ROE Rule 17. `Filed: 2026-04-25 17:30 EDT` instead of date-only.
+- **Honesty/deference clarification.** `honesty` is a virtue; `deference` is the only axis. Closes spec ambiguity.
+
+### v3.4.0 — Personality System
 - **33 built-in personalities** — Bob (default), Sherlock, + 31 library
+  - Validated in 2026-04-25 test sprint: voice differentiation real (Bob vs Sherlock distinct), natural-language creation produces high-quality system prompts, archetype + sycophant warnings fire correctly, dynamic vice re-evaluation on edits
 - Tunable trait model: vibe, virtues, vices, soft skills, hard skills — all percentage sliders
 - Vice/virtue mirror pairs (pride↔integrity, cowardice↔courage, etc.)
 - Archetype system: HARDLINER, DIPLOMAT, ANALYST, CREATIVE, LONE_WOLF, TEAM_PLAYER, JOKESTER
@@ -18,7 +26,7 @@ What's shipped, what's in progress, and what's coming.
 - Natural language tuning — "dial Oscar's sarcasm down to 40%"
 - Sycophant warning — fires when honesty < 40% and deference > 70%
 - Archetype vice warnings — flags dangerous trait combinations at creation
-- `/personality` and `/actor` verbs — switch active personality mid-session (both accepted)
+- `switch personality` / `change actor` / `use [name]` — natural-language verbs to switch active personality (both `personality:` and `actor:` field aliases accepted)
 - `list personalities` / `list actors` built-in verbs (aliases)
 - `personality:` / `actor:` field in `context.md` — both spellings accepted
 - Record provenance block — every filed record now includes actor, provider, model, date
@@ -88,7 +96,7 @@ What's shipped, what's in progress, and what's coming.
 - [ ] Setup wizard — writes starter `.claude/settings.json` at end of setup (git, gh, docker, npm, mkdir — prevents silent hangs on mobile)
 - [ ] Egress proxy / web fetcher — `scripts/integrations/fetcher.py` for fetching arbitrary URLs inside the permitted scripts boundary
 - [ ] Fail-gracefully rule — any script calling external services catches network errors and prints manual fallback
-- [ ] `/donate` verb — surfaces CAMH Foundation link
+- [ ] `donate` verb — surfaces CAMH Foundation link
 
 ### v3.7.0 — Federation
 - [ ] Multiple isolated Cortex repos linked through a root with read-only pointers
