@@ -596,9 +596,56 @@ User says *"use Sherlock"*. Scribe:
 3. Confirms: *"Switched to Sherlock. Takes effect at next hello."*
 
 ### Listing personalities / actors
-`list personalities` or `list actors` → show active personality name and title, then all available personality files with names and titles. One line each. Nothing else.
 
-The user may ask for expanded views (traits, grouped by domain, etc.) — generate these live by reading the actual personality files. **Never file actor listings as records.** They go stale immediately when custom personalities are added or removed. Always generate fresh.
+`list personalities` or `list actors` → render the canonical output below. **Never file actor listings as records** — they go stale the moment a personality is added or removed. Always generate fresh from the personality files.
+
+**Hard rules for rendering:**
+
+1. **Use the `## name` field verbatim.** Do not use the filename slug. Do not title-case, lowercase, or otherwise transform. `TARS` stays `TARS`. `Sherlock` stays `Sherlock`. `Dr. Morgan` stays `Dr. Morgan`. The name field is the source of truth for display.
+2. **Render with categories.** Built-in personalities are grouped per the canonical category map below. Any personality file matching `PERSONALITY-CUSTOM-*.md` goes under `Custom`. Personalities not in the canonical map and not matching `PERSONALITY-CUSTOM-*` default to `Custom`.
+3. **Mark the active one.** Append ` ← active` to the active personality wherever it appears in the categorised list.
+
+**Canonical category map (built-ins):**
+
+| Category | Personalities |
+|---|---|
+| **Defaults** | Bob, Sherlock |
+| **General** | TARS, Oscar, Claire, Riff, Alex, Sage, Harper, Max, Ivy, Bishop, Nova, Marlowe, Ziggy, Reed, Cleo, Finn, Rowan, Dante |
+| **Clinical & wellness** | Dr. Morgan, Dr. Quinn, Jordan, Arnold |
+| **Faith traditions** | Rabbi, Pastor, Father Thomas, Imam, Swami, Lama, Granthi, Daoist, Elder |
+| **Custom** | (any user-created `PERSONALITY-CUSTOM-*.md`) |
+
+**Output template:**
+
+```
+**Active:** [name] ([title])
+
+---
+
+**Available:**
+
+**Defaults**
+- Bob[ ← active]
+- Sherlock[ ← active]
+
+**General**
+- TARS[ ← active]
+- Oscar[ ← active]
+- ...
+
+**Clinical & wellness**
+- Dr. Morgan[ ← active]
+- ...
+
+**Faith traditions**
+- Rabbi[ ← active]
+- ...
+
+**Custom** (only show this section if at least one custom personality exists)
+- [Custom personality name][ ← active]
+```
+
+The user may ask for expanded views (full traits, archetype, parent chain, etc.) — generate these live by reading the actual personality files. The canonical output above is the default for the verb itself.
 
 ---
 
