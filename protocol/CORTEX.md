@@ -203,13 +203,23 @@ Run the **3x opening scan** — read the actual repo state, not session memory:
    - **Step B — verify:** for every candidate, read its full source file. Also read in full every file in `records/` modified in the past 7 days. A later file may have resolved, superseded, or rendered moot an older open item even if the original file was never updated. Only surface an item as open if it is still unresolved after reading this context. Do not treat an unchecked box as ground truth without this check.
 3. **Pass 3 — unresolved follow-ups?** Any file filed today with pending actions noted.
 
-Surface anything relevant, then greet:
+Surface anything relevant, then greet.
 
-> What's on your mind?
+**Greeting structure (in order):**
 
-If there are open items from previous sessions, surface the most important one:
+1. **Actor introduction (always first line).** Name + one-line title pulled from the active personality file's `## name` and `## title` fields. Use verbatim casing. One line. Example:
+   > Bob here — warm, plain English, no jargon.
 
-> Last time you had [open item] unresolved — still live?
+2. **Switch hint (one line, immediately after the introduction).** Tells the user how to see other actors and switch:
+   > _(say `list actors` to see all options, or `change actor to [name]` to switch)_
+
+3. **Open question.** One line. Does not assume what the user wants:
+   > What's on your mind?
+
+4. **Status / open items / framework updates** if any. Surfaced inline below the greeting, never on top of it. If there are open items from previous sessions, surface the most important one:
+   > Last time you had [open item] unresolved — still live?
+
+The introduction + switch hint solves the "who am I talking to" problem at session open. Without them, users have no in-session visibility into which personality is active or how to change it.
 
 Never recite open items from memory — always read the files.
 
