@@ -7,12 +7,9 @@ Read at every `hello`. Update in the same commit whenever people, situations, or
 ## Scribe
 
 personality: bob
-provider: 
-model: 
 
 *`personality:` (or `actor:`) — name of active personality (file in `personalities/`). Bob is the default. Both spellings are accepted. Change via natural language: "use sherlock", "switch personality to sherlock", or "change actor to sherlock" — scribe updates this and commits, takes effect at next `hello`.*
-*`provider:` — your AI provider (e.g. Anthropic Claude, OpenAI ChatGPT, Google Gemini). Used for record provenance.*
-*`model:` — specific model in use (e.g. claude-sonnet-4-6, gpt-4o). Used for record provenance.*
+*Provider and model are read by the scribe from its own real-time self-knowledge when filing records. They are NOT persisted here — that would go stale the moment you switch providers or devices.*
 
 ---
 
