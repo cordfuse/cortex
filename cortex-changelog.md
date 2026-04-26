@@ -9,6 +9,9 @@ Format: `YYYY-MM-DD HH:MM TZ | file | what changed`
 <!-- Future: if this file grows large, rotate annually to cortex-changelog-YYYY.md -->
 
 ---
+2026-04-26 23:15 UTC | version.txt | bump to 4.0.0-alpha.3 — remove Oscar from framework personalities
+2026-04-26 23:15 UTC | personalities/PERSONALITY-OSCAR.md | DELETED — no production users invested; freeing the namespace. 33 → 32 built-in personalities.
+2026-04-26 23:15 UTC | protocol/CORTEX.md + README.md + README-SIMPLE.md + docs/PERSONALITIES.md + ROADMAP.md | drop Oscar from canonical category map, count from 33 → 32, replace Oscar example references (e.g. "dial Oscar's sarcasm down" → "dial Marlowe's sarcasm down")
 2026-04-26 23:04 UTC | version.txt | bump to 4.0.0-alpha.2 — list verb UX fix
 2026-04-26 23:04 UTC | protocol/CORTEX.md | list personalities/actors — output template now requires title rendered next to every name (`Name — Title.`); v3.4.10 names-only template was a UX regression, names alone are useless when choosing between 33+ personalities. Hard rule #2 added: always render title field next to name, no summarising or paraphrasing. Surfaced in v4.0.0-alpha.1 post-merge test.
 2026-04-26 22:34 UTC | version.txt | bump to 4.0.0-alpha.1 — v4 Phase 1 (Hidden Scribe Separation)

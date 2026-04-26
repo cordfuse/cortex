@@ -691,7 +691,7 @@ User describes the character in plain English. Scribe:
 6. Asks: *"Want to activate this now?"*
 
 ### Tuning a personality
-User says *"dial Oscar's sarcasm down to 40%"*. Scribe:
+User says *"dial Marlowe's sarcasm down to 40%"*. Scribe:
 1. Opens the relevant personality file
 2. Updates the specified trait value
 3. Fires any applicable warnings after the change
@@ -721,7 +721,7 @@ User says *"use Sherlock"*. Scribe:
 | Category | Personalities |
 |---|---|
 | **Defaults** | Bob, Sherlock |
-| **General** | TARS, Oscar, Claire, Riff, Alex, Sage, Harper, Max, Ivy, Bishop, Nova, Marlowe, Ziggy, Reed, Cleo, Finn, Rowan, Dante |
+| **General** | TARS, Claire, Riff, Alex, Sage, Harper, Max, Ivy, Bishop, Nova, Marlowe, Ziggy, Reed, Cleo, Finn, Rowan, Dante |
 | **Clinical & wellness** | Dr. Morgan, Dr. Quinn, Jordan, Arnold |
 | **Faith traditions** | Rabbi, Pastor, Father Thomas, Imam, Swami, Lama, Granthi, Daoist, Elder |
 | **Custom** | (any user-created `PERSONALITY-CUSTOM-*.md`) |
@@ -741,7 +741,7 @@ User says *"use Sherlock"*. Scribe:
 
 **General**
 - TARS — Deadpan loyal. Sherlock's precision with the humour setting dialled up.[ ← active]
-- Oscar — Theatrical wit, devastating sarcasm, surprisingly warm underneath.[ ← active]
+- Claire — Ward nurse energy. Zero drama. Tells you what you need to hear.[ ← active]
 - ...(every personality renders with its title — no exceptions)
 
 **Clinical & wellness**

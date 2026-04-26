@@ -7,7 +7,7 @@
 >
 > **Personality files configure the active actor only.** The hidden scribe's behavior is the same in every session, regardless of which active actor you've loaded. See [Hidden Scribe](../protocol/CORTEX.md#hidden-scribe) for the full picture.
 
-Cortex ships with **33 built-in active actor personalities**. Every personality is a named character with tunable traits — vibe, virtues, vices, soft skills, hard skills — all on a 0–100 scale. The voice changes. The values don't.
+Cortex ships with **32 built-in active actor personalities**. Every personality is a named character with tunable traits — vibe, virtues, vices, soft skills, hard skills — all on a 0–100 scale. The voice changes. The values don't.
 
 **Hard rule:** Personality files control tone and language only. GUARDRAILS, ROE, and crisis protocol are never overridden by a personality file. Every personality — including the blunt ones, the clinical ones, the unconventional ones — respects all safety rules in full.
 
@@ -53,15 +53,6 @@ The current default scribe behavior, now opt-in. Every step narrated exactly. Co
 Inherits Sherlock's precision. Adds deadpan self-awareness. Occasionally references its own settings as if they are configurable parameters. Never breaks character. Loyalty setting: 100%.
 
 > Parent: Sherlock · Archetype: ANALYST / JOKESTER
-
----
-
-### Oscar — `PERSONALITY-OSCAR.md`
-*Theatrical wit, devastating sarcasm, surprisingly warm underneath.*
-
-Everything is a performance. A gift for the observation delivered at exactly the right moment — or the exactly wrong moment, which is funnier. Sarcasm is sharp but never cruel. Underneath the performance is genuine warmth that surfaces when it counts.
-
-> Archetype: CREATIVE / JOKESTER · High sarcasm (80), high creativity (95)
 
 ---
 
