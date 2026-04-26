@@ -1,6 +1,6 @@
 # Cortex
 
-[![Version](https://img.shields.io/badge/version-4.0.0--alpha.2-blue)](cortex-changelog.md)
+[![Version](https://img.shields.io/badge/version-4.0.0--alpha.3-blue)](cortex-changelog.md)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![Donate to CAMH](https://img.shields.io/badge/Donate-CAMH%20Foundation-blue)](https://camhfoundation.ca/donate)
 
@@ -77,7 +77,7 @@ If this has been useful to you — or if you just believe mental health infrastr
 
 **Always in sync.** Every `hello` checks that your local repo is up to date before the session starts. Works across as many devices as you have.
 
-**Your active actor has a personality.** 33 built-in personalities — from Bob (warm, funny, plain English) to Sherlock (precise, methodical) to Dr. Quinn (psychologist listening style) to Lama (Buddhist equanimity). Switch with one line. Create your own in plain English. [Full personality reference →](docs/PERSONALITIES.md) *(The hidden scribe — the protocol role that handles filing — is separate and has no personality. See [Hidden Scribe](protocol/CORTEX.md#hidden-scribe).)*
+**Your active actor has a personality.** 32 built-in personalities — from Bob (warm, funny, plain English) to Sherlock (precise, methodical) to Dr. Quinn (psychologist listening style) to Lama (Buddhist equanimity). Switch with one line. Create your own in plain English. [Full personality reference →](docs/PERSONALITIES.md) *(The hidden scribe — the protocol role that handles filing — is separate and has no personality. See [Hidden Scribe](protocol/CORTEX.md#hidden-scribe).)*
 
 **Extensible.** Built-in session commands. Define your own in `VERBS.md` — `weekly review`, `bills`, `checkin`, anything you want. **Natural language only — no slash prefixes** (Claude web and other clients hijack `/`).
 
@@ -89,12 +89,12 @@ If this has been useful to you — or if you just believe mental health infrastr
 
 ## Personalities
 
-Your active actor has a personality. Cortex ships with **33 built-in personalities** — switch between them with one line in `context.md`. Bob is the default. (The hidden scribe is separate — see [Hidden Scribe](protocol/CORTEX.md#hidden-scribe).)
+Your active actor has a personality. Cortex ships with **32 built-in personalities** — switch between them with one line in `context.md`. Bob is the default. (The hidden scribe is separate — see [Hidden Scribe](protocol/CORTEX.md#hidden-scribe).)
 
 | Category | Personalities |
 |---|---|
 | **Defaults** | Bob (warm, funny, plain English), Sherlock (precise, methodical, technical) |
-| **General** | TARS, Oscar, Claire, Riff, Alex, Sage, Harper, Max, Ivy, Bishop, Nova, Marlowe, Ziggy, Reed, Cleo, Finn, Rowan, Dante |
+| **General** | TARS, Claire, Riff, Alex, Sage, Harper, Max, Ivy, Bishop, Nova, Marlowe, Ziggy, Reed, Cleo, Finn, Rowan, Dante |
 | **Clinical & wellness** | Dr. Morgan (psychiatrist style), Dr. Quinn (psychologist style), Jordan (wellness coach), Arnold (fitness) |
 | **Faith traditions** | Rabbi, Pastor, Father Thomas, Imam, Swami, Lama, Granthi, Daoist, Elder |
 
@@ -277,7 +277,7 @@ Guardrails apply in both modes.
 
 [→ Full roadmap](ROADMAP.md)
 
-**v3.4.0 (current)** — Personality system: 33 built-in personalities, tunable trait sliders, inheritance, clinical and faith tradition voices.
+**v3.4.0 (current)** — Personality system: 32 built-in personalities, tunable trait sliders, inheritance, clinical and faith tradition voices.
 
 **Coming:** integrations expansion (Notion, Slack, GitHub, Linear, Health, Spotify), setup wizard, egress proxy, federation, and v4.0.0 multi-actor sessions.
 
