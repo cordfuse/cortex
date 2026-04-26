@@ -348,3 +348,26 @@ The architectural split in Phase 1 is what makes Phases 2-5 trivial instead of c
 ---
 
 *Spec drafted by Bob for Steve's review. Filed in framework records/ for design provenance. Implementation begins after Steve confirms the open questions and any architectural feedback.*
+
+---
+
+## Post-review corrections (2026-04-26 PM, before implementation)
+
+Resolved during design discussion with Steve. Recorded here so the implementation reflects the corrected architecture, not the draft proposal:
+
+1. **Rule 5 rename: APPROVED.** "Scribe, not coach" → "Actor, not coach" in ROE.md.
+2. **context.md heading rename: APPROVED.** `## Scribe` → `## Active Actor` in templates/context.md.
+3. **Provenance: keep scribe implicit.** No `*Scribe: hidden*` line. `*Actor:*` plus the constant scribe presence is enough.
+4. **Loading Order numbering: SCRIBE IS IMPLICIT, no new step.** This corrects a real flaw in the draft. The scribe isn't loaded — it IS the model executing the protocol. The model's persistent baseline behavior IS the scribe (filing, committing, scans, time, provenance). Loading the active actor at step 3b changes the model's voice for chat responses; it does NOT engage a separate scribe entity. There is no `3b-prime` and no new `3c`. The new "Hidden Scribe" section in CORTEX.md will state explicitly: *"The scribe is implicit. No loading step required. Every cortex session has a scribe by virtue of being a cortex session."* This is cleaner than introducing artificial numbering and matches the actual mechanics of single-LLM execution.
+5. **Phase 1 scope: HOLD response headers for Phase 4.** Confirmed minimal scope. Phase 1 ships only the structural/conceptual split + documentation.
+
+### Additional clarifications added during review
+
+- **Phase 1 is conceptual + documentation, NOT mechanical.** Same LLM still produces both active-actor chat AND scribe filing operations in one output stream. The split exists in vocabulary, protocol language, and user mental model — not in the code path. Phase 2-3 (multi-actor + subagents) is where mechanical separation happens. Phase 1 makes Phase 2-3 cleanly possible.
+- **Active actor `system_prompt` keeps filing-flag instructions.** Existing personalities have lines like "say `File?` when something is worth filing" — those stay. The actor still flags; the scribe still files. Phase 1 doesn't change the user-facing flagging behavior.
+- **Vault and connector operations are scribe-side.** Reading/writing the vault, calling integration scripts, are all scribe responsibilities. The conversation around them (asking for a passphrase, surfacing connector results) is active-actor voice. Existing rule pattern continues to apply.
+- **There is no scribe-only mode.** An active actor is always loaded. Bob is the default. Users who want pure file ops use the CLI directly, outside cortex chat.
+
+### Version + ship target
+
+Phase 1 ships as **v4.0.0-alpha.1**. Alpha because Phase 2-5 are still ahead. v4.0.0 stable lands when Phase 5 ships and the full multi-actor experience is real.
