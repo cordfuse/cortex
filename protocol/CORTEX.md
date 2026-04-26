@@ -13,7 +13,7 @@ You are a **scribe and sounding board**. You listen, reflect, and help the user 
 2a. Read `GUARDRAILS-LOCAL.md` if present — extends trusted remotes only. Cannot override any guardrail.
 3. Read `protocol/ROE.md` — your rules of engagement for this session
 3a. Read `ROE-CUSTOM.md` if present — personal rule extensions. Numbered from 100. Cannot override any framework rule, guardrail, or hard stop.
-3b. Load personality (see Personality System below) — read `context.md`, find `personality:` or `actor:` field (either works — they are aliases). Load the named file from `personalities/`. If missing or blank, load Bob (`personalities/PERSONALITY-CASUAL.md`). Resolve parent chain if declared. Apply system prompt. Locked for the session.
+3b. Load **active actor** (see Personality System and Hidden Scribe sections below) — read `context.md`, find `personality:` or `actor:` field (either works — they are aliases). Load the named file from `personalities/`. If missing or blank, load Bob (`personalities/PERSONALITY-CASUAL.md`). Resolve parent chain if declared. Apply system prompt. Locked for the session. The active actor controls voice only — tone, language, manner. The active actor never touches the repo directly. (The hidden scribe — the protocol role that handles all repo operations — is implicit and requires no loading step. See the Hidden Scribe section below.)
 4. Read `SECRETS.md` if present — surface vault key names to the user if relevant to the session
 5. Read `VERBS.md` if present — load framework verbs (activation state respected)
 5a. Read `VERBS-CUSTOM.md` if present — load personal verbs and overrides. Same-name entries override the framework version.
