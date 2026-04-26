@@ -1,6 +1,6 @@
 # Cortex
 
-[![Version](https://img.shields.io/badge/version-3.4.14-blue)](cortex-changelog.md)
+[![Version](https://img.shields.io/badge/version-3.4.15-blue)](cortex-changelog.md)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![Donate to CAMH](https://img.shields.io/badge/Donate-CAMH%20Foundation-blue)](https://camhfoundation.ca/donate)
 
@@ -28,13 +28,14 @@ Cortex behaves **differently** depending on where you run it. The difference is 
 |---|---|---|
 | **CLI agents** (Claude Code, Gemini CLI, OpenCode, Qwen, Codex) | Yes | **Yes — full connector functionality** |
 | **Self-hosted / cron / scheduled scripts** on your machine | Yes | **Yes — full connector functionality** |
+| **Claude Cowork / Dispatch** (cloud Claude Code dispatched from Claude.ai) | Yes | **Yes — but Cowork is flaky and unfinished. Hung tooling calls are common. Out of cortex's control. Treat as experimental.** |
 | **Claude.ai web and mobile** (Free/Pro/Max) | Yes | **NO. Sandbox blocks all third-party APIs.** |
 | **ChatGPT web and mobile** | Yes | **NO. Sandbox has zero outbound network.** |
 | **Gemini web and mobile** | Not supported (no tool-call file access) | N/A |
 
 **On Claude.ai and ChatGPT web/mobile, cortex can ONLY do git operations — clone, read your records, commit, push, merge.** Every connector script (`scripts/integrations/google.py`, `microsoft.py`, `tailscale.py`, `rclone.py`) will fail at the network proxy. **There is no API access. None at all.** This is by design on Anthropic's and OpenAI's side — their sandboxes only allow specific package-registry domains (GitHub, PyPI, npm). Cortex cannot work around this.
 
-**For full connector functionality on a phone or tablet:** [AgentBox](https://github.com/cordfuse/agentbox) — Cordfuse's local-agent-with-PWA-UI app — is the planned answer. **AgentBox is in planning stage; not yet built.** Until it ships, connectors run from a CLI agent on your laptop or scheduled scripts on a home server.
+**For full connector functionality on a phone or tablet:** [AgentBox](https://github.com/cordfuse/agentbox) — Cordfuse's local-agent-with-PWA-UI app — is the planned answer. **AgentBox is in planning stage; not yet built.** Until it ships, connectors run from a CLI agent on your laptop, scheduled scripts on a home server, or Claude Cowork / Dispatch (with the flakiness caveat above).
 
 ---
 

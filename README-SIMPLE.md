@@ -132,6 +132,7 @@ Cortex on Claude.ai web, Claude mobile, ChatGPT web, or ChatGPT mobile is **limi
 **If you want connectors (Gmail, Calendar, etc.) in chat:**
 - **AgentBox** is Cordfuse's planned desktop app that will put a polished chat interface on top of a local AI agent. Connectors will work because the agent runs on your machine, not in a locked sandbox. **AgentBox is in planning stage — not yet built.**
 - For now, use Cortex from a developer terminal (Claude Code, Gemini CLI, etc.).
+- **Power-user option: Claude Cowork / Dispatch.** Anthropic has a feature where you can launch Claude Code from the Claude.ai website and it runs in the cloud. Cortex with full connectors works there because it's a real Claude Code session, not the locked-down web app. **But Cowork itself is unstable** — sessions can hang, tools can get stuck, things break. It's still in development on Anthropic's side. Treat as experimental until they finish it. Out of Cortex's control.
 
 For the journal-and-scribe experience, web and mobile are perfectly fine. They just don't connect to the rest of your digital life.
 
