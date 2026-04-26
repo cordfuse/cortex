@@ -7,12 +7,14 @@ Run once to set up:
   python scripts/integrations/google.py auth
 
 Usage:
-  python scripts/integrations/google.py auth [--passphrase <p>]
-  python scripts/integrations/google.py calendar [--days 7] [--passphrase <p>]
-  python scripts/integrations/google.py gmail [--count 20] [--passphrase <p>]
-  python scripts/integrations/google.py drive [--count 20] [--passphrase <p>]
-  python scripts/integrations/google.py tasks [--passphrase <p>]
-  python scripts/integrations/google.py contacts [--count 50] [--passphrase <p>]
+  python scripts/integrations/google.py [--passphrase <p>] auth
+  python scripts/integrations/google.py [--passphrase <p>] calendar [--days 7]
+  python scripts/integrations/google.py [--passphrase <p>] gmail [--count 20]
+  python scripts/integrations/google.py [--passphrase <p>] drive [--count 20]
+  python scripts/integrations/google.py [--passphrase <p>] tasks
+  python scripts/integrations/google.py [--passphrase <p>] contacts [--count 50]
+
+`--passphrase` is a top-level flag and must come BEFORE the subcommand.
 
 Requires: pip install google-auth google-auth-oauthlib google-api-python-client
 """
@@ -121,7 +123,7 @@ def cmd_auth(passphrase: str):
     store_secret("google_refresh_token", creds.refresh_token, passphrase)
 
     print("\nCredentials stored in vault.")
-    print("Commit cortex.secrets.enc to persist across devices.")
+    print("Commit cortex.secrets/ to persist across devices.")
 
 
 # ── Calendar ──────────────────────────────────────────────────────────────────
