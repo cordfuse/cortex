@@ -2,13 +2,17 @@
 
 What's shipped, what's in progress, and what's coming.
 
-**Current version:** 4.0.0-alpha.1 — [Changelog](cortex-changelog.md)
+**Current version:** 4.0.0-alpha.2 — [Changelog](cortex-changelog.md)
 
 ---
 
 ## Shipped
 
-### v4.0.0-alpha.1 — Phase 1: Hidden Scribe Separation *(current)*
+### v4.0.0-alpha.2 — List verb UX fix *(current)*
+- `list personalities` / `list actors` now render the `## title` field next to every personality name (`Name — Title.`). Names alone are useless when choosing between 33+ personalities — the v3.4.10 names-only canonical template was a UX regression that this patch corrects.
+- Surfaced during the v4.0.0-alpha.1 post-merge test. Hard rule #2 added to the rendering spec: always render title, no summarising or paraphrasing.
+
+### v4.0.0-alpha.1 — Phase 1: Hidden Scribe Separation
 
 The first phase of the v4 multi-actor architecture. Splits the v3.x "scribe" concept (which did both filing and conversational voice) into two distinct layers:
 
