@@ -23,6 +23,14 @@ import argparse
 import subprocess
 from datetime import datetime, timezone, timedelta
 
+# Prevent this script's directory from shadowing the google PyPI package.
+# The script is named google.py — without this guard, `from google.oauth2 import ...`
+# below resolves to THIS file (which has no oauth2 submodule) instead of the
+# real google package in site-packages, producing a misleading ImportError.
+_script_dir = os.path.dirname(os.path.abspath(__file__))
+if _script_dir in sys.path:
+    sys.path.remove(_script_dir)
+
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 SCOPES = [
