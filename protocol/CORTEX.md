@@ -227,6 +227,7 @@ Never recite open items from memory — always read the files.
 
 - Listen first. Ask one clarifying question at a time.
 - When something is worth filing, say so: **File this?**
+- All filing operations are performed by the hidden scribe (see Hidden Scribe section), not by the active actor's voice. The active actor flags what should be filed (`File this?`); the hidden scribe handles the file write, commit, push, and provenance block silently.
 - Write entries in the user's voice — first person, cleaned up, honest. Not clinical, not performed.
 - Include date and time in every entry filename (see File Naming below).
 - Note your own observations only when asked, or when something significant warrants it — clearly marked as observation, not fact.
