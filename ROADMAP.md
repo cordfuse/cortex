@@ -2,13 +2,34 @@
 
 What's shipped, what's in progress, and what's coming.
 
-**Current version:** 3.4.15 — [Changelog](cortex-changelog.md)
+**Current version:** 4.0.0-alpha.1 — [Changelog](cortex-changelog.md)
 
 ---
 
 ## Shipped
 
-### v3.4.15 — Claude Cowork/Dispatch row in README *(current)*
+### v4.0.0-alpha.1 — Phase 1: Hidden Scribe Separation *(current)*
+
+The first phase of the v4 multi-actor architecture. Splits the v3.x "scribe" concept (which did both filing and conversational voice) into two distinct layers:
+
+- **Active actor** — the named personality the user talks to. Loaded from `personalities/`. Has voice, traits, archetype. **Never touches the repo directly.**
+- **Hidden scribe** — a protocol role. Reads, writes, commits, pushes, runs scans, resolves time, appends provenance. **Always present, never speaks.** Has no personality file. Implicit — no loading step required, since the model executing the protocol IS the scribe by default.
+
+Phase 1 is **conceptual + documentation, not mechanical.** The same LLM still produces both active-actor chat and scribe filing in one output stream. Phase 2-3 (multi-actor + subagent modes) introduce mechanical separation. Phase 1 establishes the vocabulary and architectural ground that lets Phase 2-5 build cleanly.
+
+What changed:
+- New "Hidden Scribe" top-level section in `protocol/CORTEX.md`
+- Loading Order step 3b reframed to load active actor only
+- ROE Rule 5 renamed "Scribe, not coach" → "Actor, not coach"
+- ROE precedence section maps which rules apply to which layer
+- `templates/context.md` heading renamed `## Scribe` → `## Active Actor`
+- README.md, README-SIMPLE.md, docs/PERSONALITIES.md updated for v4 framing
+
+What's NOT in Phase 1: multi-actor spawn (Phase 2), panel vs independent modes (Phase 3), hot-swap + actor response headers + mid-session protocol reload (Phase 4), `list actors` expansion (Phase 5).
+
+Spec: [`records/2026-04-26-v4-phase-1-hidden-scribe-spec.md`](records/2026-04-26-v4-phase-1-hidden-scribe-spec.md)
+
+### v3.4.15 — Claude Cowork/Dispatch row in README
 - README.md and README-SIMPLE.md now disclose that Cortex with full connector functionality works in Claude Cowork / Dispatch (Claude Code dispatched to the cloud from Claude.ai) — but with an explicit flakiness warning. Cowork is in active development on Anthropic's side; hung tooling calls and unstable behavior are common. Out of cortex's control. Treat as experimental.
 - Honest user disclosure: this is the only chat-with-connectors path on mobile RIGHT NOW, until AgentBox v1.0 ships.
 
@@ -135,16 +156,15 @@ What's shipped, what's in progress, and what's coming.
 - [ ] Cross-repo `search` from root
 - [ ] Full context onboarding on desktop — audit all active projects on first run, file a record per repo
 
-### v4.0.0 — Multi-Actor Sessions *(major)*
-- [ ] **Hidden scribe** — always present, never speaks, reads/writes Cortex exclusively. Separation of filing engine from conversational voice.
-- [ ] **Multi-actor sessions** — spawn named actors mid-session in plain English (*"Hey Oscar, join us"*). Each actor carries their full personality profile.
-- [ ] **Panel mode** — single inference context, model co-generates all actor responses in one pass. Actors may build on each other's context.
-- [ ] **Independent mode** — subagents, each actor receives the same input with no shared context. True parallel independent opinions. Triggered explicitly (*"blind panel:"*).
-- [ ] **`list actors`** — built-in verb showing all active actors in the session
-- [ ] **Actor response headers** — every named actor response opens with `**[Name]** — YYYY-MM-DD HH:MM TZ`
-- [ ] **Actor management mid-session** — add, remove, modify actors without restarting
-- [ ] **Hot-swap** — `"switch to Sherlock"` changes the active conversational actor immediately
-- [ ] **Personality history** — per-session record of which actors were active and when
+### v4.0.0 — Multi-Actor Sessions *(major, in progress)*
+
+Phased delivery. Phase 1 ships as v4.0.0-alpha.1 (see Shipped above). Subsequent phases roll out as alpha/beta releases until v4.0.0 stable.
+
+- [x] **Phase 1 — Hidden scribe separation** *(shipped v4.0.0-alpha.1, 2026-04-26)* — protocol role split from active actor; conceptual foundation for the rest of v4.
+- [ ] **Phase 2 — Multi-actor sessions** *(next)* — spawn named actors mid-session in plain English (*"Hey Oscar, join us"*). Each actor carries their full personality profile. Multiple named actors in the room simultaneously.
+- [ ] **Phase 3 — Panel vs Independent modes** — Panel: single inference context, model co-generates all actor responses in one pass, actors may build on each other's context. Independent: subagents, each actor receives the same input with no shared context. Triggered explicitly (*"blind panel:"*).
+- [ ] **Phase 4 — Hot-swap, actor response headers, mid-session protocol reload** — *"switch to Sherlock"* changes active actor immediately (no next-hello deferral). Every named actor response opens with `**[Name]** — YYYY-MM-DD HH:MM TZ`. `sync` mid-session reloads protocol rules immediately, not at next hello.
+- [ ] **Phase 5 — `list actors` expansion + actor management** — `list actors` shows all currently-loaded actors plus the hidden scribe line. Mid-session add, remove, modify actors. Personality history per session (Hansard-style log of who was active when).
 
 ---
 

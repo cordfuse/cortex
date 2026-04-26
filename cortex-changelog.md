@@ -9,6 +9,18 @@ Format: `YYYY-MM-DD HH:MM TZ | file | what changed`
 <!-- Future: if this file grows large, rotate annually to cortex-changelog-YYYY.md -->
 
 ---
+2026-04-26 22:34 UTC | version.txt | bump to 4.0.0-alpha.1 — v4 Phase 1 (Hidden Scribe Separation)
+2026-04-26 22:34 UTC | protocol/CORTEX.md | new Hidden Scribe top-level section — split between active actor (named personality, voice) and hidden scribe (protocol role, filing, no personality, never speaks). Scribe is implicit (no loading step). Phase 1 of v4 architectural reframe.
+2026-04-26 22:34 UTC | protocol/CORTEX.md | Loading Order step 3b reframed to load active actor only (no scribe load step — scribe is the protocol-execution baseline)
+2026-04-26 22:34 UTC | protocol/CORTEX.md | Personality System section opening reframed — "active actor has a personality" instead of "scribe has a personality"
+2026-04-26 22:34 UTC | protocol/CORTEX.md | During-the-session: explicit that filing operations are performed by the hidden scribe, not by the active actor's voice
+2026-04-26 22:34 UTC | protocol/ROE.md | precedence section adds v4 layer mapping note (which rules apply to active actor vs hidden scribe vs both)
+2026-04-26 22:34 UTC | protocol/ROE.md | Rule 5 renamed "Scribe, not coach" → "Actor, not coach" — aligns with v4 vocabulary; rule governs active actor's user-facing behavior
+2026-04-26 22:34 UTC | templates/context.md | Scribe section heading renamed to "Active Actor"; helper text updated to clarify the active-actor / hidden-scribe split
+2026-04-26 22:34 UTC | README.md | "The AI is two layers" replaces "The AI is a scribe, not a product"; personalities section updated to "active actor has a personality" with pointer to Hidden Scribe spec
+2026-04-26 22:34 UTC | README-SIMPLE.md | point #5 rewritten in plain English — introduces both active actor (with personality) and hidden scribe (silent filer)
+2026-04-26 22:34 UTC | docs/PERSONALITIES.md | new top section explains v4 two-layer split — personality files configure active actor only; hidden scribe has no personality
+2026-04-26 22:34 UTC | records/2026-04-26-v4-phase-1-hidden-scribe-spec.md | spec record (with post-review corrections section) filed for design provenance
 2026-04-26 21:16 UTC | version.txt | bump to 3.4.15 — README adds Claude Cowork/Dispatch row with flakiness warning
 2026-04-26 21:16 UTC | README.md | "What works where" table adds Claude Cowork / Dispatch row — connectors work because Cowork dispatches a real Claude Code instance to the cloud, but Cowork is flaky/unfinished (hung tooling calls etc.) — out of cortex's control, treat as experimental
 2026-04-26 21:16 UTC | README-SIMPLE.md | new "power-user option: Claude Cowork / Dispatch" paragraph in plain English with the flakiness caveat
