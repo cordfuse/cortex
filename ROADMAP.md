@@ -2,13 +2,16 @@
 
 What's shipped, what's in progress, and what's coming.
 
-**Current version:** 3.4.13 — [Changelog](cortex-changelog.md)
+**Current version:** 3.4.14 — [Changelog](cortex-changelog.md)
 
 ---
 
 ## Shipped
 
-### v3.4.13 — Sandbox Limitation Callout in README *(current)*
+### v3.4.14 — AgentBox status accuracy *(current)*
+- README.md and README-SIMPLE.md now accurately describe AgentBox as "in planning stage, not yet built" (previously "in development" / "upcoming" which overstated readiness).
+
+### v3.4.13 — Sandbox Limitation Callout in README
 - **Plain-language warning at top of both READMEs.** Users now know up front: on Claude.ai or ChatGPT web/mobile, Cortex can only do git operations (clone, read, commit, push, merge). All third-party APIs (Google, Microsoft, Notion, Slack, etc.) are blocked by the platforms' tool sandboxes — by design, not configurable.
 - **Pointer to AgentBox.** For users who want full connector functionality on phone/tablet without a developer setup, the README points at `cordfuse/agentbox` (in development) — a local Electron app that exposes a CLI agent's chat UI to any device, no sandbox restrictions.
 - **Trigger:** prevents future users from hitting the same 3-hour cliff Steve hit on 2026-04-25 trying to make `googleapis.com` reachable from Claude.ai web.

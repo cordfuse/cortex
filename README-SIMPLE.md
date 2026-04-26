@@ -130,8 +130,8 @@ Cortex on Claude.ai web, Claude mobile, ChatGPT web, or ChatGPT mobile is **limi
 **Why:** Claude and ChatGPT's web/mobile apps run their tools inside a locked-down environment that **only allows specific websites** (GitHub, where your records live). Connecting to anything else — like Google or Microsoft — is **blocked by the platform itself**. This is intentional security, not something Cortex can change.
 
 **If you want connectors (Gmail, Calendar, etc.) in chat:**
-- Wait for **AgentBox** — Cordfuse's upcoming desktop app that puts a polished chat interface on top of a local AI agent. Connectors will work because the agent runs on your machine, not in a locked sandbox.
-- Or use Cortex from a developer terminal (Claude Code, Gemini CLI, etc.).
+- **AgentBox** is Cordfuse's planned desktop app that will put a polished chat interface on top of a local AI agent. Connectors will work because the agent runs on your machine, not in a locked sandbox. **AgentBox is in planning stage — not yet built.**
+- For now, use Cortex from a developer terminal (Claude Code, Gemini CLI, etc.).
 
 For the journal-and-scribe experience, web and mobile are perfectly fine. They just don't connect to the rest of your digital life.
 

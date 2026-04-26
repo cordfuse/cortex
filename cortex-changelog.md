@@ -9,6 +9,8 @@ Format: `YYYY-MM-DD HH:MM TZ | file | what changed`
 <!-- Future: if this file grows large, rotate annually to cortex-changelog-YYYY.md -->
 
 ---
+2026-04-26 14:54 UTC | version.txt | bump to 3.4.14 — README accuracy: AgentBox is in planning stage, not in development
+2026-04-26 14:54 UTC | README.md + README-SIMPLE.md | clarify AgentBox status — "in planning stage, not yet built" (was "in development" / "upcoming" which overstated readiness)
 2026-04-26 14:46 UTC | version.txt | bump to 3.4.13 — README sandbox-limitation callout
 2026-04-26 14:46 UTC | README.md | new "What works where" table at top — explicit that Claude/ChatGPT web+mobile sandboxes block all third-party APIs (Google, Microsoft, etc.). Cortex can only do git operations (clone, read, commit, push, merge) in those environments. Connectors require CLI agents or AgentBox.
 2026-04-26 14:46 UTC | README-SIMPLE.md | new "What Cortex CAN'T do on Claude or ChatGPT" section in plain English — points users to AgentBox (in dev) or CLI agents for connector functionality on chat surfaces
