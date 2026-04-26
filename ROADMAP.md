@@ -2,15 +2,23 @@
 
 What's shipped, what's in progress, and what's coming.
 
-**Current version:** 4.0.0-alpha.3 — [Changelog](cortex-changelog.md)
+**Current version:** 4.0.0-alpha.4 — [Changelog](cortex-changelog.md)
 
 ---
 
 ## Shipped
 
-### v4.0.0-alpha.3 — Remove framework Oscar *(current)*
+### v4.0.0-alpha.4 — Rename framework defaults + framework-file read-only guardrail *(current)*
+- **Bob → Casey, Sherlock → Atlas.** Frees the Bob and Sherlock namespace for users who want those names as custom personalities (e.g. Bob McGrath and Sherlock Hemlock from Sesame Street).
+- **Casey** — gender-neutral, modern but rooted, friendly. Same warm-plain-spoken archetype Bob filled. File slug stays `PERSONALITY-CASUAL.md`.
+- **Atlas** — gender-neutral, mythological weight (held the world; the methodical scribe holds the records). Same precise-methodical archetype Sherlock filled. File slug stays `PERSONALITY-VERBOSE.md`.
+- TARS now references "Atlas's precision" instead of "Sherlock's precision" in title and system_prompt.
+- **NEW — ROE Rule 18: Framework Files Are Read-Only.** The scribe refuses to edit or delete any framework file in a user's personal cortex (sync would overwrite anyway). Offers correct path instead: `-CUSTOM.md` companions for docs, `PERSONALITY-CUSTOM-*.md` for personality overrides, `ROE-CUSTOM.md` for personal rules. Prevents users from accidentally damaging their framework state.
+- **Breaking change (pre-launch acceptable):** existing user `context.md` files saying `personality: bob` or `personality: sherlock` will fail to resolve and fall back to the new default (Casey). Manual edit needed: `personality: casey` or `personality: atlas`. No backwards-compat alias map shipped — pre-launch user count is essentially zero.
+
+### v4.0.0-alpha.3 — Remove framework Oscar
 - `personalities/PERSONALITY-OSCAR.md` deleted from the framework. No production users invested in him; namespace freed for users who want their own Oscar (e.g. Oscar the Grouch as a custom personality).
-- Built-in personality count: 33 → 32 (Bob + Sherlock + 30 library).
+- Built-in personality count: 33 → 32 (Casey + Atlas + 30 library).
 - Example references using Oscar updated to use other personalities (Marlowe for sarcasm tuning, Riff for "too much" example).
 
 ### v4.0.0-alpha.2 — List verb UX fix
@@ -72,13 +80,13 @@ Spec: [`records/2026-04-26-v4-phase-1-hidden-scribe-spec.md`](records/2026-04-26
 ### v3.4.9 — Test Sprint Patch
 - **Architectural rule: natural language only, no slash-prefixed verbs.** AI client UIs (Claude web, ChatGPT, Gemini web) intercept slash prefixes — slash verbs silently fail. Cortex routes natural language.
 - **Greeting introduces active actor.** Name + title + switch hint as first lines. Solves the "who am I talking to" problem at session open.
-- **`list personalities` / `list actors` rendering fixed.** `## name` field verbatim (TARS not Tars, Sherlock not Verbose), canonical category grouping (Defaults / General / Clinical / Faith), deterministic output template.
+- **`list personalities` / `list actors` rendering fixed.** `## name` field verbatim (TARS not Tars, Atlas not Verbose), canonical category grouping (Defaults / General / Clinical / Faith), deterministic output template.
 - **Provenance block requires datetime + timezone.** Aligns with v3.3.0 Time Resolution and ROE Rule 17. `Filed: 2026-04-25 17:30 EDT` instead of date-only.
 - **Honesty/deference clarification.** `honesty` is a virtue; `deference` is the only axis. Closes spec ambiguity.
 
 ### v3.4.0 — Personality System
-- **32 built-in personalities** — Bob (default), Sherlock, + 30 library
-  - Validated in 2026-04-25 test sprint: voice differentiation real (Bob vs Sherlock distinct), natural-language creation produces high-quality system prompts, archetype + sycophant warnings fire correctly, dynamic vice re-evaluation on edits
+- **32 built-in personalities** — Casey (default), Atlas, + 30 library
+  - Validated in 2026-04-25 test sprint: voice differentiation real (Casey vs Atlas distinct), natural-language creation produces high-quality system prompts, archetype + sycophant warnings fire correctly, dynamic vice re-evaluation on edits
 - Tunable trait model: vibe, virtues, vices, soft skills, hard skills — all percentage sliders
 - Vice/virtue mirror pairs (pride↔integrity, cowardice↔courage, etc.)
 - Archetype system: HARDLINER, DIPLOMAT, ANALYST, CREATIVE, LONE_WOLF, TEAM_PLAYER, JOKESTER
@@ -134,7 +142,7 @@ Spec: [`records/2026-04-26-v4-phase-1-hidden-scribe-spec.md`](records/2026-04-26
 - [ ] Mid-session personality tuning (currently locked to session open — by design)
 - [ ] Personality history log — which personality was active per session (Hansard-style)
 - [ ] User personality performance notes — "Riff was too much today"
-- [ ] Blend mode — `50% Bob, 50% Sherlock` composite personality
+- [ ] Blend mode — `50% Casey, 50% Atlas` composite personality
 
 ---
 
@@ -172,7 +180,7 @@ Phased delivery. Phase 1 ships as v4.0.0-alpha.1 (see Shipped above). Subsequent
 - [x] **Phase 1 — Hidden scribe separation** *(shipped v4.0.0-alpha.1, 2026-04-26)* — protocol role split from active actor; conceptual foundation for the rest of v4.
 - [ ] **Phase 2 — Multi-actor sessions** *(next)* — spawn named actors mid-session in plain English (*"Hey Marlowe, join us"*). Each actor carries their full personality profile. Multiple named actors in the room simultaneously.
 - [ ] **Phase 3 — Panel vs Independent modes** — Panel: single inference context, model co-generates all actor responses in one pass, actors may build on each other's context. Independent: subagents, each actor receives the same input with no shared context. Triggered explicitly (*"blind panel:"*).
-- [ ] **Phase 4 — Hot-swap, actor response headers, mid-session protocol reload** — *"switch to Sherlock"* changes active actor immediately (no next-hello deferral). Every named actor response opens with `**[Name]** — YYYY-MM-DD HH:MM TZ`. `sync` mid-session reloads protocol rules immediately, not at next hello.
+- [ ] **Phase 4 — Hot-swap, actor response headers, mid-session protocol reload** — *"switch to Atlas"* changes active actor immediately (no next-hello deferral). Every named actor response opens with `**[Name]** — YYYY-MM-DD HH:MM TZ`. `sync` mid-session reloads protocol rules immediately, not at next hello.
 - [ ] **Phase 5 — `list actors` expansion + actor management** — `list actors` shows all currently-loaded actors plus the hidden scribe line. Mid-session add, remove, modify actors. Personality history per session (Hansard-style log of who was active when).
 
 ---

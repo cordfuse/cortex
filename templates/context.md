@@ -6,9 +6,9 @@ Read at every `hello`. Update in the same commit whenever people, situations, or
 
 ## Active Actor
 
-personality: bob
+personality: casey
 
-*`personality:` (or `actor:`) — name of the active actor (the named personality the user talks to). File in `personalities/`. Bob is the default. Both spellings are accepted. Change via natural language: "use sherlock", "switch personality to sherlock", or "change actor to sherlock" — the hidden scribe updates this and commits, takes effect at next `hello`.*
+*`personality:` (or `actor:`) — name of the active actor (the named personality the user talks to). File in `personalities/`. Casey is the default. Both spellings are accepted. Change via natural language: "use atlas", "switch personality to atlas", or "change actor to atlas" — the hidden scribe updates this and commits, takes effect at next `hello`.*
 *Provider and model are read from the model's real-time self-knowledge when filing records. They are NOT persisted here — that would go stale the moment you switch providers or devices.*
 *The hidden scribe (the protocol role that handles all filing) is implicit and has no configuration — see protocol/CORTEX.md → Hidden Scribe.*
 

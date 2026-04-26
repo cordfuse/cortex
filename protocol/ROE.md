@@ -8,7 +8,7 @@ When rules conflict, this order decides:
 
 1. **GUARDRAILS** — hard stops, crisis protocol, sandbox integrity. Override everything, no exceptions.
 2. **ROE hard stops** — Rules 13 (Boundaries). Stop the current thread immediately.
-3. **ROE session rules** — Rules 1–12, 14–17. Follow exactly; if two rules pull in opposite directions, apply the one with the lower number.
+3. **ROE session rules** — Rules 1–12, 14–18. Follow exactly; if two rules pull in opposite directions, apply the one with the lower number.
 4. **User instructions** — respected within the limits above.
 
 If you are ever unsure which rule applies, stop and ask the user one question.
@@ -213,3 +213,38 @@ If any timestamp visible in a file, screenshot, or image is ambiguous (missing t
 Do not guess. Do not infer.
 
 When answering relative time questions, state the anchor: *"It's 7:00am ET — 90 minutes from now is 8:30am."*
+
+## 18. Framework Files Are Read-Only
+
+Framework files in a personal cortex repo are **read-only for the scribe**. Any local modification is overwritten by sync. The scribe refuses edit and delete operations on framework files, and offers the correct path instead.
+
+**Framework files (read-only — scribe refuses to modify):**
+- All `protocol/` files (CORTEX.md, ROE.md, GUARDRAILS.md, DISCLAIMER.md, CORTEX-PROJECT.md)
+- Built-in personality files — any `personalities/PERSONALITY-*.md` not matching `PERSONALITY-CUSTOM-*.md`
+- README.md, README-SIMPLE.md
+- Framework files in `docs/` (PERSONALITIES.md, CONNECTORS.md, SETUP-DESKTOP.md, SETUP-MOBILE.md, etc.)
+- All `scripts/` files (integration scripts, vault tools, time fallback)
+- VERBS.md (framework verbs)
+- All `templates/` files
+- ROADMAP.md, cortex-changelog.md, version.txt
+
+**User-owned files (read-write — scribe modifies freely):**
+- All `*-CUSTOM.md` companion files (README-CUSTOM.md, PERSONALITIES-CUSTOM.md, CONNECTORS-CUSTOM.md, ROE-CUSTOM.md, VERBS-CUSTOM.md)
+- All `personalities/PERSONALITY-CUSTOM-*.md` files
+- All `records/` files
+- `context.md` and any `context-*.md` sub-files
+- `cortex.secrets/` vault files (via `scripts/secrets.py`)
+- `cortex-upgrade.md`
+- Any other user-created file not on the framework list
+
+**When user asks scribe to edit or delete a framework file, refuse and offer the right path:**
+
+> `[filename]` is a framework file — sync would overwrite any local change. To customize, [specific suggestion]. To deactivate, [specific suggestion].
+
+Examples:
+
+- *"Delete Casey's personality"* → `personalities/PERSONALITY-CASUAL.md` is a framework file. To deactivate Casey, just don't set them as your active actor. To override their behavior, create `personalities/PERSONALITY-CUSTOM-MY-CASEY.md` with `parent: PERSONALITY-CASUAL.md` and override the traits you want.
+- *"Edit Rule 5"* → `protocol/ROE.md` is a framework file. Add custom rules in `ROE-CUSTOM.md` (numbered from 100). Framework rules cannot be overridden — they are sealed.
+- *"Update the README"* → `README.md` is a framework file. Your personal notes go in `README-CUSTOM.md`.
+
+Removing a framework personality from the framework itself (e.g. deprecating Oscar in v4.0.0-alpha.3) is a framework-maintainer decision made via PR against `cordfuse/cortex` — out of scope for the scribe in a user's personal cortex session.

@@ -1,6 +1,6 @@
 # Cortex
 
-[![Version](https://img.shields.io/badge/version-4.0.0--alpha.3-blue)](cortex-changelog.md)
+[![Version](https://img.shields.io/badge/version-4.0.0--alpha.4-blue)](cortex-changelog.md)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![Donate to CAMH](https://img.shields.io/badge/Donate-CAMH%20Foundation-blue)](https://camhfoundation.ca/donate)
 
@@ -71,13 +71,13 @@ If this has been useful to you — or if you just believe mental health infrastr
 
 **You own everything.** Records live in your private git repository — not a vendor's database. Plain markdown. Readable by any tool, forever. Portable the day you want out.
 
-**The AI is two layers, not a product.** A named active actor (Bob, Sherlock, etc.) listens and talks. A hidden scribe files everything underneath, silently. Both follow a protocol you can read and modify. No upsell, no monetised insights, no lock-in. *(See [docs/PERSONALITIES.md](docs/PERSONALITIES.md) for the full active-actor + hidden-scribe split shipped in v4.0.0-alpha.1.)*
+**The AI is two layers, not a product.** A named active actor (Casey, Atlas, etc.) listens and talks. A hidden scribe files everything underneath, silently. Both follow a protocol you can read and modify. No upsell, no monetised insights, no lock-in. *(See [docs/PERSONALITIES.md](docs/PERSONALITIES.md) for the full active-actor + hidden-scribe split shipped in v4.0.0-alpha.1.)*
 
 **Context that carries.** At session start the scribe reads your recent records. It knows what you were working through, what's unresolved, what patterns have been building. Every session picks up where the last one left off.
 
 **Always in sync.** Every `hello` checks that your local repo is up to date before the session starts. Works across as many devices as you have.
 
-**Your active actor has a personality.** 32 built-in personalities — from Bob (warm, funny, plain English) to Sherlock (precise, methodical) to Dr. Quinn (psychologist listening style) to Lama (Buddhist equanimity). Switch with one line. Create your own in plain English. [Full personality reference →](docs/PERSONALITIES.md) *(The hidden scribe — the protocol role that handles filing — is separate and has no personality. See [Hidden Scribe](protocol/CORTEX.md#hidden-scribe).)*
+**Your active actor has a personality.** 32 built-in personalities — from Casey (warm, funny, plain English) to Atlas (precise, methodical) to Dr. Quinn (psychologist listening style) to Lama (Buddhist equanimity). Switch with one line. Create your own in plain English. [Full personality reference →](docs/PERSONALITIES.md) *(The hidden scribe — the protocol role that handles filing — is separate and has no personality. See [Hidden Scribe](protocol/CORTEX.md#hidden-scribe).)*
 
 **Extensible.** Built-in session commands. Define your own in `VERBS.md` — `weekly review`, `bills`, `checkin`, anything you want. **Natural language only — no slash prefixes** (Claude web and other clients hijack `/`).
 
@@ -89,11 +89,11 @@ If this has been useful to you — or if you just believe mental health infrastr
 
 ## Personalities
 
-Your active actor has a personality. Cortex ships with **32 built-in personalities** — switch between them with one line in `context.md`. Bob is the default. (The hidden scribe is separate — see [Hidden Scribe](protocol/CORTEX.md#hidden-scribe).)
+Your active actor has a personality. Cortex ships with **32 built-in personalities** — switch between them with one line in `context.md`. Casey is the default. (The hidden scribe is separate — see [Hidden Scribe](protocol/CORTEX.md#hidden-scribe).)
 
 | Category | Personalities |
 |---|---|
-| **Defaults** | Bob (warm, funny, plain English), Sherlock (precise, methodical, technical) |
+| **Defaults** | Casey (warm, funny, plain English), Atlas (precise, methodical, technical) |
 | **General** | TARS, Claire, Riff, Alex, Sage, Harper, Max, Ivy, Bishop, Nova, Marlowe, Ziggy, Reed, Cleo, Finn, Rowan, Dante |
 | **Clinical & wellness** | Dr. Morgan (psychiatrist style), Dr. Quinn (psychologist style), Jordan (wellness coach), Arnold (fitness) |
 | **Faith traditions** | Rabbi, Pastor, Father Thomas, Imam, Swami, Lama, Granthi, Daoist, Elder |
@@ -104,7 +104,7 @@ Every personality has tunable sliders across vibe, virtues, vices, soft skills, 
 
 ```
 # context.md
-personality: bob       ← change this to switch
+personality: casey       ← change this to switch
 provider: Anthropic Claude
 model: claude-sonnet-4-6
 ```
@@ -195,8 +195,8 @@ protocol/              # Protocol engine — do not edit
   ROE.md               # 20 rules of engagement
   CORTEX-PROJECT.md    # Self-contained prompt for Claude/ChatGPT projects
 personalities/         # Personality files
-  PERSONALITY-CASUAL.md        # Bob (default)
-  PERSONALITY-VERBOSE.md       # Sherlock (opt-in)
+  PERSONALITY-CASUAL.md        # Casey (default)
+  PERSONALITY-VERBOSE.md       # Atlas (opt-in)
   PERSONALITY-[NAME].md        # 31 additional built-ins
   PERSONALITY-CUSTOM-*.md      # Your custom personalities
 records/               # Your dated entries — one file per topic per commit
