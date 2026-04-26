@@ -9,6 +9,8 @@ Format: `YYYY-MM-DD HH:MM TZ | file | what changed`
 <!-- Future: if this file grows large, rotate annually to cortex-changelog-YYYY.md -->
 
 ---
+2026-04-26 23:04 UTC | version.txt | bump to 4.0.0-alpha.2 — list verb UX fix
+2026-04-26 23:04 UTC | protocol/CORTEX.md | list personalities/actors — output template now requires title rendered next to every name (`Name — Title.`); v3.4.10 names-only template was a UX regression, names alone are useless when choosing between 33+ personalities. Hard rule #2 added: always render title field next to name, no summarising or paraphrasing. Surfaced in v4.0.0-alpha.1 post-merge test.
 2026-04-26 22:34 UTC | version.txt | bump to 4.0.0-alpha.1 — v4 Phase 1 (Hidden Scribe Separation)
 2026-04-26 22:34 UTC | protocol/CORTEX.md | new Hidden Scribe top-level section — split between active actor (named personality, voice) and hidden scribe (protocol role, filing, no personality, never speaks). Scribe is implicit (no loading step). Phase 1 of v4 architectural reframe.
 2026-04-26 22:34 UTC | protocol/CORTEX.md | Loading Order step 3b reframed to load active actor only (no scribe load step — scribe is the protocol-execution baseline)

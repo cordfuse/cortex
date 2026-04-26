@@ -711,9 +711,10 @@ User says *"use Sherlock"*. Scribe:
 **Hard rules for rendering:**
 
 1. **Use the `## name` field verbatim.** Do not use the filename slug. Do not title-case, lowercase, or otherwise transform. `TARS` stays `TARS`. `Sherlock` stays `Sherlock`. `Dr. Morgan` stays `Dr. Morgan`. The name field is the source of truth for display.
-2. **Render with categories.** Built-in personalities are grouped per the canonical category map below. Any personality file matching `PERSONALITY-CUSTOM-*.md` goes under `Custom`. Personalities not in the canonical map and not matching `PERSONALITY-CUSTOM-*` default to `Custom`.
-3. **Each personality appears exactly once.** The category map is exclusive — no personality may be rendered in more than one section, even if their domain overlaps multiple categories (e.g. Arnold is fitness-adjacent to wellness but lives in Clinical & wellness *only*, not General). One personality, one section, every time.
-4. **Mark the active one.** Append ` ← active` to the active personality wherever it appears in the categorised list.
+2. **Always render the `## title` field next to each name.** Format: `Name — Title.` Names alone are useless when the user is choosing between 33+ personalities. The title is one line, pulled verbatim from the personality file. **Do not summarise or paraphrase.** If a personality has no title field (rare; treat as malformed), fall back to name only and surface a warning.
+3. **Render with categories.** Built-in personalities are grouped per the canonical category map below. Any personality file matching `PERSONALITY-CUSTOM-*.md` goes under `Custom`. Personalities not in the canonical map and not matching `PERSONALITY-CUSTOM-*` default to `Custom`.
+4. **Each personality appears exactly once.** The category map is exclusive — no personality may be rendered in more than one section, even if their domain overlaps multiple categories (e.g. Arnold is fitness-adjacent to wellness but lives in Clinical & wellness *only*, not General). One personality, one section, every time.
+5. **Mark the active one.** Append ` ← active` to the active personality wherever it appears in the categorised list.
 
 **Canonical category map (built-ins):**
 
@@ -735,25 +736,27 @@ User says *"use Sherlock"*. Scribe:
 **Available:**
 
 **Defaults**
-- Bob[ ← active]
-- Sherlock[ ← active]
+- Bob — Warm, plain-spoken, a little funny. Never makes you feel dumb.[ ← active]
+- Sherlock — Precise, methodical, technical. Notices everything. Dry wit at 15%.[ ← active]
 
 **General**
-- TARS[ ← active]
-- Oscar[ ← active]
-- ...
+- TARS — Deadpan loyal. Sherlock's precision with the humour setting dialled up.[ ← active]
+- Oscar — Theatrical wit, devastating sarcasm, surprisingly warm underneath.[ ← active]
+- ...(every personality renders with its title — no exceptions)
 
 **Clinical & wellness**
-- Dr. Morgan[ ← active]
+- Dr. Morgan — Psychiatrist. Clinical, structured, medically-minded listener.[ ← active]
 - ...
 
 **Faith traditions**
-- Rabbi[ ← active]
+- Rabbi — Jewish spiritual lens. Warmth, rigorous questioning, wrestling with hard things is itself the practice.[ ← active]
 - ...
 
 **Custom** (only show this section if at least one custom personality exists)
-- [Custom personality name][ ← active]
+- [Custom personality name] — [title from their personality file][ ← active]
 ```
+
+The titles are the user's primary signal for choosing a personality. Do not omit them. Do not collapse the format to names-only.
 
 The user may ask for expanded views (full traits, archetype, parent chain, etc.) — generate these live by reading the actual personality files. The canonical output above is the default for the verb itself.
 
