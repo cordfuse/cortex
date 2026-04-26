@@ -9,6 +9,9 @@ Format: `YYYY-MM-DD HH:MM TZ | file | what changed`
 <!-- Future: if this file grows large, rotate annually to cortex-changelog-YYYY.md -->
 
 ---
+2026-04-26 14:46 UTC | version.txt | bump to 3.4.13 — README sandbox-limitation callout
+2026-04-26 14:46 UTC | README.md | new "What works where" table at top — explicit that Claude/ChatGPT web+mobile sandboxes block all third-party APIs (Google, Microsoft, etc.). Cortex can only do git operations (clone, read, commit, push, merge) in those environments. Connectors require CLI agents or AgentBox.
+2026-04-26 14:46 UTC | README-SIMPLE.md | new "What Cortex CAN'T do on Claude or ChatGPT" section in plain English — points users to AgentBox (in dev) or CLI agents for connector functionality on chat surfaces
 2026-04-26 01:52 UTC | version.txt | bump to 3.4.12 — Google connector smoke test fixes
 2026-04-26 01:52 UTC | scripts/integrations/google.py + microsoft.py | docstring usage fix — `--passphrase` is a top-level flag and must come BEFORE the subcommand, not after; old docstring showed it after which caused argparse "unrecognized arguments" errors during smoke test
 2026-04-26 01:52 UTC | scripts/integrations/google.py + microsoft.py | auth output stale wording — "Commit cortex.secrets.enc" → "Commit cortex.secrets/" (vault format changed from monolithic .enc file to per-secret folder)

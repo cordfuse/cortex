@@ -2,13 +2,18 @@
 
 What's shipped, what's in progress, and what's coming.
 
-**Current version:** 3.4.12 — [Changelog](cortex-changelog.md)
+**Current version:** 3.4.13 — [Changelog](cortex-changelog.md)
 
 ---
 
 ## Shipped
 
-### v3.4.12 — Google Connector Smoke Test Fixes *(current)*
+### v3.4.13 — Sandbox Limitation Callout in README *(current)*
+- **Plain-language warning at top of both READMEs.** Users now know up front: on Claude.ai or ChatGPT web/mobile, Cortex can only do git operations (clone, read, commit, push, merge). All third-party APIs (Google, Microsoft, Notion, Slack, etc.) are blocked by the platforms' tool sandboxes — by design, not configurable.
+- **Pointer to AgentBox.** For users who want full connector functionality on phone/tablet without a developer setup, the README points at `cordfuse/agentbox` (in development) — a local Electron app that exposes a CLI agent's chat UI to any device, no sandbox restrictions.
+- **Trigger:** prevents future users from hitting the same 3-hour cliff Steve hit on 2026-04-25 trying to make `googleapis.com` reachable from Claude.ai web.
+
+### v3.4.12 — Google Connector Smoke Test Fixes
 - **Google connector validated end-to-end.** All five Google products (Calendar, Gmail, Drive, Tasks, Contacts) tested live against Steve's account via Penguin. Real data flowing in clean markdown. OAuth refresh token persists in vault.
 - **`scripts/integrations/google.py` shadowing fix.** Script is named `google.py` — Python adds its directory to `sys.path[0]`, making `from google.oauth2 import ...` resolve to the script itself instead of the real google PyPI package. Script now strips its own dir from sys.path before the imports.
 - **Docstring usage fix in google.py + microsoft.py.** `--passphrase` is a top-level argparse flag and must come BEFORE the subcommand. Old docstring showed it after, causing "unrecognized arguments" errors. Now: `python google.py --passphrase X auth` (correct).
