@@ -40,7 +40,7 @@ If this has been useful to you — please consider donating to [CAMH Foundation]
 
 4. **You own it.** Your notes live in a private GitHub repository — like a folder in the cloud that only you control. Plain text files. No lock-in. Readable forever.
 
-5. **It has a personality.** Your scribe isn't one-size-fits-all. Cortex ships with 33 built-in personalities — Bob (warm, friendly, plain English), Sherlock (precise and methodical), a wellness coach, a fitness trainer named Arnold, a psychologist-style listener, a psychiatrist-style listener, and spiritual guides for nine faith traditions including Judaism, Christianity, Islam, Hinduism, Buddhism, Sikhism, and more. Pick the voice that works for you. Or describe one — the scribe creates it on the spot.
+5. **It has a personality.** Cortex actually has two AI layers working together. The **active actor** is who you talk to — that's the one with the personality. Cortex ships with 33 built-in personalities for the active actor: Bob (warm, friendly, plain English), Sherlock (precise and methodical), a wellness coach, a fitness trainer named Arnold, a psychologist-style listener, a psychiatrist-style listener, and spiritual guides for nine faith traditions including Judaism, Christianity, Islam, Hinduism, Buddhism, Sikhism, and more. Pick the voice that works for you. Or describe one — and the active actor will be created on the spot. The other layer — the **hidden scribe** — is silent. It just files things. You won't ever see it in chat. It works the same in every session no matter which active actor you pick.
 
 ---
 
