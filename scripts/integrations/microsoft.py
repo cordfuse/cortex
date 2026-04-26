@@ -16,15 +16,17 @@ One-time setup:
   5. Run: python scripts/integrations/microsoft.py auth
 
 Usage:
-  python scripts/integrations/microsoft.py auth [--passphrase <p>]
-  python scripts/integrations/microsoft.py mail [--count 20] [--passphrase <p>]
-  python scripts/integrations/microsoft.py calendar [--days 7] [--passphrase <p>]
-  python scripts/integrations/microsoft.py onedrive [--count 20] [--passphrase <p>]
-  python scripts/integrations/microsoft.py teams [--count 20] [--passphrase <p>]
-  python scripts/integrations/microsoft.py sharepoint [--count 20] [--passphrase <p>]
-  python scripts/integrations/microsoft.py todo [--passphrase <p>]
-  python scripts/integrations/microsoft.py planner [--passphrase <p>]
-  python scripts/integrations/microsoft.py onenote [--count 20] [--passphrase <p>]
+  python scripts/integrations/microsoft.py [--passphrase <p>] auth
+  python scripts/integrations/microsoft.py [--passphrase <p>] mail [--count 20]
+  python scripts/integrations/microsoft.py [--passphrase <p>] calendar [--days 7]
+  python scripts/integrations/microsoft.py [--passphrase <p>] onedrive [--count 20]
+  python scripts/integrations/microsoft.py [--passphrase <p>] teams [--count 20]
+  python scripts/integrations/microsoft.py [--passphrase <p>] sharepoint [--count 20]
+  python scripts/integrations/microsoft.py [--passphrase <p>] todo
+  python scripts/integrations/microsoft.py [--passphrase <p>] planner
+  python scripts/integrations/microsoft.py [--passphrase <p>] onenote [--count 20]
+
+`--passphrase` is a top-level flag and must come BEFORE the subcommand.
 
 Requires: pip install msal requests
 """
@@ -163,7 +165,7 @@ def cmd_auth(passphrase: str):
     store_secret("msft_refresh_token", result["refresh_token"], passphrase)
 
     print("\nCredentials stored in vault.")
-    print("Commit cortex.secrets.enc to persist across devices.")
+    print("Commit cortex.secrets/ to persist across devices.")
 
 
 # ── Mail ──────────────────────────────────────────────────────────────────────

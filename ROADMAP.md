@@ -2,13 +2,19 @@
 
 What's shipped, what's in progress, and what's coming.
 
-**Current version:** 3.4.11 — [Changelog](cortex-changelog.md)
+**Current version:** 3.4.12 — [Changelog](cortex-changelog.md)
 
 ---
 
 ## Shipped
 
-### v3.4.11 — Provider/Model is a Runtime Property *(current)*
+### v3.4.12 — Google Connector Smoke Test Fixes *(current)*
+- **Google connector validated end-to-end.** All five Google products (Calendar, Gmail, Drive, Tasks, Contacts) tested live against Steve's account via Penguin. Real data flowing in clean markdown. OAuth refresh token persists in vault.
+- **`scripts/integrations/google.py` shadowing fix.** Script is named `google.py` — Python adds its directory to `sys.path[0]`, making `from google.oauth2 import ...` resolve to the script itself instead of the real google PyPI package. Script now strips its own dir from sys.path before the imports.
+- **Docstring usage fix in google.py + microsoft.py.** `--passphrase` is a top-level argparse flag and must come BEFORE the subcommand. Old docstring showed it after, causing "unrecognized arguments" errors. Now: `python google.py --passphrase X auth` (correct).
+- **Auth output stale wording fix.** Both google.py and microsoft.py printed "Commit cortex.secrets.enc to persist across devices" — but the vault format changed from monolithic `.enc` file to per-secret `cortex.secrets/` folder. Updated to "Commit cortex.secrets/".
+
+### v3.4.11 — Provider/Model is a Runtime Property
 - **Reverted v3.4.10 step 3c (auto-fill provider/model in context.md).** Provider and model are runtime properties, not configuration. Persisting them in `context.md` was a category error — values go stale the moment you switch providers, switch devices, or share the repo with another collaborator using a different AI.
 - **Provenance now reads real-time.** The scribe pulls `provider:` and `model:` from its own self-knowledge at the moment a record is filed. Always current. No persistence drift.
 - **`provider:` and `model:` removed from `context.md` template.** Existing user files with those fields are ignored — clean up at next sync.

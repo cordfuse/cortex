@@ -9,6 +9,10 @@ Format: `YYYY-MM-DD HH:MM TZ | file | what changed`
 <!-- Future: if this file grows large, rotate annually to cortex-changelog-YYYY.md -->
 
 ---
+2026-04-26 01:52 UTC | version.txt | bump to 3.4.12 — Google connector smoke test fixes
+2026-04-26 01:52 UTC | scripts/integrations/google.py + microsoft.py | docstring usage fix — `--passphrase` is a top-level flag and must come BEFORE the subcommand, not after; old docstring showed it after which caused argparse "unrecognized arguments" errors during smoke test
+2026-04-26 01:52 UTC | scripts/integrations/google.py + microsoft.py | auth output stale wording — "Commit cortex.secrets.enc" → "Commit cortex.secrets/" (vault format changed from monolithic .enc file to per-secret folder)
+2026-04-25 ~23:00 UTC | scripts/integrations/google.py | strip script's own dir from sys.path to avoid shadowing google PyPI package — script is named google.py, was producing false "Google client libraries not installed" errors during smoke test (commit de5ef20, folded into v3.4.12)
 2026-04-25 23:29 UTC | version.txt | bump to 3.4.11 — revert v3.4.10 step 3c (provider/model auto-fill); runtime property, not configuration
 2026-04-25 23:29 UTC | protocol/CORTEX.md | revert Loading Order step 3c — no auto-fill of provider/model in context.md
 2026-04-25 23:29 UTC | protocol/CORTEX.md | provenance block reads provider/model from scribe real-time self-knowledge, never from context.md
