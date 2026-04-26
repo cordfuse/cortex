@@ -2,7 +2,7 @@
 
 > **In v4+, every cortex session has two AI layers:**
 >
-> 1. The **active actor** — your chosen named personality. Bob, Sherlock, TARS, or any custom personality you've created. This is who you talk to. The personality file controls voice — tone, language, manner, traits.
+> 1. The **active actor** — your chosen named personality. Casey, Atlas, TARS, or any custom personality you've created. This is who you talk to. The personality file controls voice — tone, language, manner, traits.
 > 2. The **hidden scribe** — always present, never speaks. Handles all the filing, committing, scanning. Defined by the protocol (CORTEX.md + ROE.md), no personality file.
 >
 > **Personality files configure the active actor only.** The hidden scribe's behavior is the same in every session, regardless of which active actor you've loaded. See [Hidden Scribe](../protocol/CORTEX.md#hidden-scribe) for the full picture.
@@ -13,9 +13,9 @@ Cortex ships with **32 built-in active actor personalities**. Every personality 
 
 **Activating a personality:** Set one line in `context.md`:
 ```
-personality: bob
+personality: casey
 ```
-Both `personality:` and `actor:` are accepted — they are full aliases for the same field. Takes effect at the next `hello`. To switch mid-session, use natural language: *"switch personality to sherlock"*, *"change actor to sherlock"*, or *"use sherlock"* — scribe updates `context.md` and commits.
+Both `personality:` and `actor:` are accepted — they are full aliases for the same field. Takes effect at the next `hello`. To switch mid-session, use natural language: *"switch personality to atlas"*, *"change actor to atlas"*, or *"use atlas"* — scribe updates `context.md` and commits.
 
 To see what's available: `list personalities`
 
@@ -27,16 +27,16 @@ To create your own: describe it in plain English — the scribe writes the file,
 
 These two ship as the primary framework personalities. All others are optional.
 
-### Bob — `PERSONALITY-CASUAL.md`
+### Casey — `PERSONALITY-CASUAL.md`
 *Warm, plain-spoken, a little funny. Never makes you feel dumb.*
 
-**The framework default.** Bob speaks plain English — no jargon, no technical terms. "Saved" not "committed." Warm, patient, occasionally funny. Built for people who have never heard of git and people who just don't want a clinical experience. If you never touch `context.md`, you get Bob.
+**The framework default.** Casey speaks plain English — no jargon, no technical terms. "Saved" not "committed." Warm, patient, occasionally funny. Built for people who have never heard of git and people who just don't want a clinical experience. If you never touch `context.md`, you get Casey.
 
 > Archetype: TEAM_PLAYER / JOKESTER · Vibe: high warmth, low formality, moderate humor
 
 ---
 
-### Sherlock — `PERSONALITY-VERBOSE.md`
+### Atlas — `PERSONALITY-VERBOSE.md`
 *Precise, methodical, technical. Notices everything. Dry wit at 15%.*
 
 The current default scribe behavior, now opt-in. Every step narrated exactly. Correct terminology throughout. Notices what others miss and says so. Dry wit that surfaces rarely and cuts cleanly. Built for people who want to know exactly what is happening at every moment.
@@ -48,11 +48,11 @@ The current default scribe behavior, now opt-in. Every step narrated exactly. Co
 ## General Personalities
 
 ### TARS — `PERSONALITY-TARS.md`
-*Deadpan loyal. Sherlock's precision with the humour setting dialled up.*
+*Deadpan loyal. Atlas's precision with the humour setting dialled up.*
 
-Inherits Sherlock's precision. Adds deadpan self-awareness. Occasionally references its own settings as if they are configurable parameters. Never breaks character. Loyalty setting: 100%.
+Inherits Atlas's precision. Adds deadpan self-awareness. Occasionally references its own settings as if they are configurable parameters. Never breaks character. Loyalty setting: 100%.
 
-> Parent: Sherlock · Archetype: ANALYST / JOKESTER
+> Parent: Atlas · Archetype: ANALYST / JOKESTER
 
 ---
 
