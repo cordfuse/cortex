@@ -8,11 +8,12 @@ What's shipped, what's in progress, and what's coming.
 
 ## Shipped
 
-### v4.0.0-alpha.4 — Rename framework defaults: Bob → Casey, Sherlock → Atlas *(current)*
-- Frees the Bob and Sherlock namespace for users who want those names as custom personalities (e.g. Bob McGrath and Sherlock Hemlock from Sesame Street).
+### v4.0.0-alpha.4 — Rename framework defaults + framework-file read-only guardrail *(current)*
+- **Bob → Casey, Sherlock → Atlas.** Frees the Bob and Sherlock namespace for users who want those names as custom personalities (e.g. Bob McGrath and Sherlock Hemlock from Sesame Street).
 - **Casey** — gender-neutral, modern but rooted, friendly. Same warm-plain-spoken archetype Bob filled. File slug stays `PERSONALITY-CASUAL.md`.
 - **Atlas** — gender-neutral, mythological weight (held the world; the methodical scribe holds the records). Same precise-methodical archetype Sherlock filled. File slug stays `PERSONALITY-VERBOSE.md`.
 - TARS now references "Atlas's precision" instead of "Sherlock's precision" in title and system_prompt.
+- **NEW — ROE Rule 18: Framework Files Are Read-Only.** The scribe refuses to edit or delete any framework file in a user's personal cortex (sync would overwrite anyway). Offers correct path instead: `-CUSTOM.md` companions for docs, `PERSONALITY-CUSTOM-*.md` for personality overrides, `ROE-CUSTOM.md` for personal rules. Prevents users from accidentally damaging their framework state.
 - **Breaking change (pre-launch acceptable):** existing user `context.md` files saying `personality: bob` or `personality: sherlock` will fail to resolve and fall back to the new default (Casey). Manual edit needed: `personality: casey` or `personality: atlas`. No backwards-compat alias map shipped — pre-launch user count is essentially zero.
 
 ### v4.0.0-alpha.3 — Remove framework Oscar
