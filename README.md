@@ -1,6 +1,6 @@
 # Cortex
 
-[![Version](https://img.shields.io/badge/version-3.4.12-blue)](cortex-changelog.md)
+[![Version](https://img.shields.io/badge/version-3.4.13-blue)](cortex-changelog.md)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![Donate to CAMH](https://img.shields.io/badge/Donate-CAMH%20Foundation-blue)](https://camhfoundation.ca/donate)
 
@@ -17,6 +17,24 @@
 **Your AI remembers everything. You own the records.**
 
 Every AI chat starts from zero — you re-explain your life every single session. Cortex fixes that. Talk to your AI scribe, it files everything into a private git repo you own. Next session, it reads your records and picks up where you left off. Any device. Any major AI. Nothing sent to Cordfuse.
+
+---
+
+## What works where — read this first
+
+Cortex behaves **differently** depending on where you run it. The difference is hard, not soft, and it's not a configuration issue — it's the platforms.
+
+| Environment | Git operations (clone, read, commit, push, merge) | Third-party APIs (Google, Microsoft 365, Notion, Slack, Spotify, etc.) |
+|---|---|---|
+| **CLI agents** (Claude Code, Gemini CLI, OpenCode, Qwen, Codex) | Yes | **Yes — full connector functionality** |
+| **Self-hosted / cron / scheduled scripts** on your machine | Yes | **Yes — full connector functionality** |
+| **Claude.ai web and mobile** (Free/Pro/Max) | Yes | **NO. Sandbox blocks all third-party APIs.** |
+| **ChatGPT web and mobile** | Yes | **NO. Sandbox has zero outbound network.** |
+| **Gemini web and mobile** | Not supported (no tool-call file access) | N/A |
+
+**On Claude.ai and ChatGPT web/mobile, cortex can ONLY do git operations — clone, read your records, commit, push, merge.** Every connector script (`scripts/integrations/google.py`, `microsoft.py`, `tailscale.py`, `rclone.py`) will fail at the network proxy. **There is no API access. None at all.** This is by design on Anthropic's and OpenAI's side — their sandboxes only allow specific package-registry domains (GitHub, PyPI, npm). Cortex cannot work around this.
+
+**For full connector functionality on a phone or tablet:** wait for [AgentBox](https://github.com/cordfuse/agentbox) (Cordfuse's local-agent-with-PWA-UI app, in development). Until then, connectors run from a CLI agent on your laptop or scheduled scripts on a home server.
 
 ---
 
