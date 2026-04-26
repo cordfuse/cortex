@@ -9,6 +9,9 @@ Format: `YYYY-MM-DD HH:MM TZ | file | what changed`
 <!-- Future: if this file grows large, rotate annually to cortex-changelog-YYYY.md -->
 
 ---
+2026-04-26 21:16 UTC | version.txt | bump to 3.4.15 — README adds Claude Cowork/Dispatch row with flakiness warning
+2026-04-26 21:16 UTC | README.md | "What works where" table adds Claude Cowork / Dispatch row — connectors work because Cowork dispatches a real Claude Code instance to the cloud, but Cowork is flaky/unfinished (hung tooling calls etc.) — out of cortex's control, treat as experimental
+2026-04-26 21:16 UTC | README-SIMPLE.md | new "power-user option: Claude Cowork / Dispatch" paragraph in plain English with the flakiness caveat
 2026-04-26 14:54 UTC | version.txt | bump to 3.4.14 — README accuracy: AgentBox is in planning stage, not in development
 2026-04-26 14:54 UTC | README.md + README-SIMPLE.md | clarify AgentBox status — "in planning stage, not yet built" (was "in development" / "upcoming" which overstated readiness)
 2026-04-26 14:46 UTC | version.txt | bump to 3.4.13 — README sandbox-limitation callout

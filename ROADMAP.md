@@ -2,13 +2,17 @@
 
 What's shipped, what's in progress, and what's coming.
 
-**Current version:** 3.4.14 — [Changelog](cortex-changelog.md)
+**Current version:** 3.4.15 — [Changelog](cortex-changelog.md)
 
 ---
 
 ## Shipped
 
-### v3.4.14 — AgentBox status accuracy *(current)*
+### v3.4.15 — Claude Cowork/Dispatch row in README *(current)*
+- README.md and README-SIMPLE.md now disclose that Cortex with full connector functionality works in Claude Cowork / Dispatch (Claude Code dispatched to the cloud from Claude.ai) — but with an explicit flakiness warning. Cowork is in active development on Anthropic's side; hung tooling calls and unstable behavior are common. Out of cortex's control. Treat as experimental.
+- Honest user disclosure: this is the only chat-with-connectors path on mobile RIGHT NOW, until AgentBox v1.0 ships.
+
+### v3.4.14 — AgentBox status accuracy
 - README.md and README-SIMPLE.md now accurately describe AgentBox as "in planning stage, not yet built" (previously "in development" / "upcoming" which overstated readiness).
 
 ### v3.4.13 — Sandbox Limitation Callout in README
