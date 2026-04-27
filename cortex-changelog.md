@@ -9,6 +9,11 @@ Format: `YYYY-MM-DD HH:MM TZ | file | what changed`
 <!-- Future: if this file grows large, rotate annually to cortex-changelog-YYYY.md -->
 
 ---
+2026-04-27 18:23 UTC | version.txt | bump to 4.0.0-alpha.8 — personality hot-swap (mid-session actor switching)
+2026-04-27 18:23 UTC | protocol/CORTEX.md | personality file reloads on user-invoked switch verbs mid-session — Loading Order step 3b re-runs, scribe adopts new voice in the very next response. No fresh hello required. Voice is configurable mid-session; protocol is not (protocol files still lock at hello).
+2026-04-27 18:23 UTC | protocol/CORTEX.md | "Personality is locked at session open" → replaced with "Personality hot-swaps mid-session"; broader "Session rules are locked" reframed as "Protocol rules are locked" with personality as the explicit exception
+2026-04-27 18:23 UTC | protocol/CORTEX.md | Switching personality section — confirmation message changed from "Switched to X. Takes effect at next hello." to "Switched to X. Loading now." Tuning section: if tuned personality is active, hot-swap; otherwise note for next load.
+2026-04-27 18:23 UTC | VERBS.md / README.md / docs/PERSONALITIES.md | switch-personality verb documentation updated — hot-swap immediate, no fresh hello required (alpha.8+)
 2026-04-27 15:51 UTC | version.txt | bump to 4.0.0-alpha.7 — guardrail: hard block all RWDX until bootstrap complete
 2026-04-27 15:51 UTC | protocol/GUARDRAILS.md | NEW Hard Stop: bootstrap incomplete blocks all RWDX (read/write/delete/execute) until repo cloned, protocol loaded, and remote synced
 2026-04-27 01:19 UTC | version.txt | bump to 4.0.0-alpha.6 — General split + 8 new personalities + 3 new categories + faith axis

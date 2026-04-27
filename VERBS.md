@@ -19,7 +19,7 @@ Custom session commands the scribe knows about. Invoked by **natural language** 
 ### Personality
 
 ## switch personality
-Switch active personality. Usage: *"switch personality to casey"*, *"change actor to atlas"*, *"use [name]"*. Scribe updates `personality:` in `context.md` and commits. Takes effect at next `hello`. To see what's available: `list personalities`. (Aliases: *change actor*, *use*.)
+Switch active personality. Usage: *"switch personality to casey"*, *"change actor to atlas"*, *"use [name]"*. Scribe updates `personality:` in `context.md`, commits, and **hot-swaps to the new actor immediately** — the next response is in the new voice, no fresh hello required (v4.0.0-alpha.8+). To see what's available: `list personalities`. (Aliases: *change actor*, *use*.)
 
 ---
 
