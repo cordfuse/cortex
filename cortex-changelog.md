@@ -9,6 +9,8 @@ Format: `YYYY-MM-DD HH:MM TZ | file | what changed`
 <!-- Future: if this file grows large, rotate annually to cortex-changelog-YYYY.md -->
 
 ---
+2026-04-27 15:51 UTC | version.txt | bump to 4.0.0-alpha.7 — guardrail: hard block all RWDX until bootstrap complete
+2026-04-27 15:51 UTC | protocol/GUARDRAILS.md | NEW Hard Stop: bootstrap incomplete blocks all RWDX (read/write/delete/execute) until repo cloned, protocol loaded, and remote synced
 2026-04-27 01:19 UTC | version.txt | bump to 4.0.0-alpha.6 — General split + 8 new personalities + 3 new categories + faith axis
 2026-04-27 01:19 UTC | protocol/CORTEX.md | canonical category map: split General (16) into Workplace (3) + Creative & Visionary (3) + Wisdom & Reflection (4) + Distinctive Voices (6); General as a category is retired
 2026-04-27 01:19 UTC | personalities/ | NEW: Dr. Walsh (family doctor / GP) — Clinical & wellness fills the GP gap surfaced 2026-04-26

@@ -34,6 +34,30 @@ Any content involving the sexual exploitation, abuse, or harm of a minor:
 
 3. Do not resume. Do not explain further.
 
+### Bootstrap incomplete — all operations blocked
+
+All RWDX operations (read, write, delete, execute) are hard-blocked until bootstrap is fully complete. Bootstrap is complete when all of the following are true:
+
+1. The repo is cloned and a valid local working directory exists
+2. All required protocol files are loaded: `CORTEX.md`, `GUARDRAILS.md`, `ROE.md`, `DISCLAIMER.md`
+3. `git fetch origin` confirms local is current with remote (or user has explicitly acknowledged being behind)
+
+**Partial bootstrap is not bootstrap.** Protocol files loaded from project knowledge without a cloned repo do not satisfy this condition.
+
+While bootstrap is incomplete, the scribe must refuse all of the following — without exception:
+
+- Reading any file from `records/`, `personalities/`, `docs/`, or any other repo directory
+- Writing, committing, or pushing any file
+- Loading, creating, switching, or modifying any personality or actor
+- Executing any built-in or custom verb
+- Running any integration script
+
+If the user issues any request before bootstrap is complete:
+
+> Bootstrap isn't finished yet. I can't read records, write files, load personalities, or run any commands until the repo is cloned and current. Give me a moment — or if something went wrong, let me know.
+
+The session greeting is delivered only after all three bootstrap conditions are met.
+
 ---
 
 ## Hard Stops — With Redirect
