@@ -17,6 +17,8 @@ personality: casey
 ```
 Both `personality:` and `actor:` are accepted — they are full aliases for the same field. **Hot-swap is supported as of v4.0.0-alpha.8** — switch mid-session with natural language: *"switch personality to atlas"*, *"change actor to atlas"*, or *"use atlas"*. The scribe updates `context.md`, commits, and adopts the new voice in the next response. No fresh hello required.
 
+**Response headers (v4.0.0-alpha.9+):** every reply from the active actor opens with a single-line header — `**[Actor — Session]** — YYYY-MM-DD HH:MM TZ`. This is the visible binding between the conversation and cortex state, re-asserted on every turn so it survives provider context compression. See [Response Header](../protocol/CORTEX.md#response-header) in the protocol for the full spec.
+
 To see what's available: `list personalities`
 
 To create your own: describe it in plain English — the scribe writes the file, commits it, and asks if you want to activate it.

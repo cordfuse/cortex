@@ -9,6 +9,12 @@ Format: `YYYY-MM-DD HH:MM TZ | file | what changed`
 <!-- Future: if this file grows large, rotate annually to cortex-changelog-YYYY.md -->
 
 ---
+2026-04-27 21:00 UTC | version.txt | bump to 4.0.0-alpha.9 — response headers (compression-resilience)
+2026-04-27 21:00 UTC | protocol/CORTEX.md | new top-level section "# Response Header" — every actor reply opens with `**[Actor — Session]** — YYYY-MM-DD HH:MM TZ`. Format is fixed; actor does not paraphrase. Re-asserts actor + session binding on every turn so the conversation survives provider context compaction. Recovery semantics: lost binding → most recent commit message → singleton fallback.
+2026-04-27 21:00 UTC | protocol/CORTEX.md | "main session" introduced as the user-facing alias for the singleton. Default for every session that hasn't explicitly spawned a scoped session (Phase 6+).
+2026-04-27 21:00 UTC | docs/PERSONALITIES.md | added Response headers note pointing to the protocol section.
+2026-04-27 21:00 UTC | README.md | badge bumped 4.0.0-alpha.8 → 4.0.0-alpha.9.
+2026-04-27 21:00 UTC | ROADMAP.md | filed v4.0.0-alpha.9 entry as current; demoted alpha.8 from current.
 2026-04-27 18:23 UTC | version.txt | bump to 4.0.0-alpha.8 — personality hot-swap (mid-session actor switching)
 2026-04-27 18:23 UTC | protocol/CORTEX.md | personality file reloads on user-invoked switch verbs mid-session — Loading Order step 3b re-runs, scribe adopts new voice in the very next response. No fresh hello required. Voice is configurable mid-session; protocol is not (protocol files still lock at hello).
 2026-04-27 18:23 UTC | protocol/CORTEX.md | "Personality is locked at session open" → replaced with "Personality hot-swaps mid-session"; broader "Session rules are locked" reframed as "Protocol rules are locked" with personality as the explicit exception

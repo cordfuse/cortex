@@ -2,13 +2,24 @@
 
 What's shipped, what's in progress, and what's coming.
 
-**Current version:** 4.0.0-alpha.8 — [Changelog](cortex-changelog.md)
+**Current version:** 4.0.0-alpha.9 — [Changelog](cortex-changelog.md)
 
 ---
 
 ## Shipped
 
-### v4.0.0-alpha.8 — Personality hot-swap (mid-session actor switching) *(current)*
+### v4.0.0-alpha.9 — Response headers (compression-resilience) *(current)*
+
+Every actor response now opens with a single-line header: `**[Actor — Session]** — YYYY-MM-DD HH:MM TZ`. The header is a compression-resilience mechanism, not a flourish — it re-asserts the actor + session binding on every turn, surviving provider context compaction (Claude auto-compaction, GPT context windowing, etc.).
+
+**What changed:**
+- New `# Response Header` section in `protocol/CORTEX.md` specifies the format, recovery semantics on lost binding, and the no-paraphrase rule (the actor renders the header in fixed format, not in their own voice).
+- `docs/PERSONALITIES.md` notes the header.
+- "Main session" is the user-facing alias for the singleton (default); scoped sessions land in Phase 6.
+
+**Why now:** carved out from Phase 4 + Phase 6, same playbook as alpha.8 hot-swap. The header is display-only and pre-bakes the slot for Phase 6 (multi-session); there everything renders as `main session` until scoped sessions arrive. Compression mitigation kicks in immediately for every session run after merge.
+
+### v4.0.0-alpha.8 — Personality hot-swap (mid-session actor switching)
 
 Kills the deferred-switch UX papercut that's been live since v3.4.0. The active actor's personality file now reloads on user-invoked switch verbs mid-session — no fresh hello required. Voice changes from the very next response.
 
