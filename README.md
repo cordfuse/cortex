@@ -1,6 +1,6 @@
 # Cortex
 
-[![Version](https://img.shields.io/badge/version-4.0.0--alpha.6-blue)](cortex-changelog.md)
+[![Version](https://img.shields.io/badge/version-4.0.0--alpha.8-blue)](cortex-changelog.md)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![Donate to CAMH](https://img.shields.io/badge/Donate-CAMH%20Foundation-blue)](https://camhfoundation.ca/donate)
 
@@ -150,7 +150,7 @@ Define your own in `VERBS.md`. Invoke by name in natural language — no slash p
 
 | Verb | What it does |
 |---|---|
-| `switch personality to [name]` | Switch active personality (takes effect at next `hello`). Aliases: *change actor*, *use [name]* |
+| `switch personality to [name]` | Hot-swap active personality (takes effect immediately, next response). Aliases: *change actor*, *use [name]* |
 | `weekly review` | Weekly review across all records |
 | `daily log` | Open a daily log entry |
 | `bills` | Review upcoming bills |

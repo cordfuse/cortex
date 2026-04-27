@@ -15,7 +15,7 @@ Cortex ships with **55 built-in active actor personalities**. Every personality 
 ```
 personality: casey
 ```
-Both `personality:` and `actor:` are accepted — they are full aliases for the same field. Takes effect at the next `hello`. To switch mid-session, use natural language: *"switch personality to atlas"*, *"change actor to atlas"*, or *"use atlas"* — scribe updates `context.md` and commits.
+Both `personality:` and `actor:` are accepted — they are full aliases for the same field. **Hot-swap is supported as of v4.0.0-alpha.8** — switch mid-session with natural language: *"switch personality to atlas"*, *"change actor to atlas"*, or *"use atlas"*. The scribe updates `context.md`, commits, and adopts the new voice in the next response. No fresh hello required.
 
 To see what's available: `list personalities`
 

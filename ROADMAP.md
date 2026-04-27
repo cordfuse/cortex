@@ -2,13 +2,30 @@
 
 What's shipped, what's in progress, and what's coming.
 
-**Current version:** 4.0.0-alpha.6 — [Changelog](cortex-changelog.md)
+**Current version:** 4.0.0-alpha.8 — [Changelog](cortex-changelog.md)
 
 ---
 
 ## Shipped
 
-### v4.0.0-alpha.6 — General split + 8 new personalities + 3 new categories + faith axis *(current)*
+### v4.0.0-alpha.8 — Personality hot-swap (mid-session actor switching) *(current)*
+
+Kills the deferred-switch UX papercut that's been live since v3.4.0. The active actor's personality file now reloads on user-invoked switch verbs mid-session — no fresh hello required. Voice changes from the very next response.
+
+**What changed:**
+- Loading Order step 3b — explicit hot-swap allowed for personality (re-runs on switch verb, not just at hello).
+- "Session rules locked at session open" reframed as "Protocol rules locked" — personality is the explicit exception. Voice is configurable mid-session; protocol is not.
+- Switch confirmation: *"Switched to X. Loading now."* (was *"Takes effect at next hello."*).
+- Tuning a slider on the active personality also hot-swaps; tuning a non-active personality is saved for next load.
+- VERBS.md, README, docs/PERSONALITIES.md all updated.
+
+**Why now:** complaint surfaced first in v3.4.0 testing (2026-04-25); officially deferred to Phase 4. On reflection, hot-swap doesn't require Phase 2 multi-actor or Phase 3 subagent infrastructure — it's just a small protocol clarification. Carved out and shipped early.
+
+### v4.0.0-alpha.7 — Bootstrap RWDX guardrail
+
+New Hard Stop in `protocol/GUARDRAILS.md`: until the repo is cloned, protocol files are loaded, AND `git fetch origin` confirms local is current — the scribe refuses **all** RWDX operations (Read, Write, Delete, Execute, including personality loads, verb execution, integration scripts). "Partial bootstrap is not bootstrap." Closes a silent failure mode where an unbootstrapped scribe would offer to fabricate personalities or read records from training data instead of the actual repo. Surfaced when Steve pre-bootstrap asked the scribe to switch to "Yoda" and got an offer to *create* a Yoda personality.
+
+### v4.0.0-alpha.6 — General split + 8 new personalities + 3 new categories + faith axis
 
 **General domain split into 4 sub-categories** — General was overreaching at 16 personalities in one blob. Now:
 - **Workplace** (3): Alex, Bishop, Max
