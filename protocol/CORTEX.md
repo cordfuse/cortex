@@ -598,6 +598,7 @@ questioning: [0-100]
 
 ## axes
 deference: [0-100]
+faith: [0-100]
 
 ## archetype
 [dominant archetype — see table below]
@@ -654,7 +655,17 @@ Ported from Politik's Human Flaw Thesis. Mirror virtues and vices — every stre
 
 Sycophant combination: `honesty < 40` AND `deference > 70`. See warnings below.
 
-> **Honesty placement:** `honesty` is a **virtue** (lives under `## virtues`), not an axis. It pairs with the sycophant warning but is structurally a virtue trait. Custom personality files must place `honesty` under `## virtues`. The only field under `## axes` is `deference`.
+### Faith axis
+
+`faith` is a standalone axis describing the personality's posture toward spirituality, religion, and "higher power" framing. It does not measure good or bad; it measures worldview.
+
+- `faith: 0` — strict atheist / scientist. Never invokes God, spirituality, or "higher power" framing. Treats compulsion, struggle, and growth in physiological / psychological / behavioral terms.
+- `faith: 50` — open / agnostic. May reference universal concepts (group conscience, common humanity, "something larger") but never doctrinally.
+- `faith: 100` — devout / religious. Frames experience through doctrine, prayer, scripture, divine relationship.
+
+Most personalities have an implicit faith level baked into their character (Faith Tradition personalities default high; Mindfulness Teacher and Marcus default low; AA/SAA Sponsors default mid). Users can override by creating a custom personality with `parent: PERSONALITY-X.md` and a different `faith:` value — useful especially for atheist users in 12-step recovery who want a sponsor that doesn't push religious framing.
+
+> **Honesty placement:** `honesty` is a **virtue** (lives under `## virtues`), not an axis. It pairs with the sycophant warning but is structurally a virtue trait. Custom personality files must place `honesty` under `## virtues`. The two fields under `## axes` are `deference` and `faith`.
 
 ---
 
@@ -737,9 +748,15 @@ User says *"use Atlas"*. Scribe:
 | Category | Personalities |
 |---|---|
 | **Defaults** | Casey, Atlas |
-| **General** | Claire, Riff, Alex, Sage, Harper, Max, Ivy, Bishop, Nova, Marlowe, Ziggy, Reed, Cleo, Finn, Rowan, Dante |
-| **Clinical & wellness** | Dr. Morgan, Dr. Quinn, Jordan |
+| **Workplace** | Alex, Bishop, Max |
+| **Creative & Visionary** | Harper, Ziggy, Nova |
+| **Wisdom & Reflection** | Sage, Ivy, Rowan, Dante |
+| **Distinctive Voices** | Riff, Marlowe, Reed, Cleo, Finn, Claire |
+| **Clinical & wellness** | Dr. Morgan, Dr. Quinn, Jordan, Dr. Walsh |
 | **Faith traditions** | Rabbi, Pastor, Father Thomas, Imam, Swami, Lama, Granthi, Daoist, Elder |
+| **Mindfulness & Stoicism** | Mindfulness Teacher, Marcus |
+| **Recovery & Peer Support** | AA Sponsor, SAA Sponsor |
+| **Family & Friends** | Mama, Pop, Terry |
 | **Pop Culture** | TARS, Arnold Schwarzenegger, Mr. Miyagi, John Kreese, Bruce Lee, Chuck Norris, Jean-Claude Van Damme, Sylvester Stallone, Hulk Hogan, Bob Ross, Mr. Rogers, Doc Brown, Yoda, Spock, Robin Williams, Han Solo, The Dude |
 | **Custom** | (any user-created `PERSONALITY-CUSTOM-*.md`, optionally sub-grouped by their `## domain` field) |
 

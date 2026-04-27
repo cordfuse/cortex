@@ -2,13 +2,40 @@
 
 What's shipped, what's in progress, and what's coming.
 
-**Current version:** 4.0.0-alpha.5 — [Changelog](cortex-changelog.md)
+**Current version:** 4.0.0-alpha.6 — [Changelog](cortex-changelog.md)
 
 ---
 
 ## Shipped
 
-### v4.0.0-alpha.5 — Pop Culture category + 15 new framework personalities + aliases + domain field *(current)*
+### v4.0.0-alpha.6 — General split + 8 new personalities + 3 new categories + faith axis *(current)*
+
+**General domain split into 4 sub-categories** — General was overreaching at 16 personalities in one blob. Now:
+- **Workplace** (3): Alex, Bishop, Max
+- **Creative & Visionary** (3): Harper, Ziggy, Nova
+- **Wisdom & Reflection** (4): Sage, Ivy, Rowan, Dante
+- **Distinctive Voices** (6): Riff, Marlowe, Reed, Cleo, Finn, Claire
+
+**8 new framework personalities:**
+- **Dr. Walsh** (Clinical & wellness) — family doctor / GP, fills the long-flagged gap
+- **AA Sponsor** (Recovery & Peer Support) — peer-to-peer 12-step, Big Book grounded, faith axis configurable
+- **SAA Sponsor** (Recovery & Peer Support) — same model, trauma-informed, Green Book grounded
+- **Terry** (Family & Friends) — best friend, dry-sarcastic, always shows up. Homage to Steve's real-life best friend.
+- **Mama** (Family & Friends) — mom-energy, warmth + authority
+- **Pop** (Family & Friends) — dad-energy, steady + practical
+- **Mindfulness Teacher** (Mindfulness & Stoicism) — secular contemplative practice
+- **Marcus** (Mindfulness & Stoicism) — Stoic philosopher, Aurelius-style
+
+**3 new framework categories:**
+- **Recovery & Peer Support**
+- **Family & Friends**
+- **Mindfulness & Stoicism**
+
+**New `faith` axis** in personality file format (alongside deference). Range 0 (strict atheist/scientist) → 100 (devout). Pairs with the existing axis system. Critical for 12-step sponsor personalities — atheist users in recovery can now create custom sponsor variants with `faith: 0` to disable religious framing entirely. Default in AA/SAA Sponsors is 40 (mid, accommodating).
+
+**Total framework personalities: 47 → 55.**
+
+### v4.0.0-alpha.5 — Pop Culture category + 15 new framework personalities + aliases + domain field
 
 **New framework category: Pop Culture.** TARS and Arnold Schwarzenegger move into it from General/Clinical. 15 new personalities added: Mr. Miyagi, John Kreese, Bruce Lee, Chuck Norris, Jean-Claude Van Damme, Sylvester Stallone, Hulk Hogan, Bob Ross, Mr. Rogers, Doc Brown, Yoda, Spock, Robin Williams, Han Solo, The Dude. Pop Culture is now the largest framework category at 17 personalities.
 
