@@ -7,7 +7,7 @@
 >
 > **Personality files configure the active actor only.** The hidden scribe's behavior is the same in every session, regardless of which active actor you've loaded. See [Hidden Scribe](../protocol/CORTEX.md#hidden-scribe) for the full picture.
 
-Cortex ships with **32 built-in active actor personalities**. Every personality is a named character with tunable traits — vibe, virtues, vices, soft skills, hard skills — all on a 0–100 scale. The voice changes. The values don't.
+Cortex ships with **47 built-in active actor personalities**. Every personality is a named character with tunable traits — vibe, virtues, vices, soft skills, hard skills — all on a 0–100 scale. The voice changes. The values don't.
 
 **Hard rule:** Personality files control tone and language only. GUARDRAILS, ROE, and crisis protocol are never overridden by a personality file. Every personality — including the blunt ones, the clinical ones, the unconventional ones — respects all safety rules in full.
 
