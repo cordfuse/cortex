@@ -2,13 +2,25 @@
 
 What's shipped, what's in progress, and what's coming.
 
-**Current version:** 4.0.0-alpha.4 — [Changelog](cortex-changelog.md)
+**Current version:** 4.0.0-alpha.5 — [Changelog](cortex-changelog.md)
 
 ---
 
 ## Shipped
 
-### v4.0.0-alpha.4 — Rename framework defaults + framework-file read-only guardrail *(current)*
+### v4.0.0-alpha.5 — Pop Culture category + 15 new framework personalities + aliases + domain field *(current)*
+
+**New framework category: Pop Culture.** TARS and Arnold Schwarzenegger move into it from General/Clinical. 15 new personalities added: Mr. Miyagi, John Kreese, Bruce Lee, Chuck Norris, Jean-Claude Van Damme, Sylvester Stallone, Hulk Hogan, Bob Ross, Mr. Rogers, Doc Brown, Yoda, Spock, Robin Williams, Han Solo, The Dude. Pop Culture is now the largest framework category at 17 personalities.
+
+**Total framework personality count: 32 → 47.**
+
+**`## aliases` field added to personality file format.** Optional. Alternate names matched at Loading step 3b name resolution (case-insensitive). Surfaced in `list personalities` output as `Name (alias: X) — Title.` Used for Arnold Schwarzenegger (alias: Arnold) so backwards-compat invocation `change actor to arnold` keeps working after the rename.
+
+**`## domain` field added to personality file format.** Optional. Used for custom-personality sub-grouping within the Custom section of `list personalities`. Built-ins use the canonical category map; custom personalities can declare their own domain (e.g. "Sesame Street", "Peanuts").
+
+**Arnold renamed.** `## name` Arnold → "Arnold Schwarzenegger" (full canonical name). Aliases keep "Arnold" working for invocation.
+
+### v4.0.0-alpha.4 — Rename framework defaults + framework-file read-only guardrail
 - **Bob → Casey, Sherlock → Atlas.** Frees the Bob and Sherlock namespace for users who want those names as custom personalities (e.g. Bob McGrath and Sherlock Hemlock from Sesame Street).
 - **Casey** — gender-neutral, modern but rooted, friendly. Same warm-plain-spoken archetype Bob filled. File slug stays `PERSONALITY-CASUAL.md`.
 - **Atlas** — gender-neutral, mythological weight (held the world; the methodical scribe holds the records). Same precise-methodical archetype Sherlock filled. File slug stays `PERSONALITY-VERBOSE.md`.
@@ -85,7 +97,7 @@ Spec: [`records/2026-04-26-v4-phase-1-hidden-scribe-spec.md`](records/2026-04-26
 - **Honesty/deference clarification.** `honesty` is a virtue; `deference` is the only axis. Closes spec ambiguity.
 
 ### v3.4.0 — Personality System
-- **32 built-in personalities** — Casey (default), Atlas, + 30 library
+- **Personality system shipped** — at the time of v3.4.0 release: 33 built-in personalities (Bob default, Sherlock + 31 library). Renamed and expanded since: see v4.0.0-alpha.3, alpha.4, alpha.5 entries above. Current count is 47.
   - Validated in 2026-04-25 test sprint: voice differentiation real (Casey vs Atlas distinct), natural-language creation produces high-quality system prompts, archetype + sycophant warnings fire correctly, dynamic vice re-evaluation on edits
 - Tunable trait model: vibe, virtues, vices, soft skills, hard skills — all percentage sliders
 - Vice/virtue mirror pairs (pride↔integrity, cowardice↔courage, etc.)

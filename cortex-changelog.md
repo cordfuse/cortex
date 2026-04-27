@@ -9,6 +9,14 @@ Format: `YYYY-MM-DD HH:MM TZ | file | what changed`
 <!-- Future: if this file grows large, rotate annually to cortex-changelog-YYYY.md -->
 
 ---
+2026-04-27 00:02 UTC | version.txt | bump to 4.0.0-alpha.5 — Pop Culture category + 15 new framework personalities + ## aliases + ## domain fields
+2026-04-27 00:02 UTC | personalities/ | NEW: 15 framework personalities in Pop Culture category — Mr. Miyagi, John Kreese, Bruce Lee, Chuck Norris, Jean-Claude Van Damme, Sylvester Stallone, Hulk Hogan, Bob Ross, Mr. Rogers, Doc Brown, Yoda, Spock, Robin Williams, Han Solo, The Dude. Each with full trait sliders + system_prompt + alias entries where appropriate. Total framework personalities: 32 → 47.
+2026-04-27 00:02 UTC | personalities/PERSONALITY-ARNOLD.md | renamed `## name` Arnold → "Arnold Schwarzenegger"; added `## aliases` field with [Arnold] for backwards-compat invocation. Moved from Clinical & wellness category to Pop Culture in canonical map.
+2026-04-27 00:02 UTC | protocol/CORTEX.md | personality file format spec — added optional `## aliases` field (alternate names matched at name resolution); added optional `## domain` field (custom personality grouping in list output)
+2026-04-27 00:02 UTC | protocol/CORTEX.md | Loading Order step 3b — name resolution now checks `## name` first, falls back to `## aliases` (case-insensitive) before falling back to default Casey
+2026-04-27 00:02 UTC | protocol/CORTEX.md | list personalities/actors — new hard rule for aliases display (`Name (alias: X) — Title.`); new hard rule for domain sub-grouping in Custom section; canonical category map adds Pop Culture row with 17 personalities (TARS + Arnold + 15 new); General row drops TARS; Clinical & wellness row drops Arnold
+2026-04-27 00:02 UTC | protocol/CORTEX.md + README.md + README-SIMPLE.md + docs/PERSONALITIES.md + ROADMAP.md | rename "Movie characters" → "Pop Culture" (broader, accommodates Bob Ross / Mr. Rogers / Robin Williams alongside martial arts / sci-fi)
+2026-04-27 00:02 UTC | README.md + README-SIMPLE.md + docs/PERSONALITIES.md + ROADMAP.md | personality count updated 32 → 47; Pop Culture category row added
 2026-04-26 23:37 UTC | version.txt | bump to 4.0.0-alpha.4 — rename framework default personalities (Bob → Casey, Sherlock → Atlas) to free namespace
 2026-04-26 23:37 UTC | personalities/PERSONALITY-CASUAL.md | name field Bob → Casey; system_prompt rewritten for Casey. File slug stays CASUAL (archetype label, slug doesn't drive display).
 2026-04-26 23:37 UTC | personalities/PERSONALITY-VERBOSE.md | name field Sherlock → Atlas; system_prompt rewritten for Atlas. File slug stays VERBOSE.
