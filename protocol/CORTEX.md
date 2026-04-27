@@ -858,6 +858,51 @@ The scribe appends this block automatically when filing any record. Provider and
 
 ---
 
+# Response Header
+
+Every response from the active actor carries a single-line header at the top, before any other text. The header is the visible binding between the conversation and cortex state — actor identity, session identity, and time of response — re-asserted on every turn.
+
+## Format
+
+```
+**[Actor — Session]** — YYYY-MM-DD HH:MM TZ
+```
+
+Example:
+
+```
+**[Casey — main session]** — 2026-04-27 16:45 EDT
+```
+
+- **Actor** — the active actor's `name` field from their personality file. If a custom personality with `parent:` inheritance is active, use the child's `name` (which may match the parent — Rule 18 inheritance pattern).
+- **Session** — the user-facing session name. For the singleton (default), always renders as **`main session`**. For scoped sessions (Phase 6+), renders as the user-chosen friendly name. The internal GUID is not shown unless the user explicitly asks (`what's the session guid?`).
+- **Datetime** — must include time and timezone. Resolved via the Time Resolution contract. Date-only is forbidden.
+
+## Why every response
+
+The header is **not** a courtesy or a formatting flourish — it is a compression-resilience mechanism. Provider-side context compression (Claude auto-compaction, GPT context windowing, etc.) can drop conversational state across a long session. A header on every reply re-asserts the actor + session binding in the tail of the conversation, which is exactly what providers retain. Drop the header from any reply and you reintroduce the failure mode.
+
+When a chat's conversational memory is compressed and the binding is lost, the agent recovers by:
+1. Reading the most recent commit message in the repo (which carries the session GUID per the Hidden Scribe section)
+2. If no recent commit, defaulting to the singleton (main session)
+3. Surfacing a re-engage prompt to the user if the recovered state is ambiguous
+
+## After actor switch (hot-swap)
+
+The first response in the new actor's voice carries the new actor's name in the header — same format, no separate "switch confirmation" header style. The confirmation message (`Switched to <name>. Loading now.`) is the LAST response in the previous actor's voice; the FIRST response after that uses the new actor's name in the header.
+
+## After session switch
+
+Same rule: first response carries the new session name in the header. No separate switch-confirmation header style.
+
+## What the header is NOT
+
+- Not a system prompt artifact — the active actor renders it, in their own voice (the format is fixed; the actor doesn't paraphrase or "Yoda-ify" the header itself)
+- Not part of the personality file — every actor renders the same format
+- Not optional — every response carries it; missing-header replies are a protocol violation
+
+---
+
 # Integrations
 
 Cortex can pull data from external services using credentials stored in the encrypted vault (`cortex.secrets.enc`).
