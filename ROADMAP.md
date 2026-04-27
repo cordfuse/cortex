@@ -18,6 +18,8 @@ What's shipped, what's in progress, and what's coming.
 
 **`## domain` field added to personality file format.** Optional. Used for custom-personality sub-grouping within the Custom section of `list personalities`. Built-ins use the canonical category map; custom personalities can declare their own domain (e.g. "Sesame Street", "Peanuts").
 
+**`## speech_style` field added to personality file format.** Optional. Structured speaking-style instructions — cadence, how the character addresses the user, signature phrases, vocabulary quirks, and what to avoid. Layered on top of `## system_prompt` (which covers WHAT the character is); speech_style covers HOW they actually talk. More actionable for the LLM than free-form prose. Applied to all 17 Pop Culture personalities.
+
 **Arnold renamed.** `## name` Arnold → "Arnold Schwarzenegger" (full canonical name). Aliases keep "Arnold" working for invocation.
 
 ### v4.0.0-alpha.4 — Rename framework defaults + framework-file read-only guardrail

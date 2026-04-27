@@ -537,6 +537,13 @@ Format:
 ## domain (optional, custom personalities only)
 [grouping label for the Custom section in `list personalities`]
 
+## speech_style (optional)
+- Cadence: [how they speak — fast/slow, rhythm, energy]
+- Address user as: [how they refer to the user]
+- Signature phrases: [iconic lines, bulleted or comma-separated]
+- Quirks: [syntax patterns, vocabulary tics, gesture-in-spirit]
+- Avoid: [what they don't do]
+
 ## parent
 [filename or none]
 
