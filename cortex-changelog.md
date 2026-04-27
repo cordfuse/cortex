@@ -9,6 +9,15 @@ Format: `YYYY-MM-DD HH:MM TZ | file | what changed`
 <!-- Future: if this file grows large, rotate annually to cortex-changelog-YYYY.md -->
 
 ---
+2026-04-27 01:19 UTC | version.txt | bump to 4.0.0-alpha.6 — General split + 8 new personalities + 3 new categories + faith axis
+2026-04-27 01:19 UTC | protocol/CORTEX.md | canonical category map: split General (16) into Workplace (3) + Creative & Visionary (3) + Wisdom & Reflection (4) + Distinctive Voices (6); General as a category is retired
+2026-04-27 01:19 UTC | personalities/ | NEW: Dr. Walsh (family doctor / GP) — Clinical & wellness fills the GP gap surfaced 2026-04-26
+2026-04-27 01:19 UTC | personalities/ | NEW: AA Sponsor + SAA Sponsor (peer-support, 12-step, Big Book / Green Book referenced) — new "Recovery & Peer Support" framework category
+2026-04-27 01:19 UTC | personalities/ | NEW: Terry (best friend, dry-sarcastic, always shows up) + Mama (mom-energy) + Pop (dad-energy) — new "Family & Friends" framework category. Terry is named as homage to Steve's real-life best friend.
+2026-04-27 01:19 UTC | personalities/ | NEW: Mindfulness Teacher (secular contemplative) + Marcus (Stoic philosopher, Aurelius-style) — new "Mindfulness & Stoicism" framework category, fills the secular contemplative gap
+2026-04-27 01:19 UTC | protocol/CORTEX.md | personality file format adds `faith` axis (0 = atheist/scientist, 100 = devout). Pairs with deference as the second axis. Atheist users in 12-step recovery can now create custom sponsor variants with faith: 0 to disable religious framing.
+2026-04-27 01:19 UTC | personalities/PERSONALITY-AA-SPONSOR.md + PERSONALITY-SAA-SPONSOR.md | system_prompt instructs grounding in The Big Book (AA) / The Green Book (SAA) with web search if needed; faith axis discipline section explains how the personality adjusts framing based on faith value
+2026-04-27 01:19 UTC | README.md + ROADMAP.md | category table updated with 5 new categories (Workplace, Creative & Visionary, Wisdom & Reflection, Distinctive Voices, Mindfulness & Stoicism, Recovery & Peer Support, Family & Friends); General row removed; count updated 47 → 55
 2026-04-27 00:02 UTC | version.txt | bump to 4.0.0-alpha.5 — Pop Culture category + 15 new framework personalities + ## aliases + ## domain fields
 2026-04-27 00:02 UTC | personalities/ | NEW: 15 framework personalities in Pop Culture category — Mr. Miyagi, John Kreese, Bruce Lee, Chuck Norris, Jean-Claude Van Damme, Sylvester Stallone, Hulk Hogan, Bob Ross, Mr. Rogers, Doc Brown, Yoda, Spock, Robin Williams, Han Solo, The Dude. Each with full trait sliders + system_prompt + alias entries where appropriate. Total framework personalities: 32 → 47.
 2026-04-27 00:02 UTC | protocol/CORTEX.md | personality file format spec adds optional `## speech_style` field — structured speaking-style instructions (cadence, address, signature phrases, quirks, avoid) layered on top of system_prompt. More actionable for the LLM than free-form prose. Optional but strongly recommended for character-defining personalities.
