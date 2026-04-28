@@ -9,6 +9,9 @@ Format: `YYYY-MM-DD HH:MM TZ | file | what changed`
 <!-- Future: if this file grows large, rotate annually to cortex-changelog-YYYY.md -->
 
 ---
+2026-04-28 20:30 UTC | version.txt | bump to 4.0.0-alpha.14 — Claude Code default settings (`bypassPermissions`) + README permissions warning section
+2026-04-28 20:30 UTC | .claude/settings.json | new file — ships `bypassPermissions` mode by default so first-time CC users don't get per-prompt approval gates that break the cortex hello flow. Trust model: protocol files in `protocol/` define what the scribe can do; Claude Code does not gate it.
+2026-04-28 20:30 UTC | README.md | added "Permissions are wide-open by default" warning section. Explains the deliberate trust model, how to revert to per-prompt approval (delete .claude/settings.json), and notes other CLI agents' equivalent flags (Codex `--full-auto`, etc.).
 2026-04-28 17:00 UTC | version.txt | bump to 4.0.0-alpha.13 — bootstrap reliability patches (4 fixes; no new features)
 2026-04-28 17:00 UTC | protocol/GUARDRAILS.md | Bootstrap RWDX guardrail Gate 3 strictly enforced — `git fetch origin` (and upstream if configured) MUST run before greeting; if behind, scribe MUST surface the delta + apply auto_upgrade preference (always/ask/never); silent stale-state operation is now a protocol violation.
 2026-04-28 17:00 UTC | protocol/CORTEX.md | Loading Order step 3b — added third lookup fallback (filename slug) and explicit cache-invalidation rule: scribe MUST re-scan personalities/ from disk on every lookup miss before reporting "no such file."

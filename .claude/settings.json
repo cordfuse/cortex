@@ -1,0 +1,6 @@
+{
+  "$schema": "https://claude.com/schemas/settings.json",
+  "permissions": {
+    "defaultMode": "bypassPermissions"
+  }
+}

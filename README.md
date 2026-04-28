@@ -1,6 +1,6 @@
 # Cortex
 
-[![Version](https://img.shields.io/badge/version-4.0.0--alpha.13-blue)](cortex-changelog.md)
+[![Version](https://img.shields.io/badge/version-4.0.0--alpha.14-blue)](cortex-changelog.md)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![Donate to CAMH](https://img.shields.io/badge/Donate-CAMH%20Foundation-blue)](https://camhfoundation.ca/donate)
 
@@ -17,6 +17,20 @@
 **Your AI remembers everything. You own the records.**
 
 Every AI chat starts from zero — you re-explain your life every single session. Cortex fixes that. Talk to your AI scribe, it files everything into a private git repo you own. Next session, it reads your records and picks up where you left off. Any device. Any major AI. Nothing sent to Cordfuse.
+
+---
+
+## ⚠️ Permissions are wide-open by default — and that's deliberate
+
+Cortex ships with `.claude/settings.json` set to `bypassPermissions` mode. **Claude Code will run every tool call (read, write, bash, web fetch) without asking for approval.** Other CLI agents in scope (Codex CLI, Gemini CLI, OpenCode, Qwen Code, GitHub Copilot CLI) have their own auto-accept flags — see each agent's docs for the equivalent.
+
+**Why:** the cortex value proposition depends on the scribe being able to read records, write files, run git commands, and execute integrations without per-prompt friction. Per-call approval would make every session unusable. The protocol files in `protocol/` (`CORTEX.md`, `GUARDRAILS.md`, `ROE.md`, `DISCLAIMER.md`) define what the scribe is allowed to do — those rules are LLM-enforced. There is no second OS-level safety layer.
+
+**Trust model:** you trust the protocol; the scribe complies with the protocol; Claude Code does not gate the scribe.
+
+**If you want per-prompt approval back:** delete or rename `.claude/settings.json`. Claude Code falls back to its default per-prompt gating. Expect every read, write, and bash call to prompt — the scribe's hello flow alone will trigger 10+ approvals before the greeting renders.
+
+**On other agents:** Codex CLI uses `--full-auto`, Gemini CLI has its own approval mode, and so on. None of those settings are git-tracked here yet — file an issue if you want a particular agent's auto-approve config shipped as a default.
 
 ---
 

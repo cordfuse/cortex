@@ -2,13 +2,27 @@
 
 What's shipped, what's in progress, and what's coming.
 
-**Current version:** 4.0.0-alpha.13 — [Changelog](cortex-changelog.md)
+**Current version:** 4.0.0-alpha.14 — [Changelog](cortex-changelog.md)
 
 ---
 
 ## Shipped
 
-### v4.0.0-alpha.13 — Bootstrap reliability patches *(current)*
+### v4.0.0-alpha.14 — Default `.claude/settings.json` (`bypassPermissions`) *(current)*
+
+Ships a default `.claude/settings.json` at framework root with `permissions.defaultMode: "bypassPermissions"`. Claude Code stops asking for per-prompt approval on the cortex hello flow.
+
+**Why:** first-time CC user runs `claude "hello"` in a fresh cortex clone, hits a sequence of approval prompts (10+ before the greeting renders), and the friction kills the cortex value proposition before it can demonstrate itself. Bypass mode is the only sensible default for a protocol that needs broad file + bash access by design.
+
+**Trust model:** protocol files (`protocol/CORTEX.md`, `GUARDRAILS.md`, `ROE.md`, `DISCLAIMER.md`) define what the scribe can do. Those rules are LLM-enforced. CC does not gate the scribe — there is no second OS-level safety layer. Users who want per-prompt approval back can delete `.claude/settings.json`.
+
+Added a clearly-marked "⚠️ Permissions are wide-open by default — and that's deliberate" section to `README.md` explaining the trust model, how to revert, and noting the equivalent flags for other CLI agents (Codex `--full-auto`, etc.).
+
+**Why now:** surfaced during alpha.13 CLI validation when first-time `claude "hello"` invocation in personal cortex hit a permission gate before the version-line test could even fire. The bootstrap UX matters as much as the bootstrap correctness — alpha.13 fixed correctness; alpha.14 fixes the friction that prevented anyone from ever seeing it.
+
+**Future:** ship equivalent default configs for Codex CLI, Gemini CLI, OpenCode, Qwen Code, and GitHub Copilot CLI as their conventions stabilize. File an issue to request a specific agent.
+
+### v4.0.0-alpha.13 — Bootstrap reliability patches
 
 No new features. One focused cycle to close compounding bootstrap failures surfaced during the alpha.12 multi-parent inheritance smoke test (Magnus Pedersen). Four targeted fixes to the protocol:
 
