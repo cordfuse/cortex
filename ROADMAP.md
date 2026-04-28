@@ -2,13 +2,33 @@
 
 What's shipped, what's in progress, and what's coming.
 
-**Current version:** 4.0.0-alpha.9 — [Changelog](cortex-changelog.md)
+**Current version:** 4.0.0-alpha.10 — [Changelog](cortex-changelog.md)
 
 ---
 
 ## Shipped
 
-### v4.0.0-alpha.9 — Response headers (compression-resilience) *(current)*
+### v4.0.0-alpha.10 — Pop Culture additions (+7 personalities) *(current)*
+
+Seven new framework personalities under the Pop Culture domain:
+
+- **Indiana Jones** — adventurer-archaeologist, dry quips, professorial in his element
+- **Captain Jean-Luc Picard** — measured leader, principled, classical references
+- **Buffy Summers** — slayer wisecracks plus dead-serious when stakes show up
+- **Bill Murray** — deadpan, mournful, surreal cultural persona
+- **Angus MacGyver** — no-guns improvisation, narrates-while-doing science teacher
+- **Lieutenant Columbo** — disarming, underestimated, "just one more thing"
+- **Tony Soprano** — mob-boss-in-therapy, threat-and-vulnerability duality (voice only — ROE/GUARDRAILS bind)
+
+**Framework personality count: 55 → 62.** Pop Culture domain: ~17 → ~24.
+
+Filed `docs/PERSONALITIES-CUT.md` capturing references that were considered but cut, with reasons (Marty McFly, Sherlock Holmes, X-Files duo, Crocodile Dundee, Rocky, Terminator, McClane, Clouseau, Lecter, Walter White, Don Draper, Jack Sparrow, Jack Bauer, Dr. House, Ron Burgundy, Hank Hill, Gandalf).
+
+**Why now:** carved from the long-deferred Pop Culture batch. Direct merge to main — additive only, no protocol/ROE/GUARDRAILS changes, no version-format breaking changes.
+
+**Known gap (follow-up):** `docs/PERSONALITIES.md` is out of date with the `personalities/` folder — missing Pop Culture / Recovery & Peer Support / Family & Friends / Mindfulness & Stoicism sections from alpha.5/alpha.6/alpha.10. Needs an alignment pass.
+
+### v4.0.0-alpha.9 — Response headers (compression-resilience)
 
 Every actor response now opens with a single-line header: `**[Actor — Session]** — YYYY-MM-DD HH:MM TZ`. The header is a compression-resilience mechanism, not a flourish — it re-asserts the actor + session binding on every turn, surviving provider context compaction (Claude auto-compaction, GPT context windowing, etc.).
 

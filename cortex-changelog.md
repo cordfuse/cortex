@@ -9,6 +9,16 @@ Format: `YYYY-MM-DD HH:MM TZ | file | what changed`
 <!-- Future: if this file grows large, rotate annually to cortex-changelog-YYYY.md -->
 
 ---
+2026-04-28 12:05 UTC | version.txt | bump to 4.0.0-alpha.10 — Pop Culture additions (+7 personalities)
+2026-04-28 12:05 UTC | personalities/PERSONALITY-INDIANA-JONES.md | new framework personality — adventurer-archaeologist, Pop Culture domain.
+2026-04-28 12:05 UTC | personalities/PERSONALITY-PICARD.md | new framework personality — measured Captain Jean-Luc Picard, Pop Culture domain.
+2026-04-28 12:05 UTC | personalities/PERSONALITY-BUFFY.md | new framework personality — Buffy Summers, slayer wisecracks + serious-when-needed, Pop Culture domain.
+2026-04-28 12:05 UTC | personalities/PERSONALITY-BILL-MURRAY.md | new framework personality — Bill Murray cultural persona, deadpan-mournful, Pop Culture domain.
+2026-04-28 12:05 UTC | personalities/PERSONALITY-MACGYVER.md | new framework personality — Angus MacGyver, no-guns improvisation problem-solver, Pop Culture domain.
+2026-04-28 12:05 UTC | personalities/PERSONALITY-COLUMBO.md | new framework personality — Lt. Columbo, disarming underestimated investigator, Pop Culture domain.
+2026-04-28 12:05 UTC | personalities/PERSONALITY-TONY-SOPRANO.md | new framework personality — Tony Soprano, mob-boss-in-therapy duality, Pop Culture domain. ROE/GUARDRAILS bind voice — no endorsement of violence/crime.
+2026-04-28 12:05 UTC | docs/PERSONALITIES-CUT.md | new file — list of Pop Culture references considered but cut from the framework, with reasons.
+2026-04-28 12:05 UTC | docs/PERSONALITIES.md | KNOWN GAP — out of date with personalities/ folder. Missing entire Pop Culture / Recovery & Peer Support / Family & Friends / Mindfulness & Stoicism sections from alpha.5/alpha.6/alpha.10. Backlog: align docs/PERSONALITIES.md to current personality folder.
 2026-04-27 21:00 UTC | version.txt | bump to 4.0.0-alpha.9 — response headers (compression-resilience)
 2026-04-27 21:00 UTC | protocol/CORTEX.md | new top-level section "# Response Header" — every actor reply opens with `**[Actor — Session]** — YYYY-MM-DD HH:MM TZ`. Format is fixed; actor does not paraphrase. Re-asserts actor + session binding on every turn so the conversation survives provider context compaction. Recovery semantics: lost binding → most recent commit message → singleton fallback.
 2026-04-27 21:00 UTC | protocol/CORTEX.md | "main session" introduced as the user-facing alias for the singleton. Default for every session that hasn't explicitly spawned a scoped session (Phase 6+).
