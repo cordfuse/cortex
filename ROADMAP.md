@@ -2,13 +2,35 @@
 
 What's shipped, what's in progress, and what's coming.
 
-**Current version:** 4.0.0-alpha.11 — [Changelog](cortex-changelog.md)
+**Current version:** 4.0.0-alpha.12 — [Changelog](cortex-changelog.md)
 
 ---
 
 ## Shipped
 
-### v4.0.0-alpha.11 — Multi-parent inheritance *(current)*
+### v4.0.0-alpha.12 — Information Technology domain (+9 personalities) *(current)*
+
+New top-level domain `Information Technology` with nine framework personalities — all stack-agnostic at the framework level. Stack-specific specialists belong in custom personalities that `parents:` inherit from these.
+
+| # | Name | Role |
+|---|---|---|
+| 1 | Devon | Senior Software Engineer / Tech Lead |
+| 2 | Kai | Junior Developer |
+| 3 | Riley | DevOps Engineer |
+| 4 | Knox | Infrastructure / Systems Engineer |
+| 5 | Vega | Senior Cloud Architect |
+| 6 | Avery | Product Manager |
+| 7 | Sloane | QA Engineer |
+| 8 | Orion | UX/UI Designer |
+| 9 | Drew | Functional Consultant |
+
+**Framework personality count: 62 → 71.** Information Technology is the first domain explicitly dedicated to the engineering / IT discipline that builds and operates Cortex itself.
+
+**Why now:** the framework was missing role-archetype personalities for the IT discipline despite being built by and for engineers. Carved out the role layer (framework) from the stack layer (custom). All nine voices are pronoun-neutral by default; users override pronouns and stack expertise via `parents:` inheritance.
+
+**Stack-agnostic principle:** Riley, Knox, Vega all genericized — pipeline platform / hardware vendor / cloud provider specifics live in custom children. Same for Sloane (testing tools) and Orion (design tools). Devon, Kai, Avery, Drew don't carry stack at all.
+
+### v4.0.0-alpha.11 — Multi-parent inheritance
 
 `## parent` (single) extended to `## parents` (ordered list). Custom personalities can now legitimately inherit from multiple framework or custom personalities — the "everything guy" pattern, where a senior IC spans developer + infrastructure + cloud architect or a domain SME spans functional consultant + senior engineer + infrastructure.
 

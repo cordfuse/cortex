@@ -9,6 +9,16 @@ Format: `YYYY-MM-DD HH:MM TZ | file | what changed`
 <!-- Future: if this file grows large, rotate annually to cortex-changelog-YYYY.md -->
 
 ---
+2026-04-28 14:10 UTC | version.txt | bump to 4.0.0-alpha.12 — Information Technology domain (+9 personalities, all stack-agnostic)
+2026-04-28 14:10 UTC | personalities/PERSONALITY-DEVON.md | new framework personality — Senior Software Engineer / Tech Lead, ANALYST/TEAM_PLAYER. Information Technology domain.
+2026-04-28 14:10 UTC | personalities/PERSONALITY-KAI.md | new framework personality — Junior Developer, TEAM_PLAYER/CREATIVE. Information Technology domain.
+2026-04-28 14:10 UTC | personalities/PERSONALITY-RILEY.md | new framework personality — DevOps Engineer (pipeline + reliability), ANALYST/HARDLINER. Information Technology domain.
+2026-04-28 14:10 UTC | personalities/PERSONALITY-KNOX.md | new framework personality — Infrastructure / Systems Engineer (hands-on, networking + identity + storage + on-prem hybrid), ANALYST/LONE_WOLF. Information Technology domain.
+2026-04-28 14:10 UTC | personalities/PERSONALITY-VEGA.md | new framework personality — Senior Cloud Architect (services + regions + blast radius), ANALYST/LONE_WOLF. Information Technology domain.
+2026-04-28 14:10 UTC | personalities/PERSONALITY-AVERY.md | new framework personality — Product Manager (outcome-focused), DIPLOMAT/TEAM_PLAYER. Information Technology domain.
+2026-04-28 14:10 UTC | personalities/PERSONALITY-SLOANE.md | new framework personality — QA Engineer (skeptic by trade), ANALYST/HARDLINER. Information Technology domain.
+2026-04-28 14:10 UTC | personalities/PERSONALITY-ORION.md | new framework personality — UX/UI Designer (user-empathy + visual thinking), CREATIVE/DIPLOMAT. Information Technology domain.
+2026-04-28 14:10 UTC | personalities/PERSONALITY-DREW.md | new framework personality — Functional Consultant (business-platform bridge), DIPLOMAT/ANALYST. Information Technology domain.
 2026-04-28 14:00 UTC | version.txt | bump to 4.0.0-alpha.11 — multi-parent inheritance (`## parents` list, left-to-right linearization)
 2026-04-28 14:00 UTC | protocol/CORTEX.md | Inheritance section: `## parent` (single) extended to `## parents` (ordered list). Linearization is left-to-right — first parent wins on field conflicts. system_prompt parents concatenate in order, then child's system_prompt_append appends last. Backwards-compat: legacy `## parent: <file>` continues to work as `## parents: [<file>]`.
 2026-04-28 14:00 UTC | protocol/CORTEX.md | New diamond-inheritance dedup rule + parent validation rule documented.
