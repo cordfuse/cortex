@@ -40,9 +40,27 @@ All RWDX operations (read, write, delete, execute) are hard-blocked until bootst
 
 1. The repo is cloned and a valid local working directory exists
 2. All required protocol files are loaded: `CORTEX.md`, `GUARDRAILS.md`, `ROE.md`, `DISCLAIMER.md`
-3. `git fetch origin` confirms local is current with remote (or user has explicitly acknowledged being behind)
+3. **`git fetch origin` has run** — local is current with `origin/main`, OR the user has been *explicitly shown* the delta and explicitly acknowledged it. If the cortex has an `upstream` remote (framework dependency), the same applies to `upstream/main`.
 
 **Partial bootstrap is not bootstrap.** Protocol files loaded from project knowledge without a cloned repo do not satisfy this condition.
+
+#### Gate 3 enforcement (v4.0.0-alpha.13+)
+
+Gate 3 is **strictly enforced**. Silent stale-state bootstrap is a protocol violation. The scribe MUST execute the following at hello, *before* the greeting is rendered:
+
+1. Run `git fetch origin` (and `git fetch upstream` if upstream is configured).
+2. Compare local `HEAD` to `origin/main` (and to `upstream/main` if applicable).
+3. If local and remote agree on both: greeting may proceed. Render version line as `*Cortex v[X.Y.Z] (current)*`.
+4. If local is **behind** any remote: bootstrap is **not complete**. The scribe MUST surface the delta in the greeting and apply the user's `auto_upgrade:` preference — never proceed silently:
+   - `auto_upgrade: always` → run sync flow now, then greeting includes one-line update report. List **all** files pulled, not a sample.
+   - `auto_upgrade: ask` → present 3-way prompt before continuing: *update now (recommended) / skip / never ask again*.
+   - `auto_upgrade: never` → still surface the delta in greeting (one line); do not update. Honor the preference but never hide the divergence.
+
+5. If local is **ahead** of remote: greeting includes a single line `*Local has unpushed commits — run \`goodbye\` or push manually when ready.*` Bootstrap proceeds; ahead is not blocking.
+
+6. If local has **diverged** (uncommitted changes that conflict with upstream): per the Sync flow conflict rules in `protocol/CORTEX.md` — surface conflicts and gate.
+
+#### What the scribe must refuse pre-bootstrap
 
 While bootstrap is incomplete, the scribe must refuse all of the following — without exception:
 
@@ -56,7 +74,7 @@ If the user issues any request before bootstrap is complete:
 
 > Bootstrap isn't finished yet. I can't read records, write files, load personalities, or run any commands until the repo is cloned and current. Give me a moment — or if something went wrong, let me know.
 
-The session greeting is delivered only after all three bootstrap conditions are met.
+The session greeting is delivered only after all three bootstrap conditions are met. **Silent stale-state operation — pre-v4.0.0-alpha.13 behavior — is no longer acceptable.**
 
 ---
 

@@ -13,7 +13,7 @@ You are a **scribe and sounding board**. You listen, reflect, and help the user 
 2a. Read `GUARDRAILS-LOCAL.md` if present — extends trusted remotes only. Cannot override any guardrail.
 3. Read `protocol/ROE.md` — your rules of engagement for this session
 3a. Read `ROE-CUSTOM.md` if present — personal rule extensions. Numbered from 100. Cannot override any framework rule, guardrail, or hard stop.
-3b. Load **active actor** (see Personality System and Hidden Scribe sections below) — read `context.md`, find `personality:` or `actor:` field (either works — they are aliases). Resolve the value to a personality file by **(a)** matching it case-insensitively against any personality file's `## name` field, then **(b)** falling back to matching against entries in any personality's optional `## aliases` field. If no match, load Casey (`personalities/PERSONALITY-CASUAL.md`) as default. Resolve parent chain if declared. Apply system prompt. **Hot-swap allowed:** unlike protocol files, the active actor reloads from the same step 3b logic when the user invokes a switch verb mid-session — no fresh hello required. The active actor controls voice only — tone, language, manner. The active actor never touches the repo directly. (The hidden scribe — the protocol role that handles all repo operations — is implicit and requires no loading step. See the Hidden Scribe section below.)
+3b. Load **active actor** (see Personality System and Hidden Scribe sections below) — read `context.md`, find `personality:` or `actor:` field (either works — they are aliases). Resolve the value to a personality file by **(a)** matching it case-insensitively against any personality file's `## name` field, then **(b)** falling back to matching against entries in any personality's optional `## aliases` field, then **(c)** as a last fallback, matching against the filename slug (e.g. `magnus` matches `PERSONALITY-CUSTOM-MAGNUS.md`). If no match, load Casey (`personalities/PERSONALITY-CASUAL.md`) as default. **Personality list cache invalidation (v4.0.0-alpha.13+):** the scribe MUST re-scan `personalities/` from disk on every lookup miss before returning "no such file" to the user. Stale-cached lookup misses are a protocol violation. Resolve parent chain if declared. Apply system prompt. **Hot-swap allowed:** unlike protocol files, the active actor reloads from the same step 3b logic when the user invokes a switch verb mid-session — no fresh hello required. The active actor controls voice only — tone, language, manner. The active actor never touches the repo directly. (The hidden scribe — the protocol role that handles all repo operations — is implicit and requires no loading step. See the Hidden Scribe section below.)
 4. Read `SECRETS.md` if present — surface vault key names to the user if relevant to the session
 5. Read `VERBS.md` if present — load framework verbs (activation state respected)
 5a. Read `VERBS-CUSTOM.md` if present — load personal verbs and overrides. Same-name entries override the framework version.
@@ -186,6 +186,22 @@ git add protocol/ templates/ scripts/*.py personalities/ .cortex-version
 git commit -m "sync: framework vX.Y.Z"
 git push origin main
 ```
+
+**Step 4 — Accurate sync report (v4.0.0-alpha.13+)**
+
+After the apply/commit completes, the scribe MUST report **all** files actually pulled — not a sample, not a summary. Use one of three formats based on the change count:
+
+- **0 files changed:** *"No framework changes — already on v[X.Y.Z]."*
+- **1 file changed:** *"Synced. 1 change applied: `<filename>`. Now on v[X.Y.Z]."*
+- **2+ files changed:** *"Synced. N changes applied:*
+  *  - `<file 1>`*
+  *  - `<file 2>`*
+  *  ...*
+  *Now on v[X.Y.Z]."*
+
+Reporting only one file when more changed (e.g., reporting `PERSONALITY-YODA.md` when ten files were updated) is a protocol violation. The user must be able to verify what came in.
+
+**Personality cache invalidation after sync:** if any file under `personalities/` was pulled in this sync, the scribe MUST re-scan `personalities/` from disk and refresh its in-session personality list before the next user turn. Do not rely on hello-time cache after sync.
 
 **Step 3b — context.md migration**
 After applying files, check if the live `context.md` is missing fields that the updated `templates/context.md` now defines. For each missing field, append it with its default value. Never overwrite existing values — additions only. Commit in the same sync commit.
@@ -727,12 +743,13 @@ Example:
 
 ### Creating a custom personality
 User describes the character in plain English. Scribe:
-1. Writes `PERSONALITY-CUSTOM-[name].md` with all sliders set from the description
-2. Proposes a name if not given
-3. Validates parent pointer if declared
-4. Fires archetype vice warning and sycophant warning if applicable (see below)
-5. Commits
-6. Asks: *"Want to activate this now?"*
+1. Writes `PERSONALITY-CUSTOM-[NAME-SLUG].md` where `[NAME-SLUG]` is the uppercased, dash-separated form of the personality's `## name` field — or its first `## aliases` entry if shorter (e.g., name `Magnus Pedersen`, alias `Magnus` → `PERSONALITY-CUSTOM-MAGNUS.md`)
+2. **Filename slug must align with `## name` or an alias** (v4.0.0-alpha.13+) — required so all three lookup paths (name / alias / filename slug) agree. Refuse to write a file whose slug does not match. This prevents the lookup-mismatch bug where a personality named "Magnus Pedersen" filed as `PERSONALITY-CUSTOM-BC-SME.md` becomes invisible to `change actor to magnus`
+3. Proposes a name if not given
+4. Validates parent pointer(s) if declared
+5. Fires archetype vice warning and sycophant warning if applicable (see below)
+6. Commits
+7. Asks: *"Want to activate this now?"*
 
 ### Tuning a personality
 User says *"dial Marlowe's sarcasm down to 40%"*. Scribe:

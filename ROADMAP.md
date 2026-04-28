@@ -2,13 +2,29 @@
 
 What's shipped, what's in progress, and what's coming.
 
-**Current version:** 4.0.0-alpha.12 — [Changelog](cortex-changelog.md)
+**Current version:** 4.0.0-alpha.13 — [Changelog](cortex-changelog.md)
 
 ---
 
 ## Shipped
 
-### v4.0.0-alpha.12 — Information Technology domain (+9 personalities) *(current)*
+### v4.0.0-alpha.13 — Bootstrap reliability patches *(current)*
+
+No new features. One focused cycle to close compounding bootstrap failures surfaced during the alpha.12 multi-parent inheritance smoke test (Magnus Pedersen). Four targeted fixes to the protocol:
+
+**Fix 1 — Strict Gate 3 enforcement (`protocol/GUARDRAILS.md`).** `git fetch origin` (and `upstream` if configured) MUST run at hello *before* the greeting renders. If local is behind, the scribe MUST surface the delta and apply the user's `auto_upgrade:` preference (`always` runs sync now, `ask` shows 3-way prompt, `never` still surfaces the delta). Silent stale-state bootstrap is now an explicit protocol violation.
+
+**Fix 2 — Personality cache invalidation (`protocol/CORTEX.md`).** Loading Order step 3b — scribe MUST re-scan `personalities/` from disk on every lookup miss before reporting "no such file." Stale-cached lookup misses are a protocol violation.
+
+**Fix 3 — Filename / name alignment (`protocol/CORTEX.md`).** Custom personality filename slug MUST align with the `## name` field or an alias entry. Refuse to write `PERSONALITY-CUSTOM-BC-SME.md` for a personality named "Magnus Pedersen" — this caused the actual lookup miss in alpha.12. Lookup now falls back through three paths: `## name` → `## aliases` → filename slug.
+
+**Fix 4 — Accurate sync report (`protocol/CORTEX.md`).** Sync flow Step 4 requires reporting **all** files actually pulled, not a sample. Three formats based on change count: 0 / 1 / N. Reporting only `PERSONALITY-YODA.md` when ten files updated is a protocol violation. Personality cache MUST invalidate after any sync that touches `personalities/`.
+
+**Why now:** Fluid Protocol's velocity claim depends on platform reliability. Six alphas in 24 hours is meaningless if any of them might be running on stale state without the user knowing. Reliability is the precondition, not a separate concern.
+
+**No new features in this cycle.** alpha.14+ resumes feature work (Phase 6 multi-session, Phase 2 multi-actor, Legal/Education/Marketing domains, `docs/PERSONALITIES.md` alignment, `## domain` field backfill).
+
+### v4.0.0-alpha.12 — Information Technology domain (+9 personalities)
 
 New top-level domain `Information Technology` with nine framework personalities — all stack-agnostic at the framework level. Stack-specific specialists belong in custom personalities that `parents:` inherit from these.
 

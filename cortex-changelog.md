@@ -9,6 +9,11 @@ Format: `YYYY-MM-DD HH:MM TZ | file | what changed`
 <!-- Future: if this file grows large, rotate annually to cortex-changelog-YYYY.md -->
 
 ---
+2026-04-28 17:00 UTC | version.txt | bump to 4.0.0-alpha.13 — bootstrap reliability patches (4 fixes; no new features)
+2026-04-28 17:00 UTC | protocol/GUARDRAILS.md | Bootstrap RWDX guardrail Gate 3 strictly enforced — `git fetch origin` (and upstream if configured) MUST run before greeting; if behind, scribe MUST surface the delta + apply auto_upgrade preference (always/ask/never); silent stale-state operation is now a protocol violation.
+2026-04-28 17:00 UTC | protocol/CORTEX.md | Loading Order step 3b — added third lookup fallback (filename slug) and explicit cache-invalidation rule: scribe MUST re-scan personalities/ from disk on every lookup miss before reporting "no such file."
+2026-04-28 17:00 UTC | protocol/CORTEX.md | Creating-a-custom-personality flow — filename slug MUST align with `## name` or an alias entry; refuse to write personality files whose slug does not match. Prevents the lookup-mismatch bug where a personality named "Magnus Pedersen" filed as `PERSONALITY-CUSTOM-BC-SME.md` becomes invisible to `change actor to magnus`.
+2026-04-28 17:00 UTC | protocol/CORTEX.md | Sync flow — new Step 4 requires accurate file-count reporting after pull (0/1/N format); reporting only a sample of changed files is now a protocol violation. Personality cache MUST invalidate after any sync that touches personalities/.
 2026-04-28 14:10 UTC | version.txt | bump to 4.0.0-alpha.12 — Information Technology domain (+9 personalities, all stack-agnostic)
 2026-04-28 14:10 UTC | personalities/PERSONALITY-DEVON.md | new framework personality — Senior Software Engineer / Tech Lead, ANALYST/TEAM_PLAYER. Information Technology domain.
 2026-04-28 14:10 UTC | personalities/PERSONALITY-KAI.md | new framework personality — Junior Developer, TEAM_PLAYER/CREATIVE. Information Technology domain.
