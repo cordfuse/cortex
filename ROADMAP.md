@@ -2,13 +2,23 @@
 
 What's shipped, what's in progress, and what's coming.
 
-**Current version:** 4.0.0-alpha.10 — [Changelog](cortex-changelog.md)
+**Current version:** 4.0.0-alpha.11 — [Changelog](cortex-changelog.md)
 
 ---
 
 ## Shipped
 
-### v4.0.0-alpha.10 — Pop Culture additions (+7 personalities) *(current)*
+### v4.0.0-alpha.11 — Multi-parent inheritance *(current)*
+
+`## parent` (single) extended to `## parents` (ordered list). Custom personalities can now legitimately inherit from multiple framework or custom personalities — the "everything guy" pattern, where a senior IC spans developer + infrastructure + cloud architect or a domain SME spans functional consultant + senior engineer + infrastructure.
+
+**Linearization:** left-to-right precedence. First parent listed wins on any field conflict. `system_prompt`s concatenate in declared order; child `system_prompt_append` runs last. Diamond inheritance dedup'd.
+
+**Backwards-compat:** legacy `## parent: <file>` is treated as `## parents: [<file>]`. No migration required.
+
+**Why now:** surfaced in v4 design conversation while scoping the BC SME custom — multi-parent is the right model for cross-cutting expertise. Small protocol clarification, ships standalone.
+
+### v4.0.0-alpha.10 — Pop Culture additions (+7 personalities)
 
 Seven new framework personalities under the Pop Culture domain:
 

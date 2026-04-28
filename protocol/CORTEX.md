@@ -689,14 +689,31 @@ The scribe reads this at `hello` and loads the corresponding file. If missing or
 
 ## Inheritance
 
-A custom personality declares a `parent:` field. It overrides only what it declares — everything else inherits from the parent. Chains are valid (a custom can parent another custom).
+A custom personality declares a `parents:` field — an ordered list of parent personality files. The child overrides only what it declares; everything else inherits from the parents. Chains are valid (a custom can parent another custom).
 
-Merge algorithm:
-1. Load parent file; resolve chains recursively if needed
-2. Apply child fields on top — child wins on any conflict
-3. If child declares `system_prompt_append`, append it after the parent's `system_prompt` rather than replacing it
+**Multi-parent (v4.0.0-alpha.11+):** the `parents:` field accepts multiple files. This supports "everything-guy" personalities that legitimately span multiple roles (e.g., a senior IC who is simultaneously developer + infrastructure + cloud architect). Linearization is **left-to-right precedence** — the first parent listed wins on any field conflict.
 
-Validate the parent pointer before committing — if the named file doesn't exist in `personalities/`, warn the user before writing anything.
+Example:
+
+```
+## parents
+- PERSONALITY-DREW.md       # primary voice
+- PERSONALITY-DEVON.md      # technical backbone
+- PERSONALITY-KNOX.md       # infrastructure layer
+- PERSONALITY-VEGA.md       # cloud architecture layer
+```
+
+**Merge algorithm:**
+
+1. Load each parent file in order; resolve chains recursively if any parent itself has parents
+2. Linearize parents left-to-right: for each non-`system_prompt` field, the leftmost parent that declares it wins
+3. For `system_prompt`: concatenate parent prompts in the order they appear under `parents:`. Then if the child declares `system_prompt_append`, append it after the concatenated parent prompts
+4. Apply child fields last — child wins over any parent on any conflict
+5. Diamond inheritance (Parent A and Parent B both inherit from C): C is loaded once; the linearization deduplicates
+
+**Backwards compatibility:** the legacy single-parent form `## parent: <file>` continues to work and is treated as `## parents: [<file>]`. No migration required for existing custom personalities.
+
+**Validation:** validate every parent pointer before committing — if any named file does not exist in `personalities/`, warn the user before writing anything.
 
 ---
 

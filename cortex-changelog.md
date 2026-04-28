@@ -9,6 +9,9 @@ Format: `YYYY-MM-DD HH:MM TZ | file | what changed`
 <!-- Future: if this file grows large, rotate annually to cortex-changelog-YYYY.md -->
 
 ---
+2026-04-28 14:00 UTC | version.txt | bump to 4.0.0-alpha.11 — multi-parent inheritance (`## parents` list, left-to-right linearization)
+2026-04-28 14:00 UTC | protocol/CORTEX.md | Inheritance section: `## parent` (single) extended to `## parents` (ordered list). Linearization is left-to-right — first parent wins on field conflicts. system_prompt parents concatenate in order, then child's system_prompt_append appends last. Backwards-compat: legacy `## parent: <file>` continues to work as `## parents: [<file>]`.
+2026-04-28 14:00 UTC | protocol/CORTEX.md | New diamond-inheritance dedup rule + parent validation rule documented.
 2026-04-28 12:05 UTC | version.txt | bump to 4.0.0-alpha.10 — Pop Culture additions (+7 personalities)
 2026-04-28 12:05 UTC | personalities/PERSONALITY-INDIANA-JONES.md | new framework personality — adventurer-archaeologist, Pop Culture domain.
 2026-04-28 12:05 UTC | personalities/PERSONALITY-PICARD.md | new framework personality — measured Captain Jean-Luc Picard, Pop Culture domain.
