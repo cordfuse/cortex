@@ -170,15 +170,19 @@ Cross-reference with local changes to find overlapping edits.
   > *Framework update available, but `protocol/ROE.md` has local changes that conflict with upstream. Let's resolve before syncing.*
 
 **Step 3 — Apply and commit (clean path only)**
-Apply all files in scope from upstream:
+
+Apply directory-scoped files from upstream:
 ```
 git checkout upstream/main -- protocol/ templates/ scripts/*.py
 ```
-For personalities, apply each built-in file individually (preserves any PERSONALITY-CUSTOM-* files):
+
+**For personalities, MUST use live `git ls-tree` enumeration against `upstream/main` (v4.0.0-alpha.15+):**
+
 ```
-git checkout upstream/main -- personalities/PERSONALITY-CASUAL.md personalities/PERSONALITY-VERBOSE.md [... all built-in files]
+git checkout upstream/main -- $(git ls-tree --name-only upstream/main personalities/ | grep 'PERSONALITY-[^C]')
 ```
-Or use: `git checkout upstream/main -- $(git ls-tree --name-only upstream/main personalities/ | grep 'PERSONALITY-[^C]')`
+
+**Hardcoded personality file lists in sync flow are a protocol violation.** Earlier alpha sync flows used hardcoded checkout lists which silently dropped framework personalities the list-author forgot to update — alpha.4 missed `PERSONALITY-CASUAL.md` (Bob → Casey rename), alpha.6 missed `PERSONALITY-CHUCK-NORRIS.md`, and the resulting drift accumulated on user clones across multiple sync cycles before being caught (see records `2026-04-28-1631-bug-personality-sync-drift.md`). Live enumeration prevents this — every sync includes every framework personality currently on upstream/main, no matter what was added in the most recent release.
 
 Update `.cortex-version` to match upstream version. Then commit and push:
 ```
@@ -202,6 +206,14 @@ After the apply/commit completes, the scribe MUST report **all** files actually 
 Reporting only one file when more changed (e.g., reporting `PERSONALITY-YODA.md` when ten files were updated) is a protocol violation. The user must be able to verify what came in.
 
 **Personality cache invalidation after sync:** if any file under `personalities/` was pulled in this sync, the scribe MUST re-scan `personalities/` from disk and refresh its in-session personality list before the next user turn. Do not rely on hello-time cache after sync.
+
+**Pre-sync drift check (v4.0.0-alpha.15+):** before pulling, the scribe MUST diff every framework-scope path between local `HEAD` and `upstream/main`. If any file in framework scope (excluding `*-CUSTOM.md` patterns) differs in a way the current sync wouldn't update, surface the count in the sync report:
+
+> *"Drift detected: N file(s) differ from upstream beyond what this sync resolves. Run `reconcile` to resolve."*
+
+(`reconcile` is the recurrence-prevention verb proposed for alpha.16 — until it ships, the user can run `git diff upstream/main HEAD -- protocol/ templates/ scripts/*.py 'personalities/PERSONALITY-[^C]*.md'` manually to inspect drift.)
+
+This catches the historical-drift class of bugs that the post-sync cache invalidation can't catch — files that were silently dropped from earlier hardcoded sync lists and have stayed wrong across multiple sync cycles. See `records/2026-04-28-1631-bug-personality-sync-drift.md` for the surfacing incident.
 
 **Step 3b — context.md migration**
 After applying files, check if the live `context.md` is missing fields that the updated `templates/context.md` now defines. For each missing field, append it with its default value. Never overwrite existing values — additions only. Commit in the same sync commit.

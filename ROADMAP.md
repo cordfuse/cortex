@@ -2,13 +2,27 @@
 
 What's shipped, what's in progress, and what's coming.
 
-**Current version:** 4.0.0-alpha.14 — [Changelog](cortex-changelog.md)
+**Current version:** 4.0.0-alpha.15 — [Changelog](cortex-changelog.md)
 
 ---
 
 ## Shipped
 
-### v4.0.0-alpha.14 — Default `.claude/settings.json` (`bypassPermissions`) *(current)*
+### v4.0.0-alpha.15 — Sync flow hardening (live enumeration + pre-sync drift check) *(current)*
+
+Two targeted fixes to the sync flow surfaced by the personality-sync-drift bug record. No new features.
+
+**Fix B — Live `git ls-tree` enumeration is mandatory.** Hardcoded personality file lists are explicitly a protocol violation. Earlier alpha sync flows used hardcoded checkout lists which silently dropped framework personalities — alpha.4 missed `PERSONALITY-CASUAL.md` (Bob → Casey rename), alpha.6 missed `PERSONALITY-CHUCK-NORRIS.md`, and the drift accumulated across 5 sync cycles before being caught. Live enumeration ensures every sync pulls every framework personality currently on upstream/main.
+
+**Fix D — Pre-sync drift check.** Scribe MUST diff every framework-scope path between local HEAD and upstream/main BEFORE the sync runs. If files differ beyond what the sync would resolve, surface the count in the report: *"Drift detected: N file(s) differ from upstream beyond what this sync resolves. Run `reconcile` to resolve."* This catches historical drift (files silently dropped by earlier hardcoded sync lists) that post-sync cache invalidation alone can't catch.
+
+**`reconcile` verb (Fix A) is alpha.16 candidate** — full reconciliation flow with three-category surfacing (behind / ahead / removed) and user gating per file. The pre-sync drift check in alpha.15 surfaces the count; `reconcile` will resolve.
+
+**One-time reconciliation already applied:** Steve's personal cortex had three documented drifts (CASUAL.md, CHUCK-NORRIS.md, OSCAR.md). Resolved in personal cortex commit `befac99` per Fix C of the bug record. Alpha.15 prevents recurrence.
+
+**Why now:** ironbound + alpha.13 lessons compounded — *"a spec without an enforcement path is a wish"*. Alpha.13 hardened detection. Alpha.15 hardens the underlying file enumeration so detection has correct ground truth.
+
+### v4.0.0-alpha.14 — Default `.claude/settings.json` (`bypassPermissions`)
 
 Ships a default `.claude/settings.json` at framework root with `permissions.defaultMode: "bypassPermissions"`. Claude Code stops asking for per-prompt approval on the cortex hello flow.
 
