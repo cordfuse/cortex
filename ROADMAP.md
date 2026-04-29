@@ -2,13 +2,27 @@
 
 What's shipped, what's in progress, and what's coming.
 
-**Current version:** 4.0.0-alpha.15 — [Changelog](cortex-changelog.md)
+**Current version:** 4.0.0-alpha.16 — [Changelog](cortex-changelog.md)
 
 ---
 
 ## Shipped
 
-### v4.0.0-alpha.15 — Sync flow hardening (live enumeration + pre-sync drift check) *(current)*
+### v4.0.0-alpha.16 — Claude Code deny-list (framework files protected at OS layer) *(current)*
+
+`.claude/settings.json` extended with a comprehensive `deny` list covering every framework file. Operationalizes ROE Rule 18 (framework files read-only for the scribe) at the OS / tool layer rather than relying on LLM compliance alone.
+
+**Defense in depth:** even if the scribe's LLM-level rule compliance drifts (e.g., during long sessions, after compaction, or if a personality file system_prompt collides with the rule), the tool layer holds. Framework files only mutate via the sync flow's `git checkout upstream/main` — a `Bash(*)` call that's still in the allow list. Sync continues to work; ad-hoc Edit/Write of framework files does not.
+
+**Coverage:** `protocol/`, `templates/`, `scripts/*.py`, `version.txt`, `.cortex-version`, `LICENSE`, `cortex-changelog.md`, `ROADMAP.md`, `README.md`, `README-SIMPLE.md`, `VERBS.md`, all agent pointer files (`CLAUDE.md`, `AGENTS.md`, `GEMINI.md`, `OPENCODE.md`, `QWEN.md`), the install/setup scripts, and `.claude/settings.json` itself.
+
+**Personality files NOT covered.** The custom-vs-framework boundary (`PERSONALITY-CUSTOM-*` vs framework names) is too messy to express cleanly in CC's glob patterns without false positives. Personality file protection stays at the LLM-enforced ROE Rule 18 layer for now. Future work might revisit if a clean glob emerges.
+
+**Framework contributors:** the deny list will block legitimate framework dev work (editing protocol files, bumping versions, etc.). Solution: ship a local `.claude/settings.local.json` (gitignored) that overrides the deny list. README documents the exact pattern. Same approach as `cordfuse/ironbound`.
+
+**Why now:** alpha.13/14/15 hardened the bootstrap and sync flows at the protocol layer. Alpha.16 adds the OS-layer reinforcement. The pair (LLM-enforced + OS-enforced) is the same defense-in-depth pattern ironbound established for app-level system files.
+
+### v4.0.0-alpha.15 — Sync flow hardening (live enumeration + pre-sync drift check)
 
 Two targeted fixes to the sync flow surfaced by the personality-sync-drift bug record. No new features.
 

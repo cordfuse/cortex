@@ -1,6 +1,6 @@
 # Cortex
 
-[![Version](https://img.shields.io/badge/version-4.0.0--alpha.15-blue)](cortex-changelog.md)
+[![Version](https://img.shields.io/badge/version-4.0.0--alpha.16-blue)](cortex-changelog.md)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![Donate to CAMH](https://img.shields.io/badge/Donate-CAMH%20Foundation-blue)](https://camhfoundation.ca/donate)
 
@@ -33,6 +33,28 @@ Cortex ships with `.claude/settings.json` carrying a comprehensive allow-list (`
 **If you want per-prompt approval back:** delete or rename `.claude/settings.json`. Claude Code falls back to its default per-prompt gating. Expect every read, write, and bash call to prompt — the scribe's hello flow alone will trigger 10+ approvals before the greeting renders.
 
 **On other agents:** Codex CLI uses `--full-auto`, Gemini CLI has its own approval mode, and so on. None of those settings are git-tracked here yet — file an issue if you want a particular agent's auto-approve config shipped as a default.
+
+### Framework files are protected at the OS layer (v4.0.0-alpha.16+)
+
+`.claude/settings.json` ships with a comprehensive `deny` list covering every framework file: `protocol/`, `templates/`, `scripts/*.py`, `version.txt`, `.cortex-version`, `LICENSE`, `cortex-changelog.md`, `ROADMAP.md`, `README.md`, `README-SIMPLE.md`, `VERBS.md`, all agent pointer files (`CLAUDE.md`, `AGENTS.md`, `GEMINI.md`, `OPENCODE.md`, `QWEN.md`), the install/setup scripts, and `.claude/settings.json` itself.
+
+**Why:** ROE Rule 18 already says framework files are read-only for the scribe (LLM-enforced). The `deny` list operationalizes the same rule at the tool layer (OS-enforced). Defense in depth — even if the scribe's LLM compliance drifts, the tool layer holds. Framework files only mutate via the sync flow's `git checkout upstream/main` (a `Bash(*)` call), which IS allowed and which IS the correct path for framework changes.
+
+**Framework contributors:** if you're working on Cortex itself (modifying protocol files, shipping new alpha releases, etc.), the deny list will block you. Create a local override:
+
+```json
+// .claude/settings.local.json (gitignored — your local override)
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "permissions": {
+    "deny": []
+  }
+}
+```
+
+`.claude/settings.local.json` is in `.gitignore`, so your local override never gets committed. Claude Code merges both files at session start with the local override winning. Without this override, contributing to framework files becomes friction-heavy.
+
+This is the same pattern used in `cordfuse/ironbound`. Lifted directly.
 
 ---
 

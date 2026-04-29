@@ -9,6 +9,10 @@ Format: `YYYY-MM-DD HH:MM TZ | file | what changed`
 <!-- Future: if this file grows large, rotate annually to cortex-changelog-YYYY.md -->
 
 ---
+2026-04-29 15:30 UTC | version.txt | bump to 4.0.0-alpha.16 — Claude Code deny-list (framework files protected at OS layer) + framework-contributor `.local.json` override pattern
+2026-04-29 15:30 UTC | .claude/settings.json | extended with comprehensive `deny` list covering all framework files (protocol/, templates/, scripts/*.py, version.txt, .cortex-version, LICENSE, cortex-changelog.md, ROADMAP.md, README.md, README-SIMPLE.md, VERBS.md, CLAUDE.md, AGENTS.md, GEMINI.md, OPENCODE.md, QWEN.md, install.sh/ps1, setup.sh/ps1, .claude/settings.json itself). Operationalizes ROE Rule 18 at the OS layer. Bash(*) stays in allow list so legitimate sync flow `git checkout upstream/main` continues to work.
+2026-04-29 15:30 UTC | .gitignore | added `.claude/settings.local.json` so framework contributors can ship a local override without it being committed.
+2026-04-29 15:30 UTC | README.md | added "Framework files are protected at the OS layer" subsection under the permissions warning. Documents the deny-list rationale, the framework-contributor override pattern, and lifts attribution to cordfuse/ironbound.
 2026-04-28 21:30 UTC | version.txt | bump to 4.0.0-alpha.15 — sync flow hardening (Fix B + Fix D from personality-sync-drift bug record)
 2026-04-28 21:30 UTC | protocol/CORTEX.md | Sync flow Step 3 — live `git ls-tree` enumeration is now MANDATORY for personality file checkout. Hardcoded personality file lists in sync flow are explicitly a protocol violation. Source incident: alpha.4 missed CASUAL.md (Bob → Casey rename), alpha.6 missed CHUCK-NORRIS.md, drift accumulated across 5 sync cycles.
 2026-04-28 21:30 UTC | protocol/CORTEX.md | Sync flow Step 4 — added pre-sync drift check. Scribe MUST diff every framework-scope path between local HEAD and upstream/main BEFORE the sync runs. Surface count of drifted files in report. Catches historical drift that post-sync invalidation can't catch.

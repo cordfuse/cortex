@@ -1,3 +1,4 @@
 cortex.config
 .env
 setup.log
+.claude/settings.local.json
