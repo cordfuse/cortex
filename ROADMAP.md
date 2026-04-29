@@ -14,7 +14,9 @@ What's shipped, what's in progress, and what's coming.
 
 **Defense in depth:** even if the scribe's LLM-level rule compliance drifts (e.g., during long sessions, after compaction, or if a personality file system_prompt collides with the rule), the tool layer holds. Framework files only mutate via the sync flow's `git checkout upstream/main` — a `Bash(*)` call that's still in the allow list. Sync continues to work; ad-hoc Edit/Write of framework files does not.
 
-**Coverage:** `protocol/`, `templates/`, `scripts/*.py`, `version.txt`, `.cortex-version`, `LICENSE`, `cortex-changelog.md`, `ROADMAP.md`, `README.md`, `README-SIMPLE.md`, `VERBS.md`, all agent pointer files (`CLAUDE.md`, `AGENTS.md`, `GEMINI.md`, `OPENCODE.md`, `QWEN.md`), the install/setup scripts, and `.claude/settings.json` itself.
+**Coverage:** `protocol/`, `templates/`, `scripts/*.py`, `version.txt`, `.cortex-version`, `LICENSE`, `cortex-changelog.md`, `ROADMAP.md`, `README.md`, `README-SIMPLE.md`, `VERBS.md`, the install/setup scripts, and `.claude/settings.json` itself.
+
+**Agent pointer files (`CLAUDE.md`, `AGENTS.md`, `GEMINI.md`, `OPENCODE.md`, `QWEN.md`) deliberately excluded.** They ship with the framework as one-liners pointing at `protocol/CORTEX.md`, but users customize them with personal blocks (per-project session backlogs, per-host instructions, etc.). User-territory in user clones — locking them at the OS layer would break legitimate user customization.
 
 **Personality files NOT covered.** The custom-vs-framework boundary (`PERSONALITY-CUSTOM-*` vs framework names) is too messy to express cleanly in CC's glob patterns without false positives. Personality file protection stays at the LLM-enforced ROE Rule 18 layer for now. Future work might revisit if a clean glob emerges.
 
