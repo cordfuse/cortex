@@ -2,13 +2,32 @@
 
 What's shipped, what's in progress, and what's coming.
 
-**Current version:** 4.0.0-alpha.17 — [Changelog](cortex-changelog.md)
+**Current version:** 4.0.0-alpha.18 — [Changelog](cortex-changelog.md)
 
 ---
 
 ## Shipped
 
-### v4.0.0-alpha.17 — Phase 6 multi-session foundation *(current)*
+### v4.0.0-alpha.18 — Phase 6 multi-session runtime *(current)*
+
+The second half of the big v4 feature. Phase 6 is now complete — full multi-session runtime active.
+
+**What ships in alpha.18 (runtime):**
+- `engage session "<name>"` verb — active. Cross-machine race detection via `last_engaged_at` heuristic, archived-session re-engage warning + folder restore, hot-reload personality if scoped session declares one.
+- `close session "<name>"` verb — active. Folder moves to `archive/sessions/{guid}/`, friendly name freed for reuse immediately, chat returns to main session if the closed session was the engaged one.
+- **Hello-time session resolution** — Loading Order step 3c. Fresh chats default to main session; `engage session` is the explicit opt-in. Compression-resilience recovery: if chat memory loses session binding mid-chat, scribe reads commit footer for GUID and re-engages.
+- **Daily auto-stale check** — runs on first hello of any UTC day. Sessions with `last_engaged_at` > 90 days transition to `stale` state and move to archive. Greeting surfaces count if any moved.
+- **Goodbye behavior in scoped sessions** — updates `last_engaged_at` on goodbye but does NOT transition state to `closed`. Goodbye = end-of-chat; close = end-of-session. Two different mechanics.
+- **Lifecycle state transitions** — fully enforced. active / detached (implicit) / closed (deliberate) / stale (auto, 90d).
+
+**Phase 6 ships complete.** Test isolation, parallel work threads, and cross-machine continuity all live.
+
+**What's left as Phase 6 polish (deferred):**
+- Q3 — Multi-actor roster integration with Phase 2 (depends on Phase 2 multi-actor design)
+- `rename session` verb (mentioned in spec, not yet implemented)
+- Field validation in real CLI session
+
+### v4.0.0-alpha.17 — Phase 6 multi-session foundation
 
 The big v4 feature ships its first half. After 18 months of cortex being singleton-only, sessions can finally be scoped — multiple independent runtime states co-existing in the same repo, each with its own active actor + state, sharing the durable record (records, archive, personalities, protocol) globally.
 

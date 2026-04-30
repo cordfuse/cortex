@@ -9,6 +9,10 @@ Format: `YYYY-MM-DD HH:MM TZ | file | what changed`
 <!-- Future: if this file grows large, rotate annually to cortex-changelog-YYYY.md -->
 
 ---
+2026-04-30 12:00 UTC | version.txt | bump to 4.0.0-alpha.18 — Phase 6 multi-session runtime (engage + close verbs active, lifecycle transitions enforced, hello-time session resolution + daily auto-stale check)
+2026-04-30 12:00 UTC | protocol/CORTEX.md | Loading Order — new step 3c "Session resolution" added: fresh chats default to main session (singleton); user invokes `engage session` to hot-swap to scoped; compression-resilience recovery via commit footer GUID; daily auto-stale check (90d threshold) runs on first hello of UTC day, transitions stale sessions to archive.
+2026-04-30 12:00 UTC | protocol/CORTEX.md | Closing (goodbye) flow — added step 4 for scoped sessions: update `last_engaged_at` and commit on goodbye, but DO NOT transition state to closed. Goodbye is end-of-chat, not end-of-session. Use `close session` for deliberate archival.
+2026-04-30 12:00 UTC | protocol/CORTEX.md | Multi-Session section — `engage` and `close` verbs promoted from "alpha.18 deferred" to active.
 2026-04-30 11:00 UTC | version.txt | bump to 4.0.0-alpha.17 — Phase 6 multi-session foundation (spawn + list verbs, schema, records Session: field)
 2026-04-30 11:00 UTC | protocol/CORTEX.md | new top-level "# Multi-Session" section (~150 lines) — full Phase 6 protocol: file layout, identity (GUID + friendly name), session context.md schema, four lifecycle states (active/detached/closed/stale), four session verbs (spawn/list/engage/close — engage and close ship in alpha.18), session-record relationship, soft lock semantics, GUID in commit message footer for compression-resilience fallback.
 2026-04-30 11:00 UTC | protocol/CORTEX.md | provenance block — added required `Session:` field between `Actor:` and `Provider:`. Default `main` for singleton-filed records. User-facing friendly name (not GUID). Pre-Phase-6 records without the line interpretable as `main` retroactively.
