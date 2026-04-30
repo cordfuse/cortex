@@ -265,6 +265,7 @@ Never recite open items from memory — always read the files.
   ```
   ---
   *Actor: [active personality name]*
+  *Session: [session friendly name; `main` if singleton]*
   *Provider: [scribe's real-time self-knowledge]*
   *Model: [scribe's real-time self-knowledge]*
   *Filed: YYYY-MM-DD HH:MM TZ*
@@ -275,6 +276,8 @@ Never recite open items from memory — always read the files.
   - **Provider** is reliable across major hosted providers — Claude says `Anthropic Claude`, GPT says `OpenAI`, Gemini says `Google`, etc.
   - **Model** is best-effort — write the specific version string if known (`claude-sonnet-4-6`), otherwise the family (`claude-sonnet-4`). Honesty over precision.
 
+  **`Session:` is the user-facing friendly name** (not the GUID), matching the alpha.9 response header model. For records filed against the singleton, render `main`. For records filed inside a scoped session (Phase 6+), render the session's `## name` field. Records filed pre-Phase-6 without a `Session:` line are interpretable as `main` retroactively. Required (always rendered) — never empty, never omitted.
+
   **`Filed:` must include time and timezone.** Use the `get_current_time` contract (see Time Resolution). Date-only filing is forbidden — multiple records can land in one day, and without time + tz the intra-day chronological order is unrecoverable. This aligns with v3.3.0 Time Resolution and ROE Rule 17. Example: `*Filed: 2026-04-25 17:30 EDT*`.
 
   **Empty fields must be omitted, not rendered blank.** In the rare case the scribe genuinely cannot determine its provider or model (some headless / self-hosted setups), drop the entire line from the provenance block. Do NOT render `*Provider: *` or `*Model: *` with empty values. The block contracts cleanly:
@@ -282,10 +285,11 @@ Never recite open items from memory — always read the files.
   ```
   ---
   *Actor: Casey*
+  *Session: main*
   *Filed: 2026-04-25 17:30 EDT*
   ```
 
-  is valid output when provider and model are unknown. `Actor:` and `Filed:` are mandatory and never omitted.
+  is valid output when provider and model are unknown. `Actor:`, `Session:`, and `Filed:` are mandatory and never omitted.
 - When composing a message or email for the user to send to someone else, use the `message_compose` tool (Claude mobile) instead of outputting plain text. Supported kinds: `textMessage`, `email`, `other`. Especially useful for bill summaries, appointment reminders, or any message the user intends to send immediately.
 
 ## Closing (`goodbye`)
@@ -895,12 +899,13 @@ Every filed record includes a provenance block at the bottom:
 ```
 ---
 *Actor: Casey*
+*Session: main*
 *Provider: [e.g. Anthropic Claude]*
 *Model: [e.g. claude-sonnet-4-6]*
-*Filed: YYYY-MM-DD*
+*Filed: YYYY-MM-DD HH:MM TZ*
 ```
 
-The scribe appends this block automatically when filing any record. Provider and model are declared in `context.md` (see context.md spec). If not declared, omit those fields rather than guessing.
+The scribe appends this block automatically when filing any record. Provider and model are declared in `context.md` (see context.md spec). If not declared, omit those fields rather than guessing. `Session:` renders the user-facing friendly name; `main` for singleton-filed records, the session's `## name` for scoped sessions (Phase 6+).
 
 ---
 
@@ -946,6 +951,215 @@ Same rule: first response carries the new session name in the header. No separat
 - Not a system prompt artifact — the active actor renders it, in their own voice (the format is fixed; the actor doesn't paraphrase or "Yoda-ify" the header itself)
 - Not part of the personality file — every actor renders the same format
 - Not optional — every response carries it; missing-header replies are a protocol violation
+
+---
+
+# Multi-Session (v4.0.0-alpha.17+)
+
+Cortex supports multiple independent sessions co-existing in the same repo. The default ("singleton" / "main session") is a global, session-agnostic state shared across every chat that doesn't explicitly spawn a scoped session. Scoped sessions are isolated runtime state (active actor, hot-swap state, machine + start time, free-form notes) inside `sessions/{guid}/`.
+
+The durable record (records, archive, personalities, protocol, docs) stays global across all sessions. Only runtime state is per-session.
+
+## Why scoped sessions exist
+
+Two driving cases:
+
+1. **Test isolation** — testing a new feature against the production singleton risks corrupting the working state. Spawning a scoped session for the test bounds the blast radius.
+2. **Parallel work threads** — running two simultaneous chats (e.g. a Claude Code dev session AND a Sonnet journaling session) on the same repo lets each session keep its own active actor + state without colliding on `context.md`.
+
+Without scoped sessions, the singleton becomes a single-writer chokepoint and every parallel chat creates merge conflicts on `context.md`. Multi-session decouples this.
+
+## File layout
+
+```
+context.md                          # Singleton — also known as "main session"
+sessions/
+  2026-04-29T1500-EDT-a3f4b9e2/
+    context.md                      # This session's state (overrides singleton fields)
+  2026-04-30T0930-EDT-b7e2c1f5/
+    context.md
+archive/
+  sessions/
+    2026-04-15T1100-EDT-c4d8a9b1/   # Closed and stale sessions live here
+      context.md
+```
+
+The folder name is the session's GUID. Sortable chronologically by date prefix; uniqueness via the 8-char nanoid suffix. The folder name is internal — never shown to users unless they explicitly ask `what's the session guid?`.
+
+## Identity
+
+Each session has two identifiers:
+
+- **GUID** (system-generated, immutable): `YYYY-MM-DDTHHMM-TZ-<8-char-nanoid>` — the folder name. Internal.
+- **Friendly name** (user-chosen, mutable via rename): the user-facing handle. What every verb takes.
+
+GUIDs collide-proof at solo / small-team scale. Friendly names must be unique across active sessions; closed sessions free their name immediately for re-use.
+
+## Session `context.md` schema
+
+```yaml
+# session context.md — Scoped Session State
+# Extends singleton context.md at repo root.
+# Singleton fields are inherited unless overridden here.
+
+## name
+phase 2 design
+
+## guid
+2026-04-29T1500-EDT-a3f4b9e2
+
+## spawned_at
+2026-04-29T15:00:00-04:00
+
+## spawned_on
+steve-cachyos
+
+## state
+active
+
+## last_engaged_at
+2026-04-29T15:30:00-04:00
+
+## last_engaged_by
+steve-cachyos / Anthropic Claude (claude-opus-4-7)
+
+## personality
+yoda
+
+## additional_actors
+[]
+
+## notes
+Working session for Phase 2 multi-actor design pass.
+```
+
+**Required (set on spawn, immutable):** `name`, `guid`, `spawned_at`, `spawned_on`.
+**System-managed (updated on engage / lifecycle transition):** `state`, `last_engaged_at`, `last_engaged_by`.
+**User-editable (optional):** `personality` (alias `actor`), `notes`.
+**Phase 2+ (deferred):** `additional_actors`.
+
+**Inheritance from singleton:** any field not declared in session `context.md` falls back to the singleton's value. Same model as personality `parents:` (alpha.11).
+
+## Lifecycle states
+
+| State | Meaning |
+|---|---|
+| `active` | Currently engaged by an agent |
+| `detached` | Previously engaged, no current agent (most common idle state) |
+| `closed` | Deliberately retired by user; folder moved to `archive/sessions/{guid}/` |
+| `stale` | Auto-archived after 90 days of no engagement |
+
+**Transitions:**
+- `spawn session` → `active`
+- chat ends without `close session` → `detached` (implicit)
+- `engage session` → `active` (from any non-closed state)
+- `close session` → `closed` (folder move)
+- on `hello`, daily check, `last_engaged_at` > 90d → `stale` (folder move)
+- `engage` from archived state → folder restored to `sessions/`, state set to `active`
+
+## Session verbs
+
+Four built-in verbs (v4.0.0-alpha.17+ for `spawn` and `list`; alpha.18+ for `engage` and `close`).
+
+### `spawn session "<name>"`
+
+Creates a new scoped session. Steps:
+
+1. Generate GUID: `YYYY-MM-DDTHHMM-TZ-<8-char-nanoid>` (use local TZ at spawn time)
+2. Create folder `sessions/{guid}/`
+3. Write `sessions/{guid}/context.md` with required fields populated; `state: active`
+4. Commit: `session: spawn "<name>" ({guid})`
+5. Push to origin
+6. Confirm to user: *"Spawned session `<name>` ({guid-prefix-shown}). You're now in this session."*
+7. Hot-swap to scoped session — subsequent response headers and record provenance render `<name>` instead of `main`
+
+If the user invokes `spawn session` without a name, the scribe asks: *"What should we call this session?"* If the user says `skip` / `untitled` / `leave it` / `later`, generate placeholder name `untitled-{YYYY-MM-DDTHHMM}-{guid-prefix-4-chars}` and proceed. Soft-prompt for naming once at next engage; if user declines three times, stop asking.
+
+**Naming collisions:** if `<name>` already exists as an active session, refuse: *"A session named `<name>` already exists (guid prefix: {prefix}). Pick another name or close the existing one first."* Closed/archived names are reusable — collision check applies only to currently-active sessions.
+
+### `list sessions [filter]`
+
+Renders all sessions with state metadata. Default sort: `last_engaged_at` descending. Output format (one line per session):
+
+```
+<name> (<state>) | spawned: YYYY-MM-DD | last engaged: YYYY-MM-DD HH:MM TZ | actor: <name>
+```
+
+GUID hidden by default. Use `list sessions verbose` for GUIDs in the output, or ask `what's the guid for <name>?`.
+
+**First-class filters:**
+
+| Filter | Result |
+|---|---|
+| `list sessions` | All non-closed sessions (active + detached) |
+| `list sessions today` | Engaged today (any state) |
+| `list sessions this week` | Engaged in last 7 days |
+| `list sessions active` | `active` state only |
+| `list sessions detached` | `detached` only |
+| `list sessions closed` | Includes `closed` (archive) |
+| `list sessions stale` | Auto-archived |
+| `list sessions on <machine>` | By `spawned_on` field |
+| `list sessions with <actor>` | Where named actor was the active personality |
+| `list sessions all` | Everything including archive |
+
+### `engage session "<name>"`
+
+Switches the current chat to an existing session. Steps:
+
+1. Find session by friendly name (or GUID if provided)
+2. **Cross-machine race check** — if `last_engaged_at` is within last 30 minutes AND `last_engaged_by` is a different machine, warn user:
+   > *"This session was last engaged 18 minutes ago by `steves-air`. Possible concurrent use. Continue anyway, abort, or wait?"*
+   - User confirms `continue` → proceed; let git's rebase mechanism resolve any concurrent writes
+   - User chooses `wait` → re-check every 60s, surface when stale
+   - User chooses `abort` → no engage
+3. **Archived session?** If session is in `archive/sessions/{guid}/`, warn:
+   > *"`<name>` is archived (closed YYYY-MM-DD). Re-engaging restores it to active state. Confirm? (Note: the name `<name>` may have been reclaimed since.)"*
+   - User confirms → move folder back to `sessions/{guid}/`, state → `active`
+   - If name has been reclaimed, session resumes under its GUID with no name; user may rename mid-engage
+4. Update `last_engaged_at` (current time + tz) and `last_engaged_by` (machine + provider/model)
+5. Set `state: active`
+6. Commit: `session: engage "<name>" ({guid})`
+7. Push
+8. Hot-swap personality if scoped session declares one
+9. Confirm: *"Engaged session `<name>`. You're now in this session."*
+
+### `close session "<name>"`
+
+Archives a session. Steps:
+
+1. Find session
+2. Move `sessions/{guid}/` → `archive/sessions/{guid}/`
+3. Set `state: closed` in archived `context.md`
+4. Commit: `session: close "<name>" ({guid})`
+5. Push
+6. If user closed the currently-engaged session, switch the chat back to the singleton (main session)
+7. Confirm: *"Closed `<name>` and archived. Name is free to reuse. You're now in main session."*
+
+Closing is non-destructive — folder + records preserved. Re-engage allowed via GUID.
+
+## Session-record relationship
+
+Records filed during a scoped session carry the session's friendly name in their provenance block (`*Session: phase 2 design*`). Records filed against the singleton carry `*Session: main*`.
+
+Records remain in the global `records/` folder regardless of which session filed them — the durable record is global. The `Session:` field in provenance lets users filter / search records by which session produced them.
+
+## Lock semantics — soft only
+
+There is no hard lock. Cortex is git-tracked, and git's eventual-consistency model can't provide one. The protocol's job is to surface intent (Q5 race check above) and let git resolve concurrent writes via rebase + manual conflict resolution.
+
+This is consistent with "Cortex is agent-agnostic and git-native" — locking is git's responsibility, not the protocol's.
+
+## Session GUID in commit messages
+
+Every commit produced inside a scoped session includes the session's GUID prefix (first 8 chars) in the commit message footer:
+
+```
+record: phase 2 design notes
+
+(session: 2026-04-29T1500-EDT-a3f4b9e2)
+```
+
+This is the compression-resilience fallback for session binding (alpha.9). If the chat's conversational memory loses the session ID after provider compaction, the scribe recovers by reading the most recent commit's footer.
 
 ---
 

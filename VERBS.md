@@ -23,6 +23,22 @@ Switch active personality. Usage: *"switch personality to casey"*, *"change acto
 
 ---
 
+### Multi-Session (v4.0.0-alpha.17+)
+
+## spawn session
+Create a new scoped session. Usage: *"spawn session <name>"* / *"new session <name>"*. Scribe generates GUID, writes `sessions/{guid}/context.md`, commits, pushes, and switches the chat to the new session. If no name given, scribe asks; user can `skip` and get an `untitled-<datetime>-<guid-prefix>` placeholder. Naming collisions with active sessions refused; closed names are reusable. See `# Multi-Session` in protocol/CORTEX.md.
+
+## list sessions
+Show all known sessions. Default: non-closed only, sorted by most recent engagement. Filters: `today`, `this week`, `active`, `detached`, `closed`, `stale`, `on <machine>`, `with <actor>`, `all`. Output is one line per session: `<name> (<state>) | spawned: <date> | last engaged: <datetime> | actor: <name>`. GUIDs hidden by default; use `list sessions verbose` to surface them.
+
+## engage session
+Attach to an existing session. Usage: *"engage session <name>"* / *"open session <name>"*. Scribe finds the session, cross-machine race-checks `last_engaged_at`, warns on archived state, updates engagement metadata, commits, pushes, and switches the chat. If the named session is archived, scribe surfaces a re-engage prompt before restoring.
+
+## close session
+Archive a session. Usage: *"close session <name>"*. Scribe moves `sessions/{guid}/` → `archive/sessions/{guid}/`, sets state to `closed`, commits, pushes. The friendly name is freed for reuse immediately. If the closed session was the currently-engaged one, the chat returns to main session.
+
+---
+
 > Activate any of the following, or describe a new one.
 
 ---

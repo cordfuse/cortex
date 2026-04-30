@@ -2,13 +2,46 @@
 
 What's shipped, what's in progress, and what's coming.
 
-**Current version:** 4.0.0-alpha.16 — [Changelog](cortex-changelog.md)
+**Current version:** 4.0.0-alpha.17 — [Changelog](cortex-changelog.md)
 
 ---
 
 ## Shipped
 
-### v4.0.0-alpha.16 — Claude Code deny-list (framework files protected at OS layer) *(current)*
+### v4.0.0-alpha.17 — Phase 6 multi-session foundation *(current)*
+
+The big v4 feature ships its first half. After 18 months of cortex being singleton-only, sessions can finally be scoped — multiple independent runtime states co-existing in the same repo, each with its own active actor + state, sharing the durable record (records, archive, personalities, protocol) globally.
+
+**Why it matters:**
+- **Test isolation.** New features can be smoke-tested in scoped sessions without polluting the production singleton.
+- **Parallel work threads.** Two simultaneous chats (e.g., dev + journaling) on the same repo no longer collide on `context.md`.
+- **Cross-machine continuity.** A session spawned on one machine is engageable from another via `git pull`.
+
+**What ships in alpha.17 (foundation):**
+- New `# Multi-Session` section (~150 lines) in `protocol/CORTEX.md` — full design surface from the Phase 6 working spec
+- Session `context.md` schema — required + system-managed + user-editable fields with inheritance from singleton
+- Lifecycle states: `active` / `detached` / `closed` / `stale` (90d auto-archive)
+- File layout: `sessions/{guid}/` for active, `archive/sessions/{guid}/` for closed/stale
+- GUID format: `YYYY-MM-DDTHHMM-TZ-<8-char-nanoid>` — sortable + collision-proof
+- Two verbs live: `spawn session "<name>"` and `list sessions [filter]`
+- Records `Session:` field added to provenance block — required, defaults to `main` for singleton-filed records (user-facing friendly name, not GUID)
+- Compression-resilience fallback: scoped session commits include GUID in footer
+
+**Migration: NONE.** Singleton stays at root `context.md`. Scoped sessions are opt-in only via `spawn session`. Existing users see no change unless they invoke the new verbs.
+
+**What's deferred to alpha.18 (runtime):**
+- `engage session "<name>"` — attach to existing session, with cross-machine race detection
+- `close session "<name>"` — archive flow + name reclamation
+- Lifecycle state transitions enforced
+- Re-engage from archive flow
+
+**Why split into two:** alpha.17 is the schema + creation surface (additive only — nothing breaks). alpha.18 is the runtime + lifecycle (touches engage / close paths). Splitting lets alpha.17 be field-tested before alpha.18 builds on it.
+
+**Source records:**
+- `records/2026-04-27-1707-design-phase-6-multi-session.md` — working spec, 9 of 10 open questions resolved 2026-04-30
+- Q3 (multi-actor roster) deferred to Phase 2 design
+
+### v4.0.0-alpha.16 — Claude Code deny-list (framework files protected at OS layer)
 
 `.claude/settings.json` extended with a comprehensive `deny` list covering every framework file. Operationalizes ROE Rule 18 (framework files read-only for the scribe) at the OS / tool layer rather than relying on LLM compliance alone.
 
