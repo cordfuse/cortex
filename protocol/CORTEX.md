@@ -216,9 +216,103 @@ Reporting only one file when more changed (e.g., reporting `PERSONALITY-YODA.md`
 
 > *"Drift detected: N file(s) differ from upstream beyond what this sync resolves. Run `reconcile` to resolve."*
 
-(`reconcile` is the recurrence-prevention verb proposed for alpha.16 — until it ships, the user can run `git diff upstream/main HEAD -- protocol/ templates/ scripts/*.py 'personalities/PERSONALITY-[^C]*.md'` manually to inspect drift.)
-
 This catches the historical-drift class of bugs that the post-sync cache invalidation can't catch — files that were silently dropped from earlier hardcoded sync lists and have stayed wrong across multiple sync cycles. See `records/2026-04-28-1631-bug-personality-sync-drift.md` for the surfacing incident.
+
+### Reconcile flow (v4.0.0-alpha.19+)
+
+The `reconcile` verb performs a deep three-category diff between local and `upstream/main`, surfacing every drifted file and resolving each with explicit user gating. This is the recurrence-prevention layer for the bug class that alpha.15 detects.
+
+**`reconcile` is destructive in the local-divergence direction** — it can pull files from upstream that overwrite local edits, and it can move locally-orphaned framework files to archive. Every file is gated individually before applying. Nothing happens silently.
+
+**Run when:**
+- The pre-sync drift check from Step 4 above surfaces drift
+- The user explicitly invokes `reconcile`
+- After major framework version jumps (alpha → beta, beta → stable)
+
+**Reconcile flow:**
+
+**Step R1 — Three-category diff against upstream**
+
+```
+git fetch upstream
+git diff --name-status upstream/main HEAD -- protocol/ templates/ 'scripts/*.py' 'personalities/PERSONALITY-[^C]*.md' README.md README-SIMPLE.md ROADMAP.md docs/PERSONALITIES.md docs/CONNECTORS.md docs/SETUP-DESKTOP.md docs/SETUP-MOBILE.md
+```
+
+Categorize each line:
+
+| git status | Meaning | Category |
+|---|---|---|
+| `M <path>` | Modified between local and upstream | **Behind** (upstream has newer content) |
+| `A <path>` (in `git ls-tree upstream/main` only) | New file upstream, missing locally | **Behind** (file added upstream) |
+| `D <path>` (in local working tree only) | File exists locally but not on upstream | **Removed upstream** (deprecated) |
+| `A <path>` (in local but not upstream) | Locally-added framework-scope file | **Ahead** (rare; likely user accident — framework files should not be locally added except via sync) |
+
+**Step R2 — Surface for user**
+
+Render the three categories as a single message, with file counts and one-line-per-file under each:
+
+```
+Reconcile diff (local vs upstream/main):
+
+Behind upstream — N file(s) need pulling:
+  M  protocol/CORTEX.md
+  A  personalities/PERSONALITY-NEW-PERSONALITY.md
+  M  README.md
+
+Removed upstream — N file(s) deprecated:
+  D  personalities/PERSONALITY-OLD-PERSONALITY.md  (last upstream version: alpha.X)
+
+Ahead of upstream — N file(s) locally-added in framework scope:
+  A  protocol/CUSTOM-RULE.md  (likely user accident; framework scope)
+
+Resolve each? (y/skip/abort)
+```
+
+**Step R3 — Per-category resolution gating**
+
+Walk each category, asking the user per-file or per-batch:
+
+- **Behind upstream:** *"Pull `<file>` from upstream? This will overwrite any local edits to this file."* Default action: pull. User can `skip` to keep local version (and accept the drift will recur next sync) or `abort` to stop reconcile.
+
+- **Removed upstream:** *"`<file>` was deprecated upstream. Move to `archive/personalities/`, or keep locally?"* Default action: archive (preserves provenance). User can `keep` if they have a custom reason (and should rename to `PERSONALITY-CUSTOM-*.md` to escape framework scope).
+
+- **Ahead of upstream:** *"`<file>` is locally-added in framework scope but doesn't exist upstream. Was this intentional?"* Default action: surface only, do not auto-resolve. User picks: rename to `*-CUSTOM.md` (escape scope), keep as-is (will appear as drift on every future reconcile), or delete.
+
+**Step R4 — Apply and commit**
+
+For each user-approved action, apply individually and commit with a structured message:
+
+```
+git checkout upstream/main -- <path>          # pull from upstream
+git mv <path> archive/personalities/<path>    # archive deprecated
+# (rename / delete handled per user choice)
+```
+
+Single commit per category, one commit message per resolved file:
+
+```
+reconcile: pull <file> from upstream/main (was M)
+reconcile: archive <file> (deprecated upstream)
+reconcile: rename <file> to *-CUSTOM.md (was orphan)
+```
+
+**Step R5 — Final report**
+
+After all categories resolved, surface a summary:
+
+```
+Reconcile complete:
+  - 3 file(s) pulled from upstream
+  - 1 file(s) archived (deprecated)
+  - 1 file(s) renamed to escape framework scope
+  - 0 file(s) skipped
+Now on v[X.Y.Z].
+```
+
+**Reconcile vs sync — when to use which:**
+
+- **`sync`** — routine framework update. Pulls everything in scope from upstream. Fast. Run on every framework version bump.
+- **`reconcile`** — historical drift cleanup. Surfaces and resolves files that have diverged in any direction. Slower, gated. Run when pre-sync drift check fires, or after long absence from upstream syncs, or when a personality you remember existing seems to have vanished.
 
 **Step 3b — context.md migration**
 After applying files, check if the live `context.md` is missing fields that the updated `templates/context.md` now defines. For each missing field, append it with its default value. Never overwrite existing values — additions only. Commit in the same sync commit.

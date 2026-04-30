@@ -9,6 +9,9 @@ Format: `YYYY-MM-DD HH:MM TZ | file | what changed`
 <!-- Future: if this file grows large, rotate annually to cortex-changelog-YYYY.md -->
 
 ---
+2026-04-30 13:00 UTC | version.txt | bump to 4.0.0-alpha.19 — `reconcile` verb (Fix A from sync-drift bug; closes the last open piece of the bug class)
+2026-04-30 13:00 UTC | protocol/CORTEX.md | new "Reconcile flow" subsection in Sync flow — deep three-category diff (Behind upstream / Removed upstream / Ahead of upstream) with per-file user gating. Five-step flow (R1 diff → R2 surface → R3 per-category resolution → R4 apply + commit → R5 final report). Catches historical drift that routine sync doesn't catch.
+2026-04-30 13:00 UTC | VERBS.md | added `reconcile` verb under new "Sync & Reconcile" section with usage hints and protocol cross-reference.
 2026-04-30 12:00 UTC | version.txt | bump to 4.0.0-alpha.18 — Phase 6 multi-session runtime (engage + close verbs active, lifecycle transitions enforced, hello-time session resolution + daily auto-stale check)
 2026-04-30 12:00 UTC | protocol/CORTEX.md | Loading Order — new step 3c "Session resolution" added: fresh chats default to main session (singleton); user invokes `engage session` to hot-swap to scoped; compression-resilience recovery via commit footer GUID; daily auto-stale check (90d threshold) runs on first hello of UTC day, transitions stale sessions to archive.
 2026-04-30 12:00 UTC | protocol/CORTEX.md | Closing (goodbye) flow — added step 4 for scoped sessions: update `last_engaged_at` and commit on goodbye, but DO NOT transition state to closed. Goodbye is end-of-chat, not end-of-session. Use `close session` for deliberate archival.

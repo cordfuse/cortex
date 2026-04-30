@@ -2,13 +2,37 @@
 
 What's shipped, what's in progress, and what's coming.
 
-**Current version:** 4.0.0-alpha.18 — [Changelog](cortex-changelog.md)
+**Current version:** 4.0.0-alpha.19 — [Changelog](cortex-changelog.md)
 
 ---
 
 ## Shipped
 
-### v4.0.0-alpha.18 — Phase 6 multi-session runtime *(current)*
+### v4.0.0-alpha.19 — `reconcile` verb *(current)*
+
+The last open piece of the personality-sync-drift bug class (filed in `records/2026-04-28-1631-bug-personality-sync-drift.md`). Alpha.15 detects historical drift in the pre-sync check; alpha.19 resolves it.
+
+**What `reconcile` does:**
+
+Deep three-category diff between local and `upstream/main` on framework scope:
+
+- **Behind upstream** — files modified upstream that didn't propagate (alpha.4 missed CASUAL.md, alpha.6 missed CHUCK-NORRIS.md). Pull from upstream after user gate.
+- **Removed upstream** — framework files deprecated upstream but still present locally (alpha.3 deleted Oscar). Move to `archive/personalities/` after user gate.
+- **Ahead of upstream** — locally-added files in framework scope (rare; usually user accident). Surface only, with options to rename to `*-CUSTOM.md`, keep as-is, or delete.
+
+Per-file gating throughout. Nothing happens silently. Each resolved file gets its own commit with a structured `reconcile:` prefix.
+
+**When to run:**
+- Pre-sync drift check (alpha.15) fires
+- After long absence from framework syncs
+- When a personality you remember seems to have vanished
+- After major framework version jumps (alpha → beta, beta → stable)
+
+**Why it matters:** routine `sync` only pulls what upstream changed in the most recent release. Historical drift accumulated across earlier hardcoded-list sync flows stays wrong forever unless explicitly resolved. `reconcile` is the resolution layer.
+
+The bug class that alpha.15 detected and alpha.19 resolves is now closed end-to-end.
+
+### v4.0.0-alpha.18 — Phase 6 multi-session runtime
 
 The second half of the big v4 feature. Phase 6 is now complete — full multi-session runtime active.
 

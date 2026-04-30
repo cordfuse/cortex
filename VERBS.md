@@ -39,6 +39,13 @@ Archive a session. Usage: *"close session <name>"*. Scribe moves `sessions/{guid
 
 ---
 
+### Sync & Reconcile
+
+## reconcile
+Deep three-category diff against `upstream/main` with per-file gating. Usage: *"reconcile"* (or *"sync --hard"*, *"reconcile sync"*). Catches historical drift that routine `sync` doesn't catch — files modified upstream and not propagated, framework files deprecated upstream but still present locally, and locally-added files in framework scope. Each file gated individually; nothing happens silently. Run when pre-sync drift check fires, or after long absence from syncs, or when a personality you remember seems to have vanished. See `# Sync flow → Reconcile flow` in protocol/CORTEX.md (v4.0.0-alpha.19+).
+
+---
+
 > Activate any of the following, or describe a new one.
 
 ---
