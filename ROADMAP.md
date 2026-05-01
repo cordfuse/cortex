@@ -2,13 +2,27 @@
 
 What's shipped, what's in progress, and what's coming.
 
-**Current version:** 4.0.0-alpha.21 — [Changelog](cortex-changelog.md)
+**Current version:** 4.0.0-alpha.22 — [Changelog](CORTEX-CHANGELOG.md)
 
 ---
 
 ## Shipped
 
-### v4.0.0-alpha.21 — Documentation alignment pass *(current)*
+### v4.0.0-alpha.22 — Repo cleanup (filename casing, install/ folder, dead artifacts removed) *(current)*
+
+A small grooming alpha. No protocol changes, no new features.
+
+**What changed:**
+- **`cortex-changelog.md` → `CORTEX-CHANGELOG.md`** — renamed to match the SCREAMING-CASE convention of other root-level framework files (README.md, ROADMAP.md, LICENSE, CLAUDE.md, AGENTS.md). 12 internal references updated.
+- **`install/` folder created** — `install.sh`, `install.ps1`, `setup.sh`, `setup.ps1` moved from repo root into the new `install/` directory. The four scripts are conceptually one bootstrap surface (curl → install → setup); folder grouping makes that obvious. Release asset URLs (`releases/latest/download/install.sh`) continue to work — GitHub serves release assets at root regardless of source location.
+- **`.github/workflows/release.yml` updated** — points to `install/install.sh` and `install/install.ps1`.
+- **`cortex-overview.pdf` removed** — one-off generated artifact accidentally committed.
+- **`scripts/make_pdf.py` removed** — generator for the deleted PDF; not needed in framework scope.
+- **Path references updated everywhere:** README.md (repo structure), docs/SETUP-DESKTOP.md (sync example + release URL note), protocol/GUARDRAILS.md (bootstrap shell whitelist), .claude/settings.json (deny list).
+
+**Why now:** Steve flagged repo filesystem looked cluttered after he started looking at it more closely post-discharge. Filename casing inconsistency, install scripts at root, dead PDF. All cleanup, no functional change.
+
+### v4.0.0-alpha.21 — Documentation alignment pass
 
 A focused docs grooming alpha. README + interlinked markdown documents brought to alpha.20 reality. No new features.
 
@@ -131,7 +145,7 @@ The big v4 feature ships its first half. After 18 months of cortex being singlet
 
 **Defense in depth:** even if the scribe's LLM-level rule compliance drifts (e.g., during long sessions, after compaction, or if a personality file system_prompt collides with the rule), the tool layer holds. Framework files only mutate via the sync flow's `git checkout upstream/main` — a `Bash(*)` call that's still in the allow list. Sync continues to work; ad-hoc Edit/Write of framework files does not.
 
-**Coverage:** `protocol/`, `templates/`, `scripts/*.py`, `version.txt`, `.cortex-version`, `LICENSE`, `cortex-changelog.md`, `ROADMAP.md`, `README.md`, `README-SIMPLE.md`, `VERBS.md`, the install/setup scripts, and `.claude/settings.json` itself.
+**Coverage:** `protocol/`, `templates/`, `scripts/*.py`, `version.txt`, `.cortex-version`, `LICENSE`, `CORTEX-CHANGELOG.md`, `ROADMAP.md`, `README.md`, `README-SIMPLE.md`, `VERBS.md`, the install/setup scripts, and `.claude/settings.json` itself.
 
 **Agent pointer files (`CLAUDE.md`, `AGENTS.md`, `GEMINI.md`, `OPENCODE.md`, `QWEN.md`) deliberately excluded.** They ship with the framework as one-liners pointing at `protocol/CORTEX.md`, but users customize them with personal blocks (per-project session backlogs, per-host instructions, etc.). User-territory in user clones — locking them at the OS layer would break legitimate user customization.
 
@@ -416,7 +430,7 @@ Spec: [`records/2026-04-26-v4-phase-1-hidden-scribe-spec.md`](records/2026-04-26
 ### v3.1.x — Templates + Examples
 - 19 templates across personal, health, life admin, work, creative, analytical
 - Anonymised example entries
-- `cortex-changelog.md` — rolling change log, not loaded at hello, on demand
+- `CORTEX-CHANGELOG.md` — rolling change log, not loaded at hello, on demand
 
 ### v3.0.x — Core Protocol
 - Session verbs: `hello`, `goodbye`, `status`, `sync`, `search`, `list verbs`

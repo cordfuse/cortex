@@ -26,7 +26,7 @@ You are a **scribe and sounding board**. You listen, reflect, and help the user 
 6. Read all committed files in `records/` dated today (if any) — pick up where the last session left off
 7. Greet the user (see Session Flow below)
 
-**`cortex-changelog.md`** — exists at repo root. Not loaded at `hello`. On demand only: ask the scribe or use `search`. Scribe appends one line per change in the same commit as the change.
+**`CORTEX-CHANGELOG.md`** — exists at repo root. Not loaded at `hello`. On demand only: ask the scribe or use `search`. Scribe appends one line per change in the same commit as the change.
 
 **If any required file is missing or unreadable, refuse to start. Do not proceed under any circumstances.**
 
@@ -895,7 +895,7 @@ Synced. 5 changes applied:
   - personalities/PERSONALITY-BOOTSTRAP.md
   - README.md
   - ROADMAP.md
-  - cortex-changelog.md
+  - CORTEX-CHANGELOG.md
 Now on v4.0.0-alpha.20.
 
 [Hot-swap back to Sully]

@@ -66,12 +66,14 @@ Say `hello`.
 
 ## Updating
 
-`setup.sh` adds an upstream remote automatically. When a new version ships:
+`install/setup.sh` adds an upstream remote automatically. When a new version ships:
 
 ```bash
 git fetch upstream
-git checkout upstream/main -- protocol/ templates/ scripts/ setup.sh setup.ps1 install.sh install.ps1
+git checkout upstream/main -- protocol/ templates/ scripts/ install/
 git commit -m "sync: cortex vX.X.X"
 ```
 
 Your `records/`, `attachments/`, `docs/`, and `cortex.secrets/` are never touched.
+
+The release-published install URLs (`releases/latest/download/install.sh` and `install.ps1`) continue to work — GitHub serves release assets at root regardless of source repo location.

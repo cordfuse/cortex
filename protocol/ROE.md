@@ -226,7 +226,7 @@ Framework files in a personal cortex repo are **read-only for the scribe**. Any 
 - All `scripts/` files (integration scripts, vault tools, time fallback)
 - VERBS.md (framework verbs)
 - All `templates/` files
-- ROADMAP.md, cortex-changelog.md, version.txt
+- ROADMAP.md, CORTEX-CHANGELOG.md, version.txt
 
 **User-owned files (read-write — scribe modifies freely):**
 - All `*-CUSTOM.md` companion files (README-CUSTOM.md, PERSONALITIES-CUSTOM.md, CONNECTORS-CUSTOM.md, ROE-CUSTOM.md, VERBS-CUSTOM.md)

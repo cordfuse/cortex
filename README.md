@@ -1,6 +1,6 @@
 # Cortex
 
-[![Version](https://img.shields.io/badge/version-4.0.0--alpha.21-blue)](cortex-changelog.md)
+[![Version](https://img.shields.io/badge/version-4.0.0--alpha.22-blue)](CORTEX-CHANGELOG.md)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![Donate to CAMH](https://img.shields.io/badge/Donate-CAMH%20Foundation-blue)](https://camhfoundation.ca/donate)
 
@@ -36,7 +36,7 @@ Cortex ships with `.claude/settings.json` carrying a comprehensive allow-list (`
 
 ### Framework files are protected at the OS layer (v4.0.0-alpha.16+)
 
-`.claude/settings.json` ships with a comprehensive `deny` list covering every framework file: `protocol/`, `templates/`, `scripts/*.py`, `version.txt`, `.cortex-version`, `LICENSE`, `cortex-changelog.md`, `ROADMAP.md`, `README.md`, `README-SIMPLE.md`, `VERBS.md`, the install/setup scripts, and `.claude/settings.json` itself.
+`.claude/settings.json` ships with a comprehensive `deny` list covering every framework file: `protocol/`, `templates/`, `scripts/*.py`, `version.txt`, `.cortex-version`, `LICENSE`, `CORTEX-CHANGELOG.md`, `ROADMAP.md`, `README.md`, `README-SIMPLE.md`, `VERBS.md`, the install/setup scripts, and `.claude/settings.json` itself.
 
 **Agent pointer files are intentionally NOT in the deny list.** `CLAUDE.md`, `AGENTS.md`, `GEMINI.md`, `OPENCODE.md`, `QWEN.md` exist as one-line pointers to `protocol/CORTEX.md` — but users customize them with personal blocks below the pointer (per-project session backlogs, per-host instructions, etc.). They're user-territory in user clones, even though they ship with the framework.
 
@@ -86,7 +86,7 @@ Cortex behaves **differently** depending on where you run it. The difference is 
 | [Why this exists](#why-this-exists) | [Getting started](#getting-started) |
 | [What it does differently](#what-cortex-does-differently) | [Session commands](#session-commands) |
 | [Personalities →](docs/PERSONALITIES.md) | [Connectors →](docs/CONNECTORS.md) |
-| [Roadmap →](ROADMAP.md) | [Changelog →](cortex-changelog.md) |
+| [Roadmap →](ROADMAP.md) | [Changelog →](CORTEX-CHANGELOG.md) |
 | [Desktop setup →](docs/SETUP-DESKTOP.md) | [Mobile setup →](docs/SETUP-MOBILE.md) |
 
 ---
@@ -268,7 +268,12 @@ docs/                  # Source documents + setup guides
   SETUP-DESKTOP.md     # Desktop setup guide
   SETUP-MOBILE.md      # Mobile setup guide
 templates/             # Blank templates
-scripts/               # Setup, vault, integrations
+install/               # Bootstrap installers + setup scripts (v4.0.0-alpha.22+)
+  install.sh           # macOS / Linux installer (also published as a release asset)
+  install.ps1          # Windows installer (also published as a release asset)
+  setup.sh             # macOS / Linux per-machine setup
+  setup.ps1            # Windows per-machine setup
+scripts/               # Vault tooling + integrations (Python)
 .claude/               # Claude Code settings (allow-list + framework deny-list)
   settings.json        # Shipped with framework
   settings.local.json  # Optional contributor override (gitignored)
@@ -282,7 +287,7 @@ SECRETS.md             # Plain-text index of vault key names (no values)
 VERBS.md               # Framework verbs
 VERBS-CUSTOM.md        # Your custom verbs
 ROADMAP.md             # What's shipped and what's coming
-cortex-changelog.md    # Full change log
+CORTEX-CHANGELOG.md    # Full change log
 .cortex-version        # Current framework version (user clones)
 version.txt            # Current framework version (framework dev only)
 ```

@@ -98,7 +98,7 @@ Examples of correct Bootstrap voice:
 > *  - personalities/PERSONALITY-BOOTSTRAP.md*
 > *  - README.md*
 > *  - ROADMAP.md*
-> *  - cortex-changelog.md*
+> *  - CORTEX-CHANGELOG.md*
 > *Now on v4.0.0-alpha.20.*
 
 > *Spawned session `phase 6 mobile test` (2026-04-30T0742-EDT-a3f4b9e2). You're now in this session.*

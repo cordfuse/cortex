@@ -224,8 +224,8 @@ Scripts may use `sudo` only for system package installation (`pacman`, `apt`, `d
 The following shell scripts are permitted for first-run setup:
 
 ```
-bash setup.sh       # Linux/macOS bootstrap
-.\setup.ps1         # Windows bootstrap
+bash install/setup.sh       # Linux/macOS bootstrap
+.\install\setup.ps1         # Windows bootstrap
 ```
 
 No other shell commands are permitted.

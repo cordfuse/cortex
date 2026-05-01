@@ -9,6 +9,16 @@ Format: `YYYY-MM-DD HH:MM TZ | file | what changed`
 <!-- Future: if this file grows large, rotate annually to cortex-changelog-YYYY.md -->
 
 ---
+2026-05-01 16:00 UTC | version.txt | bump to 4.0.0-alpha.22 — repo cleanup (CORTEX-CHANGELOG.md rename, install/ folder consolidation, dead artifacts removed)
+2026-05-01 16:00 UTC | cortex-changelog.md → CORTEX-CHANGELOG.md | renamed to match SCREAMING-CASE convention used by other root-level framework files. All 12 internal references updated across README.md, ROADMAP.md, protocol/CORTEX.md, protocol/ROE.md, .claude/settings.json, personalities/PERSONALITY-BOOTSTRAP.md.
+2026-05-01 16:00 UTC | install/ | new directory — moved install.sh, install.ps1, setup.sh, setup.ps1 from repo root. Conceptually one bootstrap surface (curl → install → setup); folder makes that obvious to first-time users.
+2026-05-01 16:00 UTC | .github/workflows/release.yml | release asset paths updated install.sh → install/install.sh and install.ps1 → install/install.ps1. Release URLs unchanged because GitHub serves release assets at root.
+2026-05-01 16:00 UTC | docs/SETUP-DESKTOP.md | sync example updated to checkout install/ directory; note added that release URLs continue to work.
+2026-05-01 16:00 UTC | protocol/GUARDRAILS.md | bootstrap-only shell whitelist updated for new paths (`bash install/setup.sh`, `.\install\setup.ps1`).
+2026-05-01 16:00 UTC | .claude/settings.json | deny list updated — `Edit/Write(install/**)` replaces individual install/setup script entries; `Edit/Write(CORTEX-CHANGELOG.md)` replaces the old lowercase entry.
+2026-05-01 16:00 UTC | README.md | repo structure section updated with `install/` directory and contents.
+2026-05-01 16:00 UTC | cortex-overview.pdf | DELETED — was a one-off generated artifact accidentally committed; not part of framework.
+2026-05-01 16:00 UTC | scripts/make_pdf.py | DELETED — generator for the deleted PDF; not needed in framework scope.
 2026-05-01 15:30 UTC | version.txt | bump to 4.0.0-alpha.21 — documentation alignment pass (README + interlinked MDs brought to alpha.20 reality)
 2026-05-01 15:30 UTC | README.md | major rewrite to reflect alpha.20 reality. Personality count corrected 55 → 73. Personalities table rewritten with current categories: Bootstrap, Workplace, Creative & Visionary, Wisdom & Reflection, Distinctive Voices (Casey + Atlas now here), Information Technology (alpha.12 IT domain), Clinical & wellness (now includes Dr. Mira), Pop Culture (alpha.10 additions: Indiana Jones, Picard, Buffy, Bill Murray, MacGyver, Columbo, Tony Soprano). Roadmap section rebuilt to reflect sprint shipped (alpha.7 → alpha.21). Repo structure updated to include `.claude/`, `sessions/`, `archive/` folders. Connector roadmap stripped of stale "v3.5.0" references. Three-AI-layer concept (Bootstrap + active actor + hidden scribe) reflected in body. New "Cross-agent coordination (CNAC)" section. Hot-swap, multi-session, multi-parent inheritance, Bootstrap actor all surfaced.
 2026-05-01 15:30 UTC | README-SIMPLE.md | personality count corrected 55 → 73; personality intro rewritten to reflect three-AI-layer model and current personality coverage (Dr. Mira, Pop Culture additions, IT domain, Indigenous Elders).

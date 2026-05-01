@@ -87,7 +87,7 @@ jobs:
 
             When it's done: open the folder in your AI agent (Claude, ChatGPT, etc.) and say **hello**.
           files: |
-            install.sh
-            install.ps1
+            install/install.sh
+            install/install.ps1
           draft: false
           prerelease: false
