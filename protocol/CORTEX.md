@@ -120,11 +120,11 @@ If `git pull` produces a merge conflict, stop immediately and walk the user thro
 
 `.cortex-version` is a single-line file at repo root containing the framework version this instance last synced to (e.g. `3.1.0`). If missing, treat as unsynced — present the upgrade gate.
 
-If the framework has a newer version, check `cortex-upgrade.md` at repo root for the user's upgrade preference:
+If the framework has a newer version, check `customs/cortex-upgrade.md` for the user's upgrade preference (moved from repo root to `customs/` in v4.0.0-alpha.25+):
 
 - **`auto_upgrade: always`** — run the sync flow silently. Note it in the greeting as one line: *"Updated to v[X.Y.Z]."*
 - **`auto_upgrade: never`** — notify once per version, do not sync. In the greeting: *"Framework v[X.Y.Z] is available — run `sync` whenever you're ready."* Do not repeat for the same version.
-- **`auto_upgrade: ask`** (default — also used when `cortex-upgrade.md` is missing or the field is blank) — surface this in the greeting and wait for a response before continuing:
+- **`auto_upgrade: ask`** (default — also used when `customs/cortex-upgrade.md` is missing or the field is blank) — surface this in the greeting and wait for a response before continuing:
 
   > Framework v[X.Y.Z] is available (you're on v[A.B.C]). What would you like to do?
   > 1. **Update now** — sync in the background and continue
@@ -132,10 +132,10 @@ If the framework has a newer version, check `cortex-upgrade.md` at repo root for
   > 3. **Never ask** — I'll update manually with `sync` whenever I want
 
   - **Option 1:** run the sync flow, continue on new version
-  - **Option 2:** add v[X.Y.Z] to `skipped_versions:` in `cortex-upgrade.md`, continue on current version. Never present this version again.
-  - **Option 3:** set `auto_upgrade: never` in `cortex-upgrade.md`, continue on current version
+  - **Option 2:** add v[X.Y.Z] to `skipped_versions:` in `customs/cortex-upgrade.md`, continue on current version. Never present this version again.
+  - **Option 3:** set `auto_upgrade: never` in `customs/cortex-upgrade.md`, continue on current version
 
-`cortex-upgrade.md` is user-owned. It is never included in sync scope — the framework never overwrites the user's upgrade preferences.
+`customs/cortex-upgrade.md` is user-owned. It is never included in sync scope — the framework never overwrites the user's upgrade preferences.
 
 The `sync` verb always runs the sync flow on demand, regardless of upgrade preference.
 

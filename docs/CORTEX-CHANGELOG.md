@@ -9,6 +9,10 @@ Format: `YYYY-MM-DD HH:MM TZ | file | what changed`
 <!-- Future: if this file grows large, rotate annually to cortex-changelog-YYYY.md -->
 
 ---
+2026-05-01 19:00 UTC | version.txt | bump to 4.0.0-alpha.25 — small follow-on: cortex-upgrade.md moved to customs/, framework dev CLAUDE.md updated for personal cortex-backlog.md path
+2026-05-01 19:00 UTC | protocol/CORTEX.md | sync flow upgrade-preference references updated `cortex-upgrade.md` → `customs/cortex-upgrade.md`. User-territory file moves to customs/ for consistency with alpha.24 cleanup. 5 references updated in upgrade-preference section.
+2026-05-01 19:00 UTC | CLAUDE.md (framework dev) | "Dev Session Backlog" pointer updated `~/Repos/steve-krisjanovs/cortex/cortex-backlog.md` → `~/Repos/steve-krisjanovs/cortex/customs/backlogs/cortex-backlog.md`. Personal cortex moved cortex-backlog.md into customs/backlogs/ during cleanup.
+Note: cortex-upgrade.md ITSELF doesn't ship with framework — only the user clone has it (it's a user preferences file). Framework just references the path. Personal cortex sync needs to actually move the file (will land in personal sync commit after this).
 2026-05-01 18:30 UTC | version.txt | bump to 4.0.0-alpha.24 — root declutter round 2: customs/ folder created, more files moved out of root
 2026-05-01 18:30 UTC | customs/ | new directory — single home for ALL user-territory customs (paired with their framework siblings in protocol/ or docs/)
 2026-05-01 18:30 UTC | README-SIMPLE.md → docs/README-SIMPLE.md | moved out of root

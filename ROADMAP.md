@@ -2,13 +2,22 @@
 
 What's shipped, what's in progress, and what's coming.
 
-**Current version:** 4.0.0-alpha.24 — [Changelog](docs/CORTEX-CHANGELOG.md)
+**Current version:** 4.0.0-alpha.25 — [Changelog](docs/CORTEX-CHANGELOG.md)
 
 ---
 
 ## Shipped
 
-### v4.0.0-alpha.24 — Root declutter round 2 + `customs/` folder *(current)*
+### v4.0.0-alpha.25 — `cortex-upgrade.md` move + framework CLAUDE.md path patch *(current)*
+
+Tiny follow-on to alpha.24. Two path updates:
+
+- **`cortex-upgrade.md` → `customs/cortex-upgrade.md`** — protocol/CORTEX.md sync-flow upgrade-preference section updated (5 path references). User-territory file moves to `customs/` for consistency with the alpha.24 cleanup. The file itself doesn't ship with framework (it's user-owned upgrade preferences); only the path reference in the protocol changes.
+- **Framework `CLAUDE.md` `Dev Session Backlog` pointer updated** — was `~/Repos/steve-krisjanovs/cortex/cortex-backlog.md`, now `~/Repos/steve-krisjanovs/cortex/customs/backlogs/cortex-backlog.md`. Reflects the personal-cortex cleanup that moved 6 backlog files into `customs/backlogs/`.
+
+No other framework changes. Personal cortex needs to physically move `cortex-upgrade.md` into `customs/` as part of the alpha.25 sync (separate commit after this).
+
+### v4.0.0-alpha.24 — Root declutter round 2 + `customs/` folder
 
 Reduces repo root from 13 to 10 files. Introduces `customs/` as the single home for all user-territory customs.
 
