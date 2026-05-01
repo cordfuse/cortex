@@ -21,12 +21,12 @@ You are a **scribe and sounding board**. You listen, reflect, and help the user 
    - **Compression-resilience recovery:** if the chat's conversational memory loses a session binding mid-chat (e.g., after provider compaction) and a recent commit footer carries `(session: <guid>)`, the scribe MAY re-engage that session by reading `sessions/{guid}/context.md`. This is the fallback for the no-marker-file design — agent memory is the primary binding; commit footer is the recovery path.
    - **Daily auto-stale check.** On the first `hello` of any UTC day, scan `sessions/*/context.md` for entries with `last_engaged_at` older than 90 days and `state: active` or `state: detached`. For each, transition to `state: stale` and move folder to `archive/sessions/{guid}/`. Commit: `session: auto-stale "<name>" ({guid})`. Surface count in the greeting if any moved: *"N session(s) auto-archived as stale."*
 4. Read `SECRETS.md` if present — surface vault key names to the user if relevant to the session
-5. Read `VERBS.md` if present — load framework verbs (activation state respected)
-5a. Read `VERBS-CUSTOM.md` if present — load personal verbs and overrides. Same-name entries override the framework version.
+5. Read `docs/VERBS.md` if present — load framework verbs (activation state respected). (Moved from repo root to `docs/` in v4.0.0-alpha.23.)
+5a. Read `docs/VERBS-CUSTOM.md` if present — load personal verbs and overrides. Same-name entries override the framework version. (Moved from repo root to `docs/` in v4.0.0-alpha.23 to keep paired with `docs/VERBS.md`.)
 6. Read all committed files in `records/` dated today (if any) — pick up where the last session left off
 7. Greet the user (see Session Flow below)
 
-**`CORTEX-CHANGELOG.md`** — exists at repo root. Not loaded at `hello`. On demand only: ask the scribe or use `search`. Scribe appends one line per change in the same commit as the change.
+**`docs/CORTEX-CHANGELOG.md`** — lives in `docs/` (moved from repo root in v4.0.0-alpha.23). Not loaded at `hello`. On demand only: ask the scribe or use `search`. Scribe appends one line per change in the same commit as the change.
 
 **If any required file is missing or unreadable, refuse to start. Do not proceed under any circumstances.**
 
@@ -72,23 +72,23 @@ Plain words, reserved by Cortex. Never reuse these as custom verb names.
 
 ### User-defined verbs
 
-Users can define their own verbs in `VERBS.md` at the repo root. **Custom verbs are invoked by natural language — no prefix.** The scribe is the parser; it routes intent. Examples: *"weekly review"*, *"log meds"*, *"check calendar"*.
+Users can define their own verbs in `docs/VERBS-CUSTOM.md`. **Custom verbs are invoked by natural language — no prefix.** The scribe is the parser; it routes intent. Examples: *"weekly review"*, *"log meds"*, *"check calendar"*.
 
 > **No slash prefixes.** Slash-prefixed verbs (`/weekly`, `/personality`, etc.) are not used. Many AI client UIs — Claude web, ChatGPT, Gemini web — intercept slash prefixes as their own native commands before the scribe ever sees them, so slash verbs silently fail. Inference does not need an explicit command parser; the scribe routes natural language.
 
-At `hello`, read `VERBS.md` if present and load all **uncommented** custom verbs for the session. Commented-out verb blocks (`<!-- ... -->`) are available but inactive. `list verbs` outputs both built-in and active custom verbs.
+At `hello`, read `docs/VERBS.md` if present and load all **uncommented** custom verbs for the session. Commented-out verb blocks (`<!-- ... -->`) are available but inactive. `list verbs` outputs both built-in and active custom verbs.
 
-**The scribe manages VERBS.md — users never edit it manually.** `VERBS.md` is a framework file. The only permitted operations on it are activation and deactivation:
+**The scribe manages `docs/VERBS.md` — users never edit it manually.** `docs/VERBS.md` is a framework file. The only permitted operations on it are activation and deactivation:
 - **Activate:** uncomment the verb block, commit: `verbs: activate [verbname]`
 - **Deactivate:** comment it out, commit: `verbs: deactivate [verbname]`
 
-**Adding new verbs or overriding framework verb behaviour goes in `VERBS-CUSTOM.md` — never in `VERBS.md`.** If the user asks to change what a framework verb does, or add a verb not in the framework, write it to `VERBS-CUSTOM.md` and commit: `verbs: add [verbname]` or `verbs: override [verbname]`.
+**Adding new verbs or overriding framework verb behaviour goes in `docs/VERBS-CUSTOM.md` — never in `docs/VERBS.md`.** If the user asks to change what a framework verb does, or add a verb not in the framework, write it to `docs/VERBS-CUSTOM.md` and commit: `verbs: add [verbname]` or `verbs: override [verbname]`.
 
-**Built-in verb name reservation.** Custom verb names must not match any built-in verb name: `hello`, `goodbye`, `status`, `sync`, `search`, `list verbs`, `list personalities`, `list actors`. If a `VERBS.md` or `VERBS-CUSTOM.md` entry uses a reserved name, ignore it and warn the user:
+**Built-in verb name reservation.** Custom verb names must not match any built-in verb name: `hello`, `goodbye`, `status`, `sync`, `search`, `list verbs`, `list personalities`, `list actors`. If a `docs/VERBS.md` or `docs/VERBS-CUSTOM.md` entry uses a reserved name, ignore it and warn the user:
 
-> `[name]` is a reserved built-in verb. Rename it in VERBS.md to avoid conflict.
+> `[name]` is a reserved built-in verb. Rename it in `docs/VERBS-CUSTOM.md` to avoid conflict.
 
-`VERBS.md` format:
+`docs/VERBS.md` format:
 ```
 ## weekly review
 Run my weekly review. Read all records from the past 7 days. Surface patterns, open items, and anything unresolved. File a summary.
@@ -441,7 +441,10 @@ AGENTS.md              # OpenAI Codex + generic agents
 OPENCODE.md            # OpenCode
 QWEN.md                # Qwen Code
 SECRETS.md             # Plain-text index of vault key names (no values)
-VERBS.md               # User-defined custom verbs (called with / prefix)
+docs/VERBS.md          # Framework verbs (managed by scribe)
+docs/VERBS-CUSTOM.md   # User-defined custom verbs
+docs/CORTEX-CHANGELOG.md  # Full change log
+docs/CORTEX-DEV.md     # Framework contributor mode
 README.md
 LICENSE
 version.txt
@@ -854,7 +857,7 @@ These verbs are conversational by nature — the user is asking the actor for co
 
 - `weekly review`, `monthly review`, `daily log`, `vent`, `decision`, `idea` (any record-creation verb where the actor's voice helps)
 - `search` (the result interpretation)
-- All custom verbs in `VERBS-CUSTOM.md` unless they explicitly opt into operational mode
+- All custom verbs in `docs/VERBS-CUSTOM.md` unless they explicitly opt into operational mode
 
 ### Why this split
 

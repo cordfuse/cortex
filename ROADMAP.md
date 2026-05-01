@@ -2,13 +2,37 @@
 
 What's shipped, what's in progress, and what's coming.
 
-**Current version:** 4.0.0-alpha.22 — [Changelog](CORTEX-CHANGELOG.md)
+**Current version:** 4.0.0-alpha.23 — [Changelog](docs/CORTEX-CHANGELOG.md)
 
 ---
 
 ## Shipped
 
-### v4.0.0-alpha.22 — Repo cleanup (filename casing, install/ folder, dead artifacts removed) *(current)*
+### v4.0.0-alpha.23 — Root declutter (5 framework markdowns moved to docs/ or archive/) *(current)*
+
+Reduces the repo root from 18 root-level files to 13. All five moves are framework files, not user-territory.
+
+**Moved:**
+- `CORTEX-CHANGELOG.md` → `docs/CORTEX-CHANGELOG.md`
+- `VERBS.md` → `docs/VERBS.md`
+- `VERBS-CUSTOM.md` → `docs/VERBS-CUSTOM.md` (companion-pattern with VERBS.md)
+- `CORTEX-DEV.md` → `docs/CORTEX-DEV.md`
+- `PLAN.md` → `archive/PLAN.md` (stale pre-scaffold artifact)
+
+**Protocol updated:**
+- Loading Order steps 5 and 5a now read from `docs/VERBS.md` and `docs/VERBS-CUSTOM.md`
+- Reserved-name warning message updated for new path
+- File Structure section updated
+
+**Stays at root** (functional / convention):
+- READMEs (README.md, README-SIMPLE.md), LICENSE, ROADMAP.md
+- 5 agent pointers (CLAUDE.md, AGENTS.md, GEMINI.md, OPENCODE.md, QWEN.md)
+- version.txt, context.md
+- ROE-CUSTOM.md and GUARDRAILS-LOCAL.md (user-territory; loading order reads from root)
+
+**Why now:** Steve flagged root was visually busy after returning to the filesystem. Path B (the more aggressive cleanup, including VERBS-CUSTOM.md) was picked because Steve is currently the only cortex user, so backwards-compatibility hedging isn't load-bearing.
+
+### v4.0.0-alpha.22 — Repo cleanup (filename casing, install/ folder, dead artifacts removed)
 
 A small grooming alpha. No protocol changes, no new features.
 

@@ -1,12 +1,12 @@
 # Cortex
 
-[![Version](https://img.shields.io/badge/version-4.0.0--alpha.22-blue)](CORTEX-CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-4.0.0--alpha.23-blue)](docs/CORTEX-CHANGELOG.md)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![Donate to CAMH](https://img.shields.io/badge/Donate-CAMH%20Foundation-blue)](https://camhfoundation.ca/donate)
 
 **Not a developer?** [Read the plain English version →](README-SIMPLE.md)
 
-> ⚠️ **Framework files — do not edit.** This file and all linked docs are overwritten when the framework updates. Put your personal notes in the `-CUSTOM.md` companions instead — they follow the same pattern as `VERBS-CUSTOM.md` and `ROE-CUSTOM.md` and are never touched by the framework.
+> ⚠️ **Framework files — do not edit.** This file and all linked docs are overwritten when the framework updates. Put your personal notes in the `-CUSTOM.md` companions instead — they follow the same pattern as `docs/VERBS-CUSTOM.md` and `ROE-CUSTOM.md` and are never touched by the framework.
 >
 > | Your notes | Framework doc |
 > |---|---|
@@ -36,7 +36,7 @@ Cortex ships with `.claude/settings.json` carrying a comprehensive allow-list (`
 
 ### Framework files are protected at the OS layer (v4.0.0-alpha.16+)
 
-`.claude/settings.json` ships with a comprehensive `deny` list covering every framework file: `protocol/`, `templates/`, `scripts/*.py`, `version.txt`, `.cortex-version`, `LICENSE`, `CORTEX-CHANGELOG.md`, `ROADMAP.md`, `README.md`, `README-SIMPLE.md`, `VERBS.md`, the install/setup scripts, and `.claude/settings.json` itself.
+`.claude/settings.json` ships with a comprehensive `deny` list covering every framework file: `protocol/`, `templates/`, `scripts/*.py`, `version.txt`, `.cortex-version`, `LICENSE`, `docs/CORTEX-CHANGELOG.md`, `ROADMAP.md`, `README.md`, `README-SIMPLE.md`, `docs/VERBS.md`, `docs/CORTEX-DEV.md`, the install/setup scripts, and `.claude/settings.json` itself.
 
 **Agent pointer files are intentionally NOT in the deny list.** `CLAUDE.md`, `AGENTS.md`, `GEMINI.md`, `OPENCODE.md`, `QWEN.md` exist as one-line pointers to `protocol/CORTEX.md` — but users customize them with personal blocks below the pointer (per-project session backlogs, per-host instructions, etc.). They're user-territory in user clones, even though they ship with the framework.
 
@@ -86,7 +86,7 @@ Cortex behaves **differently** depending on where you run it. The difference is 
 | [Why this exists](#why-this-exists) | [Getting started](#getting-started) |
 | [What it does differently](#what-cortex-does-differently) | [Session commands](#session-commands) |
 | [Personalities →](docs/PERSONALITIES.md) | [Connectors →](docs/CONNECTORS.md) |
-| [Roadmap →](ROADMAP.md) | [Changelog →](CORTEX-CHANGELOG.md) |
+| [Roadmap →](ROADMAP.md) | [Changelog →](docs/CORTEX-CHANGELOG.md) |
 | [Desktop setup →](docs/SETUP-DESKTOP.md) | [Mobile setup →](docs/SETUP-MOBILE.md) |
 
 ---
@@ -125,7 +125,7 @@ If this has been useful to you — or if you just believe mental health infrastr
 
 **Your active actor has a personality.** 73 built-in personalities — from Casey (warm, funny, plain English) to Atlas (precise, methodical) to Dr. Quinn (psychologist) to Yoda to Magnus the Business Central SME. Switch with one line. Create your own in plain English. [Full personality reference →](docs/PERSONALITIES.md)
 
-**Extensible.** Built-in session commands. Define your own in `VERBS.md` — `weekly review`, `bills`, `checkin`, anything you want. **Natural language only — no slash prefixes** (Claude web and other clients hijack `/`).
+**Extensible.** Built-in session commands. Define your own in `docs/VERBS-CUSTOM.md` — `weekly review`, `bills`, `checkin`, anything you want. **Natural language only — no slash prefixes** (Claude web and other clients hijack `/`).
 
 **Analysis on demand.** Ask the scribe to look across your records and tell you what it sees. Patterns, connections, escalations, progress.
 
@@ -197,7 +197,7 @@ Both guides cover new users and existing Cortex repos.
 
 ### Custom verbs
 
-Define your own in `VERBS.md`. Invoke by name in natural language — no slash prefix:
+Define your own in `docs/VERBS-CUSTOM.md`. Invoke by name in natural language — no slash prefix:
 
 | Verb | What it does |
 |---|---|
@@ -274,6 +274,15 @@ install/               # Bootstrap installers + setup scripts (v4.0.0-alpha.22+)
   setup.sh             # macOS / Linux per-machine setup
   setup.ps1            # Windows per-machine setup
 scripts/               # Vault tooling + integrations (Python)
+docs/                  # Reference documentation (some moved here in v4.0.0-alpha.23)
+  CORTEX-CHANGELOG.md  # Full framework changelog (was at root pre-alpha.23)
+  VERBS.md             # Framework verbs (was at root pre-alpha.23)
+  VERBS-CUSTOM.md      # User-defined custom verbs (was at root pre-alpha.23)
+  CORTEX-DEV.md        # Framework contributor mode (was at root pre-alpha.23)
+  PERSONALITIES.md     # Full personality reference
+  CONNECTORS.md        # Connector reference
+  SETUP-DESKTOP.md     # Desktop setup guide
+  SETUP-MOBILE.md      # Mobile setup guide
 .claude/               # Claude Code settings (allow-list + framework deny-list)
   settings.json        # Shipped with framework
   settings.local.json  # Optional contributor override (gitignored)
@@ -284,10 +293,9 @@ OPENCODE.md            # OpenCode
 QWEN.md                # Qwen Code
 context.md             # Singleton ("main session") state — personality, provider, model
 SECRETS.md             # Plain-text index of vault key names (no values)
-VERBS.md               # Framework verbs
-VERBS-CUSTOM.md        # Your custom verbs
+ROE-CUSTOM.md          # Your custom rules of engagement (extends protocol/ROE.md)
+GUARDRAILS-LOCAL.md    # Your custom guardrails (extends protocol/GUARDRAILS.md)
 ROADMAP.md             # What's shipped and what's coming
-CORTEX-CHANGELOG.md    # Full change log
 .cortex-version        # Current framework version (user clones)
 version.txt            # Current framework version (framework dev only)
 ```

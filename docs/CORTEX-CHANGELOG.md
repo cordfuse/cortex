@@ -9,6 +9,16 @@ Format: `YYYY-MM-DD HH:MM TZ | file | what changed`
 <!-- Future: if this file grows large, rotate annually to cortex-changelog-YYYY.md -->
 
 ---
+2026-05-01 18:00 UTC | version.txt | bump to 4.0.0-alpha.23 — root declutter (Path B): 5 framework markdowns moved out of repo root
+2026-05-01 18:00 UTC | CORTEX-CHANGELOG.md → docs/CORTEX-CHANGELOG.md | moved out of root
+2026-05-01 18:00 UTC | VERBS.md → docs/VERBS.md | moved out of root; protocol Loading Order step 5 path updated
+2026-05-01 18:00 UTC | VERBS-CUSTOM.md → docs/VERBS-CUSTOM.md | moved out of root; protocol step 5a path updated. User-territory but moves with companion VERBS.md
+2026-05-01 18:00 UTC | CORTEX-DEV.md → docs/CORTEX-DEV.md | moved out of root (framework contributor mode doc)
+2026-05-01 18:00 UTC | PLAN.md → archive/PLAN.md | stale pre-scaffold artifact archived
+2026-05-01 18:00 UTC | protocol/CORTEX.md | Loading Order steps 5 and 5a path updates; reserved-name warning, File Structure block, CORTEX-CHANGELOG location note all updated
+2026-05-01 18:00 UTC | README.md | badge link, deny list paragraph, Navigation row, "extensible" blurb, Custom verbs section, Repo structure block all updated. Root file listing now shows ROE-CUSTOM.md + GUARDRAILS-LOCAL.md explicitly (which stay at root)
+2026-05-01 18:00 UTC | .claude/settings.json | deny list paths updated for VERBS.md → docs/VERBS.md, CORTEX-CHANGELOG.md → docs/CORTEX-CHANGELOG.md. Added docs/CORTEX-DEV.md. VERBS-CUSTOM.md NOT added (user-territory)
+Root file count: 18 → 13.
 2026-05-01 16:00 UTC | version.txt | bump to 4.0.0-alpha.22 — repo cleanup (CORTEX-CHANGELOG.md rename, install/ folder consolidation, dead artifacts removed)
 2026-05-01 16:00 UTC | cortex-changelog.md → CORTEX-CHANGELOG.md | renamed to match SCREAMING-CASE convention used by other root-level framework files. All 12 internal references updated across README.md, ROADMAP.md, protocol/CORTEX.md, protocol/ROE.md, .claude/settings.json, personalities/PERSONALITY-BOOTSTRAP.md.
 2026-05-01 16:00 UTC | install/ | new directory — moved install.sh, install.ps1, setup.sh, setup.ps1 from repo root. Conceptually one bootstrap surface (curl → install → setup); folder makes that obvious to first-time users.
