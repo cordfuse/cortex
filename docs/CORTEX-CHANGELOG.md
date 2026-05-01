@@ -9,6 +9,8 @@ Format: `YYYY-MM-DD HH:MM TZ | file | what changed`
 <!-- Future: if this file grows large, rotate annually to cortex-changelog-YYYY.md -->
 
 ---
+2026-05-01 19:30 UTC | version.txt | bump to 4.0.0-alpha.26 — README adds "One cortex per access boundary, not per topic" doctrine
+2026-05-01 19:30 UTC | README.md | new section "One cortex per access boundary, not per topic" added before "Solo or collaborative". Documents the monocortex doctrine: split cortexes by ACCESS boundary (employer IP, professional compliance, multi-stakeholder visibility, public-creator vs private), not by TOPIC (health vs work vs programming). Topic separation handled via personality system + Phase 6 scoped sessions instead. Closes the question Steve surfaced about whether to split his cortex by area; reasoning generalizes to any user fork/template.
 2026-05-01 19:00 UTC | version.txt | bump to 4.0.0-alpha.25 — small follow-on: cortex-upgrade.md moved to customs/, framework dev CLAUDE.md updated for personal cortex-backlog.md path
 2026-05-01 19:00 UTC | protocol/CORTEX.md | sync flow upgrade-preference references updated `cortex-upgrade.md` → `customs/cortex-upgrade.md`. User-territory file moves to customs/ for consistency with alpha.24 cleanup. 5 references updated in upgrade-preference section.
 2026-05-01 19:00 UTC | CLAUDE.md (framework dev) | "Dev Session Backlog" pointer updated `~/Repos/steve-krisjanovs/cortex/cortex-backlog.md` → `~/Repos/steve-krisjanovs/cortex/customs/backlogs/cortex-backlog.md`. Personal cortex moved cortex-backlog.md into customs/backlogs/ during cleanup.

@@ -2,13 +2,29 @@
 
 What's shipped, what's in progress, and what's coming.
 
-**Current version:** 4.0.0-alpha.25 — [Changelog](docs/CORTEX-CHANGELOG.md)
+**Current version:** 4.0.0-alpha.26 — [Changelog](docs/CORTEX-CHANGELOG.md)
 
 ---
 
 ## Shipped
 
-### v4.0.0-alpha.25 — `cortex-upgrade.md` move + framework CLAUDE.md path patch *(current)*
+### v4.0.0-alpha.26 — Monocortex doctrine in README *(current)*
+
+Adds a new README section: **"One cortex per access boundary, not per topic."**
+
+Documents the doctrine: most users should run a single cortex for everything (health, work, family, ideas, finances, recovery, all in one), not split by topic. The cognitive separation people instinctively want is what the personality system and Phase 6 scoped sessions are for — not separate repos.
+
+**Multiple cortexes are only justified when access boundaries demand it:**
+- Employer or client IP separation
+- Compliance-regulated professional records (lawyer/therapist/doctor)
+- Multi-stakeholder teams with role-based visibility
+- Public-creator + private-personal audience separation
+
+**Why this matters:** the monocortex doctrine is also cortex's biggest differentiator from existing tools. Notion, Obsidian, etc. treat the user's mind as something you can split into databases. Cortex's pitch is the opposite — your context is one thing because YOU are one thing. Splitting reproduces the exact "lost context across providers" problem cortex exists to solve.
+
+Filed in the same conceptual rack as Fluid Protocol and CNAC: a doctrine that explains how the protocol is meant to be used, not just what it does.
+
+### v4.0.0-alpha.25 — `cortex-upgrade.md` move + framework CLAUDE.md path patch
 
 Tiny follow-on to alpha.24. Two path updates:
 

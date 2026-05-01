@@ -1,6 +1,6 @@
 # Cortex
 
-[![Version](https://img.shields.io/badge/version-4.0.0--alpha.25-blue)](docs/CORTEX-CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-4.0.0--alpha.26-blue)](docs/CORTEX-CHANGELOG.md)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![Donate to CAMH](https://img.shields.io/badge/Donate-CAMH%20Foundation-blue)](https://camhfoundation.ca/donate)
 
@@ -301,6 +301,46 @@ ROADMAP.md             # What's shipped and what's coming
 .cortex-version        # Current framework version (user clones)
 version.txt            # Current framework version (framework dev only)
 ```
+
+---
+
+## One cortex per access boundary, not per topic
+
+A common first instinct is to set up multiple cortexes — one for health, one for programming, one for business, one for family. **Don't.** That instinct reproduces the exact problem cortex exists to solve.
+
+Cortex was built because every new doctor, every new therapist, every new AI conversation re-starts from zero. The continuity loss is the pain. Splitting your own cortex by topic re-creates that loss internally — the scribe can't see your sleep patterns alongside your project deadlines if those records live in separate repos.
+
+**The rule:** split cortexes by **access boundary**, not by **topic**.
+
+If two pieces of information have the same audience (just you, or you + spouse, or you + a co-founder), they belong in the same cortex. Topic separation is what the personality system and Phase 6 multi-session sessions are for, not what separate repos are for.
+
+### When monocortex is right (most users)
+
+- Solo individuals managing their whole life — health, work, family, ideas, finances, recovery, all in one
+- Couples sharing household management
+- Solo creators integrating projects + personal life
+- Anyone who built cortex to escape the lost-context problem
+
+### When multiple cortexes are justified
+
+Only when **access boundaries** demand it:
+
+- **Employer or client IP separation** — paid work under contract that legally can't mix with personal records
+- **Compliance-regulated professional records** — lawyer with client privilege, therapist with HIPAA-equivalent obligations, doctor with patient charts. The pro records legally can't mix with personal life
+- **Multi-stakeholder teams with role-based visibility** — e.g., a startup where engineering's cortex shouldn't include founder-level financials
+- **Public-creator + private-personal** — separate audiences require separate repos
+
+In all of these the boundary is **who can see what**, not **what is it about**.
+
+### Topic separation without fragmenting the record
+
+Within a monocortex, topic context is handled by:
+
+- **Personalities** — `change actor to Dr. Quinn` for health/reflection mode; `change actor to Magnus` for BC engineering; `change actor to AA Sponsor` for recovery work. The voice + lens shifts naturally.
+- **Phase 6 scoped sessions** — `spawn session "phase 2 design"` keeps a programming sprint's runtime state isolated from main; `spawn session "weekly checkin"` keeps a health journal's actor and context separate. Records still file to the unified `records/` folder with `Session: phase 2 design` in provenance, so cross-domain searches still work.
+- **Records folder** — naturally chronological + searchable across all topics
+
+You get the cognitive separation without losing the integrating layer.
 
 ---
 
