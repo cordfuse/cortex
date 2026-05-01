@@ -1,6 +1,6 @@
 # Cortex
 
-[![Version](https://img.shields.io/badge/version-4.0.0--alpha.20-blue)](cortex-changelog.md)
+[![Version](https://img.shields.io/badge/version-4.0.0--alpha.21-blue)](cortex-changelog.md)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![Donate to CAMH](https://img.shields.io/badge/Donate-CAMH%20Foundation-blue)](https://camhfoundation.ca/donate)
 
@@ -111,13 +111,19 @@ If this has been useful to you — or if you just believe mental health infrastr
 
 **You own everything.** Records live in your private git repository — not a vendor's database. Plain markdown. Readable by any tool, forever. Portable the day you want out.
 
-**The AI is two layers, not a product.** A named active actor (Casey, Atlas, etc.) listens and talks. A hidden scribe files everything underneath, silently. Both follow a protocol you can read and modify. No upsell, no monetised insights, no lock-in. *(See [docs/PERSONALITIES.md](docs/PERSONALITIES.md) for the full active-actor + hidden-scribe split shipped in v4.0.0-alpha.1.)*
+**Three AI layers, not a product.** A **Bootstrap actor** runs the operational layer (sync, version checks, scoped session verbs) in clinical voice; an **active actor** (Casey, Atlas, Magnus, etc.) handles conversation; a **hidden scribe** files everything underneath, silently. All three follow a protocol you can read and modify. No upsell, no monetised insights, no lock-in. *(See [docs/PERSONALITIES.md](docs/PERSONALITIES.md) for the full active-actor + hidden-scribe split shipped in v4.0.0-alpha.1, and the operational/conversational mode split shipped in v4.0.0-alpha.20.)*
 
 **Context that carries.** At session start the scribe reads your recent records. It knows what you were working through, what's unresolved, what patterns have been building. Every session picks up where the last one left off.
 
-**Always in sync.** Every `hello` checks that your local repo is up to date before the session starts. Works across as many devices as you have.
+**Always in sync.** Every `hello` runs `git fetch origin` and `git fetch upstream` before the greeting renders. Local behind remote? Scribe surfaces the delta and applies your `auto_upgrade:` preference (always / ask / never). Silent stale-state operation is a protocol violation as of v4.0.0-alpha.13.
 
-**Your active actor has a personality.** 55 built-in personalities — from Casey (warm, funny, plain English) to Atlas (precise, methodical) to Dr. Quinn (psychologist listening style) to Lama (Buddhist equanimity). Switch with one line. Create your own in plain English. [Full personality reference →](docs/PERSONALITIES.md) *(The hidden scribe — the protocol role that handles filing — is separate and has no personality. See [Hidden Scribe](protocol/CORTEX.md#hidden-scribe).)*
+**Hot-swap personalities mid-session (v4.0.0-alpha.8+).** Say *"change actor to Atlas"* and the next response is in Atlas's voice. No fresh hello required.
+
+**Multi-session state isolation (v4.0.0-alpha.17+).** `spawn session "phase 2 design"` creates a scoped session at `sessions/{guid}/`. `engage session` swaps in any time. `close session` archives. The default ("main session" / singleton) is shared across every chat that doesn't explicitly spawn a scoped one. Test isolation, parallel work threads, and cross-machine continuity all work cleanly.
+
+**Multi-parent personality inheritance (v4.0.0-alpha.11+).** Custom personalities can inherit from multiple parents simultaneously — useful for "everything-guy" SMEs who span developer + infrastructure + cloud architect + functional consultant in one role.
+
+**Your active actor has a personality.** 73 built-in personalities — from Casey (warm, funny, plain English) to Atlas (precise, methodical) to Dr. Quinn (psychologist) to Yoda to Magnus the Business Central SME. Switch with one line. Create your own in plain English. [Full personality reference →](docs/PERSONALITIES.md)
 
 **Extensible.** Built-in session commands. Define your own in `VERBS.md` — `weekly review`, `bills`, `checkin`, anything you want. **Natural language only — no slash prefixes** (Claude web and other clients hijack `/`).
 
@@ -129,21 +135,22 @@ If this has been useful to you — or if you just believe mental health infrastr
 
 ## Personalities
 
-Your active actor has a personality. Cortex ships with **55 built-in personalities** — switch between them with one line in `context.md`. Casey is the default. (The hidden scribe is separate — see [Hidden Scribe](protocol/CORTEX.md#hidden-scribe).)
+Your active actor has a personality. Cortex ships with **73 built-in personalities** plus the **Bootstrap actor** that handles operational reporting. Switch active actors with one line in `context.md`, or in plain English: *"change actor to Atlas."* See the full reference for descriptions and trait sliders.
 
 | Category | Personalities |
 |---|---|
-| **Defaults** | Casey (warm, funny, plain English), Atlas (precise, methodical, technical) |
+| **Bootstrap** | Bootstrap (auto-loaded; never user-selected; clinical operational voice) |
 | **Workplace** | Alex, Bishop, Max |
 | **Creative & Visionary** | Harper, Ziggy, Nova |
 | **Wisdom & Reflection** | Sage, Ivy, Rowan, Dante |
-| **Distinctive Voices** | Riff, Marlowe, Reed, Cleo, Finn, Claire |
-| **Clinical & wellness** | Dr. Morgan (psychiatrist), Dr. Quinn (psychologist), Jordan (wellness), Dr. Walsh (family doctor) |
+| **Distinctive Voices** | Casey (warm, plain English), Atlas (precise, methodical), Riff, Marlowe, Reed, Cleo, Finn, Claire |
+| **Information Technology** | Devon (Tech Lead), Kai (Junior Dev), Riley (DevOps), Knox (Infrastructure), Vega (Cloud Architect), Avery (PM), Sloane (QA), Orion (UX/UI), Drew (Functional Consultant) |
+| **Clinical & wellness** | Dr. Morgan (psychiatrist), Dr. Quinn (psychologist), Jordan (wellness), Dr. Walsh (family doctor), Dr. Mira (registered dietitian, she/her) |
 | **Faith traditions** | Rabbi, Pastor, Father Thomas, Imam, Swami, Lama, Granthi, Daoist, Elder |
 | **Mindfulness & Stoicism** | Mindfulness Teacher, Marcus (Stoic philosopher) |
 | **Recovery & Peer Support** | AA Sponsor, SAA Sponsor |
 | **Family & Friends** | Mama, Pop, Terry (best friend) |
-| **Pop Culture** | TARS, Arnold Schwarzenegger, Mr. Miyagi, John Kreese, Bruce Lee, Chuck Norris, Jean-Claude Van Damme, Sylvester Stallone, Hulk Hogan, Bob Ross, Mr. Rogers, Doc Brown, Yoda, Spock, Robin Williams, Han Solo, The Dude |
+| **Pop Culture** | TARS, Arnold Schwarzenegger, Mr. Miyagi, John Kreese, Bruce Lee, Chuck Norris, Jean-Claude Van Damme, Sylvester Stallone, Hulk Hogan, Bob Ross, Mr. Rogers, Doc Brown, Yoda, Spock, Robin Williams, Han Solo, The Dude, Indiana Jones, Captain Jean-Luc Picard, Buffy Summers, Bill Murray, Angus MacGyver, Lieutenant Columbo, Tony Soprano |
 
 Every personality has tunable sliders across vibe, virtues, vices, soft skills, and hard skills — all 0–100. Create your own with a description. The scribe writes the file and commits it.
 
@@ -151,7 +158,7 @@ Every personality has tunable sliders across vibe, virtues, vices, soft skills, 
 
 ```
 # context.md
-personality: casey       ← change this to switch
+personality: casey       ← change this to switch (or leave blank — Bootstrap will ask you to pick)
 provider: Anthropic Claude
 model: claude-sonnet-4-6
 ```
@@ -175,14 +182,18 @@ Both guides cover new users and existing Cortex repos.
 
 | Verb | What it does |
 |---|---|
-| `hello` | Open session — sync check, scan open items, load personality, greet |
+| `hello` | Open session — Bootstrap runs Gate 3, sync check, scans open items, then user-chosen actor greets |
 | `goodbye` | Close session — commit pending, push, surface unresolved |
 | `status` | Last session, open items, uncommitted files, vault |
-| `sync` | Pull + push mid-session |
+| `sync` | Pull framework updates from upstream + apply (Bootstrap voice) |
+| `reconcile` | Deep three-category drift resolution against upstream/main with per-file user gating (v4.0.0-alpha.19+) |
 | `search [term]` | Search all records |
 | `list verbs` | Show built-in and custom verbs |
-| `list personalities` | Show active personality and all available |
-| `list actors` | Alias for `list personalities` |
+| `list personalities` / `list actors` | Show active personality and all available |
+| `spawn session "<name>"` | Create scoped session (v4.0.0-alpha.17+) |
+| `list sessions [filter]` | Show all sessions with state metadata |
+| `engage session "<name>"` | Attach to existing session (v4.0.0-alpha.18+) |
+| `close session "<name>"` | Archive a session (v4.0.0-alpha.18+) |
 
 ### Custom verbs
 
@@ -190,7 +201,7 @@ Define your own in `VERBS.md`. Invoke by name in natural language — no slash p
 
 | Verb | What it does |
 |---|---|
-| `switch personality to [name]` | Hot-swap active personality (takes effect immediately, next response). Aliases: *change actor*, *use [name]* |
+| `change actor to <name>` | Hot-swap active personality (takes effect immediately, next response). Aliases: *switch personality*, *use [name]*. (v4.0.0-alpha.8+) |
 | `weekly review` | Weekly review across all records |
 | `daily log` | Open a daily log entry |
 | `bills` | Review upcoming bills |
@@ -210,10 +221,10 @@ Cortex ships with an AES-256 encrypted secrets vault. One passphrase governs eve
 | **rclone** | Built — any filesystem, 70+ backends |
 | **Google** | Built — Calendar, Gmail, Drive, Tasks, Contacts |
 | **Microsoft 365** | Built — Mail, Calendar, OneDrive, Teams, SharePoint, To Do, Planner, OneNote |
-| Notion, Slack, GitHub, Linear | Roadmap v3.5.0 |
-| Apple Health, Spotify, Banking | Roadmap v3.5.0 |
-| Plex, Jellyfin | Roadmap v3.5.0 |
-| 1Password, Bitwarden | Roadmap v3.5.0 |
+| Notion, Slack, GitHub, Linear | Roadmap |
+| Apple Health, Spotify, Banking | Roadmap |
+| Plex, Jellyfin | Roadmap |
+| 1Password, Bitwarden | Roadmap |
 
 ---
 
@@ -236,18 +247,21 @@ Cortex ships with an AES-256 encrypted secrets vault. One passphrase governs eve
 
 ```
 protocol/              # Protocol engine — do not edit
-  CORTEX.md            # Session rules, personality system, time resolution
+  CORTEX.md            # Session rules, personality system, multi-session, time resolution
   DISCLAIMER.md        # Honest framing, legal warnings, crisis resources
-  GUARDRAILS.md        # Hard stops, safety rules — overrides everything
-  ROE.md               # 20 rules of engagement
+  GUARDRAILS.md        # Hard stops, safety rules — overrides everything (alpha.7+ Gate 3 enforced)
+  ROE.md               # Rules of engagement (Rule 18: framework files read-only)
   CORTEX-PROJECT.md    # Self-contained prompt for Claude/ChatGPT projects
-personalities/         # Personality files
-  PERSONALITY-CASUAL.md        # Casey (default)
-  PERSONALITY-VERBOSE.md       # Atlas (opt-in)
-  PERSONALITY-[NAME].md        # 31 additional built-ins
+personalities/         # Personality files (73 framework + your customs)
+  PERSONALITY-BOOTSTRAP.md     # Bootstrap (operational voice, auto-loaded)
+  PERSONALITY-CASUAL.md        # Casey
+  PERSONALITY-VERBOSE.md       # Atlas
+  PERSONALITY-[NAME].md        # 70 additional framework personalities
   PERSONALITY-CUSTOM-*.md      # Your custom personalities
 records/               # Your dated entries — one file per topic per commit
+sessions/              # Scoped sessions (v4.0.0-alpha.17+); each is a folder with its own context.md
 attachments/           # One subfolder per record
+archive/               # Closed sessions, archived records, deprecated framework files
 docs/                  # Source documents + setup guides
   PERSONALITIES.md     # Full personality reference
   CONNECTORS.md        # Connector reference
@@ -255,18 +269,22 @@ docs/                  # Source documents + setup guides
   SETUP-MOBILE.md      # Mobile setup guide
 templates/             # Blank templates
 scripts/               # Setup, vault, integrations
+.claude/               # Claude Code settings (allow-list + framework deny-list)
+  settings.json        # Shipped with framework
+  settings.local.json  # Optional contributor override (gitignored)
 CLAUDE.md              # Claude Code + Claude Desktop
 GEMINI.md              # Gemini CLI
-AGENTS.md              # OpenAI Codex + generic agents
+AGENTS.md              # OpenAI Codex + GitHub Copilot CLI + generic agents
 OPENCODE.md            # OpenCode
 QWEN.md                # Qwen Code
-context.md             # Your session context — personality, people, situation
+context.md             # Singleton ("main session") state — personality, provider, model
 SECRETS.md             # Plain-text index of vault key names (no values)
 VERBS.md               # Framework verbs
 VERBS-CUSTOM.md        # Your custom verbs
 ROADMAP.md             # What's shipped and what's coming
 cortex-changelog.md    # Full change log
-version.txt            # Current framework version
+.cortex-version        # Current framework version (user clones)
+version.txt            # Current framework version (framework dev only)
 ```
 
 ---
@@ -278,6 +296,14 @@ Cortex works for one person. It also works for any number of people sharing a re
 Clone the same repo, run your own AI agent against it, commit your entries. Everyone pushes, everyone pulls, everyone sees the full record. Git handles the collaboration. The AI handles the scribing.
 
 Each person can use a different AI. One uses Claude, another uses ChatGPT, another uses Qwen. Same repo. Same protocol. Same truth.
+
+---
+
+## Cross-agent coordination (CNAC)
+
+Multi-agent workflows over the same repo are supported via what we call **Cortex-Native Agent Coordination (CNAC)**: agents on different machines or different providers coordinate by writing records to the cortex repo. One agent files a test plan as a record; another agent reads it, executes, and files results back as a record. No copy-paste, no separate message bus, full audit trail. The bus is git. The messages are records.
+
+Validated empirically with end-to-end Phase 6 testing in 2026-04-30 — Claude Opus on cachy filed a test plan, Claude Sonnet on mobile read it, executed all 8 steps, filed consolidated results back. Cross-provider, cross-machine, cross-session.
 
 ---
 
@@ -295,7 +321,9 @@ Guardrails apply in both modes.
 
 `protocol/GUARDRAILS.md` governs the scribe: crisis situations, intent to harm, crime disclosure, child safety, jailbreak attempts, and sandbox integrity. The scribe refuses to start if it's missing.
 
-**Remove or modify it and you are on your own. Cordfuse accepts zero liability.**
+The Bootstrap RWDX guardrail (v4.0.0-alpha.7+) blocks all read/write/delete/execute operations until bootstrap is complete (repo cloned + protocol loaded + `git fetch origin` confirms current with remote).
+
+**Remove or modify GUARDRAILS.md and you are on your own. Cordfuse accepts zero liability.**
 
 ---
 
@@ -311,11 +339,11 @@ Guardrails apply in both modes.
 ## Requirements
 
 - Git + Python 3.9+
-- An AI agent ([Claude Code](https://claude.ai/download), [Gemini CLI](https://github.com/google-gemini/gemini-cli), [OpenCode](https://opencode.ai)) or web interface (claude.ai, ChatGPT)
-- **Model recommendation: Claude Sonnet, or a mid-tier GPT equivalent.** Validated on Claude Sonnet — clean startup, fast, follows the silent-load protocol correctly. Claude Opus is more capable but more verbose at session start and slower. GPT-4o is untested; GPT-4o-mini is likely the right tier for the same reason (less narration, faster). Frontier/largest models are not always better for Cortex — instruction-following on the silent-load rule matters more than raw capability.
-- **Session startup is verbose — this is expected and cannot be suppressed.** When you open a new chat and say `hello`, the AI reads your protocol files, checks your repo state, and runs an opening scan before greeting you. You will see tool-call activity during this process. This is the AI doing its job — not an error. The greeting itself is clean. The loading activity is a limitation of how AI providers expose tool use in their interfaces and is outside Cordfuse's control.
+- An AI agent ([Claude Code](https://claude.ai/download), [Gemini CLI](https://github.com/google-gemini/gemini-cli), [OpenCode](https://opencode.ai), Codex CLI, Qwen Code) or web interface (claude.ai, ChatGPT)
+- **Model recommendation: Claude Sonnet, or a mid-tier GPT equivalent.** Validated on Claude Sonnet — clean startup, fast, follows the silent-load protocol correctly. Claude Opus is more capable but more verbose at session start and slower. GPT-4o is untested; GPT-4o-mini is likely the right tier for the same reason (less narration, faster). Frontier/largest models are not always better for Cortex — instruction-following on the bootstrap rules matters more than raw capability.
+- **Session startup is verbose — this is expected and cannot be suppressed.** When you open a new chat and say `hello`, the AI reads your protocol files, runs Gate 3 (`git fetch origin` + version check), and runs an opening scan before greeting you. You will see tool-call activity during this process. This is the AI doing its job — not an error. The greeting itself is clean. The loading activity is a limitation of how AI providers expose tool use in their interfaces and is outside Cordfuse's control. AgentBox (planned) is the long-term verbosity fix.
 - **Gemini web and mobile are not supported.** Gemini's web and mobile interfaces do not support the tool-calling and file access flow Cortex requires. Gemini CLI works fine.
-- **ChatGPT compatibility is untested.** The protocol is designed to be provider-agnostic but has only been validated on Claude to date. ChatGPT may behave differently — reports welcome.
+- **ChatGPT compatibility is untested.** The protocol is designed to be provider-agnostic but has been primarily validated on Claude. ChatGPT may behave differently — reports welcome.
 - For offline: [Ollama](https://ollama.com) + self-hosted git
 
 ---
@@ -324,9 +352,11 @@ Guardrails apply in both modes.
 
 [→ Full roadmap](ROADMAP.md)
 
-**v4.0.0-alpha.5 (current)** — Multi-actor architecture (Phase 1: Hidden Scribe Separation) + personality system expanded to 47 built-ins across Defaults / General / Clinical / Faith / Pop Culture, with optional `## domain` field for custom-personality grouping and `## aliases` for invocation flexibility.
+**v4.0.0-alpha.21 (current)** — Documentation alignment pass: README + interlinked docs brought to current alpha.20 reality. Personality count corrected to 73. Information Technology domain (alpha.12), Pop Culture additions (alpha.10), Bootstrap actor + Dr. Mira (alpha.20) all reflected. Canonical category map in `protocol/CORTEX.md` updated.
 
-**Coming:** v4 phases 2-5 (multi-actor sessions, panel vs independent modes, hot-swap, list actors expansion), integrations expansion (Notion, Slack, GitHub, Linear, Health, Spotify), setup wizard, egress proxy, federation.
+**Recent shipped (v4 sprint):** alpha.7 (Bootstrap RWDX guardrail) → alpha.8 (personality hot-swap) → alpha.9 (response headers, compression-resilience) → alpha.10 (Pop Culture +7) → alpha.11 (multi-parent inheritance) → alpha.12 (Information Technology domain +9) → alpha.13 (bootstrap reliability patches) → alpha.14 (`.claude/settings.json` allow-list) → alpha.15 (sync flow hardening) → alpha.16 (CC deny-list) → **alpha.17 + alpha.18 (Phase 6 multi-session sessions)** → alpha.19 (`reconcile` verb) → alpha.20 (Bootstrap actor + Dr. Mira + Operational/Conversational mode) → alpha.21 (this docs alignment).
+
+**Coming:** Phase 2 multi-actor sessions (spawn named actors mid-session, multiple voices in the same session), Phase 3 panel vs independent modes, integrations expansion (Notion, Slack, GitHub, Linear, Health, Spotify), AgentBox v1.0 (PWA wrapping CLI agents), MTX (markdown package manager).
 
 ---
 

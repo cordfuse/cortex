@@ -2,13 +2,28 @@
 
 What's shipped, what's in progress, and what's coming.
 
-**Current version:** 4.0.0-alpha.20 — [Changelog](cortex-changelog.md)
+**Current version:** 4.0.0-alpha.21 — [Changelog](cortex-changelog.md)
 
 ---
 
 ## Shipped
 
-### v4.0.0-alpha.20 — Bootstrap actor + Operational/Conversational mode split + Dr. Mira *(current)*
+### v4.0.0-alpha.21 — Documentation alignment pass *(current)*
+
+A focused docs grooming alpha. README + interlinked markdown documents brought to alpha.20 reality. No new features.
+
+**What changed:**
+- README.md: personality count corrected (55 → 73), categories table fully rewritten to reflect alpha.10/alpha.12/alpha.20 additions, roadmap section rebuilt, repo structure updated for `.claude/` / `sessions/` / `archive/`, three-AI-layer (Bootstrap + active actor + hidden scribe) reflected throughout, Cross-Agent Coordination (CNAC) section added.
+- README-SIMPLE.md: count corrected, three-AI-layer model and current personality coverage acknowledged.
+- docs/PERSONALITIES.md: intro rewritten for alpha.20 model, missing top-level sections added (Mindfulness & Stoicism, Recovery & Peer Support, Family & Friends, Information Technology, Pop Culture), Dr. Walsh added to Clinical & wellness.
+- protocol/CORTEX.md: canonical category map updated. Closes the staleness flagged by mobile-Sonnet during 2026-05-01 Phase 6 validation (records/2026-05-01-1029-bug-canonical-category-map-stale.md).
+- docs/SETUP-DESKTOP.md and docs/SETUP-MOBILE.md: "scribe sets up silently" line corrected to reflect Bootstrap actor + Gate 3 tool-call activity (alpha.13+).
+
+**Known follow-up:** the "Other Framework Personalities" section in docs/PERSONALITIES.md combines Workplace, Creative & Visionary, Wisdom & Reflection, and Distinctive Voices entries from the pre-alpha.6 "General" section. A full per-category split of that section is queued for a follow-up alignment pass.
+
+**Why now:** Steve flagged docs likely "horribly stale" — they were. Five-day v4 alpha sprint shipped 13 protocol/feature alphas without docs catching up; alpha.21 is the catch-up.
+
+### v4.0.0-alpha.20 — Bootstrap actor + Operational/Conversational mode split + Dr. Mira
 
 The "framework default" concept is retired. Cortex now has a dedicated **Bootstrap actor** that handles all operational work (Gate 3 enforcement, sync prompts, opening scans, state-changing verb responses) in a clean clinical voice, then hot-swaps out so the user's chosen actor handles conversational turns.
 

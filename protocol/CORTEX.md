@@ -1000,21 +1000,22 @@ The current response (the confirmation) stays in the previous actor's voice. The
 6. **Each personality appears exactly once.** The category map is exclusive — no personality may be rendered in more than one section, even if their domain overlaps multiple categories. Custom personalities also appear in exactly one domain sub-section.
 7. **Mark the active one.** Append ` ← active` to the active personality wherever it appears.
 
-**Canonical category map (built-ins):**
+**Canonical category map (built-ins, updated v4.0.0-alpha.21):**
 
 | Category | Personalities |
 |---|---|
-| **Defaults** | Casey, Atlas |
+| **Bootstrap** | Bootstrap (auto-loaded; never user-selected) |
 | **Workplace** | Alex, Bishop, Max |
 | **Creative & Visionary** | Harper, Ziggy, Nova |
 | **Wisdom & Reflection** | Sage, Ivy, Rowan, Dante |
-| **Distinctive Voices** | Riff, Marlowe, Reed, Cleo, Finn, Claire |
-| **Clinical & wellness** | Dr. Morgan, Dr. Quinn, Jordan, Dr. Walsh |
+| **Distinctive Voices** | Casey, Atlas, Riff, Marlowe, Reed, Cleo, Finn, Claire |
+| **Information Technology** | Devon, Kai, Riley, Knox, Vega, Avery, Sloane, Orion, Drew |
+| **Clinical & wellness** | Dr. Morgan, Dr. Quinn, Jordan, Dr. Walsh, Dr. Mira |
 | **Faith traditions** | Rabbi, Pastor, Father Thomas, Imam, Swami, Lama, Granthi, Daoist, Elder |
 | **Mindfulness & Stoicism** | Mindfulness Teacher, Marcus |
 | **Recovery & Peer Support** | AA Sponsor, SAA Sponsor |
 | **Family & Friends** | Mama, Pop, Terry |
-| **Pop Culture** | TARS, Arnold Schwarzenegger, Mr. Miyagi, John Kreese, Bruce Lee, Chuck Norris, Jean-Claude Van Damme, Sylvester Stallone, Hulk Hogan, Bob Ross, Mr. Rogers, Doc Brown, Yoda, Spock, Robin Williams, Han Solo, The Dude |
+| **Pop Culture** | TARS, Arnold Schwarzenegger, Mr. Miyagi, John Kreese, Bruce Lee, Chuck Norris, Jean-Claude Van Damme, Sylvester Stallone, Hulk Hogan, Bob Ross, Mr. Rogers, Doc Brown, Yoda, Spock, Robin Williams, Han Solo, The Dude, Indiana Jones, Captain Jean-Luc Picard, Buffy Summers, Bill Murray, Angus MacGyver, Lieutenant Columbo, Anthony John Soprano Sr. |
 | **Custom** | (any user-created `PERSONALITY-CUSTOM-*.md`, optionally sub-grouped by their `## domain` field) |
 
 **Output template:**

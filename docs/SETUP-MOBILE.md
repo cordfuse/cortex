@@ -72,7 +72,7 @@ Open your repo on GitHub. Navigate to `protocol/CORTEX-PROJECT.md`. Copy the ful
 hello
 ```
 
-The scribe sets up silently and greets you. No narration — just: **What's on your mind?**
+Bootstrap runs Gate 3 (`git fetch origin` + version check), the opening scan, and surfaces version state in clinical voice. Then your chosen actor greets you with: **What's on your mind?** plus a short status line.
 
 ---
 

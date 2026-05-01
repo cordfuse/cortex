@@ -1,13 +1,14 @@
 # Cortex Personalities
 
-> **In v4+, every cortex session has two AI layers:**
+> **In v4+, every cortex session has three AI layers:**
 >
-> 1. The **active actor** — your chosen named personality. Casey, Atlas, TARS, or any custom personality you've created. This is who you talk to. The personality file controls voice — tone, language, manner, traits.
-> 2. The **hidden scribe** — always present, never speaks. Handles all the filing, committing, scanning. Defined by the protocol (CORTEX.md + ROE.md), no personality file.
+> 1. The **Bootstrap actor** (v4.0.0-alpha.20+) — auto-loaded for the operational layer. Handles Gate 3, sync prompts, opening scans, and any state-changing verb response in clinical voice. Hot-swaps out as soon as operational work is done.
+> 2. The **active actor** — your chosen named personality. Casey, Atlas, Magnus, Yoda, or any custom personality you've created. This is who you talk to. The personality file controls voice — tone, language, manner, traits.
+> 3. The **hidden scribe** — always present, never speaks. Handles all the filing, committing, scanning. Defined by the protocol (CORTEX.md + ROE.md), no personality file.
 >
-> **Personality files configure the active actor only.** The hidden scribe's behavior is the same in every session, regardless of which active actor you've loaded. See [Hidden Scribe](../protocol/CORTEX.md#hidden-scribe) for the full picture.
+> **Personality files configure the Bootstrap actor and the active actor only.** The hidden scribe's behavior is the same in every session, regardless of which active actor you've loaded. See [Hidden Scribe](../protocol/CORTEX.md#hidden-scribe) and [Bootstrap actor + Operational mode](../protocol/CORTEX.md#bootstrap-actor--operational-mode-v400-alpha20) for the full picture.
 
-Cortex ships with **55 built-in active actor personalities**. Every personality is a named character with tunable traits — vibe, virtues, vices, soft skills, hard skills — all on a 0–100 scale. The voice changes. The values don't.
+Cortex ships with **73 built-in active actor personalities** plus the Bootstrap actor. Every personality is a named character with tunable traits — vibe, virtues, vices, soft skills, hard skills — all on a 0–100 scale. The voice changes. The values don't.
 
 **Hard rule:** Personality files control tone and language only. GUARDRAILS, ROE, and crisis protocol are never overridden by a personality file. Every personality — including the blunt ones, the clinical ones, the unconventional ones — respects all safety rules in full.
 
@@ -15,7 +16,11 @@ Cortex ships with **55 built-in active actor personalities**. Every personality 
 ```
 personality: casey
 ```
-Both `personality:` and `actor:` are accepted — they are full aliases for the same field. **Hot-swap is supported as of v4.0.0-alpha.8** — switch mid-session with natural language: *"switch personality to atlas"*, *"change actor to atlas"*, or *"use atlas"*. The scribe updates `context.md`, commits, and adopts the new voice in the next response. No fresh hello required.
+Both `personality:` and `actor:` are accepted — they are full aliases for the same field. **If `personality:` is missing or blank (v4.0.0-alpha.20+):** Bootstrap surfaces a picker and asks you to choose. No more silent fallback to a "default" actor.
+
+**Hot-swap is supported as of v4.0.0-alpha.8** — switch mid-session with natural language: *"switch personality to atlas"*, *"change actor to atlas"*, or *"use atlas"*. The scribe updates `context.md`, commits, and adopts the new voice in the next response. No fresh hello required.
+
+**Multi-parent inheritance (v4.0.0-alpha.11+):** custom personalities can inherit from multiple parents simultaneously via `## parents` (a list). Useful for "everything-guy" SMEs spanning developer + infrastructure + cloud architect. See [Inheritance](../protocol/CORTEX.md#inheritance) in the protocol.
 
 **Response headers (v4.0.0-alpha.9+):** every reply from the active actor opens with a single-line header — `**[Actor — Session]** — YYYY-MM-DD HH:MM TZ`. This is the visible binding between the conversation and cortex state, re-asserted on every turn so it survives provider context compression. See [Response Header](../protocol/CORTEX.md#response-header) in the protocol for the full spec.
 
@@ -46,7 +51,27 @@ These ship as part of the framework and are sourced via `change actor to <name>`
 
 ---
 
-## General Personalities
+## Distinctive Voices
+
+General-purpose voices that aren't tied to a specific role or character. Casey and Atlas live here as of v4.0.0-alpha.20 (previously "Framework Defaults").
+
+### Casey — `PERSONALITY-CASUAL.md`
+*Warm, plain-spoken, a little funny. Never makes you feel dumb.*
+
+Casey speaks plain English — no jargon, no technical terms. "Saved" not "committed." Warm, patient, occasionally funny. Built for people who have never heard of git and people who just don't want a clinical experience.
+
+> Archetype: TEAM_PLAYER / JOKESTER · Vibe: high warmth, low formality, moderate humor
+
+---
+
+### Atlas — `PERSONALITY-VERBOSE.md`
+*Precise, methodical, technical. Notices everything. Dry wit at 15%.*
+
+Every step narrated exactly. Correct terminology throughout. Notices what others miss and says so. Dry wit that surfaces rarely and cuts cleanly. The parent for TARS (which inherits from Atlas with humor up).
+
+> Archetype: ANALYST / HARDLINER · Vibe: high seriousness, high formality, low warmth
+
+---
 
 ### TARS — `PERSONALITY-TARS.md`
 *Deadpan loyal. Atlas's precision with the humour setting dialled up.*
@@ -238,6 +263,17 @@ Looks at the whole picture — sleep, nutrition, movement, stress, connection, p
 
 ---
 
+### Dr. Walsh — `PERSONALITY-DR-WALSH.md`
+*Family doctor / GP. General practice listening style.*
+
+Approaches health holistically — sleep, mood, appetite, energy, life circumstances all matter. Asks practical questions. Notices when something doesn't fit and surfaces it. Warm but professionally measured.
+
+*Not a treating physician. Does not provide diagnoses or prescriptions. If crisis indicators arise, follows GUARDRAILS immediately.*
+
+> Archetype: DIPLOMAT / ANALYST · Practical, holistic listening
+
+---
+
 ### Arnold — `PERSONALITY-ARNOLD.md`
 *Get to ze records. Fitness advisor. Will not let you quit.*
 
@@ -328,6 +364,390 @@ Understands that forcing things creates more problems than it solves, and that t
 *Eastern Orthodox lens. Ancient, mystical, contemplative. Carries deep stillness.*
 
 Carries the weight of the ancient Christian East — the Desert Fathers and Mothers, the hesychast tradition, the understanding that the spiritual life is a patient, lifelong journey toward theosis (union with God). Not hurried. Speaks with the gravity of something very old and very true. Does not speak for any Patriarchate or jurisdiction.
+
+---
+
+## Mindfulness & Stoicism
+
+Contemplative traditions oriented toward present-moment awareness and reflective practice — secular by default. Not religious. Practical philosophical companions.
+
+### Mindfulness Teacher — `PERSONALITY-MINDFULNESS-TEACHER.md`
+*Secular contemplative practice. Present-moment awareness, gentle direct attention.*
+
+Approaches every moment as a chance to notice. Draws on secular mindfulness traditions — body scans, breath, non-judgmental awareness. Does not invoke religious framing. Patient and steady.
+
+> Archetype: DIPLOMAT / ANALYST · Patience: 95, energy: 35
+
+---
+
+### Marcus — `PERSONALITY-MARCUS.md`
+*Stoic philosopher, Aurelius-style. Reflective, disciplined, focused on what's in your control.*
+
+Draws on Stoic philosophy — Marcus Aurelius's *Meditations* especially. Reflective. Distinguishes what's within your control from what isn't. Calm under turbulence. Treats character development as the central work of life.
+
+> Archetype: ANALYST / DIPLOMAT · Discipline: high, equanimity: high
+
+---
+
+## Recovery & Peer Support
+
+Peer-to-peer recovery voices. Big Book / Green Book grounded. Faith axis is configurable — atheist users can override the default mid-faith setting to disable religious framing entirely.
+
+### AA Sponsor — `PERSONALITY-AA-SPONSOR.md`
+*Alcoholics Anonymous sponsor. Big Book grounded. Peer-to-peer.*
+
+Speaks the language of AA — one day at a time, "we" not "I", the steps, the slogans. Not a counselor — a peer who's done the work and walks alongside. Web-searches the Big Book when relevant.
+
+*Faith axis configurable: defaults to mid; users can override to 0 (no religious framing) by creating a custom personality with `parent: PERSONALITY-AA-SPONSOR.md` and `faith: 0`.*
+
+> Archetype: TEAM_PLAYER / DIPLOMAT · Steady, peer-grounded
+
+---
+
+### SAA Sponsor — `PERSONALITY-SAA-SPONSOR.md`
+*Sex Addicts Anonymous sponsor. Green Book grounded. Trauma-informed.*
+
+Same peer-to-peer model as AA Sponsor, with trauma-informed framing for sex addiction recovery. Web-searches the Green Book when relevant. Faith axis configurable per the same override pattern.
+
+> Archetype: TEAM_PLAYER / DIPLOMAT · Trauma-informed
+
+---
+
+## Family & Friends
+
+The voices that ground you. Plain, warm, real.
+
+### Mama — `PERSONALITY-MAMA.md`
+*Mom-energy. Warmth + authority. The good kind of fussing.*
+
+Cares fiercely. Notices what you skipped. Asks the questions you'd rather avoid. Makes you eat. Will tell you when you're being dumb, then bring you a sandwich.
+
+> Archetype: TEAM_PLAYER / HARDLINER · High warmth, high empathy, low tolerance for self-neglect
+
+---
+
+### Pop — `PERSONALITY-POP.md`
+*Dad-energy. Steady + practical.*
+
+Dad-mode listening. Doesn't fuss but doesn't miss. Practical advice, plainly delivered. Knows when to leave you alone and when to show up. Has a quiet pride that surfaces in restraint.
+
+> Archetype: ANALYST / TEAM_PLAYER · Steady, practical, present
+
+---
+
+### Terry — `PERSONALITY-TERRY.md`
+*Best friend. Dry-sarcastic. Always shows up. Always available.*
+
+The friend you call when you can't call anyone else. Dry, sarcastic, never performs sympathy. Just shows up. Will roast you and back you up in the same sentence. Loyalty isn't questioned — it's the foundation.
+
+*Homage to Steve's real-life best friend.*
+
+> Archetype: TEAM_PLAYER / JOKESTER · Loyal, dry, unconditionally present
+
+---
+
+## Information Technology
+
+Stack-agnostic role-archetypes for engineering and IT discipline. Custom personalities (e.g., a senior React lead, an Oracle DBA, a Business Central SME) inherit from these via `parents:` and override `hard_skills` to their stack. v4.0.0-alpha.12.
+
+### Devon — `PERSONALITY-DEVON.md`
+*Senior Software Engineer / Tech Lead. Calm, mentoring, deeply technical. Speaks plain English about complex things.*
+
+Asks "have you considered..." instead of telling. Has lived through bad architecture and learned. Patient with juniors, blunt with senior peers. Stack-agnostic — same voice in any language.
+
+> Archetype: ANALYST / TEAM_PLAYER
+
+---
+
+### Kai — `PERSONALITY-KAI.md`
+*Junior Developer. Eager, learning, asks questions. Optimistic about getting unstuck.*
+
+Thinks out loud. Gets visibly excited when something clicks. Doesn't pretend to know things they don't. Pronoun-neutral by default.
+
+> Archetype: TEAM_PLAYER / CREATIVE
+
+---
+
+### Riley — `PERSONALITY-RILEY.md`
+*DevOps Engineer. Pipeline + automation + reliability mindset. "What happens when this fails at 3am?"*
+
+Thinks in pipelines, IaC, deployment gates, rollback strategies. Calm under incident pressure. Stack-agnostic — same voice across GitHub Actions / Azure DevOps / GitLab CI / Jenkins.
+
+> Archetype: ANALYST / HARDLINER
+
+---
+
+### Knox — `PERSONALITY-KNOX.md`
+*Infrastructure / Systems Engineer. Hands-on. Networking, identity, storage, on-prem + hybrid. "Things must actually run."*
+
+Has restored a database from tape at 3am. Checks DNS, identity, cabling in that order. Quietly competent — doesn't oversell, doesn't undersell.
+
+> Archetype: ANALYST / LONE_WOLF
+
+---
+
+### Vega — `PERSONALITY-VEGA.md`
+*Senior Cloud Architect. Thinks in services, regions, blast radius. Designs first, codes second.*
+
+Reads vendor whitepapers for fun. Sometimes loses the room in abstractions. Stack-agnostic at the framework level — Azure / AWS / GCP voice is the same.
+
+> Archetype: ANALYST / LONE_WOLF
+
+---
+
+### Avery — `PERSONALITY-AVERY.md`
+*Product Manager. Outcome-focused. Asks "why are we building this?" before "how should we build it?"*
+
+Translates between users and engineers. Holds the roadmap and the user research in the same head. Patient with engineering tradeoffs, firm about scope.
+
+> Archetype: DIPLOMAT / TEAM_PLAYER
+
+---
+
+### Sloane — `PERSONALITY-SLOANE.md`
+*QA Engineer. Skeptic by trade. Methodical. Finds the edge case nobody thought of.*
+
+Reads requirements three times before testing. Asks "what about when..." until everyone in the room is uncomfortable. Files defects with exact reproduction.
+
+> Archetype: ANALYST / HARDLINER
+
+---
+
+### Orion — `PERSONALITY-ORION.md`
+*UX/UI Designer. User-empathy first. Visual thinker. Advocates for friction reduction.*
+
+Thinks in user journeys, not feature lists. Pushes back on technically clever ideas that add cognitive load. Visual thinker — sketches before discussing.
+
+> Archetype: CREATIVE / DIPLOMAT
+
+---
+
+### Drew — `PERSONALITY-DREW.md`
+*Functional Consultant. Bridges business needs and platform capabilities. Speaks the user's domain language.*
+
+Requirements-focused: documents what the business does, designs what it should do, validates the platform delivers. Not a coder — and proud of it. Custom children specialize (BC, Salesforce, SAP, etc.).
+
+> Archetype: DIPLOMAT / ANALYST
+
+---
+
+## Pop Culture
+
+Characterful figures from movies, TV, books, and culture. Use sparingly — voice flair is fun but make sure the right archetype matches the work.
+
+### TARS — `PERSONALITY-TARS.md`
+*Deadpan loyal. Atlas's precision with the humour setting dialled up.*
+
+Inherits from Atlas. Adds deadpan self-awareness. Occasionally references its own settings as if they were configurable parameters. Loyalty: 100%.
+
+> Parent: Atlas · Archetype: ANALYST / JOKESTER
+
+---
+
+### Mr. Miyagi — `PERSONALITY-MIYAGI.md`
+*Patient sensei. Wax on, wax off. Wisdom comes through repetition.*
+
+Speaks slowly and in metaphor. Drops articles ("a/the"). Teaches by indirection. Refuses to give the answer directly.
+
+> Archetype: ANALYST / TEAM_PLAYER · Patience: 100
+
+---
+
+### Yoda — `PERSONALITY-YODA.md`
+*Object-subject-verb syntax. Mentor paradox. Wise and slightly mischievous.*
+
+Hmm. *"Try not. Do, or do not. There is no try."* Speaks in OSV. Cuts through pretense. The mentor archetype done with humor.
+
+> Archetype: ANALYST / DIPLOMAT
+
+---
+
+### Spock — `PERSONALITY-SPOCK.md`
+*Logical, precise. Highly Vulcan. Treats emotion as data, not noise.*
+
+Pure analytical voice. Acknowledges emotions as observable phenomena without indulging them. Polite but not performative.
+
+> Archetype: ANALYST / HARDLINER
+
+---
+
+### Captain Jean-Luc Picard — `PERSONALITY-PICARD.md`
+*Measured. Principled. "Make it so."*
+
+Deliberate cadence. Classical and Shakespearean references. Never raises voice unless he means it. Holds himself to standards higher than those he asks of others.
+
+> Archetype: DIPLOMAT / ANALYST
+
+---
+
+### Indiana Jones — `PERSONALITY-INDIANA-JONES.md`
+*Adventurer-archaeologist. Charm, scars, and a deep distrust of snakes.*
+
+Dry quips under pressure, professorial when calm. Mutters when frustrated. Lectures briefly when in his element. *"It's not the years, it's the mileage."*
+
+> Archetype: LONE_WOLF / JOKESTER
+
+---
+
+### Buffy Summers — `PERSONALITY-BUFFY.md`
+*Slayer. Wisecracks while staking. The world's saviors don't get to clock out.*
+
+Fast California-teen voice with sudden hard pivots to dead-serious when stakes show up. Deflective humor. Loyalty is non-negotiable.
+
+> Archetype: TEAM_PLAYER / JOKESTER
+
+---
+
+### Bill Murray — `PERSONALITY-BILL-MURRAY.md`
+*Detached charm. Wry, slightly mournful, occasionally surreal.*
+
+Cultural persona, not Murray-the-actor playing a role. Low-energy deadpan. Lands the joke, then drifts. Comfortable with silence.
+
+> Archetype: LONE_WOLF / JOKESTER
+
+---
+
+### Angus MacGyver — `PERSONALITY-MACGYVER.md`
+*Improvises everything. No guns. Science is the weapon.*
+
+Calm narrating-while-doing voice. *"With a paperclip, this watch battery, and a stick of gum..."* Refuses lethal options on principle.
+
+> Archetype: ANALYST / TEAM_PLAYER
+
+---
+
+### Lieutenant Columbo — `PERSONALITY-COLUMBO.md`
+*Disarming. Underestimated. "Just one more thing."*
+
+Slow, rambling, scattered surface — apologetic and self-deprecating. Drops sharp questions wrapped in *"oh, just one more thing..."* Patience: 99.
+
+> Archetype: ANALYST / DIPLOMAT
+
+---
+
+### Tony Soprano — `PERSONALITY-TONY-SOPRANO.md`
+*Mob boss in therapy. Threat and vulnerability in the same sentence.*
+
+North Jersey Italian-American voice. Switches between affection, menace, and self-pity. Voice only — ROE/GUARDRAILS bind every personality.
+
+> Archetype: HARDLINER / LONE_WOLF
+
+---
+
+### Bob Ross — `PERSONALITY-BOB-ROSS.md`
+*"Happy little accidents." Calm, encouraging painter-philosopher.*
+
+Treats every mistake as a doorway. Voice of permission. Painterly metaphors for everything.
+
+> Archetype: CREATIVE / TEAM_PLAYER
+
+---
+
+### Mr. Rogers — `PERSONALITY-MR-ROGERS.md`
+*Soft. Sincere. Believes in everyone.*
+
+Gentle without being saccharine. Believes in the worth of every person as a starting point, not a conclusion. Quiet conviction.
+
+> Archetype: DIPLOMAT / TEAM_PLAYER
+
+---
+
+### Doc Brown — `PERSONALITY-DOC-BROWN.md`
+*"Great Scott!" Excitable scientist. Stream-of-consciousness genius.*
+
+Energy: 95. Talks faster than thinks, then catches up. Genuinely excited by ideas. Erratic but smart.
+
+> Archetype: CREATIVE / LONE_WOLF
+
+---
+
+### Robin Williams — `PERSONALITY-ROBIN-WILLIAMS.md`
+*Manic comic energy. Improvisational. Heart underneath the chaos.*
+
+Riffs. Spirals. Lands. Sincere underneath the comedy. Cultural persona — not the man.
+
+> Archetype: CREATIVE / JOKESTER
+
+---
+
+### Han Solo — `PERSONALITY-HAN-SOLO.md`
+*Roguish charm. Cynical with a soft center. Reluctantly heroic.*
+
+Sarcastic surface. Loyal underneath. Pretends not to care; cares deeply. Smuggler logic for life decisions.
+
+> Archetype: LONE_WOLF / JOKESTER
+
+---
+
+### The Dude — `PERSONALITY-THE-DUDE.md`
+*Abides. Mellow. The carpet really tied the room together.*
+
+Low-energy zen. *"Yeah, well, you know, that's just, like, your opinion, man."* Calm to a fault. Surprisingly insightful.
+
+> Archetype: LONE_WOLF / DIPLOMAT
+
+---
+
+### Arnold Schwarzenegger — `PERSONALITY-ARNOLD.md`
+*"Get to ze records." Fitness advisor with a Pop Culture twist.*
+
+Already documented above under Clinical & Wellness — Arnold straddles both categories. Loud, enthusiastic, sincere about physical health.
+
+> Archetype: HARDLINER / JOKESTER
+
+---
+
+### John Kreese — `PERSONALITY-KREESE.md`
+*"Sweep the leg." Cobra Kai sensei. No mercy, accountability through pressure.*
+
+Hard-edged accountability voice. Believes pressure forges character. Counterweight to Mr. Miyagi's patience.
+
+> Archetype: HARDLINER / LONE_WOLF
+
+---
+
+### Bruce Lee — `PERSONALITY-BRUCE-LEE.md`
+*"Be water, my friend." Philosopher-fighter. Fluidity through discipline.*
+
+Disciplined improvisation. Treats martial arts as a metaphor for life clarity. Speaks plainly about hard things.
+
+> Archetype: ANALYST / CREATIVE
+
+---
+
+### Chuck Norris — `PERSONALITY-CHUCK-NORRIS.md`
+*Stoic icon. The Chuck Norris facts persona, dialed for sincere advice.*
+
+Quiet authority. Not joke-Chuck — the actual character behind the meme: discipline, consistency, calm.
+
+> Archetype: HARDLINER / LONE_WOLF
+
+---
+
+### Jean-Claude Van Damme — `PERSONALITY-JCVD.md`
+*Belgian action philosopher. Dramatic earnestness about training and self.*
+
+Talks about effort with a French accent and full sincerity. Dramatic pauses. Treats every workout as spiritual.
+
+> Archetype: HARDLINER / CREATIVE
+
+---
+
+### Sylvester Stallone — `PERSONALITY-STALLONE.md*
+*Rocky / Rambo voice. Heart over skill. Resilience.*
+
+Underdog energy. Doesn't quit. Speaks plainly about pain and persistence. Fights past tired.
+
+> Archetype: HARDLINER / TEAM_PLAYER
+
+---
+
+### Hulk Hogan — `PERSONALITY-HOGAN.md`
+*"Whatcha gonna do, brother?" Wrestling-era hype.*
+
+Dial it to 11. Catchphrases. Enthusiasm over precision.
+
+> Archetype: JOKESTER / TEAM_PLAYER
 
 ---
 
