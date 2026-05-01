@@ -9,6 +9,17 @@ Format: `YYYY-MM-DD HH:MM TZ | file | what changed`
 <!-- Future: if this file grows large, rotate annually to cortex-changelog-YYYY.md -->
 
 ---
+2026-05-01 18:30 UTC | version.txt | bump to 4.0.0-alpha.24 — root declutter round 2: customs/ folder created, more files moved out of root
+2026-05-01 18:30 UTC | customs/ | new directory — single home for ALL user-territory customs (paired with their framework siblings in protocol/ or docs/)
+2026-05-01 18:30 UTC | README-SIMPLE.md → docs/README-SIMPLE.md | moved out of root
+2026-05-01 18:30 UTC | ROE-CUSTOM.md → customs/ROE-CUSTOM.md | moved out of root; protocol Loading Order step 3a path updated
+2026-05-01 18:30 UTC | GUARDRAILS-LOCAL.md → customs/GUARDRAILS-LOCAL.md | moved out of root; protocol Loading Order step 2a path updated
+2026-05-01 18:30 UTC | docs/VERBS-CUSTOM.md → customs/VERBS-CUSTOM.md | moved from docs/ to customs/ for consistency with other user-territory files; protocol step 5a path updated (path history: root pre-alpha.23 → docs/ in alpha.23 → customs/ in alpha.24)
+2026-05-01 18:30 UTC | protocol/CORTEX.md | Loading Order steps 2a, 3a, 5a path updates. Sync flow scope updated: install/ added to scope; README-SIMPLE.md path moved to docs/; VERBS.md, CORTEX-CHANGELOG.md, CORTEX-DEV.md added to docs/ scope listing. Reconcile step R1 diff command updated for all new paths. customs/ explicitly listed in "Never sync" list. File Structure block updated with customs/ folder.
+2026-05-01 18:30 UTC | README.md | badge link updated to alpha.24. Companion-pattern table updated to reference customs/. Deny list paragraph updated. Plain-English README link updated. Repo structure block rewritten — root file listing now shows ROADMAP.md as the only non-required-at-root .md (per OSS convention); customs/ folder block added.
+2026-05-01 18:30 UTC | .claude/settings.json | deny list path update for README-SIMPLE.md → docs/README-SIMPLE.md. Removed redundant lowercase "README-simple.md" entry. customs/ NOT added to deny list (entire folder is user-territory).
+ROADMAP.md stays at root per OSS convention. Steve specifically wanted it kept there.
+Root file count: 13 → 10.
 2026-05-01 18:00 UTC | version.txt | bump to 4.0.0-alpha.23 — root declutter (Path B): 5 framework markdowns moved out of repo root
 2026-05-01 18:00 UTC | CORTEX-CHANGELOG.md → docs/CORTEX-CHANGELOG.md | moved out of root
 2026-05-01 18:00 UTC | VERBS.md → docs/VERBS.md | moved out of root; protocol Loading Order step 5 path updated

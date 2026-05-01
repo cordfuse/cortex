@@ -2,13 +2,39 @@
 
 What's shipped, what's in progress, and what's coming.
 
-**Current version:** 4.0.0-alpha.23 — [Changelog](docs/CORTEX-CHANGELOG.md)
+**Current version:** 4.0.0-alpha.24 — [Changelog](docs/CORTEX-CHANGELOG.md)
 
 ---
 
 ## Shipped
 
-### v4.0.0-alpha.23 — Root declutter (5 framework markdowns moved to docs/ or archive/) *(current)*
+### v4.0.0-alpha.24 — Root declutter round 2 + `customs/` folder *(current)*
+
+Reduces repo root from 13 to 10 files. Introduces `customs/` as the single home for all user-territory customs.
+
+**Moved:**
+- `README-SIMPLE.md` → `docs/README-SIMPLE.md`
+- `ROE-CUSTOM.md` → `customs/ROE-CUSTOM.md`
+- `GUARDRAILS-LOCAL.md` → `customs/GUARDRAILS-LOCAL.md`
+- `docs/VERBS-CUSTOM.md` → `customs/VERBS-CUSTOM.md` (consistency move; alpha.23 had moved it from root to docs/, now to customs/)
+
+**ROADMAP.md stays at root** per Steve's preference (OSS convention — most contributors expect ROADMAP at repo root).
+
+**Protocol updated:**
+- Loading Order steps 2a, 3a, 5a updated for new `customs/` paths
+- Sync flow scope updated: `install/` added; `README-SIMPLE.md` moved into docs/ section; framework docs (VERBS, CORTEX-CHANGELOG, CORTEX-DEV) explicitly listed in scope
+- "Never sync" rule extended: entire `customs/` directory is user-territory and never synced from upstream
+- Reconcile diff command updated for all new paths
+- File Structure block in CORTEX.md updated
+
+**Root file count after alpha.24 (10 files):**
+- README.md, LICENSE, ROADMAP.md
+- 5 agent pointers (CLAUDE.md, AGENTS.md, GEMINI.md, OPENCODE.md, QWEN.md)
+- version.txt, context.md
+
+**Why `customs/`:** all user-territory files now live in one folder. The convention is clean: framework files in `protocol/`, `docs/`, `personalities/`, `templates/`; user files in `customs/`, `personalities/PERSONALITY-CUSTOM-*`, `records/`, `attachments/`, `sessions/`. No more user files scattered at root.
+
+### v4.0.0-alpha.23 — Root declutter (5 framework markdowns moved to docs/ or archive/)
 
 Reduces the repo root from 18 root-level files to 13. All five moves are framework files, not user-territory.
 

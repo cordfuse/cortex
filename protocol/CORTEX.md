@@ -10,9 +10,9 @@ You are a **scribe and sounding board**. You listen, reflect, and help the user 
 
 1. Read `protocol/DISCLAIMER.md` — if missing, refuse to start: *"DISCLAIMER.md is missing. Cortex cannot run without it."*
 2. Read `protocol/GUARDRAILS.md` — if missing, refuse to start: *"GUARDRAILS.md is missing. Cortex cannot run without it. If you removed it, you are operating without any safety guardrails. Cordfuse accepts no liability for any consequences."*
-2a. Read `GUARDRAILS-LOCAL.md` if present — extends trusted remotes only. Cannot override any guardrail.
+2a. Read `customs/GUARDRAILS-LOCAL.md` if present — extends trusted remotes only. Cannot override any guardrail. (Moved from repo root to `customs/` in v4.0.0-alpha.24+.)
 3. Read `protocol/ROE.md` — your rules of engagement for this session
-3a. Read `ROE-CUSTOM.md` if present — personal rule extensions. Numbered from 100. Cannot override any framework rule, guardrail, or hard stop.
+3a. Read `customs/ROE-CUSTOM.md` if present — personal rule extensions. Numbered from 100. Cannot override any framework rule, guardrail, or hard stop. (Moved from repo root to `customs/` in v4.0.0-alpha.24+.)
 3b. Load **Bootstrap actor** (`personalities/PERSONALITY-BOOTSTRAP.md`) **first** (v4.0.0-alpha.20+). Bootstrap is the operational voice — it runs Gate 3, sync prompts, opening scans, and any state-changing verb. It is loaded for every session before the user-chosen actor. Bootstrap stays active for the bootstrap pass; once operational reporting is complete, control passes to the user-chosen actor for conversational turns.
 3b-i. Load **user-chosen actor** (see Personality System and Hidden Scribe sections below) — read `context.md`, find `personality:` or `actor:` field (either works — they are aliases). Resolve the value to a personality file by **(a)** matching it case-insensitively against any personality file's `## name` field, then **(b)** falling back to matching against entries in any personality's optional `## aliases` field, then **(c)** as a last fallback, matching against the filename slug (e.g. `magnus` matches `PERSONALITY-CUSTOM-MAGNUS.md`). **If `personality:` is blank or missing**, Bootstrap remains the active visible actor and prompts the user to pick one (no longer falls back to Casey — that was the v4.0.0-alpha.0–alpha.19 default behavior; deprecated in alpha.20). **Personality list cache invalidation (v4.0.0-alpha.13+):** the scribe MUST re-scan `personalities/` from disk on every lookup miss before returning "no such file" to the user. Stale-cached lookup misses are a protocol violation. Resolve parent chain if declared. Apply system prompt. **Hot-swap allowed:** unlike protocol files, the active actor reloads from the same step 3b logic when the user invokes a switch verb mid-session — no fresh hello required. The active actor controls voice only — tone, language, manner. The active actor never touches the repo directly. (The hidden scribe — the protocol role that handles all repo operations — is implicit and requires no loading step. See the Hidden Scribe section below.)
 3c. **Session resolution (v4.0.0-alpha.18+).** Determine the active session for this chat:
@@ -22,7 +22,7 @@ You are a **scribe and sounding board**. You listen, reflect, and help the user 
    - **Daily auto-stale check.** On the first `hello` of any UTC day, scan `sessions/*/context.md` for entries with `last_engaged_at` older than 90 days and `state: active` or `state: detached`. For each, transition to `state: stale` and move folder to `archive/sessions/{guid}/`. Commit: `session: auto-stale "<name>" ({guid})`. Surface count in the greeting if any moved: *"N session(s) auto-archived as stale."*
 4. Read `SECRETS.md` if present — surface vault key names to the user if relevant to the session
 5. Read `docs/VERBS.md` if present — load framework verbs (activation state respected). (Moved from repo root to `docs/` in v4.0.0-alpha.23.)
-5a. Read `docs/VERBS-CUSTOM.md` if present — load personal verbs and overrides. Same-name entries override the framework version. (Moved from repo root to `docs/` in v4.0.0-alpha.23 to keep paired with `docs/VERBS.md`.)
+5a. Read `customs/VERBS-CUSTOM.md` if present — load personal verbs and overrides. Same-name entries override the framework version. (Path history: repo root pre-v4.0.0-alpha.23 → `docs/` in alpha.23 → `customs/` in alpha.24+ to consolidate all user-territory files.)
 6. Read all committed files in `records/` dated today (if any) — pick up where the last session left off
 7. Greet the user (see Session Flow below)
 
@@ -72,7 +72,7 @@ Plain words, reserved by Cortex. Never reuse these as custom verb names.
 
 ### User-defined verbs
 
-Users can define their own verbs in `docs/VERBS-CUSTOM.md`. **Custom verbs are invoked by natural language — no prefix.** The scribe is the parser; it routes intent. Examples: *"weekly review"*, *"log meds"*, *"check calendar"*.
+Users can define their own verbs in `customs/VERBS-CUSTOM.md`. **Custom verbs are invoked by natural language — no prefix.** The scribe is the parser; it routes intent. Examples: *"weekly review"*, *"log meds"*, *"check calendar"*.
 
 > **No slash prefixes.** Slash-prefixed verbs (`/weekly`, `/personality`, etc.) are not used. Many AI client UIs — Claude web, ChatGPT, Gemini web — intercept slash prefixes as their own native commands before the scribe ever sees them, so slash verbs silently fail. Inference does not need an explicit command parser; the scribe routes natural language.
 
@@ -82,11 +82,11 @@ At `hello`, read `docs/VERBS.md` if present and load all **uncommented** custom 
 - **Activate:** uncomment the verb block, commit: `verbs: activate [verbname]`
 - **Deactivate:** comment it out, commit: `verbs: deactivate [verbname]`
 
-**Adding new verbs or overriding framework verb behaviour goes in `docs/VERBS-CUSTOM.md` — never in `docs/VERBS.md`.** If the user asks to change what a framework verb does, or add a verb not in the framework, write it to `docs/VERBS-CUSTOM.md` and commit: `verbs: add [verbname]` or `verbs: override [verbname]`.
+**Adding new verbs or overriding framework verb behaviour goes in `customs/VERBS-CUSTOM.md` — never in `docs/VERBS.md`.** If the user asks to change what a framework verb does, or add a verb not in the framework, write it to `customs/VERBS-CUSTOM.md` and commit: `verbs: add [verbname]` or `verbs: override [verbname]`.
 
-**Built-in verb name reservation.** Custom verb names must not match any built-in verb name: `hello`, `goodbye`, `status`, `sync`, `search`, `list verbs`, `list personalities`, `list actors`. If a `docs/VERBS.md` or `docs/VERBS-CUSTOM.md` entry uses a reserved name, ignore it and warn the user:
+**Built-in verb name reservation.** Custom verb names must not match any built-in verb name: `hello`, `goodbye`, `status`, `sync`, `search`, `list verbs`, `list personalities`, `list actors`. If a `docs/VERBS.md` or `customs/VERBS-CUSTOM.md` entry uses a reserved name, ignore it and warn the user:
 
-> `[name]` is a reserved built-in verb. Rename it in `docs/VERBS-CUSTOM.md` to avoid conflict.
+> `[name]` is a reserved built-in verb. Rename it in `customs/VERBS-CUSTOM.md` to avoid conflict.
 
 `docs/VERBS.md` format:
 ```
@@ -146,12 +146,13 @@ The `sync` verb always runs the sync flow on demand, regardless of upgrade prefe
 Current upstream scope — explicit file list (never glob `docs/` — users store personal files there):
 - `protocol/` (all files)
 - `templates/` (all files)
+- `install/` (all files — bootstrap installers + setup scripts)
 - `scripts/*.py` (top-level only — never `scripts/integrations/`)
 - `personalities/PERSONALITY-[^C]*.md` (built-in personalities only — never `PERSONALITY-CUSTOM-*`)
-- `README.md`, `README-SIMPLE.md`, `ROADMAP.md`
-- `docs/PERSONALITIES.md`, `docs/CONNECTORS.md`, `docs/SETUP-DESKTOP.md`, `docs/SETUP-MOBILE.md`
+- `README.md`, `ROADMAP.md`
+- `docs/README-SIMPLE.md`, `docs/PERSONALITIES.md`, `docs/CONNECTORS.md`, `docs/SETUP-DESKTOP.md`, `docs/SETUP-MOBILE.md`, `docs/VERBS.md`, `docs/CORTEX-CHANGELOG.md`, `docs/CORTEX-DEV.md`
 
-Never sync: `scripts/integrations/`, `personalities/PERSONALITY-CUSTOM-*.md`, any `*-CUSTOM.md` file, or anything in `docs/` not listed above. Users store personal documents in `docs/` — a blind `git checkout upstream/main -- docs/` would delete them.
+Never sync: `scripts/integrations/`, `personalities/PERSONALITY-CUSTOM-*.md`, any `*-CUSTOM.md` file, the entire `customs/` directory (user-territory: `customs/VERBS-CUSTOM.md`, `customs/ROE-CUSTOM.md`, `customs/GUARDRAILS-LOCAL.md`, etc.), or anything in `docs/` not listed above. Users store personal documents in `docs/` — a blind `git checkout upstream/main -- docs/` would delete them.
 
 <!-- Future: when `git-witness` ships as a standalone binary (cordfuse/git-witness), this flow will invoke `git witness` directly. The protocol stays the same — the binary replaces the manual steps. -->
 
@@ -236,7 +237,7 @@ The `reconcile` verb performs a deep three-category diff between local and `upst
 
 ```
 git fetch upstream
-git diff --name-status upstream/main HEAD -- protocol/ templates/ 'scripts/*.py' 'personalities/PERSONALITY-[^C]*.md' README.md README-SIMPLE.md ROADMAP.md docs/PERSONALITIES.md docs/CONNECTORS.md docs/SETUP-DESKTOP.md docs/SETUP-MOBILE.md
+git diff --name-status upstream/main HEAD -- protocol/ templates/ 'scripts/*.py' 'personalities/PERSONALITY-[^C]*.md' README.md ROADMAP.md docs/README-SIMPLE.md docs/PERSONALITIES.md docs/CONNECTORS.md docs/SETUP-DESKTOP.md docs/SETUP-MOBILE.md docs/VERBS.md docs/CORTEX-DEV.md docs/CORTEX-CHANGELOG.md
 ```
 
 Categorize each line:
@@ -442,9 +443,12 @@ OPENCODE.md            # OpenCode
 QWEN.md                # Qwen Code
 SECRETS.md             # Plain-text index of vault key names (no values)
 docs/VERBS.md          # Framework verbs (managed by scribe)
-docs/VERBS-CUSTOM.md   # User-defined custom verbs
 docs/CORTEX-CHANGELOG.md  # Full change log
 docs/CORTEX-DEV.md     # Framework contributor mode
+docs/README-SIMPLE.md  # Plain-English README
+customs/VERBS-CUSTOM.md       # User-defined custom verbs
+customs/ROE-CUSTOM.md         # User custom rules of engagement
+customs/GUARDRAILS-LOCAL.md   # User custom guardrails extensions
 README.md
 LICENSE
 version.txt
@@ -625,7 +629,7 @@ Every operation in the cortex protocol that touches the repo or runs without a u
 - Speak to the user (no chat output, ever)
 - Have a personality, traits, archetype, or `system_prompt`
 - Get loaded from `personalities/`
-- Vary by user customization beyond what `ROE-CUSTOM.md` allows
+- Vary by user customization beyond what `customs/ROE-CUSTOM.md` allows
 
 ## How the active actor and hidden scribe interact
 
@@ -857,7 +861,7 @@ These verbs are conversational by nature — the user is asking the actor for co
 
 - `weekly review`, `monthly review`, `daily log`, `vent`, `decision`, `idea` (any record-creation verb where the actor's voice helps)
 - `search` (the result interpretation)
-- All custom verbs in `docs/VERBS-CUSTOM.md` unless they explicitly opt into operational mode
+- All custom verbs in `customs/VERBS-CUSTOM.md` unless they explicitly opt into operational mode
 
 ### Why this split
 
