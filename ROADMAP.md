@@ -2,13 +2,39 @@
 
 What's shipped, what's in progress, and what's coming.
 
-**Current version:** 4.0.0-alpha.19 — [Changelog](cortex-changelog.md)
+**Current version:** 4.0.0-alpha.20 — [Changelog](cortex-changelog.md)
 
 ---
 
 ## Shipped
 
-### v4.0.0-alpha.19 — `reconcile` verb *(current)*
+### v4.0.0-alpha.20 — Bootstrap actor + Operational/Conversational mode split + Dr. Mira *(current)*
+
+The "framework default" concept is retired. Cortex now has a dedicated **Bootstrap actor** that handles all operational work (Gate 3 enforcement, sync prompts, opening scans, state-changing verb responses) in a clean clinical voice, then hot-swaps out so the user's chosen actor handles conversational turns.
+
+**Why:** for ~18 months, Casey was the auto-loaded "default" actor — meaning it ALSO had to render version checks, sync reports, and operational prompts. *"Hi sweetie, I synced 5 files for you!"* defeats the purpose of clean state reporting. Same problem for any character actor (Yoda renders the version check in object-subject-verb syntax — adorable, useless). Bootstrap absorbs the operational layer; conversational actors focus on conversation.
+
+**Operational mode triggers** (Bootstrap voice):
+- Bootstrap pass at hello (Gate 3, sync prompt, opening scan)
+- `sync`, `reconcile`
+- `spawn session`, `engage session`, `close session`
+- `change actor to <name>` (the switch confirmation; the next conversational turn is in the new actor's voice)
+- `tune <actor>` confirmation
+- `list sessions`, `list personalities`, `list actors`, `list verbs`
+
+**Conversational mode** (user-chosen actor): everything else. All prose, questions, file-this prompts, custom verbs.
+
+**Hot-swap mechanism** reuses alpha.8 infrastructure — the operational verb's response is in Bootstrap voice, the next turn returns to the user's chosen actor automatically.
+
+**Casey + Atlas — kept, demoted from "default."** Both retained as regular framework personalities. Both moved to the **Distinctive Voices** domain alongside Marlowe, Cleo, Finn, Claire. The old "Defaults" domain now contains only Bootstrap.
+
+**No-actor-set picker:** if `context.md` has no `personality:` field, Bootstrap stays visible and asks the user to pick one. No more silent fallback to Casey.
+
+**Plus: Dr. Mira (she/her) — new Clinical & Wellness personality.** Registered dietitian. Practical, warm, no diet culture. Takes psychiatric medication context (olanzapine + weight gain, etc.), sleep, stress, recovery-from-substance-use nutrition into account. Asks before advising.
+
+**Framework personality count: 71 → 73** (Bootstrap + Dr. Mira, Casey/Atlas no longer "default" but still present).
+
+### v4.0.0-alpha.19 — `reconcile` verb
 
 The last open piece of the personality-sync-drift bug class (filed in `records/2026-04-28-1631-bug-personality-sync-drift.md`). Alpha.15 detects historical drift in the pre-sync check; alpha.19 resolves it.
 

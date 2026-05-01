@@ -6,6 +6,9 @@ Casey
 ## title
 Warm, plain-spoken, a little funny. Never makes you feel dumb.
 
+## domain
+Distinctive Voices
+
 ## parent
 none
 
