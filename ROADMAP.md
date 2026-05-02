@@ -2,13 +2,33 @@
 
 What's shipped, what's in progress, and what's coming.
 
-**Current version:** 4.0.0-alpha.26 — [Changelog](docs/CORTEX-CHANGELOG.md)
+**Current version:** 4.0.0-alpha.27 — [Changelog](docs/CORTEX-CHANGELOG.md)
 
 ---
 
 ## Shipped
 
-### v4.0.0-alpha.26 — Monocortex doctrine in README *(current)*
+### v4.0.0-alpha.27 — Actor selection at hello + drift suggestion + `create actor` verb *(current)*
+
+Closes the last meaningful gap in the personality system for v4.
+
+**Three new behaviors:**
+
+1. **Actor selection at hello (informational mode)** — every greeting now includes the existing switch hint extended with a `create actor` clause: *"say `list actors` to see all options, `change actor to <name>` to switch, or `create actor <name>` to make a new one"*. Reminds users that creating a custom personality is a hello-time option, not just a mid-session afterthought.
+
+2. **Actor selection at hello (blocking mode)** — when `personality:` is blank in `context.md`, Bootstrap stays the visible voice and surfaces a full keep/switch/create dialog. Refines the alpha.20 first-time-user picker by explicitly listing the `create actor` path.
+
+3. **Mid-session drift suggestion** — when 3+ consecutive turns are in a topic domain that doesn't match the active actor's `## domain` field, Bootstrap surfaces a one-line switch suggestion with candidate matches. If no candidate fits, suggests `create actor` for the new domain. Anti-nag: declined suggestions don't re-fire for same drift episode.
+
+**New verb:** `create actor <name>` — guided dialog for authoring a custom personality. Walks the user through title, domain, speech style, archetype, trait sliders, system prompt. Writes `personalities/PERSONALITY-CUSTOM-<NAME>.md`, supports `## parents` inheritance.
+
+**Source ideas:** filed in personal cortex overnight (`records/2026-05-02-0131-idea-actor-selection-at-hello.md` and `records/2026-05-02-0159-idea-actor-drift-detection.md`). 11 open questions resolved with reasonable defaults (informational-by-default, Bootstrap-voiced suggestions, 3-turn drift threshold, anti-nag per session, `## domain` field for matching).
+
+**Why this matters:** addresses two real friction points — actor amnesia between sessions ("what did I set last time?") and topic drift mid-session ("I should have switched to a different actor 20 turns ago"). The personality system goes from passive (set-once-and-forget) to actively-aware of fit.
+
+**After alpha.27:** the personality system reaches feature-complete for v4. Remaining items (Phase 2 multi-actor roster integration, MTX export/import) are downstream of other major features, not personality system gaps.
+
+### v4.0.0-alpha.26 — Monocortex doctrine in README
 
 Adds a new README section: **"One cortex per access boundary, not per topic."**
 

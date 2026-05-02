@@ -827,6 +827,78 @@ The scribe reads this at `hello` and loads the corresponding file. **If `persona
 
 ---
 
+## Actor selection at hello (v4.0.0-alpha.27+)
+
+Two modes at session open, depending on whether `personality:` is set in `context.md`:
+
+### Blocking mode — when `personality:` is blank or missing
+
+Bootstrap stays the visible voice and surfaces a full selection dialog. User MUST respond before the greeting completes:
+
+> *No actor is set. Pick one to start, or create a custom personality.*
+>
+> *- Say `change actor to <name>` to pick an existing actor (e.g., "change actor to casey"). See full list with `list actors`.*
+> *- Say `create actor <name>` to author a new custom personality.*
+
+User responds, Bootstrap commits the selection to `context.md` (or writes a new personality file in the create case), greeting completes, control passes to the chosen actor.
+
+### Informational mode — when `personality:` is set
+
+The active actor's introduction line at greeting (already established in alpha.9 + alpha.20) IS the informational reminder. To make the create-actor option visible, the existing switch hint is extended:
+
+> *(say `list actors` to see all options, `change actor to <name>` to switch, or `create actor <name>` to make a new one)*
+
+This is a single additional clause in the standard switch hint. No blocking; the user can proceed without responding. The reminder serves as a lightweight nudge to think about whether the current actor fits the work the user is about to do.
+
+### Why this matters
+
+Actor amnesia between sessions is real — users forget what was set last and inherit silently. The informational hint creates a deliberate pause point at session open without adding turn overhead. The blocking mode handles the genuinely-undecided case (first-time-user, no preference set).
+
+The hello-time selection dialog is voiced by Bootstrap (operational mode) per `# Bootstrap actor + Operational mode` — no personality flavor in the selection itself.
+
+---
+
+## Actor drift suggestion mid-session (v4.0.0-alpha.27+)
+
+If conversation drifts into a domain or specialty the current actor isn't well-suited for, the scribe surfaces a switch suggestion in Bootstrap voice. Names one or two candidate actors and explains why each would fit. User accepts, overrides, or ignores.
+
+### Drift detection threshold
+
+Drift is detected when **three or more consecutive user turns are about a topic domain that doesn't match the active actor's `## domain` field**. Single-turn topic shifts don't fire — only sustained drift triggers a suggestion.
+
+The scribe judges turn topic domain at runtime — same kind of LLM judgment used elsewhere in the protocol. False positives are worse than no suggestions, so the bar is conservative (3+ turns minimum).
+
+### Match logic
+
+Each personality file declares its `## domain` (alpha.10+). Drift detection uses this as the actor's claimed-fitness signal:
+
+- Active actor's `## domain` matches the user's recent turn domains → no drift, no suggestion.
+- Active actor's `## domain` doesn't match for 3+ consecutive turns → drift detected. Scribe scans the personality library for personalities whose `## domain` does match the recent turn domains.
+- One or more candidate matches → Bootstrap surfaces suggestion: *"You've been deep in <topic> for a while — want to switch to <candidate>? They specialize in <domain>."*
+- No candidate matches → Bootstrap surfaces: *"You've drifted into <topic> — no current actor specializes in this. Want to `create actor <name>` for it?"*
+
+### Suggestion voice
+
+The suggestion is rendered in Bootstrap voice — neutral, factual, single-line offer. Active actor's voice resumes from the next conversational turn after the user responds (accept / override / ignore).
+
+### Anti-nag
+
+If the user declines a suggestion (or ignores it by continuing in the current actor), the scribe **does not re-suggest the same switch in the current session for the same drift episode**. A new drift episode (different domain) can still trigger a fresh suggestion.
+
+This means: at most one switch suggestion per drift episode per session. Users who want to silence suggestions entirely can disable via a future preference (not in alpha.27 scope).
+
+### Interaction with hello-time selection
+
+The drift threshold is the same regardless of whether the user explicitly chose at hello or inherited silently. The first version doesn't differentiate; if users complain about the bar being too low for explicit choices, raise it later.
+
+### What this is NOT
+
+- Not a personality recommendation engine for first-time users (that's the hello-time selection dialog above)
+- Not real-time topic categorization with strict thresholds (LLM judgment, conservative threshold)
+- Not a replacement for users invoking `change actor` themselves — it's a soft hint, not enforcement
+
+---
+
 ## Bootstrap actor + Operational mode (v4.0.0-alpha.20+)
 
 Cortex sessions have **two voice modes**:
