@@ -21,6 +21,9 @@ Custom session commands the scribe knows about. Invoked by **natural language** 
 ## switch personality
 Switch active personality. Usage: *"switch personality to casey"*, *"change actor to atlas"*, *"use [name]"*. Scribe updates `personality:` in `context.md`, commits, and **hot-swaps to the new actor immediately** — the next response is in the new voice, no fresh hello required (v4.0.0-alpha.8+). To see what's available: `list personalities`. (Aliases: *change actor*, *use*.)
 
+## create actor
+Create a new custom personality through a guided dialog. Usage: *"create actor <name>"* (e.g., *"create actor Magnus"*). Scribe walks the user through the personality file fields — title, domain, speech style, archetype, trait sliders, system prompt — then writes `personalities/PERSONALITY-CUSTOM-<NAME>.md`, commits, pushes, and offers to activate. Filename slug must match the `## name` or an alias entry per alpha.13 lookup rules. Inheritance via `## parents` (alpha.11) supported — scribe asks if the new personality should inherit from an existing one. (v4.0.0-alpha.27+. Aliases: *new actor*, *new personality*, *make actor*.)
+
 ---
 
 ### Multi-Session (v4.0.0-alpha.17+)
