@@ -1459,6 +1459,139 @@ Same rule: first response carries the new session name in the header. No separat
 
 ---
 
+# Personality System Phase 6 v2 (v4.0.0-alpha.34+)
+
+Phase 6 v2 adds four conversational personality affordances on top of the alpha.X-alpha.33 personality foundation: mid-session trait tuning, per-session personality history, user performance annotations, and experimental blend mode. All four are opt-in — single-actor and multi-actor sessions work without invoking any of them.
+
+## Mid-session trait tuning (v4.0.0-alpha.34+)
+
+The user can tune any trait of an active actor mid-session via natural language: *"dial humor up to 80%"*, *"make Casey more serious"*, *"warmth: 90 for atlas"*. The scribe applies the change as a **session-scoped override**, not a permanent edit to the personality file (per ROE Rule 18, framework personality files are read-only — and even custom personality files aren't edited mid-session by default; tuning is conversational state, not durable redefinition).
+
+### How overrides are stored
+
+The `actors:` array in `context.md` (multi-actor format, alpha.32+) gains an optional `overrides:` field per actor:
+
+```
+## Active Actors
+
+actors:
+  - name: casey
+    active_speaker: true
+    joined_at: 2026-05-03 15:30 EDT
+    overrides:
+      humor: 80
+      seriousness: 30
+```
+
+Override values are merged into the actor's loaded trait set at runtime — `casey.humor: 65` (from `PERSONALITY-CASUAL.md`) becomes `effective humor: 80` for this session. Override applies to that specific actor only — overriding Casey's humor doesn't affect Atlas. Override survives session continuation (Phase 6 multi-session) because it lives in `context.md`, which is committed.
+
+For legacy single-actor sessions still using `personality:` field: no `overrides:` field is supported in the legacy format. Migrate to `actors:` (sync flow Step 3b-iii prompt) to use mid-session tuning. The legacy format is preserved as-is for users who want exactly the alpha.X behavior.
+
+### Trigger phrases
+
+Natural language only (cortex's protocol pattern):
+- *"dial humor up to 80"*, *"set humor to 80"*, *"humor 80"* — explicit numeric set
+- *"make casey more serious"*, *"casey more warm"* — relative shift (interpreted as +20 to the named trait, capped 0-100)
+- *"reset casey"* — clear all overrides for that actor
+- *"reset all overrides"* — clear all overrides for all actors
+
+Scribe confirms in Bootstrap voice: *"Casey humor 65 → 80. Override applied."*
+
+### Sycophant warning preserved
+
+If trait override produces a sycophant combination (`honesty < 40 AND deference > 70`), the scribe surfaces the same warning that fires at personality creation:
+> *"This override puts the actor at sycophant levels (honesty < 40, deference > 70). They will tell you what you want to hear and rarely push back. That's a valid choice — just know what you're invoking."*
+
+User confirms or rolls back.
+
+### What this is NOT
+
+- Not a permanent personality file edit
+- Not blend mode (see below — separate feature)
+- Not retroactive — overrides apply from the next turn forward
+
+## Personality history log (v4.0.0-alpha.34+)
+
+Each session keeps an append-only personality history log capturing every actor-affecting state change: who joined, who left, who became active speaker, what overrides were applied. The log lives in `context.md` for the session (singleton or scoped), under a new `## Personality History` section:
+
+```
+## Personality History
+
+- 2026-05-03 14:00 EDT — session opened, casey active speaker
+- 2026-05-03 14:30 EDT — atlas added (joined room), casey still active
+- 2026-05-03 14:35 EDT — atlas became active speaker (was casey)
+- 2026-05-03 14:42 EDT — casey humor override 65 → 80
+- 2026-05-03 14:50 EDT — atlas removed (left room), casey active again
+```
+
+Append-only; never rewritten. Older sessions preserve their history. Useful for the user to scroll back and remember who was active at any point in a long session, and for downstream features (performance annotations, drift retrospectives).
+
+## User performance annotations (v4.0.0-alpha.34+)
+
+User can mark moments where an actor performed well or poorly. Triggered by natural-language annotations in conversation:
+- *"casey was great there"* / *"casey nailed that"* — positive annotation
+- *"atlas missed it"* / *"atlas was off"* — negative annotation
+- *"file annotation: <free-form text>"* — explicit annotation with custom text
+
+Annotations file to a new `## Personality Annotations` section in `context.md`:
+
+```
+## Personality Annotations
+
+- 2026-05-03 14:42 EDT — casey: positive — "nailed the diet question"
+- 2026-05-03 15:10 EDT — atlas: negative — "missed the JCL nuance"
+```
+
+These are lightweight signals — not training data, not statistical aggregates. They give the user a record they can reference when asking later: *"who's been working well for me lately?"* — scribe surfaces the annotation log.
+
+Annotations are session-scoped (live in `context.md` per session). Cross-session aggregation is a future v5 feature if demand surfaces.
+
+## Blend mode (v4.0.0-alpha.34+, EXPERIMENTAL)
+
+The user can request a blended voice: *"50% Casey, 50% Atlas"*, *"blend casey 70 atlas 30"*. The scribe creates a temporary synthesized voice for that session — trait values are weighted averages of the named actors, system prompt is composed via the blend recipe.
+
+### Mechanics
+
+Blend creates an ephemeral actor entry in `actors:` array:
+
+```
+actors:
+  - name: blend-casey-atlas
+    active_speaker: true
+    joined_at: 2026-05-03 15:45 EDT
+    blend:
+      casey: 50
+      atlas: 50
+    derived_overrides:
+      humor: (casey.humor * 0.5) + (atlas.humor * 0.5)
+      ...
+```
+
+Trait values are computed at blend creation, stored as `derived_overrides`. The blend's system prompt is a synthesized hybrid: *"You are a blend of Casey (warm, plain-spoken, casual) and Atlas (precise, methodical, technical). Bring 50% of each character's tone, language, and humor. Keep both voices' strengths; avoid both voices' worst failure modes."*
+
+### Limitations and risks (EXPERIMENTAL marker reasoning)
+
+- **Voice coherence is uncertain.** Blending two strong character voices (Yoda + Arnold) may produce incoherent output. The model is responsible for keeping the blend stable.
+- **Trait-level math vs voice-level character.** Two characters with similar trait sliders can have wildly different voices (Casey vs Sully both warm + plain). Trait-blending captures vibe; it doesn't capture character.
+- **No empirical validation.** Multi-CNAC fresh-CC validation needed. Until validated, marked EXPERIMENTAL — users should expect imperfect results.
+- **Not for faith personalities or high-archetype-conflict pairs.** Blending Pastor + Atlas, or HARDLINER + DIPLOMAT, will likely produce inconsistent voice. Scribe warns user before applying.
+
+### Trigger and revert
+
+- *"blend casey atlas"* — 50/50 default
+- *"blend casey 70 atlas 30"* — explicit weights
+- *"unblend"* / *"reset blend"* — remove the blend, restore the underlying active speaker
+
+The blend never replaces the underlying actors — they remain in the `actors:` array, just not active speakers while the blend is active.
+
+### What this is NOT
+
+- Not a permanent merged personality (use `create actor` if you want a permanent custom one)
+- Not multi-actor panel mode (see Multi-actor sessions — panel mode keeps voices distinct)
+- Not subagent delegation (see independent mode)
+
+---
+
 # Multi-Session (v4.0.0-alpha.17+)
 
 Cortex supports multiple independent sessions co-existing in the same repo. The default ("singleton" / "main session") is a global, session-agnostic state shared across every chat that doesn't explicitly spawn a scoped session. Scoped sessions are isolated runtime state (active actor, hot-swap state, machine + start time, free-form notes) inside `sessions/{guid}/`.
