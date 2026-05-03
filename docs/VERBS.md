@@ -22,7 +22,15 @@ Custom session commands the scribe knows about. Invoked by **natural language** 
 Switch active personality. Usage: *"switch personality to casey"*, *"change actor to atlas"*, *"use [name]"*. Scribe updates `personality:` in `context.md`, commits, and **hot-swaps to the new actor immediately** — the next response is in the new voice, no fresh hello required (v4.0.0-alpha.8+). To see what's available: `list personalities`. (Aliases: *change actor*, *use*.)
 
 ## create actor
-Create a new custom personality through a guided dialog. Usage: *"create actor <name>"* (e.g., *"create actor Magnus"*). Scribe walks the user through the personality file fields — title, domain, speech style, archetype, trait sliders, system prompt — then writes `personalities/PERSONALITY-CUSTOM-<NAME>.md`, commits, pushes, and offers to activate. Filename slug must match the `## name` or an alias entry per alpha.13 lookup rules. Inheritance via `## parents` (alpha.11) supported — scribe asks if the new personality should inherit from an existing one. (v4.0.0-alpha.27+. Aliases: *new actor*, *new personality*, *make actor*.)
+Create a new custom personality. Usage: *"create actor <name>"* (e.g., *"create actor Magnus"*).
+
+**UX (v4.0.0-alpha.28+ — canonical):** scribe presents a **single batched form** listing all required and optional fields in one prompt, with a `take all defaults` shortcut for users who want sensible defaults applied across the board. Required fields: title, domain, speech style, archetype, trait sliders (vibe + virtues + vices + axes), system prompt. Optional: parent personality for inheritance (per alpha.11). The user can fill the form, accept defaults, or fall back to **turn-by-turn** by saying *"walk me through it"* — scribe then asks each field one at a time. Both UX paths produce the same output file.
+
+**Shortcut: `take all defaults`** — scribe applies the canonical defaults (title from name, domain from a sensible inferred category, archetype `ANALYST`, neutral mid-50% trait sliders, generic-but-coherent system prompt). User can edit afterward by saying *"tune <field> to <value>"* or by editing the file directly.
+
+**Output:** scribe writes `personalities/PERSONALITY-CUSTOM-<NAME>.md`, commits, pushes, and offers to activate. Filename slug must match the `## name` or an alias entry per alpha.13 lookup rules. Inheritance via `## parents` (alpha.11) supported — if the user named a parent, scribe resolves and merges per the inheritance algorithm.
+
+(v4.0.0-alpha.27+ verb; UX canonicalized in alpha.28+. Aliases: *new actor*, *new personality*, *make actor*.)
 
 ---
 

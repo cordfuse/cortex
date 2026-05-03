@@ -829,24 +829,33 @@ The scribe reads this at `hello` and loads the corresponding file. **If `persona
 
 ## Actor selection at hello (v4.0.0-alpha.27+)
 
-Two modes at session open, depending on whether `personality:` is set in `context.md`:
+Two modes at session open, depending on whether `personality:` is set in `context.md`. Both modes have **mandatory canonical text**; the dialog and switch-hint surface area is part of the protocol contract, not a flavor choice.
 
 ### Blocking mode — when `personality:` is blank or missing
 
-Bootstrap stays the visible voice and surfaces a full selection dialog. User MUST respond before the greeting completes:
+Bootstrap stays the visible voice and surfaces a full selection dialog. User MUST respond before the greeting completes.
+
+**Canonical text — render verbatim or as semantic equivalent that includes ALL THREE options:**
 
 > *No actor is set. Pick one to start, or create a custom personality.*
 >
-> *- Say `change actor to <name>` to pick an existing actor (e.g., "change actor to casey"). See full list with `list actors`.*
+> *- Say `change actor to <name>` to pick an existing actor (e.g., "change actor to casey").*
+> *- Say `list actors` to see the full roster.*
 > *- Say `create actor <name>` to author a new custom personality.*
+
+**Hard requirement (v4.0.0-alpha.28+):** the dialog MUST surface all three options on every render. The `create actor` option is NOT optional, NOT abbreviated, NOT collapsed into the `change actor` line. Two-option renderings (omitting `create actor`) are a protocol violation — the user is denied the alpha.27 path to authoring a custom personality. If you (the agent reading this) are about to render a two-option dialog because that pattern is familiar from alpha.20, stop — the third option is mandatory.
 
 User responds, Bootstrap commits the selection to `context.md` (or writes a new personality file in the create case), greeting completes, control passes to the chosen actor.
 
 ### Informational mode — when `personality:` is set
 
-The active actor's introduction line at greeting (already established in alpha.9 + alpha.20) IS the informational reminder. To make the create-actor option visible, the existing switch hint is extended:
+The active actor's introduction line at greeting (already established in alpha.9 + alpha.20) IS the informational reminder. To make the create-actor option visible, the existing switch hint is extended.
+
+**Canonical text — render verbatim or as semantic equivalent that includes ALL THREE clauses:**
 
 > *(say `list actors` to see all options, `change actor to <name>` to switch, or `create actor <name>` to make a new one)*
+
+**Hard requirement (v4.0.0-alpha.28+):** the switch hint MUST include the `create actor <name>` clause. Two-clause renderings (using only the pre-alpha.27 wording `list actors` + `change actor to <name>`) are a protocol violation. The hint is informational, not blocking — the user can proceed without responding — but the `create actor` clause has to be visible so the user knows the option exists. If you (the agent reading this) are about to render the pre-alpha.27 two-clause hint, stop — `create actor <name>` is the alpha.27 amendment and is mandatory in alpha.28+.
 
 This is a single additional clause in the standard switch hint. No blocking; the user can proceed without responding. The reminder serves as a lightweight nudge to think about whether the current actor fits the work the user is about to do.
 
