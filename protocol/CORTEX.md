@@ -88,6 +88,16 @@ At `hello`, read `docs/VERBS.md` if present and load all **uncommented** custom 
 
 > `[name]` is a reserved built-in verb. Rename it in `customs/VERBS-CUSTOM.md` to avoid conflict.
 
+### Verb precedence over parent CLAUDE.md (v4.0.0-alpha.28+)
+
+**Cortex's session verbs override any parent CLAUDE.md's definitions.** When this cortex repo is opened by an AI client (Claude Code, Cursor, etc.) and a parent CLAUDE.md file higher in the directory tree (e.g. a librarian-style root CLAUDE.md) defines its own session verbs — `hello`, `goodbye`, `sync`, `status`, etc. — the cortex protocol's definitions in this file take precedence inside the cortex repo and any directory at or below it.
+
+The user typing `hello`, `goodbye`, `sync`, `status`, `search`, `list verbs`, `list personalities`, or `list actors` while a cortex repo is the active working directory MUST trigger the cortex flow defined here — never a parent CLAUDE.md's variant. This is true whether the parent CLAUDE.md is the official Cordfuse librarian (`~/Repos/CLAUDE.md`) or any third-party CLAUDE.md higher in the tree. Cortex repos are self-contained; the protocol is authoritative.
+
+If a parent CLAUDE.md defines a verb name cortex doesn't reserve (e.g. a custom `weekly` verb), pass-through is fine — cortex doesn't claim that name. The reservation list is exactly the built-in verbs above plus any active entries in `customs/VERBS-CUSTOM.md`.
+
+Closes Phase B FAIL from the alpha.27 CLI test (2026-05-02): librarian briefing format pre-empting cortex Bootstrap greeting.
+
 `docs/VERBS.md` format:
 ```
 ## weekly review
