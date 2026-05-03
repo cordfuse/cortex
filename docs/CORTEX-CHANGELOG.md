@@ -9,6 +9,14 @@ Format: `YYYY-MM-DD HH:MM TZ | file | what changed`
 <!-- Future: if this file grows large, rotate annually to cortex-changelog-YYYY.md -->
 
 ---
+2026-05-03 19:30 UTC | version.txt | bump to 4.0.0-alpha.32 — Round D Phase 2: multi-actor sessions foundation
+2026-05-03 19:30 UTC | protocol/CORTEX.md | new section "Multi-actor sessions (v4.0.0-alpha.32+)" — multiple named actors active in one session, addressing rules (single-actor / panel mode / independent mode triggers), per-actor response headers, contributed-vs-present provenance distinction, removal protection (last actor refuses to leave). Foundation for v4 headline.
+2026-05-03 19:30 UTC | protocol/CORTEX.md | Loading Order Step 3b-i extended — accepts both legacy single-actor `personality:` field AND alpha.32 multi-actor `actors:` array. Backward compatible. If both present, `actors:` wins.
+2026-05-03 19:30 UTC | protocol/CORTEX.md | new sync-flow Step 3b-iii — opt-in migration prompt for legacy `personality:` → `actors:` array.
+2026-05-03 19:30 UTC | protocol/CORTEX.md | drift detection action vocabulary extended for multi-actor case — "switch" → "add | remove | switch | create". Single-actor sessions unchanged (alpha.27 behavior).
+2026-05-03 19:30 UTC | docs/VERBS.md | new built-in verbs `add actor` and `remove actor`. `switch personality` / `change actor` clarified for multi-actor case (changes active speaker, doesn't remove others).
+2026-05-03 19:30 UTC | templates/context.md | new `## Active Actors` section with `actors:` array. Legacy `personality:` documented as backward-compatible alternative.
+2026-05-03 19:30 UTC | design record | records/2026-05-03-1451-design-v4-multi-actor.md (in personal cortex) — 10 design questions answered explicitly with reasoning. Each call marked overridable.
 2026-05-03 19:20 UTC | version.txt | bump to 4.0.0-alpha.31 — Round E: small wins (donate verb, fail-gracefully ROE rule, verbosity docs)
 2026-05-03 19:20 UTC | docs/VERBS.md | new built-in verb `donate` — surfaces CAMH Foundation donation link in Bootstrap voice. No filing, no commit; user-prompted only. Closes "Donation mechanism" backlog item.
 2026-05-03 19:20 UTC | protocol/ROE.md | new Rule 19 — "Fail Gracefully on External Service Errors" — cortex scripts calling external services MUST catch network/auth/rate-limit/server errors and surface plain-English manual-fallback messages, never stack traces. Filed in response to 2026-04-25 Google connector smoke test stack-trace failures. Closes "Fail-gracefully rule" backlog item.

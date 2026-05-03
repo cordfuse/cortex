@@ -19,7 +19,13 @@ Custom session commands the scribe knows about. Invoked by **natural language** 
 ### Personality
 
 ## switch personality
-Switch active personality. Usage: *"switch personality to casey"*, *"change actor to atlas"*, *"use [name]"*. Scribe updates `personality:` in `context.md`, commits, and **hot-swaps to the new actor immediately** — the next response is in the new voice, no fresh hello required (v4.0.0-alpha.8+). To see what's available: `list personalities`. (Aliases: *change actor*, *use*.)
+Switch active speaker (single-actor sessions) OR change which actor is the active speaker among multiple in the room (multi-actor sessions, alpha.32+). Usage: *"switch personality to casey"*, *"change actor to atlas"*, *"use [name]"*. Scribe updates the active-speaker designation in `context.md` (legacy `personality:` field OR `actors[].active_speaker` in the alpha.32+ multi-actor format), commits, and **hot-swaps immediately** — the next response is in the new active speaker's voice, no fresh hello required (v4.0.0-alpha.8+). In multi-actor sessions, this does NOT remove other actors from the room — use `remove actor` for that. To see what's available: `list personalities`. To see who's in the room: `list actors` (alpha.32+). (Aliases: *change actor*, *use*.)
+
+## add actor
+Bring an additional named actor into the session (multi-actor mode, v4.0.0-alpha.32+). Usage: *"add actor oscar"*, *"Hey Oscar, join us"*, *"bring in atlas"*, *"invite dr mira"*. Scribe loads the named actor's personality file (per alpha.13 lookup rules), appends a new entry to `actors:` in `context.md` with `active_speaker: false`, commits. Surfaces Bootstrap acknowledgement: *"Oscar joined the room. Casey is still the active speaker."* The new actor is addressable but does NOT auto-respond on the next turn unless explicitly named. To make the new actor the default responder, follow with `change actor to <name>`. (Aliases: *bring in*, *invite*.)
+
+## remove actor
+Remove a named actor from the session (multi-actor mode, v4.0.0-alpha.32+). Usage: *"remove actor oscar"*, *"Oscar, you can step out"*, *"send atlas away"*. Scribe surfaces a confirmation prompt unless the actor has 0 contributions this session (*"Remove Oscar from the room? They've contributed N times this session. (yes/no)"*), then removes the entry from `actors:` in `context.md`, commits. If removing the active speaker, the most-recently-joined remaining actor inherits `active_speaker: true`. **Refuses to remove the last actor** — directs the user to `change actor` (replace) or `goodbye` (end session). (Aliases: *step out*, *send away*.)
 
 ## create actor
 Create a new custom personality. Usage: *"create actor <name>"* (e.g., *"create actor Magnus"*).
