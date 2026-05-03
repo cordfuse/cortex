@@ -9,6 +9,11 @@ Format: `YYYY-MM-DD HH:MM TZ | file | what changed`
 <!-- Future: if this file grows large, rotate annually to cortex-changelog-YYYY.md -->
 
 ---
+2026-05-03 18:50 UTC | version.txt | bump to 4.0.0-alpha.29 — Round B: backlog cleanup pass (Arnold dup, empty provenance lines, sync-scope mirror guidance)
+2026-05-03 18:50 UTC | protocol/CORTEX.md | hardened "Each personality appears exactly once" — added Hard requirement (v4.0.0-alpha.29+) explicitly forbidding inferring category from title/speech_style/system_prompt. Canonical map is the only category source. Closes Arnold-fitness-advisor-dup-bug from 2026-04-25 v3.4.9 post-merge test.
+2026-05-03 18:50 UTC | protocol/CORTEX.md | corrected list-personalities output template — replaced fictional "Defaults" / "General" categories with actual canonical-map categories ("Workplace", "Distinctive Voices", etc.). The fictional categories were causing agent confusion about which categories exist.
+2026-05-03 18:50 UTC | protocol/CORTEX.md | hardened provenance-block omit-if-blank rule with Hard requirement (v4.0.0-alpha.29+) and direct-to-agent address. Empty `*Provider: *` / `*Model: *` lines are protocol violations; the entire line MUST be omitted when value is blank. Closes empty-provenance-lines bug from 2026-04-25 v3.4.9 post-merge test.
+2026-05-03 18:50 UTC | protocol/CORTEX.md | new "Out-of-scope file design rule (v4.0.0-alpha.29+)" in Sync flow section — files not in sync scope (notably CLAUDE.md) cannot reach consumers; framework-wide rules must be mirrored into a synced file (typically protocol/CORTEX.md). Documents the process learning from alpha.28 ship.
 2026-05-03 18:35 UTC | version.txt | bump to 4.0.0-alpha.28 — alpha.27 patch round (Round A): three defects closed
 2026-05-03 18:35 UTC | CLAUDE.md | new section "Verb precedence (v4.0.0-alpha.28+)" — cortex protocol's session verbs (hello, goodbye, sync, status, search, list verbs, list personalities, list actors) take precedence over any parent CLAUDE.md's verb definitions inside cortex repos. Mirrored in protocol/CORTEX.md so consumers pick up the rule via sync. Closes alpha.27 Phase B FAIL: librarian Hello format pre-empting cortex Bootstrap greeting.
 2026-05-03 18:38 UTC | protocol/CORTEX.md | mirror of CLAUDE.md "Verb precedence" section as a new subsection in Session verbs / Built-in verbs. Ships to all consumers via sync.

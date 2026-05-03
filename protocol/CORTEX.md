@@ -164,6 +164,8 @@ Current upstream scope — explicit file list (never glob `docs/` — users stor
 
 Never sync: `scripts/integrations/`, `personalities/PERSONALITY-CUSTOM-*.md`, any `*-CUSTOM.md` file, the entire `customs/` directory (user-territory: `customs/VERBS-CUSTOM.md`, `customs/ROE-CUSTOM.md`, `customs/GUARDRAILS-LOCAL.md`, etc.), or anything in `docs/` not listed above. Users store personal documents in `docs/` — a blind `git checkout upstream/main -- docs/` would delete them.
 
+**Out-of-scope file design rule (v4.0.0-alpha.29+):** files NOT in sync scope (notably `CLAUDE.md` at the repo root) cannot reach consumers via sync. If a framework-wide rule needs to live in `CLAUDE.md` (because the AI client reads CLAUDE.md before anything else), the rule MUST also be mirrored into a synced file (typically `protocol/CORTEX.md`) so consumers receive it on their next sync. CLAUDE.md is the visibility beacon; the protocol file is the durable contract. Surfaced 2026-05-03 alpha.28 ship — the verb-precedence rule shipped to framework CLAUDE.md only on first attempt and didn't reach personal-cortex consumers; mirrored into protocol/CORTEX.md as a follow-up.
+
 <!-- Future: when `git-witness` ships as a standalone binary (cordfuse/git-witness), this flow will invoke `git witness` directly. The protocol stays the same — the binary replaces the manual steps. -->
 
 **Step 1 — Check for uncommitted local changes in sync scope**
@@ -401,6 +403,10 @@ Never recite open items from memory — always read the files.
   ```
 
   is valid output when provider and model are unknown. `Actor:`, `Session:`, and `Filed:` are mandatory and never omitted.
+
+  **Hard requirement (v4.0.0-alpha.29+):** if `context.md` has a `provider:` or `model:` field that is BLANK (key present but no value), treat it as unknown and OMIT THE ENTIRE LINE from the provenance block. Do not render `*Provider: *` (with trailing space and nothing else) — that is a protocol violation. The omit-if-blank rule applies whether the value is unknown by virtue of context.md being blank, or unknown by virtue of the scribe genuinely not knowing. If you (the agent reading this) are about to render an empty `*Provider: *` or `*Model: *` line because context.md has the key but no value, stop — drop the entire line.
+
+  Note: the alpha.29+ design preference is that the scribe self-populates provider and model from real-time self-knowledge rather than reading context.md (per `records/2026-04-25-...-feature-auto-detect-provider-model.md` in personal cortex backlog). Until that ships, the omit-if-blank rule is the contract.
 - When composing a message or email for the user to send to someone else, use the `message_compose` tool (Claude mobile) instead of outputting plain text. Supported kinds: `textMessage`, `email`, `other`. Especially useful for bill summaries, appointment reminders, or any message the user intends to send immediately.
 
 ## Closing (`goodbye`)
@@ -1096,6 +1102,10 @@ The current response (the confirmation) stays in the previous actor's voice. The
 4. **Render with categories.** Built-in personalities are grouped per the canonical category map below. Any personality file matching `PERSONALITY-CUSTOM-*.md` goes under `Custom`. Personalities not in the canonical map and not matching `PERSONALITY-CUSTOM-*` default to `Custom`.
 5. **Sub-group Custom by domain.** Within the Custom section, group personalities by their `## domain` field. Custom personalities without a `## domain` field render under a sub-section labeled `(no domain)` at the bottom of Custom. Domain sub-section labels are italicised (`*Domain Name*`) to distinguish them from top-level categories (which are bold).
 6. **Each personality appears exactly once.** The category map is exclusive — no personality may be rendered in more than one section, even if their domain overlaps multiple categories. Custom personalities also appear in exactly one domain sub-section.
+
+   **Hard requirement (v4.0.0-alpha.29+):** the canonical map below is the **only** source of truth for which category each built-in personality renders under. Do not infer category membership from a personality's `title`, `## speech_style`, `system_prompt`, or any other field. If Arnold Schwarzenegger has the title "Fitness advisor", he still renders under `Pop Culture` (where the canonical map places him), NOT under `Clinical & wellness` and NOT under both. If you (the agent reading this) are about to render a personality in a category the canonical map doesn't put them in — even because their description sounds adjacent to that category — stop. The canonical map wins. Built-ins go exactly where the table below says they go.
+
+   **Example failure mode:** Arnold appears with title "Fitness advisor" → agent over-eagerly renders him under both `Pop Culture` (correct, per map) and `Clinical & wellness` (incorrect — title is not a category signal). Surfaced 2026-04-25 v3.4.9 post-merge test. Closed v4.0.0-alpha.29.
 7. **Mark the active one.** Append ` ← active` to the active personality wherever it appears.
 
 **Canonical category map (built-ins, updated v4.0.0-alpha.21):**
@@ -1116,7 +1126,7 @@ The current response (the confirmation) stays in the previous actor's voice. The
 | **Pop Culture** | TARS, Arnold Schwarzenegger, Mr. Miyagi, John Kreese, Bruce Lee, Chuck Norris, Jean-Claude Van Damme, Sylvester Stallone, Hulk Hogan, Bob Ross, Mr. Rogers, Doc Brown, Yoda, Spock, Robin Williams, Han Solo, The Dude, Indiana Jones, Captain Jean-Luc Picard, Buffy Summers, Bill Murray, Angus MacGyver, Lieutenant Columbo, Anthony John Soprano Sr. |
 | **Custom** | (any user-created `PERSONALITY-CUSTOM-*.md`, optionally sub-grouped by their `## domain` field) |
 
-**Output template:**
+**Output template (categories MUST match the canonical map above — no inventing "Defaults" or "General"):**
 
 ```
 **Active:** [name] ([title])
@@ -1125,11 +1135,13 @@ The current response (the confirmation) stays in the previous actor's voice. The
 
 **Available:**
 
-**Defaults**
+**Workplace**
+- Alex — [title].[ ← active]
+- ...
+
+**Distinctive Voices**
 - Casey — Warm, plain-spoken, a little funny. Never makes you feel dumb.[ ← active]
 - Atlas — Precise, methodical, technical. Notices everything. Dry wit at 15%.[ ← active]
-
-**General**
 - Claire — Ward nurse energy. Zero drama. Tells you what you need to hear.[ ← active]
 - ...(every personality renders with its title — no exceptions)
 
