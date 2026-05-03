@@ -262,3 +262,32 @@ Required failure modes:
 Stack traces, raw exception text, and Python traceback output are NOT acceptable user-facing failure modes. The script catches the exception, prints a one-paragraph plain-English explanation including the next concrete action, and exits.
 
 This rule was filed because cortex's first-time-user experience hit several stack-trace failures during 2026-04-25 Google connector smoke testing — environment-specific issues (sandbox egress allowlist, missing python3-venv, externally-managed pip) crashed scripts before users had any indication of what to do next. Closes "Fail-gracefully rule" backlog item.
+
+## 20. Full-Context Onboarding on First Desktop Run (v4.0.0-alpha.34+)
+
+When cortex is opened for the first time on a desktop machine (Mac, Linux, Windows) — detected by absence of any `records/` files modified by this machine AND absence of a hostname-keyed entry in `context.md`'s `## Machines` section — the scribe SHOULD offer to run a full-context onboarding scan at the first hello.
+
+**Trigger and behavior:**
+
+1. At first hello on a new machine, scribe surfaces the offer once: *"This looks like a fresh machine. Want me to do a one-time onboarding scan? I'll walk your active projects in the parent directory tree, file a record per repo with what I find, and update `context.md` with anything notable. Skips automatically if you say no — it'll never re-ask on this machine."*
+
+2. If user declines: scribe writes `<hostname>: declined-onboarding` to `## Machines` in `context.md`, commits, never re-asks. The user can manually invoke the scan later via `onboard machine`.
+
+3. If user accepts: scribe walks the parent directory tree (typically `~/Repos/` or the cortex repo's grandparent), identifies git repos, reads each repo's `README.md` and the last 10 commits (`git log -10 --oneline`), files `records/<date>-<time>-onboarding-<repo-slug>.md` per repo summarizing what it is, recent activity, any open `BACKLOG.md` / `TODO.md` items, and what the user may want surfaced in future sessions. Commits each record individually. Concludes by updating `## Machines` to `<hostname>: onboarded-YYYY-MM-DD` and a one-line greeting acknowledgement: *"Onboarding scan complete — N repos surfaced. See `records/` for individual entries."*
+
+**Boundaries (hard rules):**
+
+- The scan is **read-only** against scanned repos. It never commits, modifies, or pushes anything in scanned repos.
+- The scan respects `.gitignore` and never reads `cortex.secrets/` or any vault directory in any repo.
+- The scan is **bounded**: at most 20 repos, at most 10 commits per repo, at most one round of file reads per repo.
+- The user can interrupt at any time (*"stop"*); scribe files what's done so far and stops cleanly.
+
+**Manual verb:** `onboard machine` — explicitly triggers the scan. Useful for re-onboarding after rearranging repos or if the auto-prompt was missed.
+
+**Out of scope:**
+
+- Vault content scan (vaults are encrypted; never auto-read).
+- Cross-machine project syncing — that's federation 3.0, deferred.
+- Automatic project taxonomy — user adds categorization manually after the scan if desired.
+
+Closes "Full context onboarding on desktop" backlog item.

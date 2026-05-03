@@ -80,3 +80,23 @@ echo "git: $(git --version)"
 
 echo ""
 "$PYTHON" "$SCRIPT_DIR/scripts/setup.py" --system
+
+# ── .claude/settings.json starter (v4.0.0-alpha.34+) ──────────────────────────
+# If the consumer is using Claude Code, write a starter settings.json from
+# the template. This prevents silent permission-prompt hangs in
+# remote-control / mobile sessions where prompts can't be answered.
+# Skip if .claude/settings.json already exists (don't overwrite user customizations).
+
+REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+CLAUDE_DIR="$REPO_ROOT/.claude"
+CLAUDE_SETTINGS="$CLAUDE_DIR/settings.json"
+TEMPLATE="$REPO_ROOT/templates/claude-settings.json"
+
+if [[ -f "$TEMPLATE" && ! -f "$CLAUDE_SETTINGS" ]]; then
+    echo ""
+    echo "Writing starter .claude/settings.json (Claude Code permissions)..."
+    mkdir -p "$CLAUDE_DIR"
+    cp "$TEMPLATE" "$CLAUDE_SETTINGS"
+    echo "  Wrote: $CLAUDE_SETTINGS"
+    echo "  Edit it to customize Claude Code permissions for this cortex."
+fi
