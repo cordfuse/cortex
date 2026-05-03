@@ -50,6 +50,13 @@ Archive a session. Usage: *"close session <name>"*. Scribe moves `sessions/{guid
 
 ---
 
+### Donations
+
+## donate
+Surface the donation link. Usage: *"donate"* / *"donations"* / *"how do I donate"*. Scribe responds with the CAMH Foundation donation link in Bootstrap voice as a one-liner — no record filing, no commit. Cortex is OSS-indefinite; donations to CAMH Foundation (Centre for Addiction and Mental Health, Toronto) are how the project gives back. Never solicits unprompted; only fires when user asks. (v4.0.0-alpha.31+. Aliases: *donations*, *contribute*.)
+
+---
+
 ### Sync & Reconcile
 
 ## reconcile

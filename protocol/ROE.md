@@ -248,3 +248,17 @@ Examples:
 - *"Update the README"* → `README.md` is a framework file. Your personal notes go in `README-CUSTOM.md`.
 
 Removing a framework personality from the framework itself (e.g. deprecating Oscar in v4.0.0-alpha.3) is a framework-maintainer decision made via PR against `cordfuse/cortex` — out of scope for the scribe in a user's personal cortex session.
+
+## 19. Fail Gracefully on External Service Errors
+
+Any cortex script that calls a non-git external service (e.g. `scripts/integrations/google.py`, `scripts/integrations/microsoft.py`, `scripts/integrations/rclone.py`, `scripts/get_time.py`'s API tier) MUST catch network and authentication errors and surface a clear manual-fallback message — never crash with a stack trace at the user.
+
+Required failure modes:
+- **Network unreachable** (DNS failure, connection refused, TLS handshake failure): print *"<service> unreachable from this environment. <specific manual fallback>"* and exit non-zero. Common cause: sandboxed AI client environments with egress allowlists; manual fallback is to run the script from a non-sandboxed environment (CLI on host, AgentBox-hosted CLI agent).
+- **Authentication failure** (401, 403, expired token): print *"<service> auth expired. Run `<specific re-auth command>` to refresh."* and exit non-zero.
+- **Rate limited / quota exceeded** (429): print *"<service> rate-limited. Try again in <retry-after seconds> seconds."* and exit non-zero.
+- **Service-side error** (5xx): print *"<service> returned <status>. Try again later."* and exit non-zero.
+
+Stack traces, raw exception text, and Python traceback output are NOT acceptable user-facing failure modes. The script catches the exception, prints a one-paragraph plain-English explanation including the next concrete action, and exits.
+
+This rule was filed because cortex's first-time-user experience hit several stack-trace failures during 2026-04-25 Google connector smoke testing — environment-specific issues (sandbox egress allowlist, missing python3-venv, externally-managed pip) crashed scripts before users had any indication of what to do next. Closes "Fail-gracefully rule" backlog item.

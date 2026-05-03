@@ -77,6 +77,8 @@ Cortex behaves **differently** depending on where you run it. The difference is 
 
 **For full connector functionality on a phone or tablet:** [AgentBox](https://github.com/cordfuse/agentbox) — Cordfuse's local-agent-with-PWA-UI app — is the planned answer. **AgentBox is in planning stage; not yet built.** Until it ships, connectors run from a CLI agent on your laptop, scheduled scripts on a home server, or Claude Cowork / Dispatch (with the flakiness caveat above).
 
+**On UX verbosity:** CLI agents (Claude Code, Gemini CLI, OpenCode, Qwen) are the least verbose session experience — no tool-call accordion UI, scribe reads files directly, and the user sees only the curated greeting. Web project mode on claude.ai and ChatGPT has inherent startup verbosity (file-listing UI, tool-call expansions) that Cordfuse cannot suppress — that's the AI provider's UI, not a cortex protocol issue. If a clean, quiet session is the goal, run cortex from a CLI agent.
+
 ---
 
 ## Navigation
