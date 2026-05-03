@@ -1744,22 +1744,42 @@ GUID hidden by default. Use `list sessions verbose` for GUIDs in the output, or 
 
 Switches the current chat to an existing session. Steps:
 
-1. Find session by friendly name (or GUID if provided)
-2. **Cross-machine race check** — if `last_engaged_at` is within last 30 minutes AND `last_engaged_by` is a different machine, warn user:
+1. **Exhaustive lookup** — search for session by friendly name (or GUID if provided) across:
+   1. **Live sessions:** `sessions/*/context.md` — match on `## name` field
+   2. **Archived sessions:** `archive/sessions/*/context.md` — match on `## name` field
+   3. **Git history:** `git log --all --oneline | grep -E 'session: (spawn|close|engage) "<name>"'` — surface any historical mention even if the folder is gone
+
+2. **Not-found handler (v4.0.1+ — Hard requirement).** If the lookup at step 1 returns ZERO matches across all three locations, the scribe MUST NOT silently fall back to `spawn`. Instead, surface the not-found result and ask the user explicitly:
+
+   > *No session named `<name>` found in live, archived, or git history. Options:*
+   > - *`spawn session "<name>"` — create a new one*
+   > - *`list sessions all` — see everything (incl. archived)*
+   > - *Cancel — stay in current session*
+
+   Wait for the user to pick one. **Silent fallback to spawn is a protocol violation.** If you (the agent reading this) are about to invoke `spawn` because lookup returned empty, stop — that's the alpha.X bug class this Hard requirement was added to close (filed 2026-05-03 by Steve in personal cortex, `records/2026-05-03-1714-bug-engage-spawned-instead.md`).
+
+3. **Cross-machine race check** — if `last_engaged_at` is within last 30 minutes AND `last_engaged_by` is a different machine, warn user:
    > *"This session was last engaged 18 minutes ago by `steves-air`. Possible concurrent use. Continue anyway, abort, or wait?"*
    - User confirms `continue` → proceed; let git's rebase mechanism resolve any concurrent writes
    - User chooses `wait` → re-check every 60s, surface when stale
    - User chooses `abort` → no engage
-3. **Archived session?** If session is in `archive/sessions/{guid}/`, warn:
+
+4. **Archived session?** If lookup at step 1 found the session in `archive/sessions/{guid}/`, warn:
    > *"`<name>` is archived (closed YYYY-MM-DD). Re-engaging restores it to active state. Confirm? (Note: the name `<name>` may have been reclaimed since.)"*
    - User confirms → move folder back to `sessions/{guid}/`, state → `active`
    - If name has been reclaimed, session resumes under its GUID with no name; user may rename mid-engage
-4. Update `last_engaged_at` (current time + tz) and `last_engaged_by` (machine + provider/model)
-5. Set `state: active`
-6. Commit: `session: engage "<name>" ({guid})`
-7. Push
-8. Hot-swap personality if scoped session declares one
-9. Confirm: *"Engaged session `<name>`. You're now in this session."*
+
+5. **Git-history-only match (folder gone).** If lookup at step 1 found mentions in git log but no folder anywhere, the session was deleted from history (or its files were removed). Surface this and offer recovery:
+   > *"`<name>` appears in git history (last seen YYYY-MM-DD) but its folder is gone. Recoverable from `git show <commit-sha>:sessions/{guid}/context.md`. Want me to restore it, or treat it as deleted?"*
+
+6. Update `last_engaged_at` (current time + tz) and `last_engaged_by` (machine + provider/model)
+7. Set `state: active`
+8. Commit: `session: engage "<name>" ({guid})`
+9. Push
+10. Hot-swap personality if scoped session declares one
+11. Confirm: *"Engaged session `<name>`. You're now in this session."*
+
+**Aliases:** *open session*, *enter session*, *resume session*. All route to the same flow.
 
 ### `close session "<name>"`
 

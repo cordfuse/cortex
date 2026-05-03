@@ -9,6 +9,8 @@ Format: `YYYY-MM-DD HH:MM TZ | file | what changed`
 <!-- Future: if this file grows large, rotate annually to cortex-changelog-YYYY.md -->
 
 ---
+2026-05-03 21:25 UTC | version.txt | **bump to 4.0.1** — first patch on v4 stable. Closes engage-session-silent-spawn bug filed by Steve same day from Sonnet web (records/2026-05-03-1714-bug-engage-spawned-instead.md in personal cortex).
+2026-05-03 21:25 UTC | protocol/CORTEX.md | `engage session` flow hardened: exhaustive lookup (live + archive + git log) explicit as Step 1; new Step 2 not-found handler with Hard requirement (v4.0.1+) FORBIDDING silent fallback to `spawn` — agent must surface options and ask. New Step 5 git-history-only match handler offers `git show` recovery when folder is gone but commit history mentions the session. Aliases noted: *open session*, *enter session*, *resume session*.
 2026-05-03 21:00 UTC | version.txt | **bump to 4.0.0 — STABLE.** v4 headline shipped (multi-actor sessions, Phase 6 v2 personality, full-stack v4). 33-alpha sprint (alpha.1 → alpha.35) consolidated under v4.0.0.
 2026-05-03 21:00 UTC | README.md | version badge bumped to 4.0.0 stable
 2026-05-03 21:00 UTC | ROADMAP.md | v4.0.0 stable shipped section added at top of "Shipped"; covers multi-actor (alpha.32-33), Phase 6 v2 (alpha.34), protocol hardening (alpha.28-31), setup + onboarding (alpha.35), personality fixes (alpha.29). Earlier alpha trail preserved in changelog.
