@@ -9,6 +9,9 @@ Format: `YYYY-MM-DD HH:MM TZ | file | what changed`
 <!-- Future: if this file grows large, rotate annually to cortex-changelog-YYYY.md -->
 
 ---
+2026-05-03 21:00 UTC | version.txt | **bump to 4.0.0 — STABLE.** v4 headline shipped (multi-actor sessions, Phase 6 v2 personality, full-stack v4). 33-alpha sprint (alpha.1 → alpha.35) consolidated under v4.0.0.
+2026-05-03 21:00 UTC | README.md | version badge bumped to 4.0.0 stable
+2026-05-03 21:00 UTC | ROADMAP.md | v4.0.0 stable shipped section added at top of "Shipped"; covers multi-actor (alpha.32-33), Phase 6 v2 (alpha.34), protocol hardening (alpha.28-31), setup + onboarding (alpha.35), personality fixes (alpha.29). Earlier alpha trail preserved in changelog.
 2026-05-03 20:30 UTC | version.txt | bump to 4.0.0-alpha.35 — Round F real items: setup wizard + full-context onboarding rule
 2026-05-03 20:30 UTC | templates/claude-settings.json | new starter `.claude/settings.json` template for fresh cortex deployments. Permissive defaults appropriate for personal cortex (broad filesystem + git + bash + WebSearch/Fetch); deny-list locks framework files. Closes "Setup wizard: write starter .claude/settings.json" backlog item.
 2026-05-03 20:30 UTC | install/setup.sh | added .claude/settings.json starter copy step at end of bootstrap. Skips if already present (won't overwrite user customizations). Mentions the path so the user knows where to edit.

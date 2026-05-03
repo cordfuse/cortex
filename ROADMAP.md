@@ -2,13 +2,55 @@
 
 What's shipped, what's in progress, and what's coming.
 
-**Current version:** 4.0.0-alpha.27 — [Changelog](docs/CORTEX-CHANGELOG.md)
+**Current version:** 4.0.0 *(stable)* — [Changelog](docs/CORTEX-CHANGELOG.md)
 
 ---
 
 ## Shipped
 
-### v4.0.0-alpha.27 — Actor selection at hello + drift suggestion + `create actor` verb *(current)*
+### v4.0.0 — Multi-actor sessions, Phase 6 v2 personality, full-stack v4 *(current — stable)*
+
+The v4 headline shipped. Cortex sessions can now host multiple named actors simultaneously, address them individually or as panels, blend their voices, tune them mid-session, and capture per-session personality history. Plus the alpha series' protocol hardening (verb precedence, hello collisions, runtime canonical text, mid-session protocol reload, sync-scope mirror rule, full-context onboarding, fail-gracefully ROE rule).
+
+**Multi-actor sessions (alpha.32-33 → stable):**
+- `actors:` array in `context.md` — multiple named personalities present in one session, exactly one active speaker, others addressable
+- Backward compatible: legacy single-actor `personality:` field preserved
+- New verbs: `add actor`, `remove actor`. Natural-language triggers ("Hey Oscar, join us", "Oscar, you can step out")
+- Addressing: single-name turn, multi-name panel mode, `blind:` independent mode (subagent delegation per AI-client capability)
+- Per-actor response headers: `**[Name]** — YYYY-MM-DD HH:MM TZ`
+- Multi-actor `list actors` view: two-section "in the room" + "available roster"
+- Contributed-vs-present provenance: `*Actor: Casey*` (singular) or `*Actors: Casey, Oscar*` (plural, alphabetical)
+- Drift detection extended: `switch | add | remove | create` action vocabulary
+- Removal protection: last actor refuses to leave
+
+**Personality System Phase 6 v2 (alpha.34 → stable):**
+- Mid-session trait tuning ("dial humor up to 80", "casey more serious") — session-scoped overrides; sycophant warning preserved
+- Personality history log (`## Personality History` section in `context.md`) — append-only timeline of joins, removals, swaps, overrides
+- User performance annotations (`## Personality Annotations`) — lightweight signal, session-scoped
+- **Blend mode** (EXPERIMENTAL) — synthesized voice from N actors with configurable weights; voice coherence risk acknowledged
+
+**Protocol mechanics hardened (alpha.28-31 → stable):**
+- Verb precedence over parent CLAUDE.md (closes hello-collision class)
+- Actor selection at hello: canonical-template MUST clauses with direct-to-agent stop language
+- Mid-session protocol reload on user-triggered sync (no fresh hello required)
+- Sync-scope mirror rule (out-of-scope file design rule)
+- `donate` verb (CAMH Foundation)
+- ROE Rule 19: Fail Gracefully on External Service Errors
+- ROE Rule 20: Full-Context Onboarding on First Desktop Run
+
+**Setup + onboarding:**
+- `templates/claude-settings.json` starter — fresh deployments get a permissive-but-safe `.claude/settings.json` automatically
+- `install/setup.sh` hook copies starter on bootstrap (skips if present, no overwrite)
+- Onboarding scan offered on first hello on a new machine (read-only, bounded, opt-in)
+
+**Personality system fixes:**
+- list-personalities Arnold duplication closed (canonical map = sole source)
+- Empty Provider/Model provenance lines closed (omit-if-blank hardened)
+- Output template corrected (canonical-map categories, no fictional Defaults/General)
+
+**The 33-alpha v4 sprint (alpha.1 → alpha.35) shipped foundation, headline, and hardening across five days of focused spec work.** "Spec is the implementation" — every alpha was protocol/CORTEX.md + ROE.md + docs/VERBS.md amendments; the LLM follows them by construction.
+
+### v4.0.0-alpha.27 — Actor selection at hello + drift suggestion + `create actor` verb
 
 Closes the last meaningful gap in the personality system for v4.
 
