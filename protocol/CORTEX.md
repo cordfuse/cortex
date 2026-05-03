@@ -120,9 +120,22 @@ Ask me three questions: how am I feeling, what's on my mind, what do I want to f
 
 Do not proceed until the user pulls or explicitly says to continue without pulling.
 
-**Protocol rules are locked at session open.** Protocol files (`CORTEX.md`, `ROE.md`, `GUARDRAILS.md`, etc.) are read once at `hello` and do not reload mid-session. If the user pulls during a session, the new protocol rules take effect at the next `hello` — not immediately. This is by design: mid-session protocol changes cause unpredictable behaviour. If the user refuses to pull and says to continue, note the warning in the session and proceed on the current commit's rules.
+**Protocol rules reload on user-triggered `sync` (v4.0.0-alpha.30+).** Protocol files (`CORTEX.md`, `ROE.md`, `GUARDRAILS.md`, `customs/ROE-CUSTOM.md`, `customs/GUARDRAILS-LOCAL.md`, `customs/VERBS-CUSTOM.md`) are read at `hello` and **reread immediately after a successful `sync` flow that pulled new content** for any of those files. New rules take effect from the next conversational turn forward — no fresh `hello` required. This matches the alpha.8 personality hot-swap principle: user-triggered state changes are effective immediately, not deferred to next session.
 
-**Personality is the explicit exception.** The active actor's personality file reloads on user-invoked switch verbs mid-session ("hot-swap" — see Personality System below). Voice is configurable mid-session; protocol is not.
+After a `sync`-driven reload, the scribe surfaces a single Bootstrap-voiced acknowledgement:
+
+> *Protocol reloaded — new rules from v[X.Y.Z] are effective from this turn forward.*
+
+**Reload boundary rules:**
+
+1. **Reload only on user-triggered `sync`** that successfully pulled changes into protocol-file paths. Auto-pulls during `hello` are part of the opening sequence and do not need a separate reload — the freshly-pulled content gets read in the same opening pass.
+2. **Reload affects rules, not in-flight work.** If the user invoked a verb (`spawn session`, `create actor`, etc.) and `sync` ran inside that verb's flow, complete the verb on the rules in effect when it started, then reload. Do not switch rules mid-verb.
+3. **Personality reload is independent.** Active actor reloads on user-invoked switch verbs as before (alpha.8+). The protocol reload does not force a personality reload — only the protocol/ROE/GUARDRAILS/customs files reread.
+4. **GUARDRAILS reload is special.** Reload immediately even if the new GUARDRAILS file is more permissive than the prior one — the framework's contract is that the latest committed rules are in effect. Tightening reloads also apply immediately, with no pre-warning beyond the standard reload acknowledgement.
+
+**Pre-alpha.30 behavior preserved as fallback.** If the scribe cannot reread protocol files after `sync` for any reason (file system error, ambiguous diff scope), fall back to the pre-alpha.30 rule: surface a one-line note that protocol changes will take effect at next `hello`, and continue on the current rules.
+
+**Personality is the long-standing exception.** The active actor's personality file reloads on user-invoked switch verbs mid-session ("hot-swap" — see Personality System below; v4.0.0-alpha.8+). Voice has always been configurable mid-session; alpha.30 brings protocol/ROE/GUARDRAILS into the same hot-reload model.
 
 If `git pull` produces a merge conflict, stop immediately and walk the user through resolving it before continuing.
 
@@ -331,12 +344,19 @@ Now on v[X.Y.Z].
 **Step 3b — context.md migration**
 After applying files, check if the live `context.md` is missing fields that the updated `templates/context.md` now defines. For each missing field, append it with its default value. Never overwrite existing values — additions only. Commit in the same sync commit.
 
+**Step 3b-ii — Stale-field cleanup (v4.0.0-alpha.30+)**
+Some legacy context.md files (pre-alpha.30) carry `provider:` and `model:` fields under a `## Scribe` section. As of alpha.30+, provider and model are read from the scribe's real-time self-knowledge and **never** persisted in `context.md` (see Record provenance section). On sync, if the live `context.md` contains these fields under any section, surface a one-line offer in the greeting:
+
+> *Your `context.md` has legacy `provider:` and `model:` fields. Since alpha.30 these are read from real-time self-knowledge and no longer stored. Remove them? (yes / no — defaults to keep)*
+
+If user accepts, remove the fields, commit. If user declines or doesn't respond, leave them in place — they're documentation-only and don't affect provenance rendering. Migration is opt-in.
+
 Note the update in the greeting (one line, inside the normal greeting — not a separate alert):
 > *Updated to v[X.Y.Z].*
 
 Then continue the session on the new protocol.
 
-**Personality hot-swaps mid-session.** The active actor's personality file reloads when the user invokes a switch verb during a session — no fresh hello required. The scribe updates `context.md`, commits, re-runs Loading Order step 3b for the new actor, and adopts the new voice from the next response onward. Voice changes; protocol rules don't (those still load once at hello — see "Session rules are locked at session open" above for protocol-level state).
+**Personality hot-swaps mid-session.** The active actor's personality file reloads when the user invokes a switch verb during a session — no fresh hello required. The scribe updates `context.md`, commits, re-runs Loading Order step 3b for the new actor, and adopts the new voice from the next response onward. Voice changes immediately; protocol/ROE/GUARDRAILS rules also reload immediately after a successful `sync` (alpha.30+) — see "Protocol rules reload on user-triggered `sync`" above for protocol-level state.
 
 Run the **3x opening scan** — read the actual repo state, not session memory:
 
