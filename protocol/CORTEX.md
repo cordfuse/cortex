@@ -1347,6 +1347,30 @@ Aliases (e.g. `Arnold` for `Arnold Schwarzenegger`) are surfaced inline in paren
 
 The user may ask for expanded views (full traits, archetype, parent chain, etc.) — generate these live by reading the actual personality files. The canonical output above is the default for the verb itself.
 
+### Multi-actor list-actors view (v4.0.0-alpha.32+)
+
+In multi-actor sessions (where `context.md` has 2+ entries in `actors:`), `list actors` renders a **two-section view**: who's currently in the room, then a separator, then the available roster (the canonical output above).
+
+**Multi-actor canonical output:**
+
+```
+**In the room:**
+- Casey — Warm, plain-spoken, a little funny. Never makes you feel dumb. ← active speaker
+- Oscar the Grouch — Lives in a trash can. Insults you with affection.
+
+---
+
+**Available** (full personality library):
+
+**Workplace**
+- Alex — [title].
+- ...
+
+[…rest of canonical roster output above, with " ← active" markers omitted in this section since the in-the-room section already marks active speaker…]
+```
+
+The "In the room" section shows the active-actor list from `context.md`'s `actors:` array — names, titles, and an `← active speaker` marker on the entry where `active_speaker: true`. Single-actor sessions (1 entry in `actors:`, OR legacy `personality:` field) skip the "In the room" section entirely and just render the available roster (the alpha.X behavior — backward compatible).
+
 ---
 
 ## Warnings

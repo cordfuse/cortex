@@ -9,6 +9,9 @@ Format: `YYYY-MM-DD HH:MM TZ | file | what changed`
 <!-- Future: if this file grows large, rotate annually to cortex-changelog-YYYY.md -->
 
 ---
+2026-05-03 19:45 UTC | version.txt | bump to 4.0.0-alpha.33 — Round F: multi-actor list-actors rendering + version badge bump
+2026-05-03 19:45 UTC | protocol/CORTEX.md | new "Multi-actor list-actors view (v4.0.0-alpha.32+)" canonical rendering template — two-section view (in-the-room + available roster) for sessions with 2+ active actors. Single-actor sessions skip the in-the-room section, preserving alpha.X behavior. Backward compatible.
+2026-05-03 19:45 UTC | README.md | version badge updated 4.0.0-alpha.27 → 4.0.0-alpha.33. Closes "CAMH badge in README" backlog (badge already shipped; just version was stale).
 2026-05-03 19:30 UTC | version.txt | bump to 4.0.0-alpha.32 — Round D Phase 2: multi-actor sessions foundation
 2026-05-03 19:30 UTC | protocol/CORTEX.md | new section "Multi-actor sessions (v4.0.0-alpha.32+)" — multiple named actors active in one session, addressing rules (single-actor / panel mode / independent mode triggers), per-actor response headers, contributed-vs-present provenance distinction, removal protection (last actor refuses to leave). Foundation for v4 headline.
 2026-05-03 19:30 UTC | protocol/CORTEX.md | Loading Order Step 3b-i extended — accepts both legacy single-actor `personality:` field AND alpha.32 multi-actor `actors:` array. Backward compatible. If both present, `actors:` wins.
