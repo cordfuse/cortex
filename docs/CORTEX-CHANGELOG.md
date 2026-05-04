@@ -4,6 +4,20 @@ One line per change. Newest at top. Append in the same commit as the change.
 
 Format: `YYYY-MM-DD HH:MM TZ | file | what changed`
 
+2026-05-04 12:00 UTC | version.txt | bump to 4.2.1
+2026-05-04 12:00 UTC | protocol/CORTEX.md | v4.2.1: hello Pass 4 — actor personality file validation at session open; add actor verb pre-commit validation; surface missing files in greeting
+2026-05-04 12:00 UTC | protocol/GUARDRAILS.md | v4.2.1: allowed scripts changed from scripts/*.py to scripts/*.ts
+2026-05-04 12:00 UTC | version.txt | bump to 4.2.0
+2026-05-04 12:00 UTC | scripts/secrets.ts | new — replaces secrets.py; binary-compatible vault (PBKDF2-SHA256 600k + AES-256-GCM); store/get/list/delete/repassphrase/migrate commands
+2026-05-04 12:00 UTC | scripts/integrations/google.ts | new — replaces google.py; OAuth2 via fetch; 9 subcommands
+2026-05-04 12:00 UTC | scripts/integrations/microsoft.ts | new — replaces microsoft.py; device code flow via fetch; 9 Graph API subcommands
+2026-05-04 12:00 UTC | scripts/healthcheck.ts | new — replaces healthcheck.py
+2026-05-04 12:00 UTC | scripts/setup.ts | new — replaces setup.py
+2026-05-04 12:00 UTC | scripts/get_time.ts | new — replaces get_time.py
+2026-05-04 12:00 UTC | package.json | new — Bun runtime config; scripts: setup + healthcheck
+2026-05-04 12:00 UTC | protocol/CORTEX.md | v4.2.0: Bun-only runtime; all script references changed from python scripts/*.py to bun scripts/*.ts
+2026-05-04 12:00 UTC | .claude/settings.json | v4.2.0: deny list updated scripts/*.py → scripts/*.ts
+
 **Not loaded at `hello`.** Available on demand — ask the scribe or use `search`.
 
 <!-- Future: if this file grows large, rotate annually to cortex-changelog-YYYY.md -->
