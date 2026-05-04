@@ -8,6 +8,14 @@ Format: `YYYY-MM-DD HH:MM TZ | file | what changed`
 
 <!-- Future: if this file grows large, rotate annually to cortex-changelog-YYYY.md -->
 
+2026-05-04 21:00 UTC | version.txt | **bump to 4.2.0** — Python runtime removed; all connectors rewritten in TypeScript/Bun. Bun is now the sole scripting runtime for cortex. Existing `.enc` vault files remain readable (binary format unchanged).
+2026-05-04 21:00 UTC | scripts/ | all Python scripts deleted: get_time.py, healthcheck.py, secrets.py, setup.py, make_private.py, integrations/__init__.py, google.py, microsoft.py, rclone.py, tailscale.py
+2026-05-04 21:00 UTC | scripts/ | TypeScript/Bun replacements written: get_time.ts, healthcheck.ts, secrets.ts, setup.ts, make_private.ts — same CLI interface, same vault binary format
+2026-05-04 21:00 UTC | scripts/integrations/ | google.ts, microsoft.ts, rclone.ts, tailscale.ts — same subcommands, OAuth2 via fetch (no google-auth/msal libraries), subprocess calls via Bun.spawn()
+2026-05-04 21:00 UTC | package.json | new file — no npm dependencies; Bun built-ins + node:crypto only
+2026-05-04 21:00 UTC | protocol/GUARDRAILS.md | allowed-scripts list updated: python → bun, *.py → *.ts
+2026-05-04 21:00 UTC | protocol/CORTEX.md | connector invocation table updated: python scripts/ → bun scripts/, get_time Tier 4 fallback updated
+
 ---
 2026-05-04 03:15 UTC | version.txt | bump to 4.1.2 — google.py inline re-auth now also handles invalid_grant (revoked/expired refresh tokens) AND skips re-entry of client_id/client_secret when they're already in the vault.
 2026-05-04 03:15 UTC | scripts/integrations/google.py | new `_is_token_revoked_or_expired(err)` helper detects RefreshError + 'invalid_grant' substring + 'token has been expired or revoked'. Distinct from insufficient_scope: this fires at refresh time (before any API call) when the refresh token itself is bad. Common cause: user revoked access in Google account settings, OAuth client rotated, or token expired due to inactivity (>6mo).

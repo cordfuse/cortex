@@ -182,7 +182,7 @@ Current upstream scope — explicit file list (never glob `docs/` — users stor
 - `protocol/` (all files)
 - `templates/` (all files)
 - `install/` (all files — bootstrap installers + setup scripts)
-- `scripts/*.py` (top-level only — never `scripts/integrations/`)
+- `scripts/*.ts` (top-level only — never `scripts/integrations/`)
 - `personalities/PERSONALITY-[^C]*.md` (built-in personalities only — never `PERSONALITY-CUSTOM-*`)
 - `README.md`, `ROADMAP.md`
 - `docs/README-SIMPLE.md`, `docs/PERSONALITIES.md`, `docs/CONNECTORS.md`, `docs/SETUP-DESKTOP.md`, `docs/SETUP-MOBILE.md`, `docs/VERBS.md`, `docs/CORTEX-CHANGELOG.md`, `docs/CORTEX-DEV.md`
@@ -195,7 +195,7 @@ Never sync: `scripts/integrations/`, `personalities/PERSONALITY-CUSTOM-*.md`, an
 
 **Step 1 — Check for uncommitted local changes in sync scope**
 ```
-git diff HEAD -- protocol/ templates/ 'scripts/*.py' 'personalities/PERSONALITY-[^C]*.md'
+git diff HEAD -- protocol/ templates/ 'scripts/*.ts' 'personalities/PERSONALITY-[^C]*.md'
 ```
 If dirty: defer the sync. Note it in the greeting:
 > *Your Cortex has a framework update available (v[X.Y.Z]). Your protocol files have local changes — run `sync` when ready.*
@@ -205,7 +205,7 @@ Do not gate. Do not block the session. Continue on the current version.
 **Step 2 — Conflict check**
 Check if the user has locally modified any file that upstream also changed:
 ```
-git diff HEAD upstream/main -- protocol/ templates/ 'scripts/*.py' 'personalities/PERSONALITY-[^C]*.md'
+git diff HEAD upstream/main -- protocol/ templates/ 'scripts/*.ts' 'personalities/PERSONALITY-[^C]*.md'
 ```
 Cross-reference with local changes to find overlapping edits.
 
@@ -217,7 +217,7 @@ Cross-reference with local changes to find overlapping edits.
 
 Apply directory-scoped files from upstream:
 ```
-git checkout upstream/main -- protocol/ templates/ scripts/*.py
+git checkout upstream/main -- protocol/ templates/ scripts/*.ts
 ```
 
 **For personalities, MUST use live `git ls-tree` enumeration against `upstream/main` (v4.0.0-alpha.15+):**
@@ -230,7 +230,7 @@ git checkout upstream/main -- $(git ls-tree --name-only upstream/main personalit
 
 Update `.cortex-version` to match upstream version. Then commit and push:
 ```
-git add protocol/ templates/ scripts/*.py personalities/ .cortex-version
+git add protocol/ templates/ scripts/*.ts personalities/ .cortex-version
 git commit -m "sync: framework vX.Y.Z"
 git push origin main
 ```
@@ -274,7 +274,7 @@ The `reconcile` verb performs a deep three-category diff between local and `upst
 
 ```
 git fetch upstream
-git diff --name-status upstream/main HEAD -- protocol/ templates/ 'scripts/*.py' 'personalities/PERSONALITY-[^C]*.md' README.md ROADMAP.md docs/README-SIMPLE.md docs/PERSONALITIES.md docs/CONNECTORS.md docs/SETUP-DESKTOP.md docs/SETUP-MOBILE.md docs/VERBS.md docs/CORTEX-DEV.md docs/CORTEX-CHANGELOG.md
+git diff --name-status upstream/main HEAD -- protocol/ templates/ 'scripts/*.ts' 'personalities/PERSONALITY-[^C]*.md' README.md ROADMAP.md docs/README-SIMPLE.md docs/PERSONALITIES.md docs/CONNECTORS.md docs/SETUP-DESKTOP.md docs/SETUP-MOBILE.md docs/VERBS.md docs/CORTEX-DEV.md docs/CORTEX-CHANGELOG.md
 ```
 
 Categorize each line:
@@ -583,12 +583,12 @@ Resolve `get_current_time` via the best available tier in this order:
 1. **Tier 1 — Native provider tool.** Claude (`user_time_v0`), ChatGPT, Gemini, and other hosted providers expose a built-in time tool. Call it. Returns current time + timezone.
 2. **Tier 2 — Bash `date`.** If the agent has shell access (Claude Code, agent CLIs, Claude web project mode with bash), `date -u` and `date` give system clock + timezone. Convert to user's timezone if needed.
 3. **Tier 3 — MCP time server.** For MCP-capable agents without a native tool or shell access. A lightweight MCP server exposing one endpoint: `get_current_time → ISO 8601 + timezone`. Stateless. No dependencies.
-4. **Tier 4 — Script fallback.** `python scripts/get_time.py` — for Ollama/OpenWebUI, headless agents without bash. Returns ISO 8601 + timezone offset. Already inside the GUARDRAILS permitted scripts boundary.
+4. **Tier 4 — Script fallback.** `bun scripts/get_time.ts` — for Ollama/OpenWebUI, headless agents without bash. Returns ISO 8601 + timezone offset. Already inside the GUARDRAILS permitted scripts boundary.
 5. **Tier 5 — Ask the user, at point of use only.** If Tiers 1-4 are unavailable, the scribe asks the user for the current time **each time** it needs one — never reuses an earlier answer, never assumes time elapsed since.
 
 > *"I can't reach a clock right now — what time is it for you?"*
 
-OpenWebUI note: register `get_time.py` as a tool function for the model rather than calling it as a shell script.
+OpenWebUI note: register `get_time.ts` as a tool function for the model rather than calling it as a shell script.
 
 ## Hallucinating time is forbidden
 
@@ -1836,34 +1836,34 @@ Available integrations:
 
 | Service | Command |
 |---|---|
-| **Tailscale (mesh network)** | `python scripts/integrations/tailscale.py up` |
-| Tailscale — peer list + IPs | `python scripts/integrations/tailscale.py peers` |
-| Tailscale — get peer IP | `python scripts/integrations/tailscale.py ip <hostname>` |
-| **rclone (any remote)** | `python scripts/integrations/rclone.py pull <remote:path>` |
-| rclone — list remotes | `python scripts/integrations/rclone.py remotes` |
-| rclone — list files | `python scripts/integrations/rclone.py ls <remote:path>` |
-| rclone — backup push | `python scripts/integrations/rclone.py push <remote:path>` |
-| rclone — mount remote | `python scripts/integrations/rclone.py mount <remote:path>` |
-| Google Calendar | `python scripts/integrations/google.py calendar [--days 7]` |
-| Gmail | `python scripts/integrations/google.py gmail [--count 20]` |
-| Google Drive | `python scripts/integrations/google.py drive [--count 20]` |
-| Google Tasks | `python scripts/integrations/google.py tasks` |
-| Google Contacts | `python scripts/integrations/google.py contacts [--count 50]` |
-| Outlook Mail | `python scripts/integrations/microsoft.py mail [--count 20]` |
-| Outlook Calendar | `python scripts/integrations/microsoft.py calendar [--days 7]` |
-| OneDrive | `python scripts/integrations/microsoft.py onedrive [--count 20]` |
-| Microsoft Teams | `python scripts/integrations/microsoft.py teams [--count 20]` |
-| SharePoint | `python scripts/integrations/microsoft.py sharepoint [--count 20]` |
-| Microsoft To Do | `python scripts/integrations/microsoft.py todo` |
-| Microsoft Planner | `python scripts/integrations/microsoft.py planner` |
-| OneNote | `python scripts/integrations/microsoft.py onenote [--count 20]` |
+| **Tailscale (mesh network)** | `bun scripts/integrations/tailscale.ts up` |
+| Tailscale — peer list + IPs | `bun scripts/integrations/tailscale.ts peers` |
+| Tailscale — get peer IP | `bun scripts/integrations/tailscale.ts ip <hostname>` |
+| **rclone (any remote)** | `bun scripts/integrations/rclone.ts pull <remote:path>` |
+| rclone — list remotes | `bun scripts/integrations/rclone.ts remotes` |
+| rclone — list files | `bun scripts/integrations/rclone.ts ls <remote:path>` |
+| rclone — backup push | `bun scripts/integrations/rclone.ts push <remote:path>` |
+| rclone — mount remote | `bun scripts/integrations/rclone.ts mount <remote:path>` |
+| Google Calendar | `bun scripts/integrations/google.ts calendar [--days 7]` |
+| Gmail | `bun scripts/integrations/google.ts gmail [--count 20]` |
+| Google Drive | `bun scripts/integrations/google.ts drive [--count 20]` |
+| Google Tasks | `bun scripts/integrations/google.ts tasks` |
+| Google Contacts | `bun scripts/integrations/google.ts contacts [--count 50]` |
+| Outlook Mail | `bun scripts/integrations/microsoft.ts mail [--count 20]` |
+| Outlook Calendar | `bun scripts/integrations/microsoft.ts calendar [--days 7]` |
+| OneDrive | `bun scripts/integrations/microsoft.ts onedrive [--count 20]` |
+| Microsoft Teams | `bun scripts/integrations/microsoft.ts teams [--count 20]` |
+| SharePoint | `bun scripts/integrations/microsoft.ts sharepoint [--count 20]` |
+| Microsoft To Do | `bun scripts/integrations/microsoft.ts todo` |
+| Microsoft Planner | `bun scripts/integrations/microsoft.ts planner` |
+| OneNote | `bun scripts/integrations/microsoft.ts onenote [--count 20]` |
 
 If credentials are not yet stored, direct the user to run:
 ```
-python scripts/integrations/tailscale.py auth   # Tailscale mesh network
-python scripts/integrations/rclone.py auth      # rclone (any filesystem/cloud backend)
-python scripts/integrations/google.py auth      # Google
-python scripts/integrations/microsoft.py auth   # Microsoft 365
+bun scripts/integrations/tailscale.ts auth   # Tailscale mesh network
+bun scripts/integrations/rclone.ts auth      # rclone (any filesystem/cloud backend)
+bun scripts/integrations/google.ts auth      # Google
+bun scripts/integrations/microsoft.ts auth   # Microsoft 365
 ```
 
 Never store or log credentials outside the vault. Never pass credentials as plain text in conversation.

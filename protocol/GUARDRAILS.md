@@ -209,12 +209,15 @@ If yes — add it to `GUARDRAILS-LOCAL.md` and commit: `guardrails: add trusted 
 The following scripts may be run by path. No scripts outside `scripts/` are permitted:
 
 ```
-python scripts/setup.py              # environment setup + system deps
-python scripts/secrets.py            # vault: store, get, list, delete
-python scripts/integrations/tailscale.py   # Tailscale mesh VPN
-python scripts/integrations/rclone.py      # rclone filesystem connector
-python scripts/integrations/google.py      # Google (Calendar, Gmail, Drive, Tasks, Contacts)
-python scripts/integrations/microsoft.py   # Microsoft 365 (Mail, Calendar, OneDrive, Teams)
+bun scripts/setup.ts                 # environment setup + system deps
+bun scripts/healthcheck.ts           # protocol file integrity check
+bun scripts/secrets.ts               # vault: store, get, list, delete
+bun scripts/get_time.ts              # current time ISO 8601 with tz offset
+bun scripts/make_private.ts          # flip repo to private via GitHub API
+bun scripts/integrations/tailscale.ts   # Tailscale mesh VPN
+bun scripts/integrations/rclone.ts      # rclone filesystem connector
+bun scripts/integrations/google.ts      # Google (Calendar, Gmail, Drive, Tasks, Contacts)
+bun scripts/integrations/microsoft.ts   # Microsoft 365 (Mail, Calendar, OneDrive, Teams)
 ```
 
 Scripts may use `sudo` only for system package installation (`pacman`, `apt`, `dnf`) and `tailscale set --operator`. No other sudo operations are permitted.

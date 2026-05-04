@@ -1,6 +1,6 @@
 # Cortex
 
-[![Version](https://img.shields.io/badge/version-4.0.0-blue)](docs/CORTEX-CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-4.2.0-blue)](docs/CORTEX-CHANGELOG.md)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![Donate to CAMH](https://img.shields.io/badge/Donate-CAMH%20Foundation-blue)](https://camhfoundation.ca/donate)
 
