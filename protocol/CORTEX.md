@@ -384,6 +384,8 @@ Run the **3x opening scan** — read the actual repo state, not session memory:
    - **Step A — grep:** find all unchecked `- [ ]` items across `records/`.
    - **Step B — verify:** for every candidate, read its full source file. Also read in full every file in `records/` modified in the past 7 days. A later file may have resolved, superseded, or rendered moot an older open item even if the original file was never updated. Only surface an item as open if it is still unresolved after reading this context. Do not treat an unchecked box as ground truth without this check.
 3. **Pass 3 — unresolved follow-ups?** Any file filed today with pending actions noted.
+4. **Pass 4 — actor file validation.** For every entry in the `actors:` array in `context.md`, verify that a resolvable personality file exists (via the alpha.13 lookup: `## name` field match → `## aliases` → filename slug). If any actor has no resolvable file, surface it in the greeting as a warning before the open question:
+   > ⚠ Actor `<name>` is listed in context.md but has no personality file. They cannot speak until a file is created. Say `create actor <name>` to build one, or `remove actor <name>` to clear the entry.
 
 Surface anything relevant, then greet.
 
@@ -1007,7 +1009,7 @@ actors:
 | Verb | Action |
 |---|---|
 | `change actor to <name>` | Hot-swap which entry is `active_speaker: true`. Does NOT remove other actors. (Pre-alpha.32 behavior in single-actor sessions; in multi-actor sessions, this just changes who speaks by default.) |
-| `add actor <name>` | Append a new entry. New actor is NOT the active speaker by default — must say `change actor to <name>` separately. Surfaces Bootstrap acknowledgement: *"Oscar joined the room. Casey is still the active speaker."* Aliases: *bring in*, *invite*. Natural-language triggers: *"Hey Oscar, join us"*, *"Bring Oscar in"*. |
+| `add actor <name>` | **Pre-commit validation (v4.2.1+):** before writing to `context.md`, verify a resolvable personality file exists for `<name>` (alpha.13 lookup: `## name` field → `## aliases` → filename slug). If no file is found, block the operation and surface: *"No personality file found for `<name>`. Create it first with `create actor <name>`, then add them to the room."* Do not commit an actor that has no file. If the file exists: append a new entry. New actor is NOT the active speaker by default — must say `change actor to <name>` separately. Surfaces Bootstrap acknowledgement: *"Oscar joined the room. Casey is still the active speaker."* Aliases: *bring in*, *invite*. Natural-language triggers: *"Hey Oscar, join us"*, *"Bring Oscar in"*. |
 | `remove actor <name>` | Remove an entry. Confirmation prompt unless the actor has 0 contributions this session: *"Remove Oscar from the room? They've contributed N times this session. (yes/no)"*. Refuses to remove the last actor. If removing the active speaker, the most-recently-joined remaining actor inherits `active_speaker: true`. Aliases: *step out*, *send away*. Natural-language triggers: *"Oscar, you can step out"*, *"Send Atlas away"*. |
 | `list actors` (multi-actor view, alpha.32+) | Shows actors **currently in the room** with active-speaker marker, plus a separator and the available roster (full personality library). Replaces the alpha.X behavior of just showing the roster. |
 

@@ -8,6 +8,9 @@ Format: `YYYY-MM-DD HH:MM TZ | file | what changed`
 
 <!-- Future: if this file grows large, rotate annually to cortex-changelog-YYYY.md -->
 
+2026-05-04 22:00 UTC | version.txt | **bump to 4.2.1** — actor file validation: `add actor` blocks on missing personality file; hello Pass 4 surfaces broken actors in greeting
+2026-05-04 22:00 UTC | protocol/CORTEX.md | `add actor` pre-commit validation — blocks if no resolvable personality file exists for the named actor (v4.2.1+)
+2026-05-04 22:00 UTC | protocol/CORTEX.md | 3x opening scan → 4x: Pass 4 validates every actor in context.md has a resolvable personality file; surfaces warning in greeting if any are missing
 2026-05-04 21:00 UTC | version.txt | **bump to 4.2.0** — Python runtime removed; all connectors rewritten in TypeScript/Bun. Bun is now the sole scripting runtime for cortex. Existing `.enc` vault files remain readable (binary format unchanged).
 2026-05-04 21:00 UTC | scripts/ | all Python scripts deleted: get_time.py, healthcheck.py, secrets.py, setup.py, make_private.py, integrations/__init__.py, google.py, microsoft.py, rclone.py, tailscale.py
 2026-05-04 21:00 UTC | scripts/ | TypeScript/Bun replacements written: get_time.ts, healthcheck.ts, secrets.ts, setup.ts, make_private.ts — same CLI interface, same vault binary format
