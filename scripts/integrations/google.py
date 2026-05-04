@@ -75,13 +75,23 @@ except ImportError:
 
 # ── Graceful error handler (per ROE Rule 19) ──────────────────────────────────
 
+def _is_insufficient_scope(err: Exception) -> bool:
+    """True if the error indicates the OAuth grant is missing required scopes."""
+    if not isinstance(err, HttpError):
+        return False
+    if err.resp.status != 403:
+        return False
+    body = (err.error_details if hasattr(err, "error_details") else str(err))
+    return "insufficient" in str(body).lower() or "scope" in str(body).lower()
+
+
 def _handle_api_error(err: Exception, service: str, operation: str):
     """Translate API errors into plain-English fallback messages and exit non-zero.
     Per ROE Rule 19: never surface stack traces; always include next concrete action."""
     if isinstance(err, HttpError):
         status = err.resp.status
         body = err.error_details if hasattr(err, "error_details") else str(err)
-        if status == 403 and "insufficient" in str(body).lower():
+        if _is_insufficient_scope(err):
             print(f"ERROR: {service} {operation} requires a scope you didn't grant.")
             print("Re-run auth to upgrade the grant: python scripts/integrations/google.py auth")
             sys.exit(1)
@@ -103,6 +113,60 @@ def _handle_api_error(err: Exception, service: str, operation: str):
         sys.exit(1)
     print(f"ERROR: {service} {operation} failed: {msg}")
     sys.exit(1)
+
+
+def _run_with_reauth_retry(action_fn, passphrase: str, service: str, operation: str):
+    """Run a Google API action with auto-re-auth-and-retry on insufficient_scope.
+
+    `action_fn(creds)` builds the service, makes the API call, and returns the result.
+    On the first 403/insufficient_scope (typical when SCOPES expanded but the user's
+    refresh token is bound to a narrower grant), prompt the user to re-authorize
+    interactively. If they accept, run cmd_auth(passphrase) inline (overwrites the
+    refresh token in the vault), then retry action_fn() ONCE with fresh creds.
+
+    Non-interactive contexts (cron, headless): no prompt. Falls through to the
+    existing _handle_api_error path so the user sees the "re-run auth" message and
+    exits non-zero. Same UX as v4.1.0.
+
+    Per ROE Rule 19: no stack traces, every error path includes a concrete next action.
+    """
+    try:
+        creds = get_credentials(passphrase)
+        return action_fn(creds)
+    except HttpError as err:
+        if _is_insufficient_scope(err) and sys.stdin.isatty():
+            print()
+            print(f"Cortex's {service.lower()} connector needs a scope your current OAuth grant doesn't have.")
+            print(f"(This happens after upgrading from a read-only cortex; '{operation}' was added in v4.1.0+.)")
+            try:
+                answer = input("Re-authorize now to upgrade the grant? [y/N]: ").strip().lower()
+            except (EOFError, KeyboardInterrupt):
+                print()
+                _handle_api_error(err, service, operation)
+                return None  # _handle_api_error sys.exits, but mypy
+            if answer in ("y", "yes"):
+                print()
+                print("Running auth flow — your browser will open. Approve the new scope list to continue.")
+                print()
+                cmd_auth(passphrase)
+                print()
+                print(f"Re-auth complete. Retrying {operation}...")
+                print()
+                try:
+                    creds = get_credentials(passphrase)
+                    return action_fn(creds)
+                except Exception as retry_err:
+                    _handle_api_error(retry_err, service, operation)
+                    return None
+            else:
+                _handle_api_error(err, service, operation)
+                return None
+        else:
+            _handle_api_error(err, service, operation)
+            return None
+    except Exception as err:
+        _handle_api_error(err, service, operation)
+        return None
 
 
 # ── Vault helpers ─────────────────────────────────────────────────────────────
@@ -371,30 +435,29 @@ def cmd_contacts(count: int, passphrase: str):
 
 def cmd_send_mail(to: str, subject: str, body: str, passphrase: str):
     """Send a Gmail message via the authenticated user's account.
-    Requires gmail.send scope (granted automatically in v4.1.0+ auth flow)."""
+    Requires gmail.send scope (granted automatically in v4.1.0+ auth flow).
+    On insufficient_scope, prompts to re-auth + retries (v4.1.1+)."""
     from email.mime.text import MIMEText
     import base64
 
-    try:
-        creds = get_credentials(passphrase)
+    def action(creds):
         service = build("gmail", "v1", credentials=creds)
-
         message = MIMEText(body)
         message["to"] = to
         message["subject"] = subject
         raw = base64.urlsafe_b64encode(message.as_bytes()).decode()
-
-        result = service.users().messages().send(
+        return service.users().messages().send(
             userId="me",
             body={"raw": raw},
         ).execute()
 
-        msg_id = result.get("id", "unknown")
-        print(f"Sent. Gmail message ID: {msg_id}")
-        print(f"To:      {to}")
-        print(f"Subject: {subject}")
-    except Exception as err:
-        _handle_api_error(err, "Gmail", "send")
+    result = _run_with_reauth_retry(action, passphrase, "Gmail", "send")
+    if result is None:
+        return
+    msg_id = result.get("id", "unknown")
+    print(f"Sent. Gmail message ID: {msg_id}")
+    print(f"To:      {to}")
+    print(f"Subject: {subject}")
 
 
 # ── Create calendar event (v4.1.0+) ───────────────────────────────────────────
@@ -411,9 +474,9 @@ def cmd_create_event(
 ):
     """Create a Calendar event. start and end are ISO 8601 strings; if they include
     'T' they're treated as datetime, otherwise as all-day dates.
-    Requires calendar.events scope (granted automatically in v4.1.0+ auth flow)."""
-    try:
-        creds = get_credentials(passphrase)
+    Requires calendar.events scope (granted automatically in v4.1.0+ auth flow).
+    On insufficient_scope, prompts to re-auth + retries (v4.1.1+)."""
+    def action(creds):
         service = build("calendar", "v3", credentials=creds)
 
         # All-day vs timed
@@ -438,22 +501,23 @@ def cmd_create_event(
                 {"email": a.strip()} for a in attendees.split(",") if a.strip()
             ]
 
-        result = service.events().insert(
+        return service.events().insert(
             calendarId=calendar,
             body=event_body,
             sendUpdates="all" if attendees else "none",
         ).execute()
 
-        link = result.get("htmlLink", "")
-        event_id = result.get("id", "unknown")
-        print(f"Created. Event ID: {event_id}")
-        print(f"Calendar: {calendar}")
-        print(f"Summary:  {summary}")
-        print(f"When:     {start} → {end}")
-        if link:
-            print(f"URL:      {link}")
-    except Exception as err:
-        _handle_api_error(err, "Calendar", "create event")
+    result = _run_with_reauth_retry(action, passphrase, "Calendar", "create event")
+    if result is None:
+        return
+    link = result.get("htmlLink", "")
+    event_id = result.get("id", "unknown")
+    print(f"Created. Event ID: {event_id}")
+    print(f"Calendar: {calendar}")
+    print(f"Summary:  {summary}")
+    print(f"When:     {start} -> {end}")
+    if link:
+        print(f"URL:      {link}")
 
 
 # ── Create task (v4.1.0+) ─────────────────────────────────────────────────────
@@ -467,33 +531,33 @@ def cmd_create_task(
 ):
     """Create a Google Task. tasklist defaults to '@default' (the user's primary list).
     due is YYYY-MM-DD; the API expects ISO 8601 datetime so the script appends T00:00:00Z.
-    Requires tasks scope (granted automatically in v4.1.0+ auth flow)."""
-    try:
-        creds = get_credentials(passphrase)
-        service = build("tasks", "v1", credentials=creds)
+    Requires tasks scope (granted automatically in v4.1.0+ auth flow).
+    On insufficient_scope, prompts to re-auth + retries (v4.1.1+)."""
+    # Normalize due once before building the closure
+    if due and "T" not in due:
+        due = due + "T00:00:00.000Z"
 
+    def action(creds):
+        service = build("tasks", "v1", credentials=creds)
         task_body = {"title": title}
         if notes:
             task_body["notes"] = notes
         if due:
-            # Tasks API requires RFC 3339 datetime even for date-only due
-            if "T" not in due:
-                due = due + "T00:00:00.000Z"
             task_body["due"] = due
-
-        result = service.tasks().insert(
+        return service.tasks().insert(
             tasklist=tasklist,
             body=task_body,
         ).execute()
 
-        task_id = result.get("id", "unknown")
-        print(f"Created. Task ID: {task_id}")
-        print(f"List:  {tasklist}")
-        print(f"Title: {title}")
-        if due:
-            print(f"Due:   {due}")
-    except Exception as err:
-        _handle_api_error(err, "Tasks", "create task")
+    result = _run_with_reauth_retry(action, passphrase, "Tasks", "create task")
+    if result is None:
+        return
+    task_id = result.get("id", "unknown")
+    print(f"Created. Task ID: {task_id}")
+    print(f"List:  {tasklist}")
+    print(f"Title: {title}")
+    if due:
+        print(f"Due:   {due}")
 
 
 # ── Main ──────────────────────────────────────────────────────────────────────
