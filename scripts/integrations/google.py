@@ -6,7 +6,7 @@ Credentials are stored in the Cortex secrets vault (cortex.secrets.enc).
 Run once to set up:
   python scripts/integrations/google.py auth
 
-Usage:
+Usage (read):
   python scripts/integrations/google.py [--passphrase <p>] auth
   python scripts/integrations/google.py [--passphrase <p>] calendar [--days 7]
   python scripts/integrations/google.py [--passphrase <p>] gmail [--count 20]
@@ -14,7 +14,16 @@ Usage:
   python scripts/integrations/google.py [--passphrase <p>] tasks
   python scripts/integrations/google.py [--passphrase <p>] contacts [--count 50]
 
+Usage (write — v4.1.0+):
+  python scripts/integrations/google.py [--passphrase <p>] send-mail --to <addr> --subject <s> --body <b>
+  python scripts/integrations/google.py [--passphrase <p>] create-event --summary <s> --start <ISO> --end <ISO> [--calendar primary] [--description <d>] [--location <l>] [--attendees a@b,c@d]
+  python scripts/integrations/google.py [--passphrase <p>] create-task --title <t> [--list @default] [--notes <n>] [--due <YYYY-MM-DD>]
+
 `--passphrase` is a top-level flag and must come BEFORE the subcommand.
+
+Write commands require the broader OAuth scopes shipped in v4.1.0+. If you previously
+auth'd with v4.0.x read-only scopes, re-run `auth` to upgrade the grant. Calls that
+need a scope you didn't grant return a 403 with a fallback message (per ROE Rule 19).
 
 Requires: pip install google-auth google-auth-oauthlib google-api-python-client
 """
@@ -36,11 +45,20 @@ if _script_dir in sys.path:
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 SCOPES = [
+    # Calendar — read all calendars + read/write events
     "https://www.googleapis.com/auth/calendar.readonly",
-    "https://www.googleapis.com/auth/gmail.readonly",
+    "https://www.googleapis.com/auth/calendar.events",
+    # Gmail — read, label, draft, AND send (the four things a scribe needs)
+    "https://www.googleapis.com/auth/gmail.modify",
+    "https://www.googleapis.com/auth/gmail.send",
+    # Drive — file-scoped (least-privilege; cortex sees what it creates + what user opens through it)
+    "https://www.googleapis.com/auth/drive.file",
+    # Drive read-only retained for "scan all my files" use cases
     "https://www.googleapis.com/auth/drive.readonly",
-    "https://www.googleapis.com/auth/tasks.readonly",
-    "https://www.googleapis.com/auth/contacts.readonly",
+    # Tasks — full RW
+    "https://www.googleapis.com/auth/tasks",
+    # Contacts — full RW
+    "https://www.googleapis.com/auth/contacts",
 ]
 
 try:
@@ -48,9 +66,42 @@ try:
     from google.auth.transport.requests import Request
     from google_auth_oauthlib.flow import InstalledAppFlow
     from googleapiclient.discovery import build
+    from googleapiclient.errors import HttpError
 except ImportError:
     print("ERROR: Google client libraries not installed.")
     print("Run: pip install google-auth google-auth-oauthlib google-api-python-client")
+    sys.exit(1)
+
+
+# ── Graceful error handler (per ROE Rule 19) ──────────────────────────────────
+
+def _handle_api_error(err: Exception, service: str, operation: str):
+    """Translate API errors into plain-English fallback messages and exit non-zero.
+    Per ROE Rule 19: never surface stack traces; always include next concrete action."""
+    if isinstance(err, HttpError):
+        status = err.resp.status
+        body = err.error_details if hasattr(err, "error_details") else str(err)
+        if status == 403 and "insufficient" in str(body).lower():
+            print(f"ERROR: {service} {operation} requires a scope you didn't grant.")
+            print("Re-run auth to upgrade the grant: python scripts/integrations/google.py auth")
+            sys.exit(1)
+        if status == 401:
+            print(f"ERROR: {service} auth expired. Re-run: python scripts/integrations/google.py auth")
+            sys.exit(1)
+        if status == 429:
+            print(f"ERROR: {service} rate-limited. Try again in a few minutes.")
+            sys.exit(1)
+        if 500 <= status < 600:
+            print(f"ERROR: {service} returned {status}. Try again later (Google-side issue).")
+            sys.exit(1)
+        print(f"ERROR: {service} {operation} failed ({status}): {body}")
+        sys.exit(1)
+    # Network / other
+    msg = str(err)
+    if "ConnectionError" in type(err).__name__ or "TLS" in msg or "SSL" in msg:
+        print(f"ERROR: {service} unreachable from this environment. Check network / sandbox egress.")
+        sys.exit(1)
+    print(f"ERROR: {service} {operation} failed: {msg}")
     sys.exit(1)
 
 
@@ -316,6 +367,135 @@ def cmd_contacts(count: int, passphrase: str):
         print(f"- **{name}**{' — ' + details if details else ''}")
 
 
+# ── Send mail (v4.1.0+) ───────────────────────────────────────────────────────
+
+def cmd_send_mail(to: str, subject: str, body: str, passphrase: str):
+    """Send a Gmail message via the authenticated user's account.
+    Requires gmail.send scope (granted automatically in v4.1.0+ auth flow)."""
+    from email.mime.text import MIMEText
+    import base64
+
+    try:
+        creds = get_credentials(passphrase)
+        service = build("gmail", "v1", credentials=creds)
+
+        message = MIMEText(body)
+        message["to"] = to
+        message["subject"] = subject
+        raw = base64.urlsafe_b64encode(message.as_bytes()).decode()
+
+        result = service.users().messages().send(
+            userId="me",
+            body={"raw": raw},
+        ).execute()
+
+        msg_id = result.get("id", "unknown")
+        print(f"Sent. Gmail message ID: {msg_id}")
+        print(f"To:      {to}")
+        print(f"Subject: {subject}")
+    except Exception as err:
+        _handle_api_error(err, "Gmail", "send")
+
+
+# ── Create calendar event (v4.1.0+) ───────────────────────────────────────────
+
+def cmd_create_event(
+    summary: str,
+    start: str,
+    end: str,
+    calendar: str,
+    description: str,
+    location: str,
+    attendees: str,
+    passphrase: str,
+):
+    """Create a Calendar event. start and end are ISO 8601 strings; if they include
+    'T' they're treated as datetime, otherwise as all-day dates.
+    Requires calendar.events scope (granted automatically in v4.1.0+ auth flow)."""
+    try:
+        creds = get_credentials(passphrase)
+        service = build("calendar", "v3", credentials=creds)
+
+        # All-day vs timed
+        if "T" in start:
+            start_obj = {"dateTime": start}
+            end_obj = {"dateTime": end}
+        else:
+            start_obj = {"date": start}
+            end_obj = {"date": end}
+
+        event_body = {
+            "summary": summary,
+            "start": start_obj,
+            "end": end_obj,
+        }
+        if description:
+            event_body["description"] = description
+        if location:
+            event_body["location"] = location
+        if attendees:
+            event_body["attendees"] = [
+                {"email": a.strip()} for a in attendees.split(",") if a.strip()
+            ]
+
+        result = service.events().insert(
+            calendarId=calendar,
+            body=event_body,
+            sendUpdates="all" if attendees else "none",
+        ).execute()
+
+        link = result.get("htmlLink", "")
+        event_id = result.get("id", "unknown")
+        print(f"Created. Event ID: {event_id}")
+        print(f"Calendar: {calendar}")
+        print(f"Summary:  {summary}")
+        print(f"When:     {start} → {end}")
+        if link:
+            print(f"URL:      {link}")
+    except Exception as err:
+        _handle_api_error(err, "Calendar", "create event")
+
+
+# ── Create task (v4.1.0+) ─────────────────────────────────────────────────────
+
+def cmd_create_task(
+    title: str,
+    tasklist: str,
+    notes: str,
+    due: str,
+    passphrase: str,
+):
+    """Create a Google Task. tasklist defaults to '@default' (the user's primary list).
+    due is YYYY-MM-DD; the API expects ISO 8601 datetime so the script appends T00:00:00Z.
+    Requires tasks scope (granted automatically in v4.1.0+ auth flow)."""
+    try:
+        creds = get_credentials(passphrase)
+        service = build("tasks", "v1", credentials=creds)
+
+        task_body = {"title": title}
+        if notes:
+            task_body["notes"] = notes
+        if due:
+            # Tasks API requires RFC 3339 datetime even for date-only due
+            if "T" not in due:
+                due = due + "T00:00:00.000Z"
+            task_body["due"] = due
+
+        result = service.tasks().insert(
+            tasklist=tasklist,
+            body=task_body,
+        ).execute()
+
+        task_id = result.get("id", "unknown")
+        print(f"Created. Task ID: {task_id}")
+        print(f"List:  {tasklist}")
+        print(f"Title: {title}")
+        if due:
+            print(f"Due:   {due}")
+    except Exception as err:
+        _handle_api_error(err, "Tasks", "create task")
+
+
 # ── Main ──────────────────────────────────────────────────────────────────────
 
 def prompt_passphrase() -> str:
@@ -344,6 +524,27 @@ def main():
     p_contacts = sub.add_parser("contacts", help="Recently modified contacts")
     p_contacts.add_argument("--count", type=int, default=50)
 
+    # Write subcommands (v4.1.0+)
+    p_send = sub.add_parser("send-mail", help="Send an email via Gmail (v4.1.0+)")
+    p_send.add_argument("--to", required=True)
+    p_send.add_argument("--subject", required=True)
+    p_send.add_argument("--body", required=True, help="Plain-text body")
+
+    p_event = sub.add_parser("create-event", help="Create a calendar event (v4.1.0+)")
+    p_event.add_argument("--summary", required=True)
+    p_event.add_argument("--start", required=True, help="ISO 8601 datetime (with 'T') or date (YYYY-MM-DD for all-day)")
+    p_event.add_argument("--end", required=True, help="Same format as --start")
+    p_event.add_argument("--calendar", default="primary", help="Calendar ID (default: primary)")
+    p_event.add_argument("--description", default="")
+    p_event.add_argument("--location", default="")
+    p_event.add_argument("--attendees", default="", help="Comma-separated email addresses")
+
+    p_task = sub.add_parser("create-task", help="Create a Google Task (v4.1.0+)")
+    p_task.add_argument("--title", required=True)
+    p_task.add_argument("--list", dest="tasklist", default="@default", help="Tasklist ID (default: @default)")
+    p_task.add_argument("--notes", default="")
+    p_task.add_argument("--due", default="", help="YYYY-MM-DD or ISO 8601")
+
     args = parser.parse_args()
 
     if not args.cmd:
@@ -364,6 +565,16 @@ def main():
         cmd_tasks(passphrase)
     elif args.cmd == "contacts":
         cmd_contacts(args.count, passphrase)
+    elif args.cmd == "send-mail":
+        cmd_send_mail(args.to, args.subject, args.body, passphrase)
+    elif args.cmd == "create-event":
+        cmd_create_event(
+            args.summary, args.start, args.end,
+            args.calendar, args.description, args.location, args.attendees,
+            passphrase,
+        )
+    elif args.cmd == "create-task":
+        cmd_create_task(args.title, args.tasklist, args.notes, args.due, passphrase)
 
 
 if __name__ == "__main__":
