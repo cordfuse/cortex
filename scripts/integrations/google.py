@@ -64,6 +64,7 @@ SCOPES = [
 try:
     from google.oauth2.credentials import Credentials
     from google.auth.transport.requests import Request
+    from google.auth.exceptions import RefreshError
     from google_auth_oauthlib.flow import InstalledAppFlow
     from googleapiclient.discovery import build
     from googleapiclient.errors import HttpError
@@ -85,9 +86,29 @@ def _is_insufficient_scope(err: Exception) -> bool:
     return "insufficient" in str(body).lower() or "scope" in str(body).lower()
 
 
+def _is_token_revoked_or_expired(err: Exception) -> bool:
+    """True if the refresh token itself is bad (revoked, expired, invalid).
+    Distinct from insufficient_scope: this fires at refresh time, before any API call.
+    Common cause: user revoked the token in Google account settings, OAuth client
+    rotated, or token expired due to inactivity (>6mo)."""
+    if isinstance(err, RefreshError):
+        return True
+    msg = str(err).lower()
+    return "invalid_grant" in msg or "token has been expired or revoked" in msg
+
+
+def _needs_reauth(err: Exception) -> bool:
+    """True for either insufficient_scope (request-time) or invalid refresh token (refresh-time)."""
+    return _is_insufficient_scope(err) or _is_token_revoked_or_expired(err)
+
+
 def _handle_api_error(err: Exception, service: str, operation: str):
     """Translate API errors into plain-English fallback messages and exit non-zero.
     Per ROE Rule 19: never surface stack traces; always include next concrete action."""
+    if _is_token_revoked_or_expired(err):
+        print(f"ERROR: {service} refresh token is invalid (revoked, expired, or rotated).")
+        print("Re-run auth to mint a fresh token: python scripts/integrations/google.py auth")
+        sys.exit(1)
     if isinstance(err, HttpError):
         status = err.resp.status
         body = err.error_details if hasattr(err, "error_details") else str(err)
@@ -133,20 +154,27 @@ def _run_with_reauth_retry(action_fn, passphrase: str, service: str, operation: 
     try:
         creds = get_credentials(passphrase)
         return action_fn(creds)
-    except HttpError as err:
-        if _is_insufficient_scope(err) and sys.stdin.isatty():
+    except Exception as err:
+        if _needs_reauth(err) and sys.stdin.isatty():
             print()
-            print(f"Cortex's {service.lower()} connector needs a scope your current OAuth grant doesn't have.")
-            print(f"(This happens after upgrading from a read-only cortex; '{operation}' was added in v4.1.0+.)")
+            if _is_token_revoked_or_expired(err):
+                print(f"Cortex's {service.lower()} refresh token is invalid (revoked, expired, or rotated).")
+                print("This usually happens after revoking access in Google account settings, or after a")
+                print("long period of inactivity (>6 months).")
+                prompt = "Mint a fresh token now? [y/N]: "
+            else:
+                print(f"Cortex's {service.lower()} connector needs a scope your current OAuth grant doesn't have.")
+                print(f"(This happens after upgrading from a read-only cortex; '{operation}' was added in v4.1.0+.)")
+                prompt = "Re-authorize now to upgrade the grant? [y/N]: "
             try:
-                answer = input("Re-authorize now to upgrade the grant? [y/N]: ").strip().lower()
+                answer = input(prompt).strip().lower()
             except (EOFError, KeyboardInterrupt):
                 print()
                 _handle_api_error(err, service, operation)
-                return None  # _handle_api_error sys.exits, but mypy
+                return None
             if answer in ("y", "yes"):
                 print()
-                print("Running auth flow — your browser will open. Approve the new scope list to continue.")
+                print("Running auth flow — your browser will open. Approve the scope list to continue.")
                 print()
                 cmd_auth(passphrase)
                 print()
@@ -164,9 +192,6 @@ def _run_with_reauth_retry(action_fn, passphrase: str, service: str, operation: 
         else:
             _handle_api_error(err, service, operation)
             return None
-    except Exception as err:
-        _handle_api_error(err, service, operation)
-        return None
 
 
 # ── Vault helpers ─────────────────────────────────────────────────────────────
@@ -181,6 +206,19 @@ def get_secret(name: str, passphrase: str) -> str:
         print(f"ERROR: Could not retrieve '{name}' from vault.")
         print("Run: python scripts/integrations/google.py auth")
         sys.exit(1)
+    return result.stdout.strip()
+
+
+def try_get_secret(name: str, passphrase: str) -> str | None:
+    """Like get_secret but returns None instead of exiting if the secret isn't in the vault.
+    Used by cmd_auth (v4.1.2+) to skip re-entry when client_id/client_secret already exist."""
+    secrets_script = os.path.join(ROOT, "scripts", "secrets.py")
+    result = subprocess.run(
+        [sys.executable, secrets_script, "get", name, "--passphrase", passphrase],
+        capture_output=True, text=True
+    )
+    if result.returncode != 0:
+        return None
     return result.stdout.strip()
 
 
@@ -217,8 +255,22 @@ def cmd_auth(passphrase: str):
     print("Requires a Google Cloud project with Calendar, Gmail, Drive, Tasks, and People APIs enabled.")
     print("https://console.cloud.google.com/apis/credentials\n")
 
-    client_id = input("Client ID: ").strip()
-    client_secret = input("Client Secret: ").strip()
+    # v4.1.2+: skip manual re-entry of client_id/client_secret if they're already in vault.
+    # Common case: re-auth to refresh an expired/revoked token, or to upgrade scopes —
+    # the OAuth client itself hasn't changed, only the user grant needs renewing.
+    existing_id = try_get_secret("google_client_id", passphrase)
+    existing_secret = try_get_secret("google_client_secret", passphrase)
+
+    if existing_id and existing_secret:
+        print(f"Using existing OAuth client from vault (client_id ends in ...{existing_id[-12:]}).")
+        print("To use a different OAuth client, delete the vault entries first:")
+        print("  python scripts/secrets.py delete google_client_id")
+        print("  python scripts/secrets.py delete google_client_secret\n")
+        client_id = existing_id
+        client_secret = existing_secret
+    else:
+        client_id = input("Client ID: ").strip()
+        client_secret = input("Client Secret: ").strip()
 
     client_config = {
         "installed": {
