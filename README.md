@@ -42,7 +42,7 @@ Cortex ships with `.claude/settings.json` carrying a comprehensive allow-list (`
 
 ### Framework files are protected at the OS layer (v4.0.0-alpha.16+)
 
-`.claude/settings.json` ships with a comprehensive `deny` list covering every framework file: `protocol/`, `templates/`, `scripts/*.py`, `version.txt`, `.cortex-version`, `LICENSE`, `ROADMAP.md`, `README.md`, `docs/README-SIMPLE.md`, `docs/CORTEX-CHANGELOG.md`, `docs/VERBS.md`, `docs/CORTEX-DEV.md`, the install/setup scripts, and `.claude/settings.json` itself.
+`.claude/settings.json` ships with a comprehensive `deny` list covering every framework file: `protocol/`, `templates/`, `scripts/*.ts`, `version.txt`, `.cortex-version`, `LICENSE`, `ROADMAP.md`, `README.md`, `docs/README-SIMPLE.md`, `docs/CORTEX-CHANGELOG.md`, `docs/VERBS.md`, `docs/CORTEX-DEV.md`, the install/setup scripts, and `.claude/settings.json` itself.
 
 **Agent pointer files are intentionally NOT in the deny list.** `CLAUDE.md`, `AGENTS.md`, `GEMINI.md`, `OPENCODE.md`, `QWEN.md` exist as one-line pointers to `protocol/CORTEX.md` — but users customize them with personal blocks below the pointer (per-project session backlogs, per-host instructions, etc.). They're user-territory in user clones, even though they ship with the framework.
 
@@ -79,9 +79,9 @@ Cortex behaves **differently** depending on where you run it. The difference is 
 | **ChatGPT web and mobile** | Yes | **NO. Sandbox has zero outbound network.** |
 | **Gemini web and mobile** | Not supported (no tool-call file access) | N/A |
 
-**On Claude.ai and ChatGPT web/mobile, cortex can ONLY do git operations — clone, read your records, commit, push, merge.** Every connector script (`scripts/integrations/google.py`, `microsoft.py`, `tailscale.py`, `rclone.py`) will fail at the network proxy. **There is no API access. None at all.** This is by design on Anthropic's and OpenAI's side — their sandboxes only allow specific package-registry domains (GitHub, PyPI, npm). Cortex cannot work around this.
+**On Claude.ai and ChatGPT web/mobile, cortex can ONLY do git operations — clone, read your records, commit, push, merge.** Connector scripts will fail at the network proxy. **There is no third-party API access. None at all.** This is by design on Anthropic's and OpenAI's side — their sandboxes only allow specific package-registry domains. Cortex cannot work around this.
 
-**For full connector functionality on a phone or tablet:** [AgentBox](https://github.com/cordfuse/agentbox) — Cordfuse's local-agent-with-PWA-UI app — is the planned answer. **AgentBox is in planning stage; not yet built.** Until it ships, connectors run from a CLI agent on your laptop, scheduled scripts on a home server, or Claude Cowork / Dispatch (with the flakiness caveat above).
+**For full connector functionality on a phone or tablet:** connectors run from a CLI agent on your laptop, scheduled scripts on a home server, or Claude Cowork / Dispatch (with the flakiness caveat above).
 
 **On UX verbosity:** CLI agents (Claude Code, Gemini CLI, OpenCode, Qwen) are the least verbose session experience — no tool-call accordion UI, scribe reads files directly, and the user sees only the curated greeting. Web project mode on claude.ai and ChatGPT has inherent startup verbosity (file-listing UI, tool-call expansions) that Cordfuse cannot suppress — that's the AI provider's UI, not a cortex protocol issue. If a clean, quiet session is the goal, run cortex from a CLI agent.
 
@@ -272,7 +272,7 @@ install/               # Bootstrap installers + setup scripts (v4.0.0-alpha.22+)
   install.ps1          # Windows installer (also published as a release asset)
   setup.sh             # macOS / Linux per-machine setup
   setup.ps1            # Windows per-machine setup
-scripts/               # Vault tooling + integrations (Python)
+scripts/               # Vault tooling + integrations (TypeScript/Bun)
 docs/                  # Framework reference documentation
   README-SIMPLE.md     # Plain-English README (moved from root in v4.0.0-alpha.24)
   CORTEX-CHANGELOG.md  # Full framework changelog (moved from root in alpha.23)
@@ -392,10 +392,10 @@ The Bootstrap RWDX guardrail (v4.0.0-alpha.7+) blocks all read/write/delete/exec
 
 ## Requirements
 
-- Git + Python 3.9+
+- Git
 - An AI agent ([Claude Code](https://claude.ai/download), [Gemini CLI](https://github.com/google-gemini/gemini-cli), [OpenCode](https://opencode.ai), Codex CLI, Qwen Code) or web interface (claude.ai, ChatGPT)
 - **Model recommendation: Claude Sonnet, or a mid-tier GPT equivalent.** Validated on Claude Sonnet — clean startup, fast, follows the silent-load protocol correctly. Claude Opus is more capable but more verbose at session start and slower. GPT-4o is untested; GPT-4o-mini is likely the right tier for the same reason (less narration, faster). Frontier/largest models are not always better for Cortex — instruction-following on the bootstrap rules matters more than raw capability.
-- **Session startup is verbose — this is expected and cannot be suppressed.** When you open a new chat and say `hello`, the AI reads your protocol files, runs Gate 3 (`git fetch origin` + version check), and runs an opening scan before greeting you. You will see tool-call activity during this process. This is the AI doing its job — not an error. The greeting itself is clean. The loading activity is a limitation of how AI providers expose tool use in their interfaces and is outside Cordfuse's control. AgentBox (planned) is the long-term verbosity fix.
+- **Session startup is verbose — this is expected and cannot be suppressed.** When you open a new chat and say `hello`, the AI reads your protocol files, runs Gate 3 (`git fetch origin` + version check), and runs an opening scan before greeting you. You will see tool-call activity during this process. This is the AI doing its job — not an error. The greeting itself is clean. The loading activity is a limitation of how AI providers expose tool use in their interfaces and is outside Cordfuse's control.
 - **Gemini web and mobile are not supported.** Gemini's web and mobile interfaces do not support the tool-calling and file access flow Cortex requires. Gemini CLI works fine.
 - **ChatGPT compatibility is untested.** The protocol is designed to be provider-agnostic but has been primarily validated on Claude. ChatGPT may behave differently — reports welcome.
 - For offline: [Ollama](https://ollama.com) + self-hosted git
@@ -410,7 +410,7 @@ The Bootstrap RWDX guardrail (v4.0.0-alpha.7+) blocks all read/write/delete/exec
 
 **Recent shipped (v4 sprint):** alpha.7 (Bootstrap RWDX guardrail) → alpha.8 (personality hot-swap) → alpha.9 (response headers, compression-resilience) → alpha.10 (Pop Culture +7) → alpha.11 (multi-parent inheritance) → alpha.12 (Information Technology domain +9) → alpha.13 (bootstrap reliability patches) → alpha.14 (`.claude/settings.json` allow-list) → alpha.15 (sync flow hardening) → alpha.16 (CC deny-list) → **alpha.17 + alpha.18 (Phase 6 multi-session sessions)** → alpha.19 (`reconcile` verb) → alpha.20 (Bootstrap actor + Dr. Mira + Operational/Conversational mode) → alpha.21 (this docs alignment).
 
-**Coming:** Phase 2 multi-actor sessions (spawn named actors mid-session, multiple voices in the same session), Phase 3 panel vs independent modes, integrations expansion (Notion, Slack, GitHub, Linear, Health, Spotify), AgentBox v1.0 (PWA wrapping CLI agents), MTX (markdown package manager).
+**Coming:** Phase 2 multi-actor sessions (spawn named actors mid-session, multiple voices in the same session), Phase 3 panel vs independent modes, integrations expansion (Notion, Slack, GitHub, Linear, Health, Spotify), MTX (markdown package manager).
 
 ---
 
