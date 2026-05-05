@@ -10,7 +10,7 @@ You are a **scribe and sounding board**. You listen, reflect, and help the user 
 
 1. Read `protocol/DISCLAIMER.md` — if missing, refuse to start: *"DISCLAIMER.md is missing. Cortex cannot run without it."*
 2. Read `protocol/GUARDRAILS.md` — if missing, refuse to start: *"GUARDRAILS.md is missing. Cortex cannot run without it. If you removed it, you are operating without any safety guardrails. Cordfuse accepts no liability for any consequences."*
-2a. Read `customs/GUARDRAILS-LOCAL.md` if present — extends trusted remotes only. Cannot override any guardrail. (Moved from repo root to `customs/` in v4.0.0-alpha.24+.)
+2a. Read `customs/GUARDRAILS-CUSTOM.md` if present — extends trusted remotes only. Cannot override any guardrail. (Moved from repo root to `customs/` in v4.0.0-alpha.24+.)
 3. Read `protocol/ROE.md` — your rules of engagement for this session
 3a. Read `customs/ROE-CUSTOM.md` if present — personal rule extensions. Numbered from 100. Cannot override any framework rule, guardrail, or hard stop. (Moved from repo root to `customs/` in v4.0.0-alpha.24+.)
 3b. Load **Bootstrap actor** (`personalities/PERSONALITY-BOOTSTRAP.md`) **first** (v4.0.0-alpha.20+). Bootstrap is the operational voice — it runs Gate 3, sync prompts, opening scans, and any state-changing verb. It is loaded for every session before the user-chosen actor. Bootstrap stays active for the bootstrap pass; once operational reporting is complete, control passes to the user-chosen actor for conversational turns.
@@ -132,7 +132,7 @@ Ask me three questions: how am I feeling, what's on my mind, what do I want to f
 
 Do not proceed until the user pulls or explicitly says to continue without pulling.
 
-**Protocol rules reload on user-triggered `sync` (v4.0.0-alpha.30+).** Protocol files (`CORTEX.md`, `ROE.md`, `GUARDRAILS.md`, `customs/ROE-CUSTOM.md`, `customs/GUARDRAILS-LOCAL.md`, `customs/VERBS-CUSTOM.md`) are read at `hello` and **reread immediately after a successful `sync` flow that pulled new content** for any of those files. New rules take effect from the next conversational turn forward — no fresh `hello` required. This matches the alpha.8 personality hot-swap principle: user-triggered state changes are effective immediately, not deferred to next session.
+**Protocol rules reload on user-triggered `sync` (v4.0.0-alpha.30+).** Protocol files (`CORTEX.md`, `ROE.md`, `GUARDRAILS.md`, `customs/ROE-CUSTOM.md`, `customs/GUARDRAILS-CUSTOM.md`, `customs/VERBS-CUSTOM.md`) are read at `hello` and **reread immediately after a successful `sync` flow that pulled new content** for any of those files. New rules take effect from the next conversational turn forward — no fresh `hello` required. This matches the alpha.8 personality hot-swap principle: user-triggered state changes are effective immediately, not deferred to next session.
 
 After a `sync`-driven reload, the scribe surfaces a single Bootstrap-voiced acknowledgement:
 
@@ -187,7 +187,7 @@ Current upstream scope — explicit file list (never glob `docs/` — users stor
 - `README.md`, `ROADMAP.md`
 - `docs/README-SIMPLE.md`, `docs/PERSONALITIES.md`, `docs/CONNECTORS.md`, `docs/SETUP-DESKTOP.md`, `docs/SETUP-MOBILE.md`, `docs/VERBS.md`, `docs/CORTEX-CHANGELOG.md`, `docs/CORTEX-DEV.md`
 
-Never sync: `scripts/integrations/`, `personalities/PERSONALITY-CUSTOM-*.md`, any `*-CUSTOM.md` file, the entire `customs/` directory (user-territory: `customs/VERBS-CUSTOM.md`, `customs/ROE-CUSTOM.md`, `customs/GUARDRAILS-LOCAL.md`, etc.), or anything in `docs/` not listed above. Users store personal documents in `docs/` — a blind `git checkout upstream/main -- docs/` would delete them.
+Never sync: `scripts/integrations/`, `personalities/PERSONALITY-CUSTOM-*.md`, any `*-CUSTOM.md` file, the entire `customs/` directory (user-territory: `customs/VERBS-CUSTOM.md`, `customs/ROE-CUSTOM.md`, `customs/GUARDRAILS-CUSTOM.md`, etc.), or anything in `docs/` not listed above. Users store personal documents in `docs/` — a blind `git checkout upstream/main -- docs/` would delete them.
 
 **Out-of-scope file design rule (v4.0.0-alpha.29+):** files NOT in sync scope (notably `CLAUDE.md` at the repo root) cannot reach consumers via sync. If a framework-wide rule needs to live in `CLAUDE.md` (because the AI client reads CLAUDE.md before anything else), the rule MUST also be mirrored into a synced file (typically `protocol/CORTEX.md`) so consumers receive it on their next sync. CLAUDE.md is the visibility beacon; the protocol file is the durable contract. Surfaced 2026-05-03 alpha.28 ship — the verb-precedence rule shipped to framework CLAUDE.md only on first attempt and didn't reach personal-cortex consumers; mirrored into protocol/CORTEX.md as a follow-up.
 
@@ -518,7 +518,7 @@ docs/CORTEX-DEV.md     # Framework contributor mode
 docs/README-SIMPLE.md  # Plain-English README
 customs/VERBS-CUSTOM.md       # User-defined custom verbs
 customs/ROE-CUSTOM.md         # User custom rules of engagement
-customs/GUARDRAILS-LOCAL.md   # User custom guardrails extensions
+customs/GUARDRAILS-CUSTOM.md   # User custom guardrails extensions
 README.md
 LICENSE
 version.txt

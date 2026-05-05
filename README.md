@@ -6,7 +6,7 @@
 
 **Not a developer?** [Read the plain English version →](docs/README-SIMPLE.md)
 
-> ⚠️ **Framework files — do not edit.** This file and all linked docs are overwritten when the framework updates. Put your personal notes in the `-CUSTOM.md` companions in the `customs/` folder instead — they follow the same pattern as `customs/VERBS-CUSTOM.md`, `customs/ROE-CUSTOM.md`, and `customs/GUARDRAILS-LOCAL.md`, and are never touched by the framework.
+> ⚠️ **Framework files — do not edit.** This file and all linked docs are overwritten when the framework updates. Put your personal notes in the `-CUSTOM.md` companions in the `customs/` folder instead — they follow the same pattern as `customs/VERBS-CUSTOM.md`, `customs/ROE-CUSTOM.md`, and `customs/GUARDRAILS-CUSTOM.md`, and are never touched by the framework.
 >
 > | Your notes | Framework doc |
 > |---|---|
@@ -285,7 +285,7 @@ docs/                  # Framework reference documentation
 customs/               # User-territory customs (alpha.24+) — never synced from upstream
   VERBS-CUSTOM.md      # Your custom verbs
   ROE-CUSTOM.md        # Your custom rules of engagement (extends protocol/ROE.md)
-  GUARDRAILS-LOCAL.md  # Your custom guardrails (extends protocol/GUARDRAILS.md)
+  GUARDRAILS-CUSTOM.md  # Your custom guardrails (extends protocol/GUARDRAILS.md)
 .claude/               # Claude Code settings (allow-list + framework deny-list)
   settings.json        # Shipped with framework
   settings.local.json  # Optional contributor override (gitignored)
