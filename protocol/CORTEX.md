@@ -115,8 +115,8 @@ Closes Phase B FAIL from the alpha.27 CLI test (2026-05-02): librarian briefing 
 ## weekly review
 Run my weekly review. Read all records from the past 7 days. Surface patterns, open items, and anything unresolved. File a summary.
 
-## bills
-Pull my Google Calendar for due dates. Cross-reference household-payments record. List what's due this week.
+## standup
+Quick standup: what I did yesterday, what I'm doing today, any blockers.
 
 ## checkin
 Ask me three questions: how am I feeling, what's on my mind, what do I want to file.

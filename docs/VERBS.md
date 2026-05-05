@@ -74,36 +74,6 @@ Deep three-category diff against `upstream/main` with per-file gating. Usage: *"
 
 ---
 
-### Health & daily life
-
-<!--
-## daily log
-Open a daily log entry. Ask how I'm doing, what happened today, anything worth filing. Use the day template.
-
-## meds
-Log medications taken today — name, dose, time, any notes. Use the medication template.
-
-## symptoms
-Log current symptoms — what, when, severity, context. Use the symptoms template.
-
-## mood
-Quick mood and energy snapshot. One or two questions, then file a short entry.
-
-## sleep
-Log last night's sleep — hours, quality, anything notable on waking.
-
-## vitals
-Log health vitals — blood pressure, blood sugar, weight, or whatever I track. Ask what I'm logging.
-
-## appointment
-Log an appointment — who, when, what was discussed, any follow-ups. Use the appointment template. (Alias: *appt*.)
-
-## therapy
-Log a therapy session — what came up, what shifted, anything to follow. Use the session template.
--->
-
----
-
 ### Work & projects
 
 <!--
@@ -124,21 +94,6 @@ Log an achievement or win, big or small. No filing pressure — just get it on r
 
 ## idea
 Fast idea capture. Ask what the idea is, file it immediately, no polish required.
--->
-
----
-
-### Finance
-
-<!--
-## bills
-Review upcoming bills. Cross-reference my finance records. List what's due this week with amounts and methods.
-
-## spend
-Log a purchase or expense — what, amount, category, notes.
-
-## budget
-Review current financial picture. Pull recent finance records and summarise.
 -->
 
 ---
