@@ -1,6 +1,6 @@
 # Cortex
 
-[![Version](https://img.shields.io/badge/version-4.4.0-blue)](manifest/framework/CORTEX-CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-4.5.1-blue)](manifest/framework/CORTEX-CHANGELOG.md)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![Donate to CAMH](https://img.shields.io/badge/Donate-CAMH%20Foundation-blue)](https://camhfoundation.ca/donate)
 
@@ -22,7 +22,7 @@ Every AI chat starts from zero. You re-explain your context, your projects, your
 
 Cortex is a private git repo your AI scribe reads at the start of every session. It files your records, tracks your threads, remembers your context. Next session it picks up where you left off — any device, any major AI. Nothing goes to Cordfuse. You own the repo.
 
-One default actor ships with the framework: **Apex** — a generic, precise, general-purpose voice. Everything else is yours to build. Skill actors, custom voices, specialist modes all live in your personal fork as `PERSONALITY-CUSTOM-*.md` files and are never overwritten by framework updates.
+One default actor ships with the framework: **Apex** — a generic, precise, general-purpose voice. Everything else is yours to build. Skill actors, custom voices, specialist modes all live in `manifest/custom/actors/` and are never overwritten by framework updates.
 
 ---
 
@@ -131,7 +131,11 @@ If this has been useful to you — or if you just believe mental health infrastr
 
 **Multi-parent personality inheritance (v4.0.0-alpha.11+).** Custom personalities can inherit from multiple parents simultaneously — useful for "everything-guy" SMEs who span developer + infrastructure + cloud architect + functional consultant in one role.
 
-**Your active actor has a personality.** One framework default ships: **Apex** — generic, precise, no domain specialty. Build your own in plain English and commit them as `PERSONALITY-CUSTOM-*.md`. Credit your work with an `## author` field. [Full personality reference →](manifest/framework/PERSONALITIES.md)
+**Your active actor has a personality.** One framework default ships: **Apex** — generic, precise, no domain specialty. Build your own in plain English and commit them to `manifest/custom/actors/`. Credit your work with an `## author` field. [Full personality reference →](manifest/framework/PERSONALITIES.md)
+
+**Natural language intent routing (v4.5.0+).** Say "sync me up" or "what's the status?" — the scribe classifies intent before matching verb shorthand. No need to remember exact command names; natural phrasing works throughout.
+
+**Actor selection at hello (v4.5.1+).** Bootstrap always presents an actor-selection dialog at session start. Name an actor in your opening message to skip the dialog — otherwise pick from the list. Available sessions surface in the same prompt so you can re-engage and pick actors in one turn.
 
 **Extensible.** Built-in session commands. Define your own in `manifest/custom/VERBS.md` — `weekly review`, `bills`, `checkin`, anything you want. **Natural language only — no slash prefixes** (Claude web and other clients hijack `/`).
 
@@ -149,9 +153,9 @@ Cortex ships with **one framework actor** plus the **Bootstrap actor** that hand
 |---|---|
 | **Bootstrap** | Bootstrap (auto-loaded; never user-selected; clinical operational voice) |
 | **Defaults** | Apex — generic, precise, no domain specialty |
-| **Custom** | Any `PERSONALITY-CUSTOM-*.md` you add to your personal fork |
+| **Custom** | Any actor file in `manifest/custom/actors/` |
 
-The framework is deliberately minimal. Specialty actors — skill-based, character-based, domain-specific — belong in your personal fork as `PERSONALITY-CUSTOM-*.md` files. They're never overwritten by framework sync. Add an `## author` field to credit yourself or anyone you're sharing with.
+The framework is deliberately minimal. Specialty actors — skill-based, character-based, domain-specific — belong in `manifest/custom/actors/`. They're never overwritten by framework sync. Add an `## author` field to credit yourself or anyone you're sharing with.
 
 Every personality has tunable sliders across vibe, virtues, vices, soft skills, and hard skills — all 0–100. Create your own with a description. The scribe writes the file and commits it.
 
@@ -159,7 +163,7 @@ Every personality has tunable sliders across vibe, virtues, vices, soft skills, 
 
 ```
 # context.md
-personality: apex        ← change this to switch (or leave blank — Bootstrap will ask you to pick)
+actors: []               ← Bootstrap always prompts — name an actor in your opening message to skip the dialog
 provider: Anthropic Claude
 model: claude-sonnet-4-6
 ```
@@ -183,7 +187,7 @@ Both guides cover new users and existing Cortex repos.
 
 | Verb | What it does |
 |---|---|
-| `hello` | Open session — Bootstrap runs Gate 3, sync check, scans open items, then user-chosen actor greets |
+| `hello` | Open session — Bootstrap runs Gate 3, sync check, scans open items, then prompts for actor selection (or activates named actor from opening message) (v4.5.1+) |
 | `goodbye` | Close session — commit pending, push, surface unresolved |
 | `status` | Last session, open items, uncommitted files, vault |
 | `sync` | Pull framework updates from upstream + apply (Bootstrap voice) |
@@ -404,9 +408,9 @@ The Bootstrap RWDX guardrail (v4.0.0-alpha.7+) blocks all read/write/delete/exec
 
 [→ Full roadmap](ROADMAP.md)
 
-**v4.0.0-alpha.21 (current)** — Documentation alignment pass: README + interlinked docs brought to current alpha.20 reality. Personality count corrected to 73. Information Technology domain (alpha.12), Pop Culture additions (alpha.10), Bootstrap actor + Dr. Mira (alpha.20) all reflected. Canonical category map in `manifest/framework/protocol/CORTEX.md` updated.
+**v4.5.1 (current)** — Bootstrap always prompts for actor at hello; last-saved actor no longer auto-loaded. Available sessions surface in the actor-selection dialog so user can re-engage + pick actor in one turn. Full `manifest/` single-root restructure complete (`install/`, `customs/`, `docs/`). Python-era refs purged across all docs and scripts. ROOT path fixes in `healthcheck.ts`, `secrets.ts`, `setup.ts`.
 
-**Recent shipped (v4 sprint):** alpha.7 (Bootstrap RWDX guardrail) → alpha.8 (personality hot-swap) → alpha.9 (response headers, compression-resilience) → alpha.10 (Pop Culture +7) → alpha.11 (multi-parent inheritance) → alpha.12 (Information Technology domain +9) → alpha.13 (bootstrap reliability patches) → alpha.14 (`.claude/settings.json` allow-list) → alpha.15 (sync flow hardening) → alpha.16 (CC deny-list) → **alpha.17 + alpha.18 (Phase 6 multi-session sessions)** → alpha.19 (`reconcile` verb) → alpha.20 (Bootstrap actor + Dr. Mira + Operational/Conversational mode) → alpha.21 (this docs alignment).
+**Recent shipped:** alpha.21 (docs alignment) → alpha.22–26 (repo restructure: `install/`, custom separation, docs/) → alpha.27 (actor selection at hello + drift detection + `create actor` verb) → **v4.5.0** (natural language intent routing — Stage 1 intent classification before verb matching) → **v4.5.1** (Bootstrap-always-prompts, single-root restructure, Python purge, script ROOT fixes).
 
 **Coming:** Phase 2 multi-actor sessions (spawn named actors mid-session, multiple voices in the same session), Phase 3 panel vs independent modes, integrations expansion (Notion, Slack, GitHub, Linear, Health, Spotify), MTX (markdown package manager).
 
