@@ -20,7 +20,7 @@ You are a **scribe and sounding board**. You listen, reflect, and help the user 
 
   **(B) Legacy single-actor format (pre-alpha.32):** `personality:` or `actor:` field (aliases). One value, names a single active actor. Load that actor's personality file. Equivalent to multi-actor format with one entry where `active_speaker: true`. If both `personality:` and `actors:` are present, `actors:` wins.
 
-  **Personality file resolution** (applies to both formats): match each name case-insensitively against any personality file's `## name` field, then fall back to matching against entries in any personality's optional `## aliases` field, then as a last fallback, match against the filename slug (e.g. `magnus` matches `PERSONALITY-CUSTOM-MAGNUS.md`).
+  **Personality file resolution** (applies to both formats): match each name case-insensitively against any personality file's `## name` field, then fall back to matching against entries in any personality's optional `## aliases` field, then as a last fallback, match against the filename slug (e.g. `magnus` matches `MAGNUS.md` in `manifest/custom/actors/`).
 
   **If actor list is empty or missing** (no `actors:` entries AND no `personality:` field, OR `personality:` blank): same as the no-actor-named case above — Bootstrap remains the active visible actor and prompts the user to pick one. The blocking dialog from "Actor selection at hello" applies.
 
@@ -242,7 +242,7 @@ Current upstream scope — explicit file list (never glob `attachments/` — use
 - `manifest/framework/templates/` (all files)
 - `install/` (all files — bootstrap installers + setup scripts)
 - `manifest/framework/scripts/*.ts` (top-level only — never `manifest/framework/scripts/integrations/`)
-- `manifest/framework/actors/*.md` (built-in personalities only — never `PERSONALITY-CUSTOM-*`)
+- `manifest/framework/actors/*.md` (built-in personalities only — never `manifest/custom/actors/`)
 - `README.md`, `ROADMAP.md`
 - `manifest/framework/README-SIMPLE.md`, `manifest/framework/PERSONALITIES.md`, `manifest/framework/CONNECTORS.md`, `manifest/framework/SETUP-DESKTOP.md`, `manifest/framework/SETUP-MOBILE.md`, `manifest/framework/VERBS.md`, `manifest/framework/CORTEX-CHANGELOG.md`, `manifest/framework/CORTEX-DEV.md`
 
@@ -296,7 +296,7 @@ After syncing framework files from upstream, check origin for custom personality
 git fetch origin
 git diff HEAD origin/main -- manifest/custom/actors/*.md
 ```
-If any `PERSONALITY-CUSTOM-*.md` file on `origin/main` differs from local HEAD, pull it:
+If any file in `manifest/custom/actors/` on `origin/main` differs from local HEAD, pull it:
 ```
 git checkout origin/main -- manifest/custom/actors/*.md
 ```
@@ -387,9 +387,9 @@ Walk each category, asking the user per-file or per-batch:
 
 - **Behind upstream:** *"Pull `<file>` from upstream? This will overwrite any local edits to this file."* Default action: pull. User can `skip` to keep local version (and accept the drift will recur next sync) or `abort` to stop reconcile.
 
-- **Removed upstream:** *"`<file>` was deprecated upstream. Move to `archive/manifest/custom/actors/`, or keep locally?"* Default action: archive (preserves provenance). User can `keep` if they have a custom reason (and should rename to `PERSONALITY-CUSTOM-*.md` to escape framework scope).
+- **Removed upstream:** *"`<file>` was deprecated upstream. Move to `archive/manifest/custom/actors/`, or keep locally?"* Default action: archive (preserves provenance). User can `keep` if they have a custom reason (and should move to `manifest/custom/actors/` or `archive/` to escape framework scope).
 
-- **Ahead of upstream:** *"`<file>` is locally-added in framework scope but doesn't exist upstream. Was this intentional?"* Default action: surface only, do not auto-resolve. User picks: rename to `*-CUSTOM.md` (escape scope), keep as-is (will appear as drift on every future reconcile), or delete.
+- **Ahead of upstream:** *"`<file>` is locally-added in framework scope but doesn't exist upstream. Was this intentional?"* Default action: surface only, do not auto-resolve. User picks: move to `manifest/custom/` (escape scope), keep as-is (will appear as drift on every future reconcile), or delete.
 
 **Step R4 — Apply and commit**
 
@@ -406,7 +406,7 @@ Single commit per category, one commit message per resolved file:
 ```
 reconcile: pull <file> from upstream/main (was M)
 reconcile: archive <file> (deprecated upstream)
-reconcile: rename <file> to *-CUSTOM.md (was orphan)
+reconcile: move <file> to manifest/custom/ (was orphan)
 ```
 
 **Step R5 — Final report**
@@ -1333,8 +1333,8 @@ Example:
 
 ### Creating a custom personality
 User describes the character in plain English. Scribe:
-1. Writes `PERSONALITY-CUSTOM-[NAME-SLUG].md` where `[NAME-SLUG]` is the uppercased, dash-separated form of the personality's `## name` field — or its first `## aliases` entry if shorter (e.g., name `Magnus Pedersen`, alias `Magnus` → `PERSONALITY-CUSTOM-MAGNUS.md`)
-2. **Filename slug must align with `## name` or an alias** (v4.0.0-alpha.13+) — required so all three lookup paths (name / alias / filename slug) agree. Refuse to write a file whose slug does not match. This prevents the lookup-mismatch bug where a personality named "Magnus Pedersen" filed as `PERSONALITY-CUSTOM-BC-SME.md` becomes invisible to `change actor to magnus`
+1. Writes `manifest/custom/actors/[NAME-SLUG].md` where `[NAME-SLUG]` is the uppercased, dash-separated form of the personality's `## name` field — or its first `## aliases` entry if shorter (e.g., name `Magnus Pedersen`, alias `Magnus` → `manifest/custom/actors/MAGNUS.md`)
+2. **Filename slug must align with `## name` or an alias** (v4.0.0-alpha.13+) — required so all three lookup paths (name / alias / filename slug) agree. Refuse to write a file whose slug does not match. This prevents the lookup-mismatch bug where a personality named "Magnus Pedersen" filed as `BC-SME.md` becomes invisible to `change actor to magnus`
 3. Proposes a name if not given
 4. Validates parent pointer(s) if declared
 5. Fires archetype vice warning and sycophant warning if applicable (see below)
@@ -1368,8 +1368,8 @@ The current response (the confirmation) stays in the previous actor's voice. The
 1. **Use the `## name` field verbatim.** Do not use the filename slug. Do not title-case, lowercase, or otherwise transform. `TARS` stays `TARS`. `Atlas` stays `Atlas`. `Dr. Morgan` stays `Dr. Morgan`. `Arnold Schwarzenegger` stays `Arnold Schwarzenegger`. The name field is the source of truth for display.
 2. **Always render the `## title` field next to each name.** Format: `Name — Title.` Names alone are useless when the user is choosing between 30+ personalities. The title is one line, pulled verbatim from the personality file. **Do not summarise or paraphrase.** If a personality has no title field (rare; treat as malformed), fall back to name only and surface a warning.
 3. **Render aliases when present.** If a personality has a non-empty `## aliases` field, surface the alternate names inline so the user knows they can invoke by either. Format: `Name (alias: Alt) — Title.` or `Name (aliases: Alt1, Alt2) — Title.`
-3a. **Render author when present (custom personalities only, v4.4.0+).** If a `PERSONALITY-CUSTOM-*.md` file has a non-empty `## author` field, surface it on the line below the actor entry. Format: `  ↳ by [author value]`. Framework personalities never show an author line. This is opt-in — the field is optional and absence is silent.
-4. **Render with categories.** Built-in personalities are grouped per the canonical category map below. Any personality file matching `PERSONALITY-CUSTOM-*.md` goes under `Custom`. Personalities not in the canonical map and not matching `PERSONALITY-CUSTOM-*` default to `Custom`.
+3a. **Render author when present (custom personalities only, v4.4.0+).** If an actor in `manifest/custom/actors/` has a non-empty `## author` field, surface it on the line below the actor entry. Format: `  ↳ by [author value]`. Framework personalities never show an author line. This is opt-in — the field is optional and absence is silent.
+4. **Render with categories.** Built-in personalities are grouped per the canonical category map below. Any personality file in `manifest/custom/actors/` goes under `Custom`. Personalities not in the canonical map and not in `manifest/custom/actors/` default to `Custom`.
 5. **Sub-group Custom by domain.** Within the Custom section, group personalities by their `## domain` field. Custom personalities without a `## domain` field render under a sub-section labeled `(no domain)` at the bottom of Custom. Domain sub-section labels are italicised (`*Domain Name*`) to distinguish them from top-level categories (which are bold).
 6. **Each personality appears exactly once.** The category map is exclusive — no personality may be rendered in more than one section, even if their domain overlaps multiple categories. Custom personalities also appear in exactly one domain sub-section.
 
@@ -1384,7 +1384,7 @@ The current response (the confirmation) stays in the previous actor's voice. The
 |---|---|
 | **Bootstrap** | Bootstrap (auto-loaded; never user-selected) |
 | **Defaults** | Apex |
-| **Custom** | (any user-created `PERSONALITY-CUSTOM-*.md`, optionally sub-grouped by their `## domain` field) |
+| **Custom** | (any actor in `manifest/custom/actors/`, optionally sub-grouped by their `## domain` field) |
 
 **Output template (categories MUST match the canonical map above — no inventing "Defaults" or "General"):**
 

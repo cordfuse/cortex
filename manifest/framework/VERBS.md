@@ -40,7 +40,7 @@ Remove a named actor from the session (multi-actor mode, v4.0.0-alpha.32+). Scri
 
 Triggers: "create actor [name]" | "new actor [name]" | "new personality [name]" | "make me an actor called [name]" | "I want to create a personality"
 
-Create a new custom personality. Scribe presents a **single batched form** with all required and optional fields, plus a `take all defaults` shortcut. User can also say *"walk me through it"* for turn-by-turn. Output: `personalities/PERSONALITY-CUSTOM-<NAME>.md`, committed, pushed, offered for activation. (v4.0.0-alpha.27+.)
+Create a new custom personality. Scribe presents a **single batched form** with all required and optional fields, plus a `take all defaults` shortcut. User can also say *"walk me through it"* for turn-by-turn. Output: `manifest/custom/actors/<NAME>.md`, committed, pushed, offered for activation. (v4.0.0-alpha.27+.)
 
 ---
 

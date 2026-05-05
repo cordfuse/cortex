@@ -54,7 +54,7 @@ The one framework default. Generic, no domain specialty. Adapts to planning, ana
 
 ## Custom Actors (v4.4.0+)
 
-The framework ships lean. Specialty, character, and domain-specific actors belong in your personal fork as `PERSONALITY-CUSTOM-*.md` files. They are never overwritten by framework sync.
+The framework ships lean. Specialty, character, and domain-specific actors belong in `manifest/custom/actors/`. They are never overwritten by framework sync.
 
 ### Creating a custom actor
 
@@ -62,7 +62,7 @@ Describe what you want in plain English — the scribe writes the personality fi
 
 ### Crediting custom actors
 
-Add an `## author` field to any `PERSONALITY-CUSTOM-*.md`:
+Add an `## author` field to any actor in `manifest/custom/actors/`:
 
 ```
 ## author
@@ -73,7 +73,7 @@ The `list actors` output surfaces `↳ by [author]` under the actor entry. The c
 
 ### Sharing custom actors
 
-Custom personality files are plain markdown. Drop them in a gist, a repo, a DM. The recipient copies one file into their `personalities/` folder. If the file is named `PERSONALITY-CUSTOM-*.md`, cortex picks it up automatically on next `list actors`.
+Custom personality files are plain markdown. Drop them in a gist, a repo, a DM. The recipient copies the file into `manifest/custom/actors/` and cortex picks it up automatically on next `list actors`.
 
 ---
 
