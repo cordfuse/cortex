@@ -7,7 +7,7 @@ Read at every `hello`. Update in the same commit whenever people, situations, or
 ## Active Actors
 
 actors:
-  - name: casey
+  - name: apex
     active_speaker: true
     joined_at: 2026-01-01 00:00 UTC
 

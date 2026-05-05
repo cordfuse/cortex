@@ -1,6 +1,6 @@
 # Cortex
 
-[![Version](https://img.shields.io/badge/version-4.2.1-blue)](docs/CORTEX-CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-4.4.0-blue)](docs/CORTEX-CHANGELOG.md)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![Donate to CAMH](https://img.shields.io/badge/Donate-CAMH%20Foundation-blue)](https://camhfoundation.ca/donate)
 
@@ -14,9 +14,15 @@
 > | [docs/PERSONALITIES-CUSTOM.md](docs/PERSONALITIES-CUSTOM.md) | [docs/PERSONALITIES.md](docs/PERSONALITIES.md) |
 > | [docs/CONNECTORS-CUSTOM.md](docs/CONNECTORS-CUSTOM.md) | [docs/CONNECTORS.md](docs/CONNECTORS.md) |
 
-**Your AI remembers everything. You own the records.**
+## The problem
 
-Every AI chat starts from zero — you re-explain your life every single session. Cortex fixes that. Talk to your AI scribe, it files everything into a private git repo you own. Next session, it reads your records and picks up where you left off. Any device. Any major AI. Nothing sent to Cordfuse.
+Every AI chat starts from zero. You re-explain your context, your projects, your preferences — every single session. The AI is capable but amnesiac. You end up doing the same setup work over and over, and the AI never gets smarter about *you*.
+
+## The solution
+
+Cortex is a private git repo your AI scribe reads at the start of every session. It files your records, tracks your threads, remembers your context. Next session it picks up where you left off — any device, any major AI. Nothing goes to Cordfuse. You own the repo.
+
+One default actor ships with the framework: **Apex** — a generic, precise, general-purpose voice. Everything else is yours to build. Skill actors, custom voices, specialist modes all live in your personal fork as `PERSONALITY-CUSTOM-*.md` files and are never overwritten by framework updates.
 
 ---
 

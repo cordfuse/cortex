@@ -4,6 +4,12 @@ One line per change. Newest at top. Append in the same commit as the change.
 
 Format: `YYYY-MM-DD HH:MM TZ | file | what changed`
 
+2026-05-04 UTC | version.txt | **bump to 4.4.0** — minimal framework: one actor (Apex), no specialty roster
+2026-05-04 UTC | personalities/ | removed 70 framework personalities; framework now ships Bootstrap + Apex only; all specialty actors belong in personal fork as PERSONALITY-CUSTOM-*
+2026-05-04 UTC | personalities/PERSONALITY-APEX.md | new framework default actor — generic, precise, no domain specialty; replaces Casey (PERSONALITY-CASUAL.md)
+2026-05-04 UTC | protocol/CORTEX.md | all Casey/PERSONALITY-CASUAL references updated to Apex
+2026-05-04 UTC | templates/context.md | default actor changed from casey to apex
+2026-05-04 UTC | README.md | problem/solution surfaced at top; version badge updated to 4.4.0
 2026-05-04 UTC | version.txt | **bump to 4.3.1** — musician verb ordering fix; sync now pulls custom personalities from origin
 2026-05-04 UTC | protocol/CORTEX.md | sync Step 3b: after upstream framework pull, also diff and pull PERSONALITY-CUSTOM-*.md from origin; custom personality fixes now land on next sync
 2026-05-04 UTC | version.txt | **bump to 4.3.0** — sync now reloads active actor personality files

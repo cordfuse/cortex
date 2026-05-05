@@ -407,7 +407,7 @@ Surface anything relevant, then greet.
 **Greeting structure (in order):**
 
 1. **Actor introduction (always first line).** Name + one-line title pulled from the active personality file's `## name` and `## title` fields. Use verbatim casing. One line. Example:
-   > Casey here — warm, plain English, no jargon.
+   > Apex here — precise, curious, direct.
 
 2. **Switch hint (one line, immediately after the introduction).** Tells the user how to see other actors and switch:
    > _(say `list actors` to see all options, or `change actor to [name]` to switch)_
@@ -494,9 +494,7 @@ protocol/              # Protocol engine — do not edit
   ROE.md               # Rules of engagement
   CORTEX-PROJECT.md    # Self-contained system prompt for Claude/ChatGPT projects
 personalities/         # Personality files — built-in and user-created
-  PERSONALITY-CASUAL.md     # Casey (framework default)
-  PERSONALITY-VERBOSE.md    # Atlas (opt-in)
-  PERSONALITY-[NAME].md     # Additional built-in personalities
+  PERSONALITY-APEX.md       # Apex (framework default)
   PERSONALITY-CUSTOM-*.md   # User-created personalities
 records/               # Your dated entries — one file per topic
 attachments/           # Attachments for records — one subfolder per record
@@ -728,9 +726,7 @@ The **active actor** has a personality — a named character with tunable traits
 Personality files are markdown. No YAML. The scribe reads them the same way it reads any other file — no parser needed.
 
 Files live in `personalities/` at repo root:
-- `personalities/PERSONALITY-CASUAL.md` — Casey (framework default, ships with Cortex)
-- `personalities/PERSONALITY-VERBOSE.md` — Atlas (opt-in, ships with Cortex)
-- `personalities/PERSONALITY-[NAME].md` — additional built-in personalities shipped with the framework
+- `personalities/PERSONALITY-APEX.md` — Apex (framework default, ships with Cortex)
 - `personalities/PERSONALITY-CUSTOM-[NAME].md` — user-created personalities
 
 Format:
@@ -888,12 +884,12 @@ Most personalities have an implicit faith level baked into their character (Fait
 Set the active personality in `context.md`:
 
 ```
-personality: casey
+personality: apex
 ```
 
 `actor:` is a full alias — both fields are accepted. Use whichever you prefer. If both are present, `personality:` takes precedence.
 
-The scribe reads this at `hello` and loads the corresponding file. **If `personality:` is missing or blank (v4.0.0-alpha.20+):** Bootstrap remains the active visible actor and prompts the user to pick one — no longer falls back to Casey. The "framework default" concept is retired in favor of the Bootstrap actor handling first-time-user setup. Casey and Atlas continue to ship as regular framework personalities (sourced via `change actor to casey`), they're just no longer auto-loaded.
+The scribe reads this at `hello` and loads the corresponding file. **If `personality:` is missing or blank (v4.0.0-alpha.20+):** Bootstrap remains the active visible actor and prompts the user to pick one. Apex ships as the framework default and is the recommended starting actor for new installations.
 
 **Switching mid-session (hot-swap):** user says "use Atlas" or "switch actor to Atlas" → Bootstrap takes over to confirm the switch (*"Switched to Atlas. Loading now."*), then Atlas (the new actor) handles the next conversational turn. The switch confirmation is in Bootstrap voice (operational); the next response is in the new actor's voice (conversational).
 
@@ -1003,9 +999,9 @@ The active-actors list lives in `context.md` under `## Active Actors`:
 ## Active Actors
 
 actors:
-  - name: casey
+  - name: apex
     active_speaker: true
-    joined_at: 2026-05-03 14:45 EDT
+    joined_at: 2026-01-01 00:00 UTC
   - name: oscar
     active_speaker: false
     joined_at: 2026-05-03 14:50 EDT
@@ -1017,14 +1013,14 @@ actors:
 - Names are case-insensitive (resolved via the alpha.13 lookup rules).
 - `joined_at` is informational; not used for routing.
 
-**Legacy compatibility:** the pre-alpha.32 `personality:` field is still accepted for single-actor sessions. If `personality: casey` is present and `actors:` is absent, the loader treats it as `actors: [{name: casey, active_speaker: true}]`. If both are present, `actors:` wins.
+**Legacy compatibility:** the pre-alpha.32 `personality:` field is still accepted for single-actor sessions. If `personality: apex` is present and `actors:` is absent, the loader treats it as `actors: [{name: apex, active_speaker: true}]`. If both are present, `actors:` wins.
 
 ### Verbs
 
 | Verb | Action |
 |---|---|
 | `change actor to <name>` | Hot-swap which entry is `active_speaker: true`. Does NOT remove other actors. (Pre-alpha.32 behavior in single-actor sessions; in multi-actor sessions, this just changes who speaks by default.) |
-| `add actor <name>` | **Pre-commit validation (v4.2.1+):** before writing to `context.md`, verify a resolvable personality file exists for `<name>` (alpha.13 lookup: `## name` field → `## aliases` → filename slug). If no file is found, block the operation and surface: *"No personality file found for `<name>`. Create it first with `create actor <name>`, then add them to the room."* Do not commit an actor that has no file. If the file exists: append a new entry. New actor is NOT the active speaker by default — must say `change actor to <name>` separately. Surfaces Bootstrap acknowledgement: *"Oscar joined the room. Casey is still the active speaker."* Aliases: *bring in*, *invite*. Natural-language triggers: *"Hey Oscar, join us"*, *"Bring Oscar in"*. |
+| `add actor <name>` | **Pre-commit validation (v4.2.1+):** before writing to `context.md`, verify a resolvable personality file exists for `<name>` (alpha.13 lookup: `## name` field → `## aliases` → filename slug). If no file is found, block the operation and surface: *"No personality file found for `<name>`. Create it first with `create actor <name>`, then add them to the room."* Do not commit an actor that has no file. If the file exists: append a new entry. New actor is NOT the active speaker by default — must say `change actor to <name>` separately. Surfaces Bootstrap acknowledgement: *"Oscar joined the room. Apex is still the active speaker."* Aliases: *bring in*, *invite*. Natural-language triggers: *"Hey Oscar, join us"*, *"Bring Oscar in"*. |
 | `remove actor <name>` | Remove an entry. Confirmation prompt unless the actor has 0 contributions this session: *"Remove Oscar from the room? They've contributed N times this session. (yes/no)"*. Refuses to remove the last actor. If removing the active speaker, the most-recently-joined remaining actor inherits `active_speaker: true`. Aliases: *step out*, *send away*. Natural-language triggers: *"Oscar, you can step out"*, *"Send Atlas away"*. |
 | `list actors` (multi-actor view, alpha.32+) | Shows actors **currently in the room** with active-speaker marker, plus a separator and the available roster (full personality library). Replaces the alpha.X behavior of just showing the roster. |
 
