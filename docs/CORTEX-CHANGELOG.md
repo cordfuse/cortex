@@ -4,6 +4,8 @@ One line per change. Newest at top. Append in the same commit as the change.
 
 Format: `YYYY-MM-DD HH:MM TZ | file | what changed`
 
+2026-05-04 UTC | version.txt | **bump to 4.3.1** — musician verb ordering fix; sync now pulls custom personalities from origin
+2026-05-04 UTC | protocol/CORTEX.md | sync Step 3b: after upstream framework pull, also diff and pull PERSONALITY-CUSTOM-*.md from origin; custom personality fixes now land on next sync
 2026-05-04 UTC | version.txt | **bump to 4.3.0** — sync now reloads active actor personality files
 2026-05-04 UTC | protocol/CORTEX.md | v4.3.0: `sync` reloads currently-loaded actor personality files when any `personalities/` file is pulled; acknowledgement line added to sync report
 2026-05-04 12:00 UTC | version.txt | bump to 4.2.1

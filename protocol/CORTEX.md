@@ -228,7 +228,22 @@ git checkout upstream/main -- $(git ls-tree --name-only upstream/main personalit
 
 **Hardcoded personality file lists in sync flow are a protocol violation.** Earlier alpha sync flows used hardcoded checkout lists which silently dropped framework personalities the list-author forgot to update — alpha.4 missed `PERSONALITY-CASUAL.md` (Bob → Casey rename), alpha.6 missed `PERSONALITY-CHUCK-NORRIS.md`, and the resulting drift accumulated on user clones across multiple sync cycles before being caught (see records `2026-04-28-1631-bug-personality-sync-drift.md`). Live enumeration prevents this — every sync includes every framework personality currently on upstream/main, no matter what was added in the most recent release.
 
-Update `.cortex-version` to match upstream version. Then commit and push:
+Update `.cortex-version` to match upstream version.
+
+**Step 3b — Pull custom personality updates from origin (v4.3.0+):**
+
+After syncing framework files from upstream, check origin for custom personality updates:
+```
+git fetch origin
+git diff HEAD origin/main -- personalities/PERSONALITY-CUSTOM-*.md
+```
+If any `PERSONALITY-CUSTOM-*.md` file on `origin/main` differs from local HEAD, pull it:
+```
+git checkout origin/main -- personalities/PERSONALITY-CUSTOM-*.md
+```
+Only pull files that differ — do not overwrite files that are already current. These are user-owned and origin is authoritative for them (upstream never has them).
+
+Then commit and push everything together:
 ```
 git add protocol/ templates/ scripts/*.ts personalities/ .cortex-version
 git commit -m "sync: framework vX.Y.Z"
