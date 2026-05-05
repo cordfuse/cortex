@@ -1,6 +1,6 @@
 # Cortex
 
-[![Version](https://img.shields.io/badge/version-4.5.1-blue)](manifest/framework/CORTEX-CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-4.5.2-blue)](manifest/framework/CORTEX-CHANGELOG.md)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![Donate to CAMH](https://img.shields.io/badge/Donate-CAMH%20Foundation-blue)](https://camhfoundation.ca/donate)
 
@@ -408,9 +408,9 @@ The Bootstrap RWDX guardrail (v4.0.0-alpha.7+) blocks all read/write/delete/exec
 
 [→ Full roadmap](ROADMAP.md)
 
-**v4.5.1 (current)** — Bootstrap always prompts for actor at hello; last-saved actor no longer auto-loaded. Available sessions surface in the actor-selection dialog so user can re-engage + pick actor in one turn. Full `manifest/` single-root restructure complete (`install/`, `customs/`, `docs/`). Python-era refs purged across all docs and scripts. ROOT path fixes in `healthcheck.ts`, `secrets.ts`, `setup.ts`.
+**v4.5.2 (current)** — Abstract actor support. Add `## abstract: true` to any actor file to mark it as an inheritance-only base — invisible in `list actors`, blocked from activation, valid as a `## parents` target. Enables shared trait foundations (e.g., a `CLINICAL-BASE.md` that Dr. Mira, Dr. Morgan, and Dr. Quinn all inherit from) without cluttering the actor list.
 
-**Recent shipped:** alpha.21 (docs alignment) → alpha.22–26 (repo restructure: `install/`, custom separation, docs/) → alpha.27 (actor selection at hello + drift detection + `create actor` verb) → **v4.5.0** (natural language intent routing — Stage 1 intent classification before verb matching) → **v4.5.1** (Bootstrap-always-prompts, single-root restructure, Python purge, script ROOT fixes).
+**Recent shipped:** alpha.21 (docs alignment) → alpha.22–26 (repo restructure) → alpha.27 (actor selection at hello + `create actor`) → **v4.5.0** (natural language intent routing) → **v4.5.1** (Bootstrap-always-prompts, manifest/ restructure, Python purge) → **v4.5.2** (abstract actors).
 
 **Coming:** Phase 2 multi-actor sessions (spawn named actors mid-session, multiple voices in the same session), Phase 3 panel vs independent modes, integrations expansion (Notion, Slack, GitHub, Linear, Health, Spotify), MTX (markdown package manager).
 

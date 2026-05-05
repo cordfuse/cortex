@@ -22,6 +22,8 @@ Both `personality:` and `actor:` are accepted. **If `personality:` is missing or
 
 **Multi-parent inheritance (v4.0.0-alpha.11+):** custom personalities can inherit from multiple parents simultaneously via `## parents` (a list).
 
+**Abstract actors (v4.5.2+):** add `## abstract: true` to any actor file to mark it as an inheritance-only base. Abstract actors are invisible in `list actors`, cannot be activated or added to the room, and exist solely as parent targets. Use them to define shared trait foundations that multiple actors inherit from without cluttering the actor list.
+
 To see what's available: `list actors`
 
 To create your own: describe it in plain English — the scribe writes the file, commits it, and asks if you want to activate it.
@@ -70,6 +72,12 @@ github.com/yourhandle
 ```
 
 The `list actors` output surfaces `↳ by [author]` under the actor entry. The credit travels with the file if you share it. Format is freeform — handle, name, URL, anything.
+
+### Abstract actors (inheritance bases)
+
+Add `## abstract: true` to any actor file to make it an inheritance-only base. Abstract actors don't appear in `list actors` and can't be activated — they exist as shared foundations for other actors to inherit from via `## parents`.
+
+Example: a `CLINICAL-BASE.md` abstract actor that sets clinical tone, strict neutrality, and medical vocabulary — then Dr. Mira, Dr. Morgan, and Dr. Quinn all inherit from it. Update one file, all three update.
 
 ### Sharing custom actors
 

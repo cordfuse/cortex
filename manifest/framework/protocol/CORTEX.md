@@ -826,6 +826,9 @@ Format:
 ## author (optional)
 [credit line — name, handle, link, or any format the creator chooses. Surfaced in `list actors` under the actor's entry. Framework personalities leave this blank.]
 
+## abstract (optional)
+[true | omit — marks this file as an inheritance-only base. Abstract actors are excluded from `list actors` and cannot be directly activated or added to the room. They are valid `## parents` targets — that is their primary use case. Absence means false.]
+
 ## speech_style (optional)
 - Cadence: [how they speak — fast/slow, rhythm, energy]
 - Address user as: [how they refer to the user]
@@ -1106,8 +1109,8 @@ actors:
 
 | Verb | Action |
 |---|---|
-| `change actor to <name>` | Hot-swap which entry is `active_speaker: true`. Does NOT remove other actors. (Pre-alpha.32 behavior in single-actor sessions; in multi-actor sessions, this just changes who speaks by default.) |
-| `add actor <name>` | **Pre-commit validation (v4.2.1+):** before writing to `context.md`, verify a resolvable personality file exists for `<name>` (alpha.13 lookup: `## name` field → `## aliases` → filename slug). If no file is found, block the operation and surface: *"No personality file found for `<name>`. Create it first with `create actor <name>`, then add them to the room."* Do not commit an actor that has no file. If the file exists: append a new entry. New actor is NOT the active speaker by default — must say `change actor to <name>` separately. Surfaces Bootstrap acknowledgement: *"Oscar joined the room. Apex is still the active speaker."* Aliases: *bring in*, *invite*. Natural-language triggers: *"Hey Oscar, join us"*, *"Bring Oscar in"*. |
+| `change actor to <name>` | Hot-swap which entry is `active_speaker: true`. Does NOT remove other actors. (Pre-alpha.32 behavior in single-actor sessions; in multi-actor sessions, this just changes who speaks by default.) **Abstract check (v4.5.2+):** if the target file has `## abstract: true`, block: *"[Name] is an abstract actor — for inheritance only, not activation. Run `list actors` for activatable options."* |
+| `add actor <name>` | **Pre-commit validation (v4.2.1+):** before writing to `context.md`, verify a resolvable personality file exists for `<name>` (alpha.13 lookup: `## name` field → `## aliases` → filename slug). If no file is found, block the operation and surface: *"No personality file found for `<name>`. Create it first with `create actor <name>`, then add them to the room."* **Abstract check (v4.5.2+):** if the file exists but has `## abstract: true`, block: *"[Name] is an abstract actor — for inheritance only. It can't join the room. Use it as a `## parents` target in another actor file. Run `list actors` for activatable options."* Do not commit an actor that has no file. If the file exists and is not abstract: append a new entry. New actor is NOT the active speaker by default — must say `change actor to <name>` separately. Surfaces Bootstrap acknowledgement: *"Oscar joined the room. Apex is still the active speaker."* Aliases: *bring in*, *invite*. Natural-language triggers: *"Hey Oscar, join us"*, *"Bring Oscar in"*. |
 | `remove actor <name>` | Remove an entry. Confirmation prompt unless the actor has 0 contributions this session: *"Remove Oscar from the room? They've contributed N times this session. (yes/no)"*. Refuses to remove the last actor. If removing the active speaker, the most-recently-joined remaining actor inherits `active_speaker: true`. Aliases: *step out*, *send away*. Natural-language triggers: *"Oscar, you can step out"*, *"Send Atlas away"*. |
 | `list actors` (multi-actor view, alpha.32+) | Shows actors **currently in the room** with active-speaker marker, plus a separator and the available roster (full personality library). Replaces the alpha.X behavior of just showing the roster. |
 
@@ -1319,6 +1322,8 @@ Example:
 
 **Backwards compatibility:** the legacy single-parent form `## parent: <file>` continues to work and is treated as `## parents: [<file>]`. No migration required for existing custom personalities.
 
+**Abstract actors as parents (v4.5.2+):** abstract actors (`## abstract: true`) are valid parent targets — that is their primary use case. A parent pointer to an abstract file is valid and resolves normally even though the abstract actor cannot be activated directly.
+
 **Validation:** validate every parent pointer before committing — if any named file does not exist in `manifest/custom/actors/`, warn the user before writing anything.
 
 ---
@@ -1338,8 +1343,9 @@ User describes the character in plain English. Scribe:
 3. Proposes a name if not given
 4. Validates parent pointer(s) if declared
 5. Fires archetype vice warning and sycophant warning if applicable (see below)
-6. Commits
-7. Asks: *"Want to activate this now?"*
+6. If `## abstract: true` is set, skips the activation offer entirely (abstract actors cannot be activated)
+7. Commits
+8. If not abstract, asks: *"Want to activate this now?"*
 
 ### Tuning a personality
 User says *"dial Marlowe's sarcasm down to 40%"*. Scribe:
@@ -1362,6 +1368,8 @@ The current response (the confirmation) stays in the previous actor's voice. The
 ### Listing personalities / actors
 
 `list personalities` or `list actors` → render the canonical output below. **Never file actor listings as records** — they go stale the moment a personality is added or removed. Always generate fresh from the personality files.
+
+**Pre-filter: exclude abstract actors.** Before applying any rendering rules, exclude all personality files with `## abstract: true`. These are inheritance-only bases — they do not appear in the output under any circumstance, and their count is not reflected in any totals.
 
 **Hard rules for rendering:**
 

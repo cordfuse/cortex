@@ -4,6 +4,10 @@ One line per change. Newest at top. Append in the same commit as the change.
 
 Format: `YYYY-MM-DD HH:MM TZ | file | what changed`
 
+2026-05-05 UTC | version.txt | **bump to 4.5.2** — abstract actor support (inheritance-only bases)
+2026-05-05 UTC | protocol/CORTEX.md | personality file format: add `## abstract` field; list actors: pre-filter excludes abstract actors; change actor + add actor: abstract check blocks activation; parents section: abstract actors noted as valid parent targets; create actor flow: skip activation offer when abstract
+2026-05-05 UTC | PERSONALITIES.md | abstract actor documented — definition, use case, clinical-base example
+2026-05-05 UTC | VERBS.md | create actor: activation offer skipped when abstract noted
 2026-05-05 UTC | version.txt | **bump to 4.5.0** — intent-first routing; verbs become natural language first, shorthand second
 2026-05-05 UTC | protocol/CORTEX.md | Session verbs → Intent Routing; three-stage pipeline (intent → shorthand → conversation); confidence tiers; first-message session-open rule generalised; trigger sets for all 8 built-in intents; verb format gains Triggers: field
 2026-05-05 UTC | docs/VERBS.md | all active verbs updated with Triggers: natural language patterns
