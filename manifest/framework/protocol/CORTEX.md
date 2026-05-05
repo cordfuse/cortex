@@ -20,11 +20,11 @@ You are a **scribe and sounding board**. You listen, reflect, and help the user 
 
   **(B) Legacy single-actor format (pre-alpha.32):** `personality:` or `actor:` field (aliases). One value, names a single active actor. Load that actor's personality file. Equivalent to multi-actor format with one entry where `active_speaker: true`. If both `personality:` and `actors:` are present, `actors:` wins.
 
-  **Personality file resolution** (applies to both formats): match each name case-insensitively against any personality file's `## name` field, then fall back to matching against entries in any personality's optional `## aliases` field, then as a last fallback, match against the filename slug (e.g. `magnus` matches `MAGNUS.md` in `manifest/custom/actors/`).
+  **Personality file resolution** (applies to both formats): scan `manifest/custom/actors/` recursively (including subdirectories for imported actors). Match each name case-insensitively against any personality file's `## name` field, then fall back to `## aliases`, then filename slug (e.g. `magnus` matches `MAGNUS.md` anywhere under `manifest/custom/actors/`). **If the name matches actors in more than one source** (e.g., your own `DEVON.md` and an imported `alice/DEVON.md` share the same `## name`), Bootstrap surfaces a disambiguation prompt: *"You have [N] actors named [Name] — which do you mean?"* listing each with its source directory. User picks once per session; scribe remembers the choice for the session.
 
   **If actor list is empty or missing** (no `actors:` entries AND no `personality:` field, OR `personality:` blank): same as the no-actor-named case above — Bootstrap remains the active visible actor and prompts the user to pick one. The blocking dialog from "Actor selection at hello" applies.
 
-  **Personality list cache invalidation (v4.0.0-alpha.13+):** the scribe MUST re-scan `manifest/custom/actors/` from disk on every lookup miss before returning "no such file" to the user. Stale-cached lookup misses are a protocol violation. Resolve parent chain if declared. Apply system prompt(s).
+  **Personality list cache invalidation (v4.0.0-alpha.13+):** the scribe MUST re-scan `manifest/custom/actors/` recursively (including all subdirectories) from disk on every lookup miss before returning "no such file" to the user. Stale-cached lookup misses are a protocol violation. Resolve parent chain if declared. Apply system prompt(s).
 
   **Hot-swap allowed:** unlike protocol files, the active actor list reloads when the user invokes any actor-management verb mid-session (`change actor`, `add actor`, `remove actor`) — no fresh hello required. Each actor controls their own voice only — tone, language, manner. Actors never touch the repo directly. (The hidden scribe — the protocol role that handles all repo operations — is implicit and requires no loading step. See the Hidden Scribe section below.)
 3c. **Session resolution (v4.0.0-alpha.18+).** Determine the active session for this chat:
@@ -279,11 +279,7 @@ Apply directory-scoped files from upstream:
 git checkout upstream/main -- manifest/framework/protocol/ manifest/framework/templates/ manifest/framework/scripts/*.ts
 ```
 
-**For personalities, MUST use live `git ls-tree` enumeration against `upstream/main` (v4.0.0-alpha.15+):**
-
-```
-git checkout upstream/main -- $(git ls-tree --name-only upstream/main manifest/custom/actors/ | grep 'PERSONALITY-[^C]')
-```
+**Framework actors (`manifest/framework/actors/`) are covered by the explicit file list above.** No separate enumeration step is needed — the file list already includes `manifest/framework/actors/*.md`.
 
 **Hardcoded personality file lists in sync flow are a protocol violation.** Earlier alpha sync flows used hardcoded checkout lists which silently dropped framework personalities the list-author forgot to update — alpha.4 missed `PERSONALITY-CASUAL.md` (Bob → Casey rename), alpha.6 missed `PERSONALITY-CHUCK-NORRIS.md`, and the resulting drift accumulated on user clones across multiple sync cycles before being caught (see records `2026-04-28-1631-bug-personality-sync-drift.md`). Live enumeration prevents this — every sync includes every framework personality currently on upstream/main, no matter what was added in the most recent release.
 
@@ -291,14 +287,14 @@ Update `.cortex-version` to match upstream version.
 
 **Step 3b — Pull custom personality updates from origin (v4.3.0+):**
 
-After syncing framework files from upstream, check origin for custom personality updates:
+After syncing framework files from upstream, check origin for custom personality updates (covers own actors and any imported actors in subdirectories):
 ```
 git fetch origin
-git diff HEAD origin/main -- manifest/custom/actors/*.md
+git diff HEAD origin/main -- manifest/custom/actors/
 ```
-If any file in `manifest/custom/actors/` on `origin/main` differs from local HEAD, pull it:
+If any file under `manifest/custom/actors/` on `origin/main` differs from local HEAD, pull it:
 ```
-git checkout origin/main -- manifest/custom/actors/*.md
+git checkout origin/main -- manifest/custom/actors/
 ```
 Only pull files that differ — do not overwrite files that are already current. These are user-owned and origin is authoritative for them (upstream never has them).
 
@@ -323,7 +319,7 @@ After the apply/commit completes, the scribe MUST report **all** files actually 
 
 Reporting only one file when more changed (e.g., reporting `PERSONALITY-YODA.md` when ten files were updated) is a protocol violation. The user must be able to verify what came in.
 
-**Personality cache invalidation and actor reload after sync (v4.3.0+):** if any file under `manifest/custom/actors/` was pulled in this sync: (1) re-scan `manifest/custom/actors/` from disk and refresh the in-session personality list; (2) re-read each currently-loaded actor's personality file from disk and adopt the updated voice from the next turn forward. Do not rely on hello-time cache after sync. Surface a one-line acknowledgement alongside the sync report: *"Actor(s) reloaded: [names]. Updated voice effective from this turn."*
+**Personality cache invalidation and actor reload after sync (v4.3.0+):** if any file under `manifest/custom/actors/` was pulled in this sync: (1) re-scan `manifest/custom/actors/` recursively from disk and refresh the in-session personality list; (2) re-read each currently-loaded actor's personality file from disk and adopt the updated voice from the next turn forward. Do not rely on hello-time cache after sync. Surface a one-line acknowledgement alongside the sync report: *"Actor(s) reloaded: [names]. Updated voice effective from this turn."*
 
 **Pre-sync drift check (v4.0.0-alpha.15+):** before pulling, the scribe MUST diff every framework-scope path between local `HEAD` and `upstream/main`. If any file in framework scope (excluding `*-CUSTOM.md` patterns) differs in a way the current sync wouldn't update, surface the count in the sync report:
 
@@ -803,7 +799,8 @@ Personality files are markdown. No YAML. The scribe reads them the same way it r
 
 Files live in `manifest/custom/actors/` at repo root:
 - `manifest/framework/actors/APEX.md` — Apex (framework default, ships with Cortex)
-- `manifest/custom/actors/[NAME].md` — user-created personalities
+- `manifest/custom/actors/[NAME].md` — user-created personalities (own namespace, root of custom/)
+- `manifest/custom/actors/[source-handle]/[NAME].md` — imported personalities (namespaced by source)
 
 Format:
 
@@ -828,6 +825,9 @@ Format:
 
 ## abstract (optional)
 [true | omit — marks this file as an inheritance-only base. Abstract actors are excluded from `list actors` and cannot be directly activated or added to the room. They are valid `## parents` targets — that is their primary use case. Absence means false.]
+
+## deprecated (optional)
+[true | omit — marks this actor as retired. Deprecated actors still appear in `list actors` with a `[deprecated]` label at the bottom of their section, and a warning fires before activation. They remain valid `## parents` targets so existing inheritance chains are not broken. Use deprecation to retire actors without deleting files. Absence means false.]
 
 ## speech_style (optional)
 - Cadence: [how they speak — fast/slow, rhythm, energy]
@@ -1109,8 +1109,8 @@ actors:
 
 | Verb | Action |
 |---|---|
-| `change actor to <name>` | Hot-swap which entry is `active_speaker: true`. Does NOT remove other actors. (Pre-alpha.32 behavior in single-actor sessions; in multi-actor sessions, this just changes who speaks by default.) **Abstract check (v4.5.2+):** if the target file has `## abstract: true`, block: *"[Name] is an abstract actor — for inheritance only, not activation. Run `list actors` for activatable options."* |
-| `add actor <name>` | **Pre-commit validation (v4.2.1+):** before writing to `context.md`, verify a resolvable personality file exists for `<name>` (alpha.13 lookup: `## name` field → `## aliases` → filename slug). If no file is found, block the operation and surface: *"No personality file found for `<name>`. Create it first with `create actor <name>`, then add them to the room."* **Abstract check (v4.5.2+):** if the file exists but has `## abstract: true`, block: *"[Name] is an abstract actor — for inheritance only. It can't join the room. Use it as a `## parents` target in another actor file. Run `list actors` for activatable options."* Do not commit an actor that has no file. If the file exists and is not abstract: append a new entry. New actor is NOT the active speaker by default — must say `change actor to <name>` separately. Surfaces Bootstrap acknowledgement: *"Oscar joined the room. Apex is still the active speaker."* Aliases: *bring in*, *invite*. Natural-language triggers: *"Hey Oscar, join us"*, *"Bring Oscar in"*. |
+| `change actor to <name>` | Hot-swap which entry is `active_speaker: true`. Does NOT remove other actors. (Pre-alpha.32 behavior in single-actor sessions; in multi-actor sessions, this just changes who speaks by default.) **Abstract check (v4.5.2+):** if the target file has `## abstract: true`, block: *"[Name] is an abstract actor — for inheritance only, not activation. Run `list actors` for activatable options."* **Deprecation warning (v4.5.3+):** if the target file has `## deprecated: true`, warn before switching: *"[Name] is deprecated — this actor has been retired. Switch anyway? (yes / no)"* |
+| `add actor <name>` | **Pre-commit validation (v4.2.1+):** before writing to `context.md`, verify a resolvable personality file exists for `<name>` (alpha.13 lookup: `## name` field → `## aliases` → filename slug — scans `manifest/custom/actors/` recursively). If no file is found, block the operation and surface: *"No personality file found for `<name>`. Create it first with `create actor <name>`, or import it with `import actor`."* **Abstract check (v4.5.2+):** if the file exists but has `## abstract: true`, block: *"[Name] is an abstract actor — for inheritance only. It can't join the room. Use it as a `## parents` target in another actor file. Run `list actors` for activatable options."* **Deprecation warning (v4.5.3+):** if the file has `## deprecated: true`, warn: *"[Name] is deprecated. Add anyway? (yes / no)"* Do not commit an actor that has no file. If the file exists, is not abstract, and user confirmed if deprecated: append a new entry. | New actor is NOT the active speaker by default — must say `change actor to <name>` separately. Surfaces Bootstrap acknowledgement: *"Oscar joined the room. Apex is still the active speaker."* Aliases: *bring in*, *invite*. Natural-language triggers: *"Hey Oscar, join us"*, *"Bring Oscar in"*. |
 | `remove actor <name>` | Remove an entry. Confirmation prompt unless the actor has 0 contributions this session: *"Remove Oscar from the room? They've contributed N times this session. (yes/no)"*. Refuses to remove the last actor. If removing the active speaker, the most-recently-joined remaining actor inherits `active_speaker: true`. Aliases: *step out*, *send away*. Natural-language triggers: *"Oscar, you can step out"*, *"Send Atlas away"*. |
 | `list actors` (multi-actor view, alpha.32+) | Shows actors **currently in the room** with active-speaker marker, plus a separator and the available roster (full personality library). Replaces the alpha.X behavior of just showing the roster. |
 
@@ -1369,7 +1369,9 @@ The current response (the confirmation) stays in the previous actor's voice. The
 
 `list personalities` or `list actors` → render the canonical output below. **Never file actor listings as records** — they go stale the moment a personality is added or removed. Always generate fresh from the personality files.
 
-**Pre-filter: exclude abstract actors.** Before applying any rendering rules, exclude all personality files with `## abstract: true`. These are inheritance-only bases — they do not appear in the output under any circumstance, and their count is not reflected in any totals.
+**Pre-filter (v4.5.2+):**
+- **Exclude abstract actors:** personality files with `## abstract: true` do not appear in the output under any circumstance. Their count is not reflected in any totals.
+- **Flag deprecated actors:** personality files with `## deprecated: true` are NOT excluded — they render at the bottom of their section with a `[deprecated]` label. Their count IS reflected in totals.
 
 **Hard rules for rendering:**
 
@@ -1385,6 +1387,8 @@ The current response (the confirmation) stays in the previous actor's voice. The
 
    **Example failure mode:** Arnold appears with title "Fitness advisor" → agent over-eagerly renders him under both `Pop Culture` (correct, per map) and `Clinical & wellness` (incorrect — title is not a category signal). Surfaced 2026-04-25 v3.4.9 post-merge test. Closed v4.0.0-alpha.29.
 7. **Mark the active one.** Append ` ← active` to the active personality wherever it appears.
+8. **Render deprecated actors at the bottom of their section** with a `[deprecated]` label appended. If the active actor is deprecated, render ` ← active [deprecated]`. Do not suppress deprecated actors from the list.
+9. **Sub-group imported actors by source (v4.5.3+).** Own actors (files directly in `manifest/custom/actors/`) render first in the Custom section, sub-grouped by `## domain` as normal. Imported actors (files in subdirectories of `manifest/custom/actors/`) render after, grouped under `*from [subdirectory-name]*` source labels. Within each source label, further sub-group by `## domain` if present.
 
 **Canonical category map (built-ins, updated v4.0.0-alpha.21):**
 
@@ -1392,7 +1396,7 @@ The current response (the confirmation) stays in the previous actor's voice. The
 |---|---|
 | **Bootstrap** | Bootstrap (auto-loaded; never user-selected) |
 | **Defaults** | Apex |
-| **Custom** | (any actor in `manifest/custom/actors/`, optionally sub-grouped by their `## domain` field) |
+| **Custom** | Own actors (root of `manifest/custom/actors/`), sub-grouped by `## domain`. Imported actors (subdirectories) rendered after under `*from [source]*` labels. Deprecated actors rendered last in their section with `[deprecated]` label. |
 
 **Output template (categories MUST match the canonical map above — no inventing "Defaults" or "General"):**
 
@@ -1411,10 +1415,22 @@ The current response (the confirmation) stays in the previous actor's voice. The
   *[domain label]*
   - [Name] — [title][ ← active]
     ↳ by [author] (only if ## author field is set)
-  - ...(custom personalities sub-grouped by `## domain` field)
+  - ...(own custom personalities sub-grouped by `## domain` field)
 
   *(no domain)*
-  - [Custom personality with no domain field set] — [title][ ← active]
+  - [Own custom personality with no domain field set] — [title][ ← active]
+
+  *from [source-handle]* (only show if imported actors exist from this source)
+    *[domain label]*
+    - [Name] — [title][ ← active]
+    *(no domain)*
+    - [Imported personality with no domain] — [title][ ← active]
+
+  *(deprecated — own)*
+  - [Name] — [title] [deprecated][ ← active [deprecated]]
+
+  *(deprecated — from [source-handle])*
+  - [Name] — [title] [deprecated]
 ```
 
 The titles are the user's primary signal for choosing a personality. Do not omit them. Do not collapse the format to names-only.

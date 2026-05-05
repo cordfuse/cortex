@@ -44,6 +44,21 @@ Create a new custom personality. Scribe presents a **single batched form** with 
 
 ---
 
+## import actor
+
+Triggers: "import actor from [url]" | "add actor from [link]" | "I want to use [person]'s [name] actor" | "here's an actor file: [paste]" | "add this personality: [paste]"
+
+Import a personality file from an external source into the user's actor library. Scribe:
+1. Accepts a URL (GitHub gist, raw file link) or pasted file content
+2. Infers source handle from URL (GitHub username from gist/raw URL) — if content was pasted with no URL, asks in plain English: *"What should I call the person this came from? I'll use that to keep their actors organised."* If user doesn't know or doesn't care, default to `shared`
+3. Writes to `manifest/custom/actors/<source-handle>/<NAME-SLUG>.md`
+4. Confirms: *"[Name] from [source-handle] added. Say `change actor to [Name]` to activate."*
+5. Commits. Does NOT auto-activate.
+
+Note: if a name collision exists (same `## name` as an existing actor), surfaces the conflict before writing: *"You already have an actor named [Name]. Import anyway as [source-handle]/[Name]? (yes / no)"* (v4.5.3+.)
+
+---
+
 ### Multi-Session (v4.0.0-alpha.17+)
 
 ## spawn session

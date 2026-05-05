@@ -1,6 +1,6 @@
 # Cortex
 
-[![Version](https://img.shields.io/badge/version-4.5.2-blue)](manifest/framework/CORTEX-CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-4.5.3-blue)](manifest/framework/CORTEX-CHANGELOG.md)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![Donate to CAMH](https://img.shields.io/badge/Donate-CAMH%20Foundation-blue)](https://camhfoundation.ca/donate)
 
@@ -408,9 +408,9 @@ The Bootstrap RWDX guardrail (v4.0.0-alpha.7+) blocks all read/write/delete/exec
 
 [→ Full roadmap](ROADMAP.md)
 
-**v4.5.2 (current)** — Abstract actor support. Add `## abstract: true` to any actor file to mark it as an inheritance-only base — invisible in `list actors`, blocked from activation, valid as a `## parents` target. Enables shared trait foundations (e.g., a `CLINICAL-BASE.md` that Dr. Mira, Dr. Morgan, and Dr. Quinn all inherit from) without cluttering the actor list.
+**v4.5.3 (current)** — Deprecated actors + imported actor namespaces. `## deprecated: true` retires an actor without deleting it — stays in `list actors` with a `[deprecated]` label, warns before activation, keeps inheritance chains intact. `import actor from [link]` places someone else's actor in `manifest/custom/actors/[source-handle]/` automatically — name collisions resolved by Bootstrap asking which you mean, once per session.
 
-**Recent shipped:** alpha.21 (docs alignment) → alpha.22–26 (repo restructure) → alpha.27 (actor selection at hello + `create actor`) → **v4.5.0** (natural language intent routing) → **v4.5.1** (Bootstrap-always-prompts, manifest/ restructure, Python purge) → **v4.5.2** (abstract actors).
+**Recent shipped:** → **v4.5.1** (Bootstrap-always-prompts, manifest/ restructure) → **v4.5.2** (abstract actors) → **v4.5.3** (deprecated actors + actor namespaces via import).
 
 **Coming:** Phase 2 multi-actor sessions (spawn named actors mid-session, multiple voices in the same session), Phase 3 panel vs independent modes, integrations expansion (Notion, Slack, GitHub, Linear, Health, Spotify), MTX (markdown package manager).
 

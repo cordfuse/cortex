@@ -24,6 +24,10 @@ Both `personality:` and `actor:` are accepted. **If `personality:` is missing or
 
 **Abstract actors (v4.5.2+):** add `## abstract: true` to any actor file to mark it as an inheritance-only base. Abstract actors are invisible in `list actors`, cannot be activated or added to the room, and exist solely as parent targets. Use them to define shared trait foundations that multiple actors inherit from without cluttering the actor list.
 
+**Deprecated actors (v4.5.3+):** add `## deprecated: true` to retire an actor without deleting the file. Deprecated actors remain in `list actors` with a `[deprecated]` label and a warning fires before activation. Existing inheritance chains using deprecated actors as parents are not broken.
+
+**Imported actors (v4.5.3+):** say `import actor from [link]` or paste an actor file and the scribe places it in `manifest/custom/actors/[source-handle]/` automatically. `list actors` groups imported actors under `*from [source-handle]*` labels. Name collisions between your own actors and imported ones are resolved by Bootstrap asking which you mean — once per session.
+
 To see what's available: `list actors`
 
 To create your own: describe it in plain English — the scribe writes the file, commits it, and asks if you want to activate it.
@@ -78,6 +82,14 @@ The `list actors` output surfaces `↳ by [author]` under the actor entry. The c
 Add `## abstract: true` to any actor file to make it an inheritance-only base. Abstract actors don't appear in `list actors` and can't be activated — they exist as shared foundations for other actors to inherit from via `## parents`.
 
 Example: a `CLINICAL-BASE.md` abstract actor that sets clinical tone, strict neutrality, and medical vocabulary — then Dr. Mira, Dr. Morgan, and Dr. Quinn all inherit from it. Update one file, all three update.
+
+### Deprecated actors
+
+Add `## deprecated: true` to retire an actor without deleting the file. It stays visible in `list actors` with a `[deprecated]` label so you know it's there, and a warning fires before activation. The file stays so existing `## parents` chains pointing at it continue to resolve.
+
+### Importing actors
+
+Say `import actor from [link]` or paste file content. The scribe asks one plain-English question if it can't infer the source, then places the file in `manifest/custom/actors/[source-handle]/`. Your own actors and imported actors never collide — they live in separate directories. If two actors share a name, Bootstrap asks which you mean.
 
 ### Sharing custom actors
 

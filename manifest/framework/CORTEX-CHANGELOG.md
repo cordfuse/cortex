@@ -4,6 +4,10 @@ One line per change. Newest at top. Append in the same commit as the change.
 
 Format: `YYYY-MM-DD HH:MM TZ | file | what changed`
 
+2026-05-05 UTC | version.txt | **bump to 4.5.3** — deprecated actors + imported actor namespaces
+2026-05-05 UTC | protocol/CORTEX.md | personality file format: add `## deprecated` field; list actors: pre-filter updated (deprecated shown with label, not excluded); change actor + add actor: deprecation warning before activation; rendering rules 8+9: deprecated at section bottom, imported actors grouped by source subdirectory; personality file resolution: recursive scan + multi-match disambiguation; sync step 3b: recursive actor pull; stale ls-tree enumeration removed
+2026-05-05 UTC | VERBS.md | new verb `import actor` — accepts URL or pasted content, infers source handle, places in manifest/custom/actors/[source-handle]/, warns on name collision
+2026-05-05 UTC | PERSONALITIES.md | deprecated actors, importing actors, abstract actors sections documented
 2026-05-05 UTC | version.txt | **bump to 4.5.2** — abstract actor support (inheritance-only bases)
 2026-05-05 UTC | protocol/CORTEX.md | personality file format: add `## abstract` field; list actors: pre-filter excludes abstract actors; change actor + add actor: abstract check blocks activation; parents section: abstract actors noted as valid parent targets; create actor flow: skip activation offer when abstract
 2026-05-05 UTC | PERSONALITIES.md | abstract actor documented — definition, use case, clinical-base example
