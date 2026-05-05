@@ -4,6 +4,8 @@ One line per change. Newest at top. Append in the same commit as the change.
 
 Format: `YYYY-MM-DD HH:MM TZ | file | what changed`
 
+2026-05-05 UTC | version.txt | **bump to 4.4.1** — custom actor author credit field + list actors surfacing
+2026-05-05 UTC | protocol/CORTEX.md | add ## author field to personality file format; list actors renders ↳ by [author] for custom personalities with author set; canonical category map cleaned to Bootstrap + Apex + Custom only
 2026-05-04 UTC | version.txt | **bump to 4.4.0** — minimal framework: one actor (Apex), no specialty roster
 2026-05-04 UTC | personalities/ | removed 70 framework personalities; framework now ships Bootstrap + Apex only; all specialty actors belong in personal fork as PERSONALITY-CUSTOM-*
 2026-05-04 UTC | personalities/PERSONALITY-APEX.md | new framework default actor — generic, precise, no domain specialty; replaces Casey (PERSONALITY-CASUAL.md)

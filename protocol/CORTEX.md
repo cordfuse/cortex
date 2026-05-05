@@ -747,6 +747,9 @@ Format:
 ## domain (optional, custom personalities only)
 [grouping label for the Custom section in `list personalities`]
 
+## author (optional)
+[credit line — name, handle, link, or any format the creator chooses. Surfaced in `list actors` under the actor's entry. Framework personalities leave this blank.]
+
 ## speech_style (optional)
 - Cadence: [how they speak — fast/slow, rhythm, energy]
 - Address user as: [how they refer to the user]
@@ -1281,6 +1284,7 @@ The current response (the confirmation) stays in the previous actor's voice. The
 1. **Use the `## name` field verbatim.** Do not use the filename slug. Do not title-case, lowercase, or otherwise transform. `TARS` stays `TARS`. `Atlas` stays `Atlas`. `Dr. Morgan` stays `Dr. Morgan`. `Arnold Schwarzenegger` stays `Arnold Schwarzenegger`. The name field is the source of truth for display.
 2. **Always render the `## title` field next to each name.** Format: `Name — Title.` Names alone are useless when the user is choosing between 30+ personalities. The title is one line, pulled verbatim from the personality file. **Do not summarise or paraphrase.** If a personality has no title field (rare; treat as malformed), fall back to name only and surface a warning.
 3. **Render aliases when present.** If a personality has a non-empty `## aliases` field, surface the alternate names inline so the user knows they can invoke by either. Format: `Name (alias: Alt) — Title.` or `Name (aliases: Alt1, Alt2) — Title.`
+3a. **Render author when present (custom personalities only, v4.4.0+).** If a `PERSONALITY-CUSTOM-*.md` file has a non-empty `## author` field, surface it on the line below the actor entry. Format: `  ↳ by [author value]`. Framework personalities never show an author line. This is opt-in — the field is optional and absence is silent.
 4. **Render with categories.** Built-in personalities are grouped per the canonical category map below. Any personality file matching `PERSONALITY-CUSTOM-*.md` goes under `Custom`. Personalities not in the canonical map and not matching `PERSONALITY-CUSTOM-*` default to `Custom`.
 5. **Sub-group Custom by domain.** Within the Custom section, group personalities by their `## domain` field. Custom personalities without a `## domain` field render under a sub-section labeled `(no domain)` at the bottom of Custom. Domain sub-section labels are italicised (`*Domain Name*`) to distinguish them from top-level categories (which are bold).
 6. **Each personality appears exactly once.** The category map is exclusive — no personality may be rendered in more than one section, even if their domain overlaps multiple categories. Custom personalities also appear in exactly one domain sub-section.
@@ -1295,17 +1299,7 @@ The current response (the confirmation) stays in the previous actor's voice. The
 | Category | Personalities |
 |---|---|
 | **Bootstrap** | Bootstrap (auto-loaded; never user-selected) |
-| **Workplace** | Alex, Bishop, Max |
-| **Creative & Visionary** | Harper, Ziggy, Nova |
-| **Wisdom & Reflection** | Sage, Ivy, Rowan, Dante |
-| **Distinctive Voices** | Casey, Atlas, Riff, Marlowe, Reed, Cleo, Finn, Claire |
-| **Information Technology** | Devon, Kai, Riley, Knox, Vega, Avery, Sloane, Orion, Drew |
-| **Clinical & wellness** | Dr. Morgan, Dr. Quinn, Jordan, Dr. Walsh, Dr. Mira |
-| **Faith traditions** | Rabbi, Pastor, Father Thomas, Imam, Swami, Lama, Granthi, Daoist, Elder |
-| **Mindfulness & Stoicism** | Mindfulness Teacher, Marcus |
-| **Recovery & Peer Support** | AA Sponsor, SAA Sponsor |
-| **Family & Friends** | Mama, Pop, Terry |
-| **Pop Culture** | TARS, Arnold Schwarzenegger, Mr. Miyagi, John Kreese, Bruce Lee, Chuck Norris, Jean-Claude Van Damme, Sylvester Stallone, Hulk Hogan, Bob Ross, Mr. Rogers, Doc Brown, Yoda, Spock, Robin Williams, Han Solo, The Dude, Indiana Jones, Captain Jean-Luc Picard, Buffy Summers, Bill Murray, Angus MacGyver, Lieutenant Columbo, Anthony John Soprano Sr. |
+| **Defaults** | Apex |
 | **Custom** | (any user-created `PERSONALITY-CUSTOM-*.md`, optionally sub-grouped by their `## domain` field) |
 
 **Output template (categories MUST match the canonical map above — no inventing "Defaults" or "General"):**
