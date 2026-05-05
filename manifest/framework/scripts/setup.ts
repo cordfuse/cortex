@@ -15,7 +15,7 @@ import { join, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { platform } from 'node:os'
 
-const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..')
+const ROOT = join(dirname(fileURLToPath(import.meta.url)), '../../..')
 const CONFIG_PATH = join(ROOT, 'cortex.config')
 const GITIGNORE_PATH = join(ROOT, '.gitignore')
 

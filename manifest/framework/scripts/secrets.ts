@@ -25,7 +25,7 @@ import { join, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import * as readline from 'node:readline'
 
-const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..')
+const ROOT = join(dirname(fileURLToPath(import.meta.url)), '../../..')
 const VAULT_DIR = join(ROOT, 'cortex.secrets')
 const MANIFEST_PATH = join(VAULT_DIR, 'vault.json')
 const LEGACY_VAULT = join(ROOT, 'cortex.secrets.enc')
