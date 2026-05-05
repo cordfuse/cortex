@@ -76,7 +76,7 @@ fi
 
 echo "git: $(git --version)"
 
-# ── Hand off to setup.py --system ─────────────────────────────────────────────
+# ── Hand off to setup.ts --system ─────────────────────────────────────────────
 
 echo ""
 bun "$SCRIPT_DIR/manifest/framework/scripts/setup.ts" --system

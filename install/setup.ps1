@@ -56,7 +56,7 @@ if (-not (Get-Command git -ErrorAction SilentlyContinue)) {
 
 Write-Host "git: $(git --version)"
 
-# ── Hand off to setup.py --system ─────────────────────────────────────────────
+# ── Hand off to setup.ts --system ─────────────────────────────────────────────
 
 Write-Host ""
 & bun "$ScriptDir\manifest\framework\scripts\setup.ts" --system
