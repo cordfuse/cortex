@@ -4,6 +4,9 @@ One line per change. Newest at top. Append in the same commit as the change.
 
 Format: `YYYY-MM-DD HH:MM TZ | file | what changed`
 
+2026-05-05 UTC | version.txt | **bump to 4.5.0** — intent-first routing; verbs become natural language first, shorthand second
+2026-05-05 UTC | protocol/CORTEX.md | Session verbs → Intent Routing; three-stage pipeline (intent → shorthand → conversation); confidence tiers; first-message session-open rule generalised; trigger sets for all 8 built-in intents; verb format gains Triggers: field
+2026-05-05 UTC | docs/VERBS.md | all active verbs updated with Triggers: natural language patterns
 2026-05-05 UTC | version.txt | **bump to 4.4.1** — custom actor author credit field + list actors surfacing
 2026-05-05 UTC | protocol/CORTEX.md | add ## author field to personality file format; list actors renders ↳ by [author] for custom personalities with author set; canonical category map cleaned to Bootstrap + Apex + Custom only
 2026-05-04 UTC | version.txt | **bump to 4.4.0** — minimal framework: one actor (Apex), no specialty roster

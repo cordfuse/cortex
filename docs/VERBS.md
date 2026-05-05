@@ -1,14 +1,14 @@
-# Custom Verbs
+# Verbs
 
-Custom session commands the scribe knows about. Invoked by **natural language** — say what you want, the scribe routes the intent.
+Session actions the scribe knows about. All invoked by **natural language** — say what you want, the scribe routes the intent. Each verb has a `Triggers:` line of natural language patterns. The shorthand name is one trigger among many, never the required form.
 
 **To activate a verb:** just ask — *"activate weekly review"* or *"turn on calendar"*. The scribe enables it and commits.
-**To deactivate:** *"deactivate medication logging"* or *"turn off meds"*. The scribe disables it and commits.
+**To deactivate:** *"turn off meds"* or *"deactivate standup"*. The scribe disables it and commits.
 **To add your own:** describe what you want — the scribe writes it, adds it here, and commits.
 
-`list verbs` shows everything currently active alongside the built-ins.
+`list verbs` shows everything currently active with trigger sets.
 
-> **No slash prefixes.** Cortex uses natural language. `/weekly` etc. are not used — many AI client UIs (Claude web, ChatGPT, Gemini web) intercept slash prefixes as their own native commands before the scribe ever sees them. Custom verb names must not collide with built-in verb names (`hello`, `goodbye`, `status`, `sync`, `search`, `list verbs`, `list personalities`, `list actors`).
+> **No slash prefixes.** Cortex uses natural language. Slash prefixes are intercepted by AI client UIs before the scribe sees them. Custom verb shorthands must not match built-in intent names (`hello`, `goodbye`, `status`, `sync`, `search`, `list verbs`, `list personalities`, `list actors`).
 
 ---
 
@@ -19,54 +19,76 @@ Custom session commands the scribe knows about. Invoked by **natural language** 
 ### Personality
 
 ## switch personality
-Switch active speaker (single-actor sessions) OR change which actor is the active speaker among multiple in the room (multi-actor sessions, alpha.32+). Usage: *"switch personality to casey"*, *"change actor to atlas"*, *"use [name]"*. Scribe updates the active-speaker designation in `context.md` (legacy `personality:` field OR `actors[].active_speaker` in the alpha.32+ multi-actor format), commits, and **hot-swaps immediately** — the next response is in the new active speaker's voice, no fresh hello required (v4.0.0-alpha.8+). In multi-actor sessions, this does NOT remove other actors from the room — use `remove actor` for that. To see what's available: `list personalities`. To see who's in the room: `list actors` (alpha.32+). (Aliases: *change actor*, *use*.)
+
+Triggers: "switch personality" | "change actor" | "use [name]" | "switch to [name]" | "I want to talk to [name]"
+
+Switch active speaker (single-actor sessions) OR change which actor is the active speaker among multiple in the room (multi-actor sessions, alpha.32+). Scribe updates the active-speaker designation in `context.md`, commits, and **hot-swaps immediately** — the next response is in the new active speaker's voice, no fresh hello required (v4.0.0-alpha.8+). In multi-actor sessions, this does NOT remove other actors from the room — use `remove actor` for that.
 
 ## add actor
-Bring an additional named actor into the session (multi-actor mode, v4.0.0-alpha.32+). Usage: *"add actor oscar"*, *"Hey Oscar, join us"*, *"bring in atlas"*, *"invite dr mira"*. Scribe loads the named actor's personality file (per alpha.13 lookup rules), appends a new entry to `actors:` in `context.md` with `active_speaker: false`, commits. Surfaces Bootstrap acknowledgement: *"Oscar joined the room. Casey is still the active speaker."* The new actor is addressable but does NOT auto-respond on the next turn unless explicitly named. To make the new actor the default responder, follow with `change actor to <name>`. (Aliases: *bring in*, *invite*.)
+
+Triggers: "add actor [name]" | "bring in [name]" | "invite [name]" | "hey [name], join us" | "add [name] to the room"
+
+Bring an additional named actor into the session (multi-actor mode, v4.0.0-alpha.32+). Scribe loads the named actor's personality file, appends a new entry to `actors:` in `context.md` with `active_speaker: false`, commits. The new actor is addressable but does NOT auto-respond unless explicitly named.
 
 ## remove actor
-Remove a named actor from the session (multi-actor mode, v4.0.0-alpha.32+). Usage: *"remove actor oscar"*, *"Oscar, you can step out"*, *"send atlas away"*. Scribe surfaces a confirmation prompt unless the actor has 0 contributions this session (*"Remove Oscar from the room? They've contributed N times this session. (yes/no)"*), then removes the entry from `actors:` in `context.md`, commits. If removing the active speaker, the most-recently-joined remaining actor inherits `active_speaker: true`. **Refuses to remove the last actor** — directs the user to `change actor` (replace) or `goodbye` (end session). (Aliases: *step out*, *send away*.)
+
+Triggers: "remove actor [name]" | "[name], you can step out" | "send [name] away" | "remove [name]"
+
+Remove a named actor from the session (multi-actor mode, v4.0.0-alpha.32+). Scribe surfaces a confirmation prompt unless the actor has 0 contributions this session, then removes the entry from `actors:` in `context.md`, commits. **Refuses to remove the last actor.**
 
 ## create actor
-Create a new custom personality. Usage: *"create actor <name>"* (e.g., *"create actor Magnus"*).
 
-**UX (v4.0.0-alpha.28+ — canonical):** scribe presents a **single batched form** listing all required and optional fields in one prompt, with a `take all defaults` shortcut for users who want sensible defaults applied across the board. Required fields: title, domain, speech style, archetype, trait sliders (vibe + virtues + vices + axes), system prompt. Optional: parent personality for inheritance (per alpha.11). The user can fill the form, accept defaults, or fall back to **turn-by-turn** by saying *"walk me through it"* — scribe then asks each field one at a time. Both UX paths produce the same output file.
+Triggers: "create actor [name]" | "new actor [name]" | "new personality [name]" | "make me an actor called [name]" | "I want to create a personality"
 
-**Shortcut: `take all defaults`** — scribe applies the canonical defaults (title from name, domain from a sensible inferred category, archetype `ANALYST`, neutral mid-50% trait sliders, generic-but-coherent system prompt). User can edit afterward by saying *"tune <field> to <value>"* or by editing the file directly.
-
-**Output:** scribe writes `personalities/PERSONALITY-CUSTOM-<NAME>.md`, commits, pushes, and offers to activate. Filename slug must match the `## name` or an alias entry per alpha.13 lookup rules. Inheritance via `## parents` (alpha.11) supported — if the user named a parent, scribe resolves and merges per the inheritance algorithm.
-
-(v4.0.0-alpha.27+ verb; UX canonicalized in alpha.28+. Aliases: *new actor*, *new personality*, *make actor*.)
+Create a new custom personality. Scribe presents a **single batched form** with all required and optional fields, plus a `take all defaults` shortcut. User can also say *"walk me through it"* for turn-by-turn. Output: `personalities/PERSONALITY-CUSTOM-<NAME>.md`, committed, pushed, offered for activation. (v4.0.0-alpha.27+.)
 
 ---
 
 ### Multi-Session (v4.0.0-alpha.17+)
 
 ## spawn session
-Create a new scoped session. Usage: *"spawn session <name>"* / *"new session <name>"*. Scribe generates GUID, writes `sessions/{guid}/context.md`, commits, pushes, and switches the chat to the new session. If no name given, scribe asks; user can `skip` and get an `untitled-<datetime>-<guid-prefix>` placeholder. Naming collisions with active sessions refused; closed names are reusable. See `# Multi-Session` in protocol/CORTEX.md.
+
+Triggers: "spawn session [name]" | "new session [name]" | "start a new session called [name]" | "create session [name]"
+
+Create a new scoped session. Scribe generates GUID, writes `sessions/{guid}/context.md`, commits, pushes, and switches the chat to the new session. If no name given, scribe asks.
 
 ## list sessions
-Show all known sessions. Default: non-closed only, sorted by most recent engagement. Filters: `today`, `this week`, `active`, `detached`, `closed`, `stale`, `on <machine>`, `with <actor>`, `all`. Output is one line per session: `<name> (<state>) | spawned: <date> | last engaged: <datetime> | actor: <name>`. GUIDs hidden by default; use `list sessions verbose` to surface them.
+
+Triggers: "list sessions" | "show my sessions" | "what sessions do I have" | "show sessions"
+
+Show all known sessions. Default: non-closed only, sorted by most recent engagement. Filters: `today`, `this week`, `active`, `detached`, `closed`, `stale`, `on <machine>`, `with <actor>`, `all`. Use `list sessions verbose` to surface GUIDs.
 
 ## engage session
-Attach to an existing session. Usage: *"engage session <name>"* / *"open session <name>"*. Scribe finds the session, cross-machine race-checks `last_engaged_at`, warns on archived state, updates engagement metadata, commits, pushes, and switches the chat. If the named session is archived, scribe surfaces a re-engage prompt before restoring.
+
+Triggers: "engage session [name]" | "open session [name]" | "switch to session [name]" | "go to session [name]"
+
+Attach to an existing session. Scribe finds the session, cross-machine race-checks `last_engaged_at`, updates engagement metadata, commits, pushes, and switches the chat.
 
 ## close session
-Archive a session. Usage: *"close session <name>"*. Scribe moves `sessions/{guid}/` → `archive/sessions/{guid}/`, sets state to `closed`, commits, pushes. The friendly name is freed for reuse immediately. If the closed session was the currently-engaged one, the chat returns to main session.
+
+Triggers: "close session [name]" | "archive session [name]" | "end session [name]"
+
+Archive a session. Scribe moves `sessions/{guid}/` → `archive/sessions/{guid}/`, sets state to `closed`, commits, pushes.
 
 ---
 
 ### Donations
 
 ## donate
-Surface the donation link. Usage: *"donate"* / *"donations"* / *"how do I donate"*. Scribe responds with the CAMH Foundation donation link in Bootstrap voice as a one-liner — no record filing, no commit. Cortex is OSS-indefinite; donations to CAMH Foundation (Centre for Addiction and Mental Health, Toronto) are how the project gives back. Never solicits unprompted; only fires when user asks. (v4.0.0-alpha.31+. Aliases: *donations*, *contribute*.)
+
+Triggers: "donate" | "donations" | "how do I donate" | "support cortex" | "give to camh"
+
+Surface the CAMH Foundation donation link. One-liner response, no filing, no commit. Never solicits unprompted. (v4.0.0-alpha.31+.)
 
 ---
 
 ### Sync & Reconcile
 
 ## reconcile
-Deep three-category diff against `upstream/main` with per-file gating. Usage: *"reconcile"* (or *"sync --hard"*, *"reconcile sync"*). Catches historical drift that routine `sync` doesn't catch — files modified upstream and not propagated, framework files deprecated upstream but still present locally, and locally-added files in framework scope. Each file gated individually; nothing happens silently. Run when pre-sync drift check fires, or after long absence from syncs, or when a personality you remember seems to have vanished. See `# Sync flow → Reconcile flow` in protocol/CORTEX.md (v4.0.0-alpha.19+).
+
+Triggers: "reconcile" | "deep sync" | "sync --hard" | "reconcile sync" | "full drift check"
+
+Deep three-category diff against `upstream/main` with per-file gating. Catches historical drift that routine `sync` doesn't catch. Each file gated individually; nothing happens silently. See `# Sync flow → Reconcile flow` in protocol/CORTEX.md (v4.0.0-alpha.19+).
 
 ---
 

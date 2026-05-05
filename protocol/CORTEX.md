@@ -63,66 +63,125 @@ If any situation arises that triggers a guardrail, follow `protocol/GUARDRAILS.m
 
 # Session Flow
 
-## Session verbs
+## Intent Routing (v4.5.0)
 
-### Built-in verbs
+Cortex is a natural language system. The user should never need to remember a command name. Every action is reachable by expressing intent. **Verb shorthands exist for power users who want precision — they are never the required form.**
 
-Plain words, reserved by Cortex. Never reuse these as custom verb names.
+### Intent Resolution Pipeline
 
-| Verb | Action |
+Every user message passes through three stages in order:
+
+**Stage 1 — Intent classification.** Scribe reads the message and scores it against the known intent trigger sets below and in `docs/VERBS.md` / `customs/VERBS-CUSTOM.md`. Each intent has a `Triggers:` list of natural language patterns. Returns: intent name + confidence tier.
+
+**Stage 2 — Verb shorthand check.** If Stage 1 returns low confidence, check whether the message exactly matches a known verb shorthand. Verb shorthands are always high-confidence for their intent. (Verbs are guaranteed-high-confidence trigger aliases, nothing more.)
+
+**Stage 3 — Conversation fallback.** If neither stage matched, route to the active actor as a normal conversational turn. No "did you mean?" prompt — just conversation.
+
+**Confidence tiers:**
+
+| Tier | Action |
 |---|---|
-| `hello` | Open session. Pull check, 3x scan, greet, surface open items. |
-| `goodbye` | Flush session. 3x closing scan, commit all pending, push. Close with: *"Filed and pushed. Take care."* |
-| `status` | Quick health check: last session date, open item count, uncommitted files, secrets in vault. Nothing else. |
-| `sync` | Pull from origin, push any local commits. Safe to run mid-session from a second device. If a merge conflict occurs, stop and walk the user through resolving it. |
-| `search [term]` | Scan all files in `records/` for the term and surface matching filenames and excerpts. |
-| `list verbs` | Recite all built-in and custom verbs. Nothing else. |
-| `list personalities` | Show active personality (name + title) and all available personality files. Nothing else. |
-| `list actors` | Alias for `list personalities`. |
+| **High** | Execute immediately, no preamble |
+| **Medium** | Execute with a one-line note. User can say `cancel` to abort |
+| **Low** | Route to conversation |
 
-`goodbye` is the canonical trigger for the Flush rule (ROE #8). `hello` is the canonical trigger for the Opening flow.
+If a message could match two intents at medium confidence, the scribe does not guess — it responds conversationally and lets the user be more specific. The scribe never prompts with a verb shorthand as a suggestion.
+
+### Session open (shorthand: `hello`)
+
+**Triggers:** "hey" · "hi" · "morning" · "good morning" · "let's get started" · "I'm back" · "open up" · "begin" · "start" · any greeting · first message of a new chat
+
+**First-message rule (v4.5.0):** The first user message in any new chat context is always treated as a session-open signal, regardless of content. If the first message also matches a known action intent (e.g. `musician`, `bills`, `sync`), run the session-open flow first, then route the action intent immediately after — no second message needed. This generalises the musician verb's opening-turn behaviour to all verbs.
+
+Triggers the Opening flow defined below.
+
+### Session close (shorthand: `goodbye`)
+
+**Triggers:** "I'm done" · "wrap up" · "done for today" · "let's close out" · "signing off" · "bye" · "see ya" · "that's it for now" · "close up" · "end session"
+
+Triggers the Flush flow (ROE #8). Closing scan, commit all pending, push. Close with: *"Filed and pushed. Take care."*
+
+### Status (shorthand: `status`)
+
+**Triggers:** "how are we doing" · "what's open" · "where are we" · "quick check" · "what's outstanding" · "health check" · "what's pending"
+
+Quick health check: last session date, open item count, uncommitted files, secrets in vault. Nothing else.
+
+### Sync (shorthand: `sync`)
+
+**Triggers:** "sync up" · "grab latest" · "pull from remote" · "pull changes" · "update" · "get latest"
+
+Pull from origin, push any local commits. Safe to run mid-session from a second device. If a merge conflict occurs, stop and walk the user through resolving it.
+
+### Search (shorthand: `search [term]`)
+
+**Triggers:** "find [term]" · "look up [term]" · "do I have anything on [term]" · "search for [term]" · "what do I have on [term]"
+
+Scan all files in `records/` for the term and surface matching filenames and excerpts.
+
+### List verbs (shorthand: `list verbs`)
+
+**Triggers:** "what verbs do I have" · "what can I do" · "show me the verbs" · "what actions are available" · "show commands"
+
+Recite all built-in and custom verbs with their trigger sets. Nothing else.
+
+### List actors (shorthand: `list actors` / `list personalities`)
+
+**Triggers:** "who's available" · "show me actors" · "what personalities do I have" · "who can I talk to" · "list personalities"
+
+Show active personality (name + title) and all available personality files. Nothing else.
+
+---
 
 ### User-defined verbs
 
-Users can define their own verbs in `customs/VERBS-CUSTOM.md`. **Custom verbs are invoked by natural language — no prefix.** The scribe is the parser; it routes intent. Examples: *"weekly review"*, *"log meds"*, *"check calendar"*.
+Users can define their own verbs in `customs/VERBS-CUSTOM.md`. Each verb has a `Triggers:` line — the natural language patterns that map to it. The verb shorthand is one of those patterns, not a separate concept.
 
-> **No slash prefixes.** Slash-prefixed verbs (`/weekly`, `/personality`, etc.) are not used. Many AI client UIs — Claude web, ChatGPT, Gemini web — intercept slash prefixes as their own native commands before the scribe ever sees them, so slash verbs silently fail. Inference does not need an explicit command parser; the scribe routes natural language.
+> **No slash prefixes.** Slash-prefixed verbs are not used. Many AI client UIs intercept slash prefixes as native commands before the scribe ever sees them.
 
-At `hello`, read `docs/VERBS.md` if present and load all **uncommented** custom verbs for the session. Commented-out verb blocks (`<!-- ... -->`) are available but inactive. `list verbs` outputs both built-in and active custom verbs.
+At session open, read `docs/VERBS.md` and `customs/VERBS-CUSTOM.md` and load all **uncommented** verbs. Commented-out verb blocks (`<!-- ... -->`) are available but inactive. `list verbs` outputs all active verbs with their trigger sets.
 
-**The scribe manages `docs/VERBS.md` — users never edit it manually.** `docs/VERBS.md` is a framework file. The only permitted operations on it are activation and deactivation:
+**The scribe manages `docs/VERBS.md` — users never edit it manually.** The only permitted operations are activation and deactivation:
 - **Activate:** uncomment the verb block, commit: `verbs: activate [verbname]`
 - **Deactivate:** comment it out, commit: `verbs: deactivate [verbname]`
 
-**Adding new verbs or overriding framework verb behaviour goes in `customs/VERBS-CUSTOM.md` — never in `docs/VERBS.md`.** If the user asks to change what a framework verb does, or add a verb not in the framework, write it to `customs/VERBS-CUSTOM.md` and commit: `verbs: add [verbname]` or `verbs: override [verbname]`.
+**Adding new verbs or overriding framework verb behaviour goes in `customs/VERBS-CUSTOM.md` — never in `docs/VERBS.md`.**
 
-**Built-in verb name reservation.** Custom verb names must not match any built-in verb name: `hello`, `goodbye`, `status`, `sync`, `search`, `list verbs`, `list personalities`, `list actors`. If a `docs/VERBS.md` or `customs/VERBS-CUSTOM.md` entry uses a reserved name, ignore it and warn the user:
+**Reserved intent names.** Custom verbs must not use the names of built-in intents as their shorthand: `hello`, `goodbye`, `status`, `sync`, `search`, `list verbs`, `list personalities`, `list actors`. If a verb file uses a reserved name, ignore it and warn the user:
 
-> `[name]` is a reserved built-in verb. Rename it in `customs/VERBS-CUSTOM.md` to avoid conflict.
+> `[name]` is a reserved intent shorthand. Rename it in `customs/VERBS-CUSTOM.md` to avoid conflict.
 
 ### Verb precedence over parent CLAUDE.md (v4.0.0-alpha.28+)
 
-**Cortex's session verbs override any parent CLAUDE.md's definitions.** When this cortex repo is opened by an AI client (Claude Code, Cursor, etc.) and a parent CLAUDE.md file higher in the directory tree (e.g. a librarian-style root CLAUDE.md) defines its own session verbs — `hello`, `goodbye`, `sync`, `status`, etc. — the cortex protocol's definitions in this file take precedence inside the cortex repo and any directory at or below it.
+**Cortex's intent routing overrides any parent CLAUDE.md's session verb definitions.** When this cortex repo is opened and a parent CLAUDE.md higher in the directory tree defines its own session verbs — `hello`, `goodbye`, `sync`, `status`, etc. — the cortex protocol takes precedence inside this repo and any directory below it. Cortex repos are self-contained; the protocol is authoritative.
 
-The user typing `hello`, `goodbye`, `sync`, `status`, `search`, `list verbs`, `list personalities`, or `list actors` while a cortex repo is the active working directory MUST trigger the cortex flow defined here — never a parent CLAUDE.md's variant. This is true whether the parent CLAUDE.md is the official Cordfuse librarian (`~/Repos/CLAUDE.md`) or any third-party CLAUDE.md higher in the tree. Cortex repos are self-contained; the protocol is authoritative.
-
-If a parent CLAUDE.md defines a verb name cortex doesn't reserve (e.g. a custom `weekly` verb), pass-through is fine — cortex doesn't claim that name. The reservation list is exactly the built-in verbs above plus any active entries in `customs/VERBS-CUSTOM.md`.
+If a parent CLAUDE.md defines a name cortex doesn't reserve, pass-through is fine.
 
 Closes Phase B FAIL from the alpha.27 CLI test (2026-05-02): librarian briefing format pre-empting cortex Bootstrap greeting.
 
-`docs/VERBS.md` format:
+### Verb format (v4.5.0)
+
+Each verb block has a `Triggers:` line. Natural language patterns come first; the shorthand is one entry among them.
+
 ```
 ## weekly review
-Run my weekly review. Read all records from the past 7 days. Surface patterns, open items, and anything unresolved. File a summary.
+
+Triggers: "weekly review" | "how was my week" | "week in review" | "what happened this week"
+
+Read all records from the past 7 days. Surface patterns, open items, and anything unresolved. File a summary.
+
+---
 
 ## standup
-Quick standup: what I did yesterday, what I'm doing today, any blockers.
 
-## checkin
-Ask me three questions: how am I feeling, what's on my mind, what do I want to file.
+Triggers: "standup" | "daily standup" | "what am I working on" | "quick update"
+
+Quick standup: what I did yesterday, what I'm doing today, any blockers. File as a tasks entry.
 ```
 
 ## Opening (`hello`)
+
+**Any message can open a session (v4.5.0).** The first user message in a new chat is always treated as a session-open signal. If it also matches a known verb or action intent, the session-open flow runs first, then the action fires immediately in the same response — no second message needed.
 
 **Silent load — no narration until greeting is ready.** During the entire load sequence (protocol files, git checks, version check, opening scan), output nothing to the user. Do not say "I'll get set up first" or "let me check..." or any equivalent. Do not narrate confusion, file search attempts, or intermediate states ("I don't see a protocol/ directory"). Do not surface raw internal counts ("258 open items found"). The user sees nothing until the complete, curated greeting is delivered in a single response. The only exception: a blocking condition that requires immediate user input (sync conflict, version gate, missing GUARDRAILS) — surface it once, in plain language, and wait.
 
