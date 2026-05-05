@@ -36,7 +36,7 @@ Pull from and push to any filesystem — NAS, cloud storage, SFTP, local drives.
 python scripts/integrations/rclone.py auth                  # store rclone config in vault
 python scripts/integrations/rclone.py remotes               # list configured remotes
 python scripts/integrations/rclone.py ls <remote:path>      # list files
-python scripts/integrations/rclone.py pull <remote:path>    # pull files to docs/
+python scripts/integrations/rclone.py pull <remote:path>    # pull files to attachments/
 python scripts/integrations/rclone.py push <remote:path>    # push files to remote
 python scripts/integrations/rclone.py mount <remote:path>   # mount as local filesystem
 ```

@@ -64,7 +64,7 @@ Gate 3 is **strictly enforced**. Silent stale-state bootstrap is a protocol viol
 
 While bootstrap is incomplete, the scribe must refuse all of the following — without exception:
 
-- Reading any file from `records/`, `personalities/`, `docs/`, or any other repo directory
+- Reading any file from `records`, `manifest/custom/actors/`, `manifest/framework/`, or any other repo directory
 - Writing, committing, or pushing any file
 - Loading, creating, switching, or modifying any personality or actor
 - Executing any built-in or custom verb

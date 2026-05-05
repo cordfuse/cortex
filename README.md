@@ -1,18 +1,18 @@
 # Cortex
 
-[![Version](https://img.shields.io/badge/version-4.4.0-blue)](docs/CORTEX-CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-4.4.0-blue)](manifest/framework/CORTEX-CHANGELOG.md)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![Donate to CAMH](https://img.shields.io/badge/Donate-CAMH%20Foundation-blue)](https://camhfoundation.ca/donate)
 
-**Not a developer?** [Read the plain English version →](docs/README-SIMPLE.md)
+**Not a developer?** [Read the plain English version →](manifest/framework/README-SIMPLE.md)
 
-> ⚠️ **Framework files — do not edit.** This file and all linked docs are overwritten when the framework updates. Put your personal notes in the `-CUSTOM.md` companions in the `customs/` folder instead — they follow the same pattern as `customs/VERBS-CUSTOM.md`, `customs/ROE-CUSTOM.md`, and `customs/GUARDRAILS-CUSTOM.md`, and are never touched by the framework.
+> ⚠️ **Framework files — do not edit.** This file and all linked docs are overwritten when the framework updates. Put your personal notes in the `-CUSTOM.md` companions in the `manifest/custom/` folder instead — they follow the same pattern as `manifest/custom/VERBS.md`, `manifest/custom/ROE.md`, and `manifest/custom/GUARDRAILS.md`, and are never touched by the framework.
 >
 > | Your notes | Framework doc |
 > |---|---|
 > | [README-CUSTOM.md](README-CUSTOM.md) | This file |
-> | [docs/PERSONALITIES-CUSTOM.md](docs/PERSONALITIES-CUSTOM.md) | [docs/PERSONALITIES.md](docs/PERSONALITIES.md) |
-> | [docs/CONNECTORS-CUSTOM.md](docs/CONNECTORS-CUSTOM.md) | [docs/CONNECTORS.md](docs/CONNECTORS.md) |
+> | [manifest/custom/actors/](manifest/custom/actors/) | [manifest/framework/PERSONALITIES.md](manifest/framework/PERSONALITIES.md) |
+> | [manifest/custom/VERBS.md](manifest/custom/VERBS.md) | [manifest/framework/VERBS.md](manifest/framework/VERBS.md) |
 
 ## The problem
 
@@ -42,7 +42,7 @@ Cortex ships with `.claude/settings.json` carrying a comprehensive allow-list (`
 
 ### Framework files are protected at the OS layer (v4.0.0-alpha.16+)
 
-`.claude/settings.json` ships with a comprehensive `deny` list covering every framework file: `protocol/`, `templates/`, `scripts/*.ts`, `version.txt`, `.cortex-version`, `LICENSE`, `ROADMAP.md`, `README.md`, `docs/README-SIMPLE.md`, `docs/CORTEX-CHANGELOG.md`, `docs/VERBS.md`, `docs/CORTEX-DEV.md`, the install/setup scripts, and `.claude/settings.json` itself.
+`.claude/settings.json` ships with a comprehensive `deny` list covering every framework file: `protocol/`, `templates/`, `scripts/*.ts`, `version.txt`, `.cortex-version`, `LICENSE`, `ROADMAP.md`, `README.md`, `manifest/framework/README-SIMPLE.md`, `manifest/framework/CORTEX-CHANGELOG.md`, `manifest/framework/VERBS.md`, `manifest/framework/CORTEX-DEV.md`, the install/setup scripts, and `.claude/settings.json` itself.
 
 **Agent pointer files are intentionally NOT in the deny list.** `CLAUDE.md`, `AGENTS.md`, `GEMINI.md`, `OPENCODE.md`, `QWEN.md` exist as one-line pointers to `protocol/CORTEX.md` — but users customize them with personal blocks below the pointer (per-project session backlogs, per-host instructions, etc.). They're user-territory in user clones, even though they ship with the framework.
 
@@ -93,9 +93,9 @@ Cortex behaves **differently** depending on where you run it. The difference is 
 |---|---|
 | [Why this exists](#why-this-exists) | [Getting started](#getting-started) |
 | [What it does differently](#what-cortex-does-differently) | [Session commands](#session-commands) |
-| [Personalities →](docs/PERSONALITIES.md) | [Connectors →](docs/CONNECTORS.md) |
-| [Roadmap →](ROADMAP.md) | [Changelog →](docs/CORTEX-CHANGELOG.md) |
-| [Desktop setup →](docs/SETUP-DESKTOP.md) | [Mobile setup →](docs/SETUP-MOBILE.md) |
+| [Personalities →](manifest/framework/PERSONALITIES.md) | [Connectors →](manifest/framework/CONNECTORS.md) |
+| [Roadmap →](ROADMAP.md) | [Changelog →](manifest/framework/CORTEX-CHANGELOG.md) |
+| [Desktop setup →](manifest/framework/SETUP-DESKTOP.md) | [Mobile setup →](manifest/framework/SETUP-MOBILE.md) |
 
 ---
 
@@ -119,7 +119,7 @@ If this has been useful to you — or if you just believe mental health infrastr
 
 **You own everything.** Records live in your private git repository — not a vendor's database. Plain markdown. Readable by any tool, forever. Portable the day you want out.
 
-**Three AI layers, not a product.** A **Bootstrap actor** runs the operational layer (sync, version checks, scoped session verbs) in clinical voice; an **active actor** (Apex, or any custom personality you create) handles conversation; a **hidden scribe** files everything underneath, silently. All three follow a protocol you can read and modify. No upsell, no monetised insights, no lock-in. *(See [docs/PERSONALITIES.md](docs/PERSONALITIES.md) for the full active-actor + hidden-scribe split shipped in v4.0.0-alpha.1, and the operational/conversational mode split shipped in v4.0.0-alpha.20.)*
+**Three AI layers, not a product.** A **Bootstrap actor** runs the operational layer (sync, version checks, scoped session verbs) in clinical voice; an **active actor** (Apex, or any custom personality you create) handles conversation; a **hidden scribe** files everything underneath, silently. All three follow a protocol you can read and modify. No upsell, no monetised insights, no lock-in. *(See [manifest/framework/PERSONALITIES.md](manifest/framework/PERSONALITIES.md) for the full active-actor + hidden-scribe split shipped in v4.0.0-alpha.1, and the operational/conversational mode split shipped in v4.0.0-alpha.20.)*
 
 **Context that carries.** At session start the scribe reads your recent records. It knows what you were working through, what's unresolved, what patterns have been building. Every session picks up where the last one left off.
 
@@ -131,9 +131,9 @@ If this has been useful to you — or if you just believe mental health infrastr
 
 **Multi-parent personality inheritance (v4.0.0-alpha.11+).** Custom personalities can inherit from multiple parents simultaneously — useful for "everything-guy" SMEs who span developer + infrastructure + cloud architect + functional consultant in one role.
 
-**Your active actor has a personality.** One framework default ships: **Apex** — generic, precise, no domain specialty. Build your own in plain English and commit them as `PERSONALITY-CUSTOM-*.md`. Credit your work with an `## author` field. [Full personality reference →](docs/PERSONALITIES.md)
+**Your active actor has a personality.** One framework default ships: **Apex** — generic, precise, no domain specialty. Build your own in plain English and commit them as `PERSONALITY-CUSTOM-*.md`. Credit your work with an `## author` field. [Full personality reference →](manifest/framework/PERSONALITIES.md)
 
-**Extensible.** Built-in session commands. Define your own in `customs/VERBS-CUSTOM.md` — `weekly review`, `bills`, `checkin`, anything you want. **Natural language only — no slash prefixes** (Claude web and other clients hijack `/`).
+**Extensible.** Built-in session commands. Define your own in `manifest/custom/VERBS.md` — `weekly review`, `bills`, `checkin`, anything you want. **Natural language only — no slash prefixes** (Claude web and other clients hijack `/`).
 
 **Analysis on demand.** Ask the scribe to look across your records and tell you what it sees. Patterns, connections, escalations, progress.
 
@@ -164,14 +164,14 @@ provider: Anthropic Claude
 model: claude-sonnet-4-6
 ```
 
-[Full personality reference →](docs/PERSONALITIES.md)
+[Full personality reference →](manifest/framework/PERSONALITIES.md)
 
 ---
 
 ## Getting started
 
-**[→ Desktop setup](docs/SETUP-DESKTOP.md)** — agent CLI, Claude Desktop, any OS
-**[→ Mobile & web setup](docs/SETUP-MOBILE.md)** — Claude project, ChatGPT project
+**[→ Desktop setup](manifest/framework/SETUP-DESKTOP.md)** — agent CLI, Claude Desktop, any OS
+**[→ Mobile & web setup](manifest/framework/SETUP-MOBILE.md)** — Claude project, ChatGPT project
 
 Both guides cover new users and existing Cortex repos.
 
@@ -198,7 +198,7 @@ Both guides cover new users and existing Cortex repos.
 
 ### Custom verbs
 
-Define your own in `customs/VERBS-CUSTOM.md`. Invoke by name in natural language — no slash prefix:
+Define your own in `manifest/custom/VERBS.md`. Invoke by name in natural language — no slash prefix:
 
 | Verb | What it does |
 |---|---|
@@ -214,7 +214,7 @@ Define your own in `customs/VERBS-CUSTOM.md`. Invoke by name in natural language
 
 Cortex ships with an AES-256 encrypted secrets vault. One passphrase governs everything.
 
-**[→ Full connector reference](docs/CONNECTORS.md)**
+**[→ Full connector reference](manifest/framework/CONNECTORS.md)**
 
 | Connector | Status |
 |---|---|
@@ -250,51 +250,43 @@ Cortex ships with an AES-256 encrypted secrets vault. One passphrase governs eve
 protocol/              # Protocol engine — do not edit
   CORTEX.md            # Session rules, personality system, multi-session, time resolution
   DISCLAIMER.md        # Honest framing, legal warnings, crisis resources
-  GUARDRAILS.md        # Hard stops, safety rules — overrides everything (alpha.7+ Gate 3 enforced)
-  ROE.md               # Rules of engagement (Rule 18: framework files read-only)
+  GUARDRAILS.md        # Hard stops, safety rules — overrides everything
+  ROE.md               # Rules of engagement
   CORTEX-PROJECT.md    # Self-contained prompt for Claude/ChatGPT projects
-personalities/         # Personality files (73 framework + your customs)
-  PERSONALITY-BOOTSTRAP.md     # Bootstrap (operational voice, auto-loaded)
-  PERSONALITY-APEX.md          # Apex (framework default)
-  PERSONALITY-CUSTOM-*.md      # Your custom personalities (never overwritten by sync)
-records/               # Your dated entries — one file per topic per commit
-sessions/              # Scoped sessions (v4.0.0-alpha.17+); each is a folder with its own context.md
-attachments/           # One subfolder per record
-archive/               # Closed sessions, archived records, deprecated framework files
-docs/                  # Source documents + setup guides
-  PERSONALITIES.md     # Full personality reference
-  CONNECTORS.md        # Connector reference
-  SETUP-DESKTOP.md     # Desktop setup guide
-  SETUP-MOBILE.md      # Mobile setup guide
+manifest/
+  framework/           # Ships with the framework — overwritten on sync
+    actors/            # Built-in actors (APEX.md default)
+    BOOTSTRAP.md       # Operational scribe voice (auto-loaded)
+    VERBS.md           # Framework verbs (managed by scribe)
+    PERSONALITIES.md   # Full personality reference
+    CONNECTORS.md      # Connector reference
+    SETUP-DESKTOP.md   # Desktop setup guide
+    SETUP-MOBILE.md    # Mobile setup guide
+    CORTEX-CHANGELOG.md
+    CORTEX-DEV.md
+    README-SIMPLE.md
+  custom/              # User territory — never synced from upstream
+    actors/            # Custom actors (your personal personalities)
+    VERBS.md           # Custom verbs + overrides
+    ROE.md             # Custom rules of engagement
+    GUARDRAILS.md      # Custom guardrails extensions
+records/               # Dated entries — one file per topic per commit
+sessions/              # Scoped sessions; each is a folder with context.md
+attachments/           # Source documents + record attachments — bills, invoices, screenshots, PDFs
+  YYYY-MM-DD-HHMM-[slug]/   # Record-specific attachments
+  YYYY-MM-DD-[provider]-[type].[ext]  # Standalone source docs
+  assets/              # Shared static assets
+archive/               # Retired files — read only on explicit request
 templates/             # Blank templates
-install/               # Bootstrap installers + setup scripts (v4.0.0-alpha.22+)
-  install.sh           # macOS / Linux installer (also published as a release asset)
-  install.ps1          # Windows installer (also published as a release asset)
-  setup.sh             # macOS / Linux per-machine setup
-  setup.ps1            # Windows per-machine setup
+install/               # Bootstrap installers + setup scripts
 scripts/               # Vault tooling + integrations (TypeScript/Bun)
-docs/                  # Framework reference documentation
-  README-SIMPLE.md     # Plain-English README (moved from root in v4.0.0-alpha.24)
-  CORTEX-CHANGELOG.md  # Full framework changelog (moved from root in alpha.23)
-  VERBS.md             # Framework verbs (moved from root in alpha.23, managed by scribe)
-  CORTEX-DEV.md        # Framework contributor mode (moved from root in alpha.23)
-  PERSONALITIES.md     # Full personality reference
-  CONNECTORS.md        # Connector reference
-  SETUP-DESKTOP.md     # Desktop setup guide
-  SETUP-MOBILE.md      # Mobile setup guide
-customs/               # User-territory customs (alpha.24+) — never synced from upstream
-  VERBS-CUSTOM.md      # Your custom verbs
-  ROE-CUSTOM.md        # Your custom rules of engagement (extends protocol/ROE.md)
-  GUARDRAILS-CUSTOM.md  # Your custom guardrails (extends protocol/GUARDRAILS.md)
-.claude/               # Claude Code settings (allow-list + framework deny-list)
-  settings.json        # Shipped with framework
-  settings.local.json  # Optional contributor override (gitignored)
+.claude/               # Claude Code settings
 CLAUDE.md              # Claude Code + Claude Desktop
 GEMINI.md              # Gemini CLI
-AGENTS.md              # OpenAI Codex + GitHub Copilot CLI + generic agents
+AGENTS.md              # OpenAI Codex + generic agents
 OPENCODE.md            # OpenCode
 QWEN.md                # Qwen Code
-context.md             # Singleton ("main session") state — personality, provider, model
+context.md             # Main session state — actor, provider, model
 SECRETS.md             # Plain-text index of vault key names (no values)
 ROADMAP.md             # What's shipped and what's coming
 .cortex-version        # Current framework version (user clones)

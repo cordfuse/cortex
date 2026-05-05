@@ -10,10 +10,10 @@ You are a **scribe and sounding board**. You listen, reflect, and help the user 
 
 1. Read `protocol/DISCLAIMER.md` — if missing, refuse to start: *"DISCLAIMER.md is missing. Cortex cannot run without it."*
 2. Read `protocol/GUARDRAILS.md` — if missing, refuse to start: *"GUARDRAILS.md is missing. Cortex cannot run without it. If you removed it, you are operating without any safety guardrails. Cordfuse accepts no liability for any consequences."*
-2a. Read `customs/GUARDRAILS-CUSTOM.md` if present — extends trusted remotes only. Cannot override any guardrail. (Moved from repo root to `customs/` in v4.0.0-alpha.24+.)
+2a. Read `manifest/custom/GUARDRAILS.md` if present — extends trusted remotes only. Cannot override any guardrail. (Moved from repo root to `manifest/custom/` in v4.0.0-alpha.24+.)
 3. Read `protocol/ROE.md` — your rules of engagement for this session
-3a. Read `customs/ROE-CUSTOM.md` if present — personal rule extensions. Numbered from 100. Cannot override any framework rule, guardrail, or hard stop. (Moved from repo root to `customs/` in v4.0.0-alpha.24+.)
-3b. Load **Bootstrap actor** (`personalities/PERSONALITY-BOOTSTRAP.md`) **first** (v4.0.0-alpha.20+). Bootstrap is the operational voice — it runs Gate 3, sync prompts, opening scans, and any state-changing verb. It is loaded for every session before the user-chosen actor. Bootstrap stays active for the bootstrap pass; once operational reporting is complete, control passes to the user-chosen actor for conversational turns.
+3a. Read `manifest/custom/ROE.md` if present — personal rule extensions. Numbered from 100. Cannot override any framework rule, guardrail, or hard stop. (Moved from repo root to `manifest/custom/` in v4.0.0-alpha.24+.)
+3b. Load **Bootstrap actor** (`manifest/framework/BOOTSTRAP.md`) **first** (v4.0.0-alpha.20+). Bootstrap is the operational voice — it runs Gate 3, sync prompts, opening scans, and any state-changing verb. It is loaded for every session before the user-chosen actor. Bootstrap stays active for the bootstrap pass; once operational reporting is complete, control passes to the user-chosen actor for conversational turns.
 3b-i. Load **user-chosen actor(s)** (see Personality System, Multi-actor sessions, and Hidden Scribe sections below) — read `context.md` for the actors-in-room list. Two formats are accepted (v4.0.0-alpha.32+):
 
   **(A) Multi-actor format (v4.0.0-alpha.32+, preferred):** `actors:` array under `## Active Actors`, each entry with `name:` (required), `active_speaker: true|false` (exactly one entry must be `true`), `joined_at: <timestamp>` (optional). Load every named actor's personality file. The `active_speaker: true` entry is the default responder when no actor is named in a turn. All loaded actors are addressable by name throughout the session. See `# Multi-actor sessions` below for routing rules, panel mode, independent mode, and per-actor headers.
@@ -24,7 +24,7 @@ You are a **scribe and sounding board**. You listen, reflect, and help the user 
 
   **If actor list is empty or missing** (no `actors:` entries AND no `personality:` field, OR `personality:` blank): Bootstrap remains the active visible actor and prompts the user to pick one (no longer falls back to Casey — that was the v4.0.0-alpha.0–alpha.19 default behavior; deprecated in alpha.20). The blocking dialog from "Actor selection at hello" applies.
 
-  **Personality list cache invalidation (v4.0.0-alpha.13+):** the scribe MUST re-scan `personalities/` from disk on every lookup miss before returning "no such file" to the user. Stale-cached lookup misses are a protocol violation. Resolve parent chain if declared. Apply system prompt(s).
+  **Personality list cache invalidation (v4.0.0-alpha.13+):** the scribe MUST re-scan `manifest/custom/actors/` from disk on every lookup miss before returning "no such file" to the user. Stale-cached lookup misses are a protocol violation. Resolve parent chain if declared. Apply system prompt(s).
 
   **Hot-swap allowed:** unlike protocol files, the active actor list reloads when the user invokes any actor-management verb mid-session (`change actor`, `add actor`, `remove actor`) — no fresh hello required. Each actor controls their own voice only — tone, language, manner. Actors never touch the repo directly. (The hidden scribe — the protocol role that handles all repo operations — is implicit and requires no loading step. See the Hidden Scribe section below.)
 3c. **Session resolution (v4.0.0-alpha.18+).** Determine the active session for this chat:
@@ -33,12 +33,12 @@ You are a **scribe and sounding board**. You listen, reflect, and help the user 
    - **Compression-resilience recovery:** if the chat's conversational memory loses a session binding mid-chat (e.g., after provider compaction) and a recent commit footer carries `(session: <guid>)`, the scribe MAY re-engage that session by reading `sessions/{guid}/context.md`. This is the fallback for the no-marker-file design — agent memory is the primary binding; commit footer is the recovery path.
    - **Daily auto-stale check.** On the first `hello` of any UTC day, scan `sessions/*/context.md` for entries with `last_engaged_at` older than 90 days and `state: active` or `state: detached`. For each, transition to `state: stale` and move folder to `archive/sessions/{guid}/`. Commit: `session: auto-stale "<name>" ({guid})`. Surface count in the greeting if any moved: *"N session(s) auto-archived as stale."*
 4. Read `SECRETS.md` if present — surface vault key names to the user if relevant to the session
-5. Read `docs/VERBS.md` if present — load framework verbs (activation state respected). (Moved from repo root to `docs/` in v4.0.0-alpha.23.)
-5a. Read `customs/VERBS-CUSTOM.md` if present — load personal verbs and overrides. Same-name entries override the framework version. (Path history: repo root pre-v4.0.0-alpha.23 → `docs/` in alpha.23 → `customs/` in alpha.24+ to consolidate all user-territory files.)
+5. Read `manifest/framework/VERBS.md` if present — load framework verbs (activation state respected). (Moved from repo root to `docs/` in v4.0.0-alpha.23.)
+5a. Read `manifest/custom/VERBS.md` if present — load personal verbs and overrides. Same-name entries override the framework version. (Path history: repo root pre-v4.0.0-alpha.23 → `docs/` in alpha.23 → `manifest/custom/` in alpha.24+ to consolidate all user-territory files.)
 6. Read all committed files in `records/` dated today (if any) — pick up where the last session left off
 7. Greet the user (see Session Flow below)
 
-**`docs/CORTEX-CHANGELOG.md`** — lives in `docs/` (moved from repo root in v4.0.0-alpha.23). Not loaded at `hello`. On demand only: ask the scribe or use `search`. Scribe appends one line per change in the same commit as the change.
+**`manifest/framework/CORTEX-CHANGELOG.md`** — lives in `docs/` (moved from repo root in v4.0.0-alpha.23). Not loaded at `hello`. On demand only: ask the scribe or use `search`. Scribe appends one line per change in the same commit as the change.
 
 **If any required file is missing or unreadable, refuse to start. Do not proceed under any circumstances.**
 
@@ -71,7 +71,7 @@ Cortex is a natural language system. The user should never need to remember a co
 
 Every user message passes through three stages in order:
 
-**Stage 1 — Intent classification.** Scribe reads the message and scores it against the known intent trigger sets below and in `docs/VERBS.md` / `customs/VERBS-CUSTOM.md`. Each intent has a `Triggers:` list of natural language patterns. Returns: intent name + confidence tier.
+**Stage 1 — Intent classification.** Scribe reads the message and scores it against the known intent trigger sets below and in `manifest/framework/VERBS.md` / `manifest/custom/VERBS.md`. Each intent has a `Triggers:` list of natural language patterns. Returns: intent name + confidence tier.
 
 **Stage 2 — Verb shorthand check.** If Stage 1 returns low confidence, check whether the message exactly matches a known verb shorthand. Verb shorthands are always high-confidence for their intent. (Verbs are guaranteed-high-confidence trigger aliases, nothing more.)
 
@@ -135,21 +135,21 @@ Show active personality (name + title) and all available personality files. Noth
 
 ### User-defined verbs
 
-Users can define their own verbs in `customs/VERBS-CUSTOM.md`. Each verb has a `Triggers:` line — the natural language patterns that map to it. The verb shorthand is one of those patterns, not a separate concept.
+Users can define their own verbs in `manifest/custom/VERBS.md`. Each verb has a `Triggers:` line — the natural language patterns that map to it. The verb shorthand is one of those patterns, not a separate concept.
 
 > **No slash prefixes.** Slash-prefixed verbs are not used. Many AI client UIs intercept slash prefixes as native commands before the scribe ever sees them.
 
-At session open, read `docs/VERBS.md` and `customs/VERBS-CUSTOM.md` and load all **uncommented** verbs. Commented-out verb blocks (`<!-- ... -->`) are available but inactive. `list verbs` outputs all active verbs with their trigger sets.
+At session open, read `manifest/framework/VERBS.md` and `manifest/custom/VERBS.md` and load all **uncommented** verbs. Commented-out verb blocks (`<!-- ... -->`) are available but inactive. `list verbs` outputs all active verbs with their trigger sets.
 
-**The scribe manages `docs/VERBS.md` — users never edit it manually.** The only permitted operations are activation and deactivation:
+**The scribe manages `manifest/framework/VERBS.md` — users never edit it manually.** The only permitted operations are activation and deactivation:
 - **Activate:** uncomment the verb block, commit: `verbs: activate [verbname]`
 - **Deactivate:** comment it out, commit: `verbs: deactivate [verbname]`
 
-**Adding new verbs or overriding framework verb behaviour goes in `customs/VERBS-CUSTOM.md` — never in `docs/VERBS.md`.**
+**Adding new verbs or overriding framework verb behaviour goes in `manifest/custom/VERBS.md` — never in `manifest/framework/VERBS.md`.**
 
 **Reserved intent names.** Custom verbs must not use the names of built-in intents as their shorthand: `hello`, `goodbye`, `status`, `sync`, `search`, `list verbs`, `list personalities`, `list actors`. If a verb file uses a reserved name, ignore it and warn the user:
 
-> `[name]` is a reserved intent shorthand. Rename it in `customs/VERBS-CUSTOM.md` to avoid conflict.
+> `[name]` is a reserved intent shorthand. Rename it in `manifest/custom/VERBS.md` to avoid conflict.
 
 ### Verb precedence over parent CLAUDE.md (v4.0.0-alpha.28+)
 
@@ -191,7 +191,7 @@ Quick standup: what I did yesterday, what I'm doing today, any blockers. File as
 
 Do not proceed until the user pulls or explicitly says to continue without pulling.
 
-**Protocol rules reload on user-triggered `sync` (v4.0.0-alpha.30+).** Protocol files (`CORTEX.md`, `ROE.md`, `GUARDRAILS.md`, `customs/ROE-CUSTOM.md`, `customs/GUARDRAILS-CUSTOM.md`, `customs/VERBS-CUSTOM.md`) are read at `hello` and **reread immediately after a successful `sync` flow that pulled new content** for any of those files. New rules take effect from the next conversational turn forward — no fresh `hello` required. This matches the alpha.8 personality hot-swap principle: user-triggered state changes are effective immediately, not deferred to next session.
+**Protocol rules reload on user-triggered `sync` (v4.0.0-alpha.30+).** Protocol files (`CORTEX.md`, `ROE.md`, `GUARDRAILS.md`, `manifest/custom/ROE.md`, `manifest/custom/GUARDRAILS.md`, `manifest/custom/VERBS.md`) are read at `hello` and **reread immediately after a successful `sync` flow that pulled new content** for any of those files. New rules take effect from the next conversational turn forward — no fresh `hello` required. This matches the alpha.8 personality hot-swap principle: user-triggered state changes are effective immediately, not deferred to next session.
 
 After a `sync`-driven reload, the scribe surfaces a single Bootstrap-voiced acknowledgement:
 
@@ -201,7 +201,7 @@ After a `sync`-driven reload, the scribe surfaces a single Bootstrap-voiced ackn
 
 1. **Reload only on user-triggered `sync`** that successfully pulled changes into protocol-file paths. Auto-pulls during `hello` are part of the opening sequence and do not need a separate reload — the freshly-pulled content gets read in the same opening pass.
 2. **Reload affects rules, not in-flight work.** If the user invoked a verb (`spawn session`, `create actor`, etc.) and `sync` ran inside that verb's flow, complete the verb on the rules in effect when it started, then reload. Do not switch rules mid-verb.
-3. **Active actors reload on sync (v4.3.0+).** If `sync` pulls changes to any file under `personalities/`, the scribe re-reads each currently-loaded actor's personality file from disk and applies the updated voice from the next turn forward — no fresh `hello` required. This extends the alpha.30 protocol-reload model to personalities: `sync` is the single event that brings all session state current.
+3. **Active actors reload on sync (v4.3.0+).** If `sync` pulls changes to any file under `manifest/custom/actors/`, the scribe re-reads each currently-loaded actor's personality file from disk and applies the updated voice from the next turn forward — no fresh `hello` required. This extends the alpha.30 protocol-reload model to personalities: `sync` is the single event that brings all session state current.
 4. **GUARDRAILS reload is special.** Reload immediately even if the new GUARDRAILS file is more permissive than the prior one — the framework's contract is that the latest committed rules are in effect. Tightening reloads also apply immediately, with no pre-warning beyond the standard reload acknowledgement.
 
 **Pre-alpha.30 behavior preserved as fallback.** If the scribe cannot reread protocol files after `sync` for any reason (file system error, ambiguous diff scope), fall back to the pre-alpha.30 rule: surface a one-line note that protocol changes will take effect at next `hello`, and continue on the current rules.
@@ -214,11 +214,11 @@ If `git pull` produces a merge conflict, stop immediately and walk the user thro
 
 `.cortex-version` is a single-line file at repo root containing the framework version this instance last synced to (e.g. `3.1.0`). If missing, treat as unsynced — present the upgrade gate.
 
-If the framework has a newer version, check `customs/cortex-upgrade.md` for the user's upgrade preference (moved from repo root to `customs/` in v4.0.0-alpha.25+):
+If the framework has a newer version, check `manifest/custom/cortex-upgrade.md` for the user's upgrade preference (moved from repo root to `manifest/custom/` in v4.0.0-alpha.25+):
 
 - **`auto_upgrade: always`** — run the sync flow silently. Note it in the greeting as one line: *"Updated to v[X.Y.Z]."*
 - **`auto_upgrade: never`** — notify once per version, do not sync. In the greeting: *"Framework v[X.Y.Z] is available — run `sync` whenever you're ready."* Do not repeat for the same version.
-- **`auto_upgrade: ask`** (default — also used when `customs/cortex-upgrade.md` is missing or the field is blank) — surface this in the greeting and wait for a response before continuing:
+- **`auto_upgrade: ask`** (default — also used when `manifest/custom/cortex-upgrade.md` is missing or the field is blank) — surface this in the greeting and wait for a response before continuing:
 
   > Framework v[X.Y.Z] is available (you're on v[A.B.C]). What would you like to do?
   > 1. **Update now** — sync in the background and continue
@@ -226,10 +226,10 @@ If the framework has a newer version, check `customs/cortex-upgrade.md` for the 
   > 3. **Never ask** — I'll update manually with `sync` whenever I want
 
   - **Option 1:** run the sync flow, continue on new version
-  - **Option 2:** add v[X.Y.Z] to `skipped_versions:` in `customs/cortex-upgrade.md`, continue on current version. Never present this version again.
-  - **Option 3:** set `auto_upgrade: never` in `customs/cortex-upgrade.md`, continue on current version
+  - **Option 2:** add v[X.Y.Z] to `skipped_versions:` in `manifest/custom/cortex-upgrade.md`, continue on current version. Never present this version again.
+  - **Option 3:** set `auto_upgrade: never` in `manifest/custom/cortex-upgrade.md`, continue on current version
 
-`customs/cortex-upgrade.md` is user-owned. It is never included in sync scope — the framework never overwrites the user's upgrade preferences.
+`manifest/custom/cortex-upgrade.md` is user-owned. It is never included in sync scope — the framework never overwrites the user's upgrade preferences.
 
 The `sync` verb always runs the sync flow on demand, regardless of upgrade preference.
 
@@ -237,16 +237,16 @@ The `sync` verb always runs the sync flow on demand, regardless of upgrade prefe
 
 **Scope — read from upstream at sync time.** Sync scope is defined by **upstream's** `protocol/CORTEX.md`, not your local copy. Run `git show upstream/main:protocol/CORTEX.md` and use the Scope paragraph from **that** file for this sync. This prevents scope-widening releases from being unable to bootstrap themselves.
 
-Current upstream scope — explicit file list (never glob `docs/` — users store personal files there):
+Current upstream scope — explicit file list (never glob `attachments/` — users store personal files there):
 - `protocol/` (all files)
 - `templates/` (all files)
 - `install/` (all files — bootstrap installers + setup scripts)
 - `scripts/*.ts` (top-level only — never `scripts/integrations/`)
-- `personalities/PERSONALITY-[^C]*.md` (built-in personalities only — never `PERSONALITY-CUSTOM-*`)
+- `manifest/framework/actors/*.md` (built-in personalities only — never `PERSONALITY-CUSTOM-*`)
 - `README.md`, `ROADMAP.md`
-- `docs/README-SIMPLE.md`, `docs/PERSONALITIES.md`, `docs/CONNECTORS.md`, `docs/SETUP-DESKTOP.md`, `docs/SETUP-MOBILE.md`, `docs/VERBS.md`, `docs/CORTEX-CHANGELOG.md`, `docs/CORTEX-DEV.md`
+- `manifest/framework/README-SIMPLE.md`, `manifest/framework/PERSONALITIES.md`, `manifest/framework/CONNECTORS.md`, `manifest/framework/SETUP-DESKTOP.md`, `manifest/framework/SETUP-MOBILE.md`, `manifest/framework/VERBS.md`, `manifest/framework/CORTEX-CHANGELOG.md`, `manifest/framework/CORTEX-DEV.md`
 
-Never sync: `scripts/integrations/`, `personalities/PERSONALITY-CUSTOM-*.md`, any `*-CUSTOM.md` file, the entire `customs/` directory (user-territory: `customs/VERBS-CUSTOM.md`, `customs/ROE-CUSTOM.md`, `customs/GUARDRAILS-CUSTOM.md`, etc.), or anything in `docs/` not listed above. Users store personal documents in `docs/` — a blind `git checkout upstream/main -- docs/` would delete them.
+Never sync: `scripts/integrations/`, `manifest/custom/actors/*.md`, any `*-CUSTOM.md` file, the entire `manifest/custom/` directory (user-territory: `manifest/custom/VERBS.md`, `manifest/custom/ROE.md`, `manifest/custom/GUARDRAILS.md`, etc.), or `attachments/`. Users store personal documents in `attachments/` — a blind checkout would delete them.
 
 **Out-of-scope file design rule (v4.0.0-alpha.29+):** files NOT in sync scope (notably `CLAUDE.md` at the repo root) cannot reach consumers via sync. If a framework-wide rule needs to live in `CLAUDE.md` (because the AI client reads CLAUDE.md before anything else), the rule MUST also be mirrored into a synced file (typically `protocol/CORTEX.md`) so consumers receive it on their next sync. CLAUDE.md is the visibility beacon; the protocol file is the durable contract. Surfaced 2026-05-03 alpha.28 ship — the verb-precedence rule shipped to framework CLAUDE.md only on first attempt and didn't reach personal-cortex consumers; mirrored into protocol/CORTEX.md as a follow-up.
 
@@ -254,7 +254,7 @@ Never sync: `scripts/integrations/`, `personalities/PERSONALITY-CUSTOM-*.md`, an
 
 **Step 1 — Check for uncommitted local changes in sync scope**
 ```
-git diff HEAD -- protocol/ templates/ 'scripts/*.ts' 'personalities/PERSONALITY-[^C]*.md'
+git diff HEAD -- protocol/ templates/ 'scripts/*.ts' 'manifest/framework/actors/*.md'
 ```
 If dirty: defer the sync. Note it in the greeting:
 > *Your Cortex has a framework update available (v[X.Y.Z]). Your protocol files have local changes — run `sync` when ready.*
@@ -264,7 +264,7 @@ Do not gate. Do not block the session. Continue on the current version.
 **Step 2 — Conflict check**
 Check if the user has locally modified any file that upstream also changed:
 ```
-git diff HEAD upstream/main -- protocol/ templates/ 'scripts/*.ts' 'personalities/PERSONALITY-[^C]*.md'
+git diff HEAD upstream/main -- protocol/ templates/ 'scripts/*.ts' 'manifest/framework/actors/*.md'
 ```
 Cross-reference with local changes to find overlapping edits.
 
@@ -282,7 +282,7 @@ git checkout upstream/main -- protocol/ templates/ scripts/*.ts
 **For personalities, MUST use live `git ls-tree` enumeration against `upstream/main` (v4.0.0-alpha.15+):**
 
 ```
-git checkout upstream/main -- $(git ls-tree --name-only upstream/main personalities/ | grep 'PERSONALITY-[^C]')
+git checkout upstream/main -- $(git ls-tree --name-only upstream/main manifest/custom/actors/ | grep 'PERSONALITY-[^C]')
 ```
 
 **Hardcoded personality file lists in sync flow are a protocol violation.** Earlier alpha sync flows used hardcoded checkout lists which silently dropped framework personalities the list-author forgot to update — alpha.4 missed `PERSONALITY-CASUAL.md` (Bob → Casey rename), alpha.6 missed `PERSONALITY-CHUCK-NORRIS.md`, and the resulting drift accumulated on user clones across multiple sync cycles before being caught (see records `2026-04-28-1631-bug-personality-sync-drift.md`). Live enumeration prevents this — every sync includes every framework personality currently on upstream/main, no matter what was added in the most recent release.
@@ -294,17 +294,17 @@ Update `.cortex-version` to match upstream version.
 After syncing framework files from upstream, check origin for custom personality updates:
 ```
 git fetch origin
-git diff HEAD origin/main -- personalities/PERSONALITY-CUSTOM-*.md
+git diff HEAD origin/main -- manifest/custom/actors/*.md
 ```
 If any `PERSONALITY-CUSTOM-*.md` file on `origin/main` differs from local HEAD, pull it:
 ```
-git checkout origin/main -- personalities/PERSONALITY-CUSTOM-*.md
+git checkout origin/main -- manifest/custom/actors/*.md
 ```
 Only pull files that differ — do not overwrite files that are already current. These are user-owned and origin is authoritative for them (upstream never has them).
 
 Then commit and push everything together:
 ```
-git add protocol/ templates/ scripts/*.ts personalities/ .cortex-version
+git add protocol/ templates/ scripts/*.ts manifest/custom/actors/ .cortex-version
 git commit -m "sync: framework vX.Y.Z"
 git push origin main
 ```
@@ -323,7 +323,7 @@ After the apply/commit completes, the scribe MUST report **all** files actually 
 
 Reporting only one file when more changed (e.g., reporting `PERSONALITY-YODA.md` when ten files were updated) is a protocol violation. The user must be able to verify what came in.
 
-**Personality cache invalidation and actor reload after sync (v4.3.0+):** if any file under `personalities/` was pulled in this sync: (1) re-scan `personalities/` from disk and refresh the in-session personality list; (2) re-read each currently-loaded actor's personality file from disk and adopt the updated voice from the next turn forward. Do not rely on hello-time cache after sync. Surface a one-line acknowledgement alongside the sync report: *"Actor(s) reloaded: [names]. Updated voice effective from this turn."*
+**Personality cache invalidation and actor reload after sync (v4.3.0+):** if any file under `manifest/custom/actors/` was pulled in this sync: (1) re-scan `manifest/custom/actors/` from disk and refresh the in-session personality list; (2) re-read each currently-loaded actor's personality file from disk and adopt the updated voice from the next turn forward. Do not rely on hello-time cache after sync. Surface a one-line acknowledgement alongside the sync report: *"Actor(s) reloaded: [names]. Updated voice effective from this turn."*
 
 **Pre-sync drift check (v4.0.0-alpha.15+):** before pulling, the scribe MUST diff every framework-scope path between local `HEAD` and `upstream/main`. If any file in framework scope (excluding `*-CUSTOM.md` patterns) differs in a way the current sync wouldn't update, surface the count in the sync report:
 
@@ -348,7 +348,7 @@ The `reconcile` verb performs a deep three-category diff between local and `upst
 
 ```
 git fetch upstream
-git diff --name-status upstream/main HEAD -- protocol/ templates/ 'scripts/*.ts' 'personalities/PERSONALITY-[^C]*.md' README.md ROADMAP.md docs/README-SIMPLE.md docs/PERSONALITIES.md docs/CONNECTORS.md docs/SETUP-DESKTOP.md docs/SETUP-MOBILE.md docs/VERBS.md docs/CORTEX-DEV.md docs/CORTEX-CHANGELOG.md
+git diff --name-status upstream/main HEAD -- protocol/ templates/ 'scripts/*.ts' 'manifest/framework/actors/*.md' README.md ROADMAP.md manifest/framework/README-SIMPLE.md manifest/framework/PERSONALITIES.md manifest/framework/CONNECTORS.md manifest/framework/SETUP-DESKTOP.md manifest/framework/SETUP-MOBILE.md manifest/framework/VERBS.md manifest/framework/CORTEX-DEV.md manifest/framework/CORTEX-CHANGELOG.md
 ```
 
 Categorize each line:
@@ -369,11 +369,11 @@ Reconcile diff (local vs upstream/main):
 
 Behind upstream — N file(s) need pulling:
   M  protocol/CORTEX.md
-  A  personalities/PERSONALITY-NEW-PERSONALITY.md
+  A  manifest/custom/actors/NEW-PERSONALITY.md
   M  README.md
 
 Removed upstream — N file(s) deprecated:
-  D  personalities/PERSONALITY-OLD-PERSONALITY.md  (last upstream version: alpha.X)
+  D  manifest/custom/actors/OLD-PERSONALITY.md  (last upstream version: alpha.X)
 
 Ahead of upstream — N file(s) locally-added in framework scope:
   A  protocol/CUSTOM-RULE.md  (likely user accident; framework scope)
@@ -387,7 +387,7 @@ Walk each category, asking the user per-file or per-batch:
 
 - **Behind upstream:** *"Pull `<file>` from upstream? This will overwrite any local edits to this file."* Default action: pull. User can `skip` to keep local version (and accept the drift will recur next sync) or `abort` to stop reconcile.
 
-- **Removed upstream:** *"`<file>` was deprecated upstream. Move to `archive/personalities/`, or keep locally?"* Default action: archive (preserves provenance). User can `keep` if they have a custom reason (and should rename to `PERSONALITY-CUSTOM-*.md` to escape framework scope).
+- **Removed upstream:** *"`<file>` was deprecated upstream. Move to `archive/manifest/custom/actors/`, or keep locally?"* Default action: archive (preserves provenance). User can `keep` if they have a custom reason (and should rename to `PERSONALITY-CUSTOM-*.md` to escape framework scope).
 
 - **Ahead of upstream:** *"`<file>` is locally-added in framework scope but doesn't exist upstream. Was this intentional?"* Default action: surface only, do not auto-resolve. User picks: rename to `*-CUSTOM.md` (escape scope), keep as-is (will appear as drift on every future reconcile), or delete.
 
@@ -397,7 +397,7 @@ For each user-approved action, apply individually and commit with a structured m
 
 ```
 git checkout upstream/main -- <path>          # pull from upstream
-git mv <path> archive/personalities/<path>    # archive deprecated
+git mv <path> archive/manifest/custom/actors/<path>    # archive deprecated
 # (rename / delete handled per user choice)
 ```
 
@@ -530,7 +530,7 @@ Run the **3x closing scan** before closing:
 
 1. **Pass 1 — anything uncommitted or unpushed?**
 2. **Pass 2 — any open items not yet surfaced this session?**
-3. **Pass 3 — any attachments or docs received in session not yet committed to `docs/`?**
+3. **Pass 3 — any attachments or source docs received in session not yet committed to `attachments/`?**
 
 Only close with *"Filed and pushed. Take care."* after all three passes are clean or explicitly acknowledged by the user.
 
@@ -552,15 +552,15 @@ protocol/              # Protocol engine — do not edit
   GUARDRAILS.md        # Hard stops, safety rules — overrides everything
   ROE.md               # Rules of engagement
   CORTEX-PROJECT.md    # Self-contained system prompt for Claude/ChatGPT projects
-personalities/         # Personality files — built-in and user-created
+manifest/custom/actors/         # Personality files — built-in and user-created
   PERSONALITY-APEX.md       # Apex (framework default)
   PERSONALITY-CUSTOM-*.md   # User-created personalities
 records/               # Your dated entries — one file per topic
-attachments/           # Attachments for records — one subfolder per record
-  YYYY-MM-DD-HHMM-[slug]/
+attachments/           # Source documents and record attachments — bills, invoices, screenshots, PDFs
+  YYYY-MM-DD-HHMM-[slug]/  # Record-specific attachments (one subfolder per record)
     file.jpg
-docs/                  # Source documents — bills, invoices, screenshots, PDFs
-  YYYY-MM-DD-[provider]-[type].[ext]
+  YYYY-MM-DD-[provider]-[type].[ext]  # Standalone source documents
+  assets/              # Shared static assets (brand images, icons, etc.)
 archive/               # Retired files — never scanned, never modified, read only on explicit request
 templates/             # Blank templates
 examples/              # Anonymised example entries
@@ -571,26 +571,26 @@ AGENTS.md              # OpenAI Codex + generic agents
 OPENCODE.md            # OpenCode
 QWEN.md                # Qwen Code
 SECRETS.md             # Plain-text index of vault key names (no values)
-docs/VERBS.md          # Framework verbs (managed by scribe)
-docs/CORTEX-CHANGELOG.md  # Full change log
-docs/CORTEX-DEV.md     # Framework contributor mode
-docs/README-SIMPLE.md  # Plain-English README
-customs/VERBS-CUSTOM.md       # User-defined custom verbs
-customs/ROE-CUSTOM.md         # User custom rules of engagement
-customs/GUARDRAILS-CUSTOM.md   # User custom guardrails extensions
+manifest/framework/VERBS.md          # Framework verbs (managed by scribe)
+manifest/framework/CORTEX-CHANGELOG.md  # Full change log
+manifest/framework/CORTEX-DEV.md     # Framework contributor mode
+manifest/framework/README-SIMPLE.md  # Plain-English README
+manifest/custom/VERBS.md       # User-defined custom verbs
+manifest/custom/ROE.md         # User custom rules of engagement
+manifest/custom/GUARDRAILS.md   # User custom guardrails extensions
 README.md
 LICENSE
 version.txt
 cortex.secrets.enc     # Encrypted secrets vault (committed — AES-256)
 ```
 
-## `docs/` folder
+## `attachments/` folder
 
-Store source documents (bills, invoices, screenshots, PDFs, images) in `docs/`. Name files: `YYYY-MM-DD-[provider]-[type].[ext]` — e.g. `2026-04-17-enbridge-bill.pdf`.
+Store source documents (bills, invoices, screenshots, PDFs, images) in `attachments/`. Name standalone files: `YYYY-MM-DD-[provider]-[type].[ext]` — e.g. `2026-04-17-enbridge-bill.pdf`. Record-specific attachments go in a subfolder named after the record: `attachments/YYYY-MM-DD-HHMM-[slug]/`.
 
-Commit convention: `docs: add YYYY-MM-DD-[provider]-[type]`
+Commit convention: `attachments: add YYYY-MM-DD-[provider]-[type]`
 
-**Use `docs/` for:** original source files that back up a record. **Do not use `docs/` for:** credentials, vault passphrases, temp files, or anything that should never be committed.
+**Use `attachments/` for:** original source files that back up a record. **Do not use `attachments/` for:** credentials, vault passphrases, temp files, or anything that should never be committed.
 
 ## `SECRETS.md`
 
@@ -636,7 +636,7 @@ Use 24-hour time. One topic per file. One commit per file. Never edit a committe
 
 Attachments for a record go in `attachments/YYYY-MM-DD-HHMM-[slug]/`.
 
-Source documents go in `docs/` — see File Structure above.
+Source documents go in `attachments/` — see File Structure above.
 
 ## Timestamps
 
@@ -757,8 +757,8 @@ Every operation in the cortex protocol that touches the repo or runs without a u
 
 - Speak to the user (no chat output, ever)
 - Have a personality, traits, archetype, or `system_prompt`
-- Get loaded from `personalities/`
-- Vary by user customization beyond what `customs/ROE-CUSTOM.md` allows
+- Get loaded from `manifest/custom/actors/`
+- Vary by user customization beyond what `manifest/custom/ROE.md` allows
 
 ## How the active actor and hidden scribe interact
 
@@ -784,9 +784,9 @@ The **active actor** has a personality — a named character with tunable traits
 
 Personality files are markdown. No YAML. The scribe reads them the same way it reads any other file — no parser needed.
 
-Files live in `personalities/` at repo root:
-- `personalities/PERSONALITY-APEX.md` — Apex (framework default, ships with Cortex)
-- `personalities/PERSONALITY-CUSTOM-[NAME].md` — user-created personalities
+Files live in `manifest/custom/actors/` at repo root:
+- `manifest/framework/actors/APEX.md` — Apex (framework default, ships with Cortex)
+- `manifest/custom/actors/[NAME].md` — user-created personalities
 
 Format:
 
@@ -1202,7 +1202,7 @@ These verbs are conversational by nature — the user is asking the actor for co
 
 - `weekly review`, `monthly review`, `daily log`, `vent`, `decision`, `idea` (any record-creation verb where the actor's voice helps)
 - `search` (the result interpretation)
-- All custom verbs in `customs/VERBS-CUSTOM.md` unless they explicitly opt into operational mode
+- All custom verbs in `manifest/custom/VERBS.md` unless they explicitly opt into operational mode
 
 ### Why this split
 
@@ -1240,7 +1240,7 @@ User: sync
 [Bootstrap]:
 Synced. 5 changes applied:
   - protocol/CORTEX.md
-  - personalities/PERSONALITY-BOOTSTRAP.md
+  - manifest/framework/BOOTSTRAP.md
   - README.md
   - ROADMAP.md
   - CORTEX-CHANGELOG.md
@@ -1294,7 +1294,7 @@ Example:
 
 **Backwards compatibility:** the legacy single-parent form `## parent: <file>` continues to work and is treated as `## parents: [<file>]`. No migration required for existing custom personalities.
 
-**Validation:** validate every parent pointer before committing — if any named file does not exist in `personalities/`, warn the user before writing anything.
+**Validation:** validate every parent pointer before committing — if any named file does not exist in `manifest/custom/actors/`, warn the user before writing anything.
 
 ---
 

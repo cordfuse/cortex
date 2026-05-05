@@ -11,8 +11,8 @@ The user typing `hello`, `goodbye`, `sync`, `status`, `search`, `list verbs`, `l
 
 This applies whether the parent CLAUDE.md is the official Cordfuse librarian (`~/Repos/CLAUDE.md`) or any third-party CLAUDE.md the user happens to have higher in the tree. Cortex repos are self-contained; the protocol is authoritative.
 
-If a parent CLAUDE.md defines a verb name cortex doesn't reserve (e.g. a custom `weekly` verb), pass-through is fine — cortex doesn't claim that name. The reservation list is exactly the built-in verbs above plus any active entries in `customs/VERBS-CUSTOM.md`.
+If a parent CLAUDE.md defines a verb name cortex doesn't reserve (e.g. a custom `weekly` verb), pass-through is fine — cortex doesn't claim that name. The reservation list is exactly the built-in verbs above plus any active entries in `manifest/custom/VERBS.md`.
 
 ## Dev Session Backlog
 
-At the start of every dev session, read `~/Repos/steve-krisjanovs/cortex/customs/backlogs/cortex-backlog.md` if it exists. Surface any unresolved items before starting work. This file is maintained by the personal cortex scribe and is the single source of truth for pending bugs and features.
+At the start of every dev session, read `~/Repos/steve-krisjanovs/cortex/manifest/custom/backlogs/cortex-backlog.md` if it exists. Surface any unresolved items before starting work. This file is maintained by the personal cortex scribe and is the single source of truth for pending bugs and features.

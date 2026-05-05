@@ -142,7 +142,7 @@ I need to talk. Listen, reflect, don't advise. File only if I ask.
 ---
 
 ### Connectors
-> Requires the relevant integration to be set up. See [docs/CONNECTORS.md](docs/CONNECTORS.md).
+> Requires the relevant integration to be set up. See [manifest/framework/CONNECTORS.md](manifest/framework/CONNECTORS.md).
 
 <!--
 ## calendar
@@ -155,19 +155,19 @@ Pull and summarise recent emails from Gmail or Outlook. Flag anything that needs
 Pull open tasks from Google Tasks or Microsoft To Do. Merge with my current tasks record. (Alias: *tasks-sync*.)
 
 ## drive
-Check recent files in Google Drive or OneDrive. Ask if anything needs to come into docs/.
+Check recent files in Google Drive or OneDrive. Ask if anything needs to come into attachments/.
 
 ## contacts
 Look up a person in Google or Microsoft contacts. Useful for filing person records.
 
 ## nas
-Connect to my home NAS via Tailscale and rclone. Browse available files or pull into docs/.
+Connect to my home NAS via Tailscale and rclone. Browse available files or pull into attachments/.
 
 ## backup
-Push my docs/ folder to remote storage via rclone.
+Push my attachments/ folder to remote storage via rclone.
 
 ## pull files
-Pull files from a configured rclone remote into docs/. (Alias: *pull-files*.)
+Pull files from a configured rclone remote into attachments/. (Alias: *pull-files*.)
 
 ## vpn
 Check Tailscale status. Bring it up if it's down.

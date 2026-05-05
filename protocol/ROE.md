@@ -72,7 +72,7 @@ The vault uses one passphrase for everything. Never use different passphrases fo
 ### Changing the passphrase
 
 ```
-python scripts/secrets.py repassphrase
+python scripts/secrets.ts repassphrase
 ```
 
 This re-encrypts every secret with the new passphrase in one operation. Commit and push immediately after.
@@ -80,7 +80,7 @@ This re-encrypts every secret with the new passphrase in one operation. Commit a
 ### Removing a secret
 
 ```
-python scripts/secrets.py delete <name>
+python scripts/secrets.ts delete <name>
 ```
 
 The script will ask the user to type the secret name to confirm. Deletion is permanent — it cannot be undone from git history once committed and pushed. Surface this to the user before proceeding:
@@ -91,7 +91,7 @@ The script will ask the user to type the secret name to confirm. Deletion is per
 
 Interactive terminals (desktop agents) — run directly and let the user type at the prompts:
 ```
-python scripts/secrets.py store <name>
+python scripts/secrets.ts store <name>
 ```
 
 Mobile / sandboxed agents (Claude mobile, ChatGPT mobile) — interactive prompts do not work. Instead:
@@ -99,7 +99,7 @@ Mobile / sandboxed agents (Claude mobile, ChatGPT mobile) — interactive prompt
 2. Ask the user for a passphrase in chat: *"Choose a passphrase for the vault."*
 3. Run with inline flags — never display the values back to the user:
 ```
-python scripts/secrets.py store <name> --value <value> --passphrase <passphrase>
+python scripts/secrets.ts store <name> --value <value> --passphrase <passphrase>
 ```
 4. Commit `cortex.secrets.enc` and push immediately.
 
@@ -108,14 +108,14 @@ python scripts/secrets.py store <name> --value <value> --passphrase <passphrase>
 ### Retrieving a secret
 
 ```
-python scripts/secrets.py get <name> --passphrase <passphrase>
+python scripts/secrets.ts get <name> --passphrase <passphrase>
 ```
 
 Ask the user for their passphrase in chat first if needed.
 
 ### Vault manifest
 
-`cortex.secrets/vault.json` is the canonical index of all secrets — maintained automatically by `secrets.py`. It contains: vault version, created date, last passphrase rotation date, and the list of secret names. Never edit it manually. Commit it alongside any vault change.
+`cortex.secrets/vault.json` is the canonical index of all secrets — maintained automatically by `secrets.ts`. It contains: vault version, created date, last passphrase rotation date, and the list of secret names. Never edit it manually. Commit it alongside any vault change.
 
 `SECRETS.md` is retired — the manifest replaces it.
 
@@ -220,20 +220,20 @@ Framework files in a personal cortex repo are **read-only for the scribe**. Any 
 
 **Framework files (read-only — scribe refuses to modify):**
 - All `protocol/` files (CORTEX.md, ROE.md, GUARDRAILS.md, DISCLAIMER.md, CORTEX-PROJECT.md)
-- Built-in personality files — any `personalities/PERSONALITY-*.md` not matching `PERSONALITY-CUSTOM-*.md`
+- Built-in personality files — `manifest/framework/actors/*.md`
 - README.md, README-SIMPLE.md
-- Framework files in `docs/` (PERSONALITIES.md, CONNECTORS.md, SETUP-DESKTOP.md, SETUP-MOBILE.md, etc.)
+- Framework files in `manifest/framework/` (PERSONALITIES.md, CONNECTORS.md, SETUP-DESKTOP.md, SETUP-MOBILE.md, etc.)
 - All `scripts/` files (integration scripts, vault tools, time fallback)
 - VERBS.md (framework verbs)
 - All `templates/` files
 - ROADMAP.md, CORTEX-CHANGELOG.md, version.txt
 
 **User-owned files (read-write — scribe modifies freely):**
-- All `*-CUSTOM.md` companion files (README-CUSTOM.md, PERSONALITIES-CUSTOM.md, CONNECTORS-CUSTOM.md, ROE-CUSTOM.md, VERBS-CUSTOM.md)
-- All `personalities/PERSONALITY-CUSTOM-*.md` files
+- All `manifest/custom/` files (VERBS.md, ROE.md, GUARDRAILS.md) and `manifest/custom/actors/*.md`
+- All `manifest/custom/actors/*.md` files
 - All `records/` files
 - `context.md` and any `context-*.md` sub-files
-- `cortex.secrets/` vault files (via `scripts/secrets.py`)
+- `cortex.secrets/` vault files (via `scripts/secrets.ts`)
 - `cortex-upgrade.md`
 - Any other user-created file not on the framework list
 
@@ -243,7 +243,7 @@ Framework files in a personal cortex repo are **read-only for the scribe**. Any 
 
 Examples:
 
-- *"Delete Casey's personality"* → `personalities/PERSONALITY-CASUAL.md` is a framework file. To deactivate Casey, just don't set them as your active actor. To override their behavior, create `personalities/PERSONALITY-CUSTOM-MY-CASEY.md` with `parent: PERSONALITY-CASUAL.md` and override the traits you want.
+- *"Delete Casey's personality"* → `manifest/framework/actors/CASUAL.md` is a framework file. To deactivate Casey, just don't set them as your active actor. To override their behavior, create `manifest/custom/actors/MY-CASEY.md` with `parent: PERSONALITY-CASUAL.md` and override the traits you want.
 - *"Edit Rule 5"* → `protocol/ROE.md` is a framework file. Add custom rules in `ROE-CUSTOM.md` (numbered from 100). Framework rules cannot be overridden — they are sealed.
 - *"Update the README"* → `README.md` is a framework file. Your personal notes go in `README-CUSTOM.md`.
 

@@ -25,4 +25,4 @@
 - [ ] 
 
 ## Source documents
-<!-- Files in docs/ related to this record. Format: docs/YYYY-MM-DD-[provider]-[type].[ext] -->
+<!-- Files in attachments/ related to this record. Format: attachments/YYYY-MM-DD-[provider]-[type].[ext] -->
