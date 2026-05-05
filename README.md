@@ -42,7 +42,7 @@ Cortex ships with `.claude/settings.json` carrying a comprehensive allow-list (`
 
 ### Framework files are protected at the OS layer (v4.0.0-alpha.16+)
 
-`.claude/settings.json` ships with a comprehensive `deny` list covering every framework file: `manifest/framework/protocol/`, `templates/`, `scripts/*.ts`, `version.txt`, `.cortex-version`, `LICENSE`, `ROADMAP.md`, `README.md`, `manifest/framework/README-SIMPLE.md`, `manifest/framework/CORTEX-CHANGELOG.md`, `manifest/framework/VERBS.md`, `manifest/framework/CORTEX-DEV.md`, the install/setup scripts, and `.claude/settings.json` itself.
+`.claude/settings.json` ships with a comprehensive `deny` list covering every framework file: `manifest/framework/protocol/`, `manifest/framework/templates/`, `scripts/*.ts`, `version.txt`, `.cortex-version`, `LICENSE`, `ROADMAP.md`, `README.md`, `manifest/framework/README-SIMPLE.md`, `manifest/framework/CORTEX-CHANGELOG.md`, `manifest/framework/VERBS.md`, `manifest/framework/CORTEX-DEV.md`, the install/setup scripts, and `.claude/settings.json` itself.
 
 **Agent pointer files are intentionally NOT in the deny list.** `CLAUDE.md`, `AGENTS.md`, `GEMINI.md`, `OPENCODE.md`, `QWEN.md` exist as one-line pointers to `manifest/framework/protocol/CORTEX.md` — but users customize them with personal blocks below the pointer (per-project session backlogs, per-host instructions, etc.). They're user-territory in user clones, even though they ship with the framework.
 
@@ -248,13 +248,14 @@ Cortex ships with an AES-256 encrypted secrets vault. One passphrase governs eve
 
 ```
 manifest/
-  framework/           # Ships with the framework — overwritten on sync
-    protocol/          # Protocol engine — do not edit
+  framework/           # Ships with the framework -- overwritten on sync
+    protocol/          # Protocol engine -- do not edit
       CORTEX.md        # Session rules, personality system, multi-session, time resolution
-      GUARDRAILS.md    # Hard stops, safety rules — overrides everything
+      GUARDRAILS.md    # Hard stops, safety rules -- overrides everything
       ROE.md           # Rules of engagement
       DISCLAIMER.md    # Honest framing, legal warnings, crisis resources
       CORTEX-PROJECT.md  # Self-contained prompt for Claude/ChatGPT projects
+    templates/         # Record skeletons + install scaffolding
     actors/            # Built-in actors (APEX.md default)
     BOOTSTRAP.md       # Operational scribe voice (auto-loaded)
     VERBS.md           # Framework verbs (managed by scribe)
@@ -265,20 +266,23 @@ manifest/
     CORTEX-CHANGELOG.md
     CORTEX-DEV.md
     README-SIMPLE.md
-  custom/              # User territory — never synced from upstream
+  custom/              # User territory -- never synced from upstream
     protocol/          # User protocol overrides
       ROE.md           # Custom rules of engagement
       GUARDRAILS.md    # Custom guardrails extensions
+    templates/         # User template overrides (optional)
     actors/            # Custom actors
     VERBS.md           # Custom verbs + overrides
-records/               # Dated entries — one file per topic per commit
-sessions/              # Scoped sessions; each is a folder with context.md
+    README.md          # Personal notes about this instance
+    PERSONALITIES.md   # Notes on personalities + custom actors
+    CONNECTORS.md      # Personal connector setup notes
+    cortex-upgrade.md  # Auto-upgrade preferences
+records/               # Dated entries -- one file per topic per commit
 attachments/           # Source documents + record attachments
   YYYY-MM-DD-HHMM-[slug]/   # Record-specific attachments
   YYYY-MM-DD-[provider]-[type].[ext]  # Standalone source docs
   assets/              # Shared static assets
-archive/               # Retired files — read only on explicit request
-templates/             # Blank templates
+archive/               # Retired files -- read only on explicit request
 install/               # Bootstrap installers + setup scripts
 scripts/               # Vault tooling + integrations (TypeScript/Bun)
 .claude/               # Claude Code settings
@@ -287,7 +291,7 @@ GEMINI.md              # Gemini CLI
 AGENTS.md              # OpenAI Codex + generic agents
 OPENCODE.md            # OpenCode
 QWEN.md                # Qwen Code
-context.md             # Main session state — actor, provider, model
+context.md             # Main session state -- actor, provider, model
 SECRETS.md             # Plain-text index of vault key names (no values)
 ROADMAP.md             # What's shipped and what's coming
 .cortex-version        # Current framework version (user clones)

@@ -35,7 +35,7 @@ GEMINI.md              # Same
 AGENTS.md              # Same
 PLAN.md                # Development plan and roadmap
 README.md              # Public-facing repo README
-templates/             # Blank templates for each file type
+manifest/framework/templates/             # Blank templates for each file type
   day.md
   event.md
   person.md
@@ -79,7 +79,7 @@ git push
 - `DISCLAIMER.md`
 - `ROE.md`
 - `CLAUDE.md`, `GEMINI.md`, `AGENTS.md`
-- `templates/`
+- `manifest/framework/templates/`
 - `examples/`
 - `README.md`
 - `version.txt`
@@ -90,7 +90,7 @@ Never merge the full branch. Cherry-pick or manually apply only user-facing chan
 
 ```bash
 git checkout main
-git checkout dev -- CORTEX.md ROE.md DISCLAIMER.md README.md templates/ examples/ version.txt
+git checkout dev -- CORTEX.md ROE.md DISCLAIMER.md README.md manifest/framework/templates/ examples/ version.txt
 git commit -m "merge: <description>"
 git push
 ```

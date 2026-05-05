@@ -239,7 +239,7 @@ The `sync` verb always runs the sync flow on demand, regardless of upgrade prefe
 
 Current upstream scope — explicit file list (never glob `attachments/` — users store personal files there):
 - `manifest/framework/protocol/` (all files)
-- `templates/` (all files)
+- `manifest/framework/templates/` (all files)
 - `install/` (all files — bootstrap installers + setup scripts)
 - `scripts/*.ts` (top-level only — never `scripts/integrations/`)
 - `manifest/framework/actors/*.md` (built-in personalities only — never `PERSONALITY-CUSTOM-*`)
@@ -254,7 +254,7 @@ Never sync: `scripts/integrations/`, `manifest/custom/actors/*.md`, any `*-CUSTO
 
 **Step 1 — Check for uncommitted local changes in sync scope**
 ```
-git diff HEAD -- manifest/framework/protocol/ templates/ 'scripts/*.ts' 'manifest/framework/actors/*.md'
+git diff HEAD -- manifest/framework/protocol/ manifest/framework/templates/ 'scripts/*.ts' 'manifest/framework/actors/*.md'
 ```
 If dirty: defer the sync. Note it in the greeting:
 > *Your Cortex has a framework update available (v[X.Y.Z]). Your protocol files have local changes — run `sync` when ready.*
@@ -264,7 +264,7 @@ Do not gate. Do not block the session. Continue on the current version.
 **Step 2 — Conflict check**
 Check if the user has locally modified any file that upstream also changed:
 ```
-git diff HEAD upstream/main -- manifest/framework/protocol/ templates/ 'scripts/*.ts' 'manifest/framework/actors/*.md'
+git diff HEAD upstream/main -- manifest/framework/protocol/ manifest/framework/templates/ 'scripts/*.ts' 'manifest/framework/actors/*.md'
 ```
 Cross-reference with local changes to find overlapping edits.
 
@@ -276,7 +276,7 @@ Cross-reference with local changes to find overlapping edits.
 
 Apply directory-scoped files from upstream:
 ```
-git checkout upstream/main -- manifest/framework/protocol/ templates/ scripts/*.ts
+git checkout upstream/main -- manifest/framework/protocol/ manifest/framework/templates/ scripts/*.ts
 ```
 
 **For personalities, MUST use live `git ls-tree` enumeration against `upstream/main` (v4.0.0-alpha.15+):**
@@ -304,7 +304,7 @@ Only pull files that differ — do not overwrite files that are already current.
 
 Then commit and push everything together:
 ```
-git add manifest/framework/protocol/ templates/ scripts/*.ts manifest/custom/actors/ .cortex-version
+git add manifest/framework/protocol/ manifest/framework/templates/ scripts/*.ts manifest/custom/actors/ .cortex-version
 git commit -m "sync: framework vX.Y.Z"
 git push origin main
 ```
@@ -348,7 +348,7 @@ The `reconcile` verb performs a deep three-category diff between local and `upst
 
 ```
 git fetch upstream
-git diff --name-status upstream/main HEAD -- manifest/framework/protocol/ templates/ 'scripts/*.ts' 'manifest/framework/actors/*.md' README.md ROADMAP.md manifest/framework/README-SIMPLE.md manifest/framework/PERSONALITIES.md manifest/framework/CONNECTORS.md manifest/framework/SETUP-DESKTOP.md manifest/framework/SETUP-MOBILE.md manifest/framework/VERBS.md manifest/framework/CORTEX-DEV.md manifest/framework/CORTEX-CHANGELOG.md
+git diff --name-status upstream/main HEAD -- manifest/framework/protocol/ manifest/framework/templates/ 'scripts/*.ts' 'manifest/framework/actors/*.md' README.md ROADMAP.md manifest/framework/README-SIMPLE.md manifest/framework/PERSONALITIES.md manifest/framework/CONNECTORS.md manifest/framework/SETUP-DESKTOP.md manifest/framework/SETUP-MOBILE.md manifest/framework/VERBS.md manifest/framework/CORTEX-DEV.md manifest/framework/CORTEX-CHANGELOG.md
 ```
 
 Categorize each line:
@@ -428,7 +428,7 @@ Now on v[X.Y.Z].
 - **`reconcile`** — historical drift cleanup. Surfaces and resolves files that have diverged in any direction. Slower, gated. Run when pre-sync drift check fires, or after long absence from upstream syncs, or when a personality you remember existing seems to have vanished.
 
 **Step 3b — context.md migration**
-After applying files, check if the live `context.md` is missing fields that the updated `templates/context.md` now defines. For each missing field, append it with its default value. Never overwrite existing values — additions only. Commit in the same sync commit.
+After applying files, check if the live `context.md` is missing fields that the updated `manifest/framework/templates/context.md` now defines. For each missing field, append it with its default value. Never overwrite existing values — additions only. Commit in the same sync commit.
 
 **Step 3b-iii — `actors:` migration (v4.0.0-alpha.32+)**
 If the user's `context.md` uses the legacy single-actor `personality:` field with no `actors:` array, surface a one-line opt-in prompt at sync:
@@ -554,6 +554,7 @@ manifest/
       ROE.md           # Rules of engagement
       DISCLAIMER.md    # Honest framing, legal warnings, crisis resources
       CORTEX-PROJECT.md  # Self-contained system prompt for Claude/ChatGPT projects
+    templates/         # Record skeletons + install scaffolding
     actors/            # Built-in actors
       APEX.md          # Apex (framework default)
     BOOTSTRAP.md       # Operational scribe voice (auto-loaded)
@@ -569,8 +570,13 @@ manifest/
     protocol/          # User protocol overrides
       ROE.md           # Custom rules of engagement
       GUARDRAILS.md    # Custom guardrails extensions
+    templates/         # User template overrides (optional)
     actors/            # Custom actors
     VERBS.md           # Custom verbs + overrides
+    README.md          # Personal notes about this instance
+    PERSONALITIES.md   # Notes on personalities + custom actors
+    CONNECTORS.md      # Personal connector setup notes
+    cortex-upgrade.md  # Auto-upgrade preferences
     backlogs/          # Per-project dev backlogs
 records/               # Your dated entries — one file per topic
 attachments/           # Source documents and record attachments
@@ -579,7 +585,6 @@ attachments/           # Source documents and record attachments
   YYYY-MM-DD-[provider]-[type].[ext]  # Standalone source documents
   assets/              # Shared static assets
 archive/               # Retired files — read only on explicit request
-templates/             # Blank templates
 scripts/               # Environment-aware tools (setup, healthcheck, secrets, etc.)
 install/               # Bootstrap installers
 CLAUDE.md              # Claude Code + Claude Desktop

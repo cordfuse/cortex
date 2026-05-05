@@ -90,7 +90,7 @@ echo ""
 REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 CLAUDE_DIR="$REPO_ROOT/.claude"
 CLAUDE_SETTINGS="$CLAUDE_DIR/settings.json"
-TEMPLATE="$REPO_ROOT/templates/claude-settings.json"
+TEMPLATE="$REPO_ROOT/manifest/framework/templates/claude-settings.json"
 
 if [[ -f "$TEMPLATE" && ! -f "$CLAUDE_SETTINGS" ]]; then
     echo ""

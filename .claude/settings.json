@@ -14,8 +14,8 @@
     "deny": [
       "Edit(manifest/framework/protocol/**)",
       "Write(manifest/framework/protocol/**)",
-      "Edit(templates/**)",
-      "Write(templates/**)",
+      "Edit(manifest/framework/templates/**)",
+      "Write(manifest/framework/templates/**)",
       "Edit(scripts/*.ts)",
       "Write(scripts/*.ts)",
       "Edit(version.txt)",
