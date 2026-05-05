@@ -10,7 +10,7 @@ import { existsSync, statSync } from 'node:fs'
 import { join, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..')
+const ROOT = join(dirname(fileURLToPath(import.meta.url)), '../../..')
 
 const REQUIRED: Record<string, string> = {
   'manifest/framework/protocol/CORTEX.md': 'Protocol engine',

@@ -207,7 +207,7 @@ if (Test-Path "$CloneDest\.git") {
         }
         Write-Host ""
         Write-Host "Running setup..." -ForegroundColor Cyan
-        & $Python "$CloneDest\scripts\setup.py" --system
+        & bun "$CloneDest\manifest\framework\scripts\setup.ts" --system
         Write-Host ""
         Write-Host "Done." -ForegroundColor Green
         Write-Host "  Open $CloneDest in your AI agent and say hello."
@@ -248,7 +248,7 @@ Write-Host ""
 # ── Setup ─────────────────────────────────────────────────────────────────────
 
 Write-Host "Running setup..." -ForegroundColor Cyan
-& $Python "$CloneDest\scripts\setup.py" --system
+& bun "$CloneDest\manifest\framework\scripts\setup.ts" --system
 
 Write-Host ""
 Write-Host "Done." -ForegroundColor Green

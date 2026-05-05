@@ -16,7 +16,7 @@ Add personal ROE rules here, or extend framework rules from `manifest/framework/
 - When two **custom** rules conflict: lower number wins. Same Thunderdome rule as the framework.
 - Custom rules cannot override, replace, or supersede any framework rule, guardrail, or hard stop.
 
-Cannot override: `manifest/framework/protocol/GUARDRAILS.md`, `GUARDRAILS-CUSTOM.md`, or any ROE hard stop (Rule 13).
+Cannot override: `manifest/framework/protocol/GUARDRAILS.md`, `manifest/custom/protocol/GUARDRAILS.md`, or any ROE hard stop (Rule 13).
 
 ---
 

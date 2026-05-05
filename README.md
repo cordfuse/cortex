@@ -6,11 +6,11 @@
 
 **Not a developer?** [Read the plain English version →](manifest/framework/README-SIMPLE.md)
 
-> ⚠️ **Framework files — do not edit.** This file and all linked docs are overwritten when the framework updates. Put your personal notes in the `-CUSTOM.md` companions in the `manifest/custom/` folder instead — they follow the same pattern as `manifest/custom/VERBS.md`, `manifest/custom/protocol/ROE.md`, and `manifest/custom/protocol/GUARDRAILS.md`, and are never touched by the framework.
+> ⚠️ **Framework files — do not edit.** This file and all linked docs are overwritten when the framework updates. Put your personal notes in the `manifest/custom/` folder instead — files like `manifest/custom/VERBS.md`, `manifest/custom/protocol/ROE.md`, and `manifest/custom/protocol/GUARDRAILS.md` are never touched by the framework.
 >
 > | Your notes | Framework doc |
 > |---|---|
-> | [README-CUSTOM.md](README-CUSTOM.md) | This file |
+> | [manifest/custom/README.md](manifest/custom/README.md) | This file |
 > | [manifest/custom/actors/](manifest/custom/actors/) | [manifest/framework/PERSONALITIES.md](manifest/framework/PERSONALITIES.md) |
 > | [manifest/custom/VERBS.md](manifest/custom/VERBS.md) | [manifest/framework/VERBS.md](manifest/framework/VERBS.md) |
 

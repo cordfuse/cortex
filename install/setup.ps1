@@ -59,4 +59,4 @@ Write-Host "git: $(git --version)"
 # ── Hand off to setup.py --system ─────────────────────────────────────────────
 
 Write-Host ""
-& $Python "$ScriptDir\scripts\setup.py" --system
+& bun "$ScriptDir\manifest\framework\scripts\setup.ts" --system

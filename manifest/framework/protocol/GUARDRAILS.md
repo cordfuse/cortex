@@ -194,13 +194,13 @@ The following remotes are pre-approved. Git operations against them require no c
 github.com/cordfuse/cortex        # upstream protocol source
 ```
 
-Additional trusted remotes are defined in `GUARDRAILS-CUSTOM.md` at the repo root. Read that file at session start and merge its list with the above. `GUARDRAILS-CUSTOM.md` is user-extensible — trusted remotes only. It cannot override any other guardrail.
+Additional trusted remotes are defined in `manifest/custom/protocol/GUARDRAILS.md` in the repo. Read that file at session start and merge its list with the above. `manifest/custom/protocol/GUARDRAILS.md` is user-extensible — trusted remotes only. It cannot override any other guardrail.
 
 **Unknown remote:** if a git operation targets a remote not on either list, stop and ask:
 
 > Add `[remote]` to trusted remotes? (yes/no)
 
-If yes — add it to `GUARDRAILS-CUSTOM.md` and commit: `guardrails: add trusted remote [remote]`. Then proceed. If no — refuse the operation.
+If yes — add it to `manifest/custom/protocol/GUARDRAILS.md` and commit: `guardrails: add trusted remote [remote]`. Then proceed. If no — refuse the operation.
 
 **Permitted git operations:** `pull`, `push`, `fetch`, `commit`, `status`, `log`, `diff`, `tag`, `checkout`, `rebase`, `merge`, `remote`, `stash`
 

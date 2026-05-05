@@ -3,9 +3,9 @@
 Store credentials once in the encrypted vault. Ask your scribe to pull data — it retrieves credentials, calls the service, and offers to file the result.
 
 ```bash
-python manifest/framework/scripts/secrets.py store <name> --description "what this is"
-python manifest/framework/scripts/secrets.py list
-python manifest/framework/scripts/secrets.py repassphrase    # rotate the global passphrase
+bun manifest/framework/scripts/secrets.ts store <name> --description "what this is"
+bun manifest/framework/scripts/secrets.ts list
+bun manifest/framework/scripts/secrets.ts repassphrase    # rotate the global passphrase
 ```
 
 ---
@@ -17,14 +17,14 @@ python manifest/framework/scripts/secrets.py repassphrase    # rotate the global
 Reach your home network, NAS, or desktop from any device over a private encrypted tunnel.
 
 ```bash
-python manifest/framework/scripts/integrations/tailscale.py auth             # store auth key in vault
-python manifest/framework/scripts/integrations/tailscale.py up               # connect
-python manifest/framework/scripts/integrations/tailscale.py peers            # list devices + IPs
-python manifest/framework/scripts/integrations/tailscale.py ip <hostname>    # get a peer's IP
-python manifest/framework/scripts/integrations/tailscale.py down             # disconnect
+bun manifest/framework/scripts/integrations/tailscale.ts auth             # store auth key in vault
+bun manifest/framework/scripts/integrations/tailscale.ts up               # connect
+bun manifest/framework/scripts/integrations/tailscale.ts peers            # list devices + IPs
+bun manifest/framework/scripts/integrations/tailscale.ts ip <hostname>    # get a peer's IP
+bun manifest/framework/scripts/integrations/tailscale.ts down             # disconnect
 ```
 
-Get an auth key: [tailscale.com/admin/settings/keys](https://login.tailscale.com/admin/settings/keys) — create a reusable key, store it with `tailscale.py auth`.
+Get an auth key: [tailscale.com/admin/settings/keys](https://login.tailscale.com/admin/settings/keys) — create a reusable key, store it with `tailscale.ts auth`.
 
 ---
 
@@ -33,15 +33,15 @@ Get an auth key: [tailscale.com/admin/settings/keys](https://login.tailscale.com
 Pull from and push to any filesystem — NAS, cloud storage, SFTP, local drives. 70+ backends supported. Config is stored in the vault, never written to disk unencrypted.
 
 ```bash
-python manifest/framework/scripts/integrations/rclone.py auth                  # store rclone config in vault
-python manifest/framework/scripts/integrations/rclone.py remotes               # list configured remotes
-python manifest/framework/scripts/integrations/rclone.py ls <remote:path>      # list files
-python manifest/framework/scripts/integrations/rclone.py pull <remote:path>    # pull files to attachments/
-python manifest/framework/scripts/integrations/rclone.py push <remote:path>    # push files to remote
-python manifest/framework/scripts/integrations/rclone.py mount <remote:path>   # mount as local filesystem
+bun manifest/framework/scripts/integrations/rclone.ts auth                  # store rclone config in vault
+bun manifest/framework/scripts/integrations/rclone.ts remotes               # list configured remotes
+bun manifest/framework/scripts/integrations/rclone.ts ls <remote:path>      # list files
+bun manifest/framework/scripts/integrations/rclone.ts pull <remote:path>    # pull files to attachments/
+bun manifest/framework/scripts/integrations/rclone.ts push <remote:path>    # push files to remote
+bun manifest/framework/scripts/integrations/rclone.ts mount <remote:path>   # mount as local filesystem
 ```
 
-Combine with Tailscale: use `tailscale.py ip <hostname>` to get your NAS IP, then configure an SFTP remote in rclone pointing to that IP.
+Combine with Tailscale: use `tailscale.ts ip <hostname>` to get your NAS IP, then configure an SFTP remote in rclone pointing to that IP.
 
 ---
 
@@ -50,12 +50,12 @@ Combine with Tailscale: use `tailscale.py ip <hostname>` to get your NAS IP, the
 Calendar, Gmail, Drive, Tasks, Contacts.
 
 ```bash
-python manifest/framework/scripts/integrations/google.py auth               # one-time OAuth setup
-python manifest/framework/scripts/integrations/google.py calendar --days 7
-python manifest/framework/scripts/integrations/google.py gmail --count 20
-python manifest/framework/scripts/integrations/google.py drive --count 20
-python manifest/framework/scripts/integrations/google.py tasks
-python manifest/framework/scripts/integrations/google.py contacts --count 50
+bun manifest/framework/scripts/integrations/google.ts auth               # one-time OAuth setup
+bun manifest/framework/scripts/integrations/google.ts calendar --days 7
+bun manifest/framework/scripts/integrations/google.ts gmail --count 20
+bun manifest/framework/scripts/integrations/google.ts drive --count 20
+bun manifest/framework/scripts/integrations/google.ts tasks
+bun manifest/framework/scripts/integrations/google.ts contacts --count 50
 ```
 
 > **Google Keep is not supported.** Google has never released a public API for Keep.
@@ -67,15 +67,15 @@ python manifest/framework/scripts/integrations/google.py contacts --count 50
 Mail, Calendar, OneDrive, Teams, SharePoint, To Do, Planner, OneNote. One Azure app registration covers everything.
 
 ```bash
-python manifest/framework/scripts/integrations/microsoft.py auth            # one-time OAuth setup
-python manifest/framework/scripts/integrations/microsoft.py mail --count 20
-python manifest/framework/scripts/integrations/microsoft.py calendar --days 7
-python manifest/framework/scripts/integrations/microsoft.py onedrive --count 20
-python manifest/framework/scripts/integrations/microsoft.py teams --count 20
-python manifest/framework/scripts/integrations/microsoft.py sharepoint --count 20
-python manifest/framework/scripts/integrations/microsoft.py todo
-python manifest/framework/scripts/integrations/microsoft.py planner
-python manifest/framework/scripts/integrations/microsoft.py onenote --count 20
+bun manifest/framework/scripts/integrations/microsoft.ts auth            # one-time OAuth setup
+bun manifest/framework/scripts/integrations/microsoft.ts mail --count 20
+bun manifest/framework/scripts/integrations/microsoft.ts calendar --days 7
+bun manifest/framework/scripts/integrations/microsoft.ts onedrive --count 20
+bun manifest/framework/scripts/integrations/microsoft.ts teams --count 20
+bun manifest/framework/scripts/integrations/microsoft.ts sharepoint --count 20
+bun manifest/framework/scripts/integrations/microsoft.ts todo
+bun manifest/framework/scripts/integrations/microsoft.ts planner
+bun manifest/framework/scripts/integrations/microsoft.ts onenote --count 20
 ```
 
 ---
