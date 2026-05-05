@@ -4,6 +4,8 @@ One line per change. Newest at top. Append in the same commit as the change.
 
 Format: `YYYY-MM-DD HH:MM TZ | file | what changed`
 
+2026-05-04 UTC | version.txt | **bump to 4.3.0** — sync now reloads active actor personality files
+2026-05-04 UTC | protocol/CORTEX.md | v4.3.0: `sync` reloads currently-loaded actor personality files when any `personalities/` file is pulled; acknowledgement line added to sync report
 2026-05-04 12:00 UTC | version.txt | bump to 4.2.1
 2026-05-04 12:00 UTC | protocol/CORTEX.md | v4.2.1: hello Pass 4 — actor personality file validation at session open; add actor verb pre-commit validation; surface missing files in greeting
 2026-05-04 12:00 UTC | protocol/GUARDRAILS.md | v4.2.1: allowed scripts changed from scripts/*.py to scripts/*.ts

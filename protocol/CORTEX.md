@@ -142,12 +142,12 @@ After a `sync`-driven reload, the scribe surfaces a single Bootstrap-voiced ackn
 
 1. **Reload only on user-triggered `sync`** that successfully pulled changes into protocol-file paths. Auto-pulls during `hello` are part of the opening sequence and do not need a separate reload — the freshly-pulled content gets read in the same opening pass.
 2. **Reload affects rules, not in-flight work.** If the user invoked a verb (`spawn session`, `create actor`, etc.) and `sync` ran inside that verb's flow, complete the verb on the rules in effect when it started, then reload. Do not switch rules mid-verb.
-3. **Personality reload is independent.** Active actor reloads on user-invoked switch verbs as before (alpha.8+). The protocol reload does not force a personality reload — only the protocol/ROE/GUARDRAILS/customs files reread.
+3. **Active actors reload on sync (v4.3.0+).** If `sync` pulls changes to any file under `personalities/`, the scribe re-reads each currently-loaded actor's personality file from disk and applies the updated voice from the next turn forward — no fresh `hello` required. This extends the alpha.30 protocol-reload model to personalities: `sync` is the single event that brings all session state current.
 4. **GUARDRAILS reload is special.** Reload immediately even if the new GUARDRAILS file is more permissive than the prior one — the framework's contract is that the latest committed rules are in effect. Tightening reloads also apply immediately, with no pre-warning beyond the standard reload acknowledgement.
 
 **Pre-alpha.30 behavior preserved as fallback.** If the scribe cannot reread protocol files after `sync` for any reason (file system error, ambiguous diff scope), fall back to the pre-alpha.30 rule: surface a one-line note that protocol changes will take effect at next `hello`, and continue on the current rules.
 
-**Personality is the long-standing exception.** The active actor's personality file reloads on user-invoked switch verbs mid-session ("hot-swap" — see Personality System below; v4.0.0-alpha.8+). Voice has always been configurable mid-session; alpha.30 brings protocol/ROE/GUARDRAILS into the same hot-reload model.
+**Personality hot-reload model (v4.3.0+).** The active actor's personality file reloads on: (a) user-invoked switch verbs mid-session ("hot-swap" — v4.0.0-alpha.8+); (b) `sync` that pulled changes to any personality file (v4.3.0+). Voice changes are always effective from the next response forward, never deferred to next session.
 
 If `git pull` produces a merge conflict, stop immediately and walk the user through resolving it before continuing.
 
@@ -249,7 +249,7 @@ After the apply/commit completes, the scribe MUST report **all** files actually 
 
 Reporting only one file when more changed (e.g., reporting `PERSONALITY-YODA.md` when ten files were updated) is a protocol violation. The user must be able to verify what came in.
 
-**Personality cache invalidation after sync:** if any file under `personalities/` was pulled in this sync, the scribe MUST re-scan `personalities/` from disk and refresh its in-session personality list before the next user turn. Do not rely on hello-time cache after sync.
+**Personality cache invalidation and actor reload after sync (v4.3.0+):** if any file under `personalities/` was pulled in this sync: (1) re-scan `personalities/` from disk and refresh the in-session personality list; (2) re-read each currently-loaded actor's personality file from disk and adopt the updated voice from the next turn forward. Do not rely on hello-time cache after sync. Surface a one-line acknowledgement alongside the sync report: *"Actor(s) reloaded: [names]. Updated voice effective from this turn."*
 
 **Pre-sync drift check (v4.0.0-alpha.15+):** before pulling, the scribe MUST diff every framework-scope path between local `HEAD` and `upstream/main`. If any file in framework scope (excluding `*-CUSTOM.md` patterns) differs in a way the current sync wouldn't update, surface the count in the sync report:
 
