@@ -4,6 +4,8 @@ One line per change. Newest at top. Append in the same commit as the change.
 
 Format: `YYYY-MM-DD HH:MM TZ | file | what changed`
 
+2026-05-05 UTC | version.txt | **bump to 4.6.2** — install scripts: PowerShell setup.ps1 + install.ps1 now check for Bun, not Python
+2026-05-05 UTC | install/setup.ps1, install/install.ps1 | replace Python detection + install block + cryptography check with Bun (winget Oven-sh.Bun, fallback bun.sh/install.ps1)
 2026-05-05 UTC | version.txt | **bump to 4.6.1** — sync fixes: version pre-check reads post-pull .cortex-version; Step 3c auto-migrates pre-v4.6.0 data layout on upgrade
 2026-05-05 UTC | protocol/CORTEX.md | sync flow Step 3c: auto-migrate pre-v4.6.0 data layout (sessions/+records/+attachments/ → data/) on first sync after upgrade; conflict detection if both old and new paths exist
 2026-05-05 UTC | protocol/CORTEX.md | hello flow: re-read .cortex-version from disk after origin pull, not from startup cache — fixes version pre-check reporting stale version when another device pushed mid-hello
