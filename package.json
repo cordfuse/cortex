@@ -2,7 +2,7 @@
   "name": "cortex",
   "type": "module",
   "scripts": {
-    "setup": "bun scripts/setup.ts",
-    "healthcheck": "bun scripts/healthcheck.ts"
+    "setup": "bun manifest/framework/scripts/setup.ts",
+    "healthcheck": "bun manifest/framework/scripts/healthcheck.ts"
   }
 }

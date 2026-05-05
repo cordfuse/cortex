@@ -49,7 +49,7 @@ One-time setup. Takes about 10 minutes. One Azure app registration covers all se
 ## 4. Run auth
 
 ```bash
-python scripts/integrations/microsoft.py auth
+python manifest/framework/scripts/integrations/microsoft.py auth
 ```
 
 Enter your Tenant ID (or `common`), Client ID, and Client Secret when prompted. A device code will appear — open the URL shown, enter the code, and log in. Your credentials are stored encrypted in the vault.
@@ -59,14 +59,14 @@ Enter your Tenant ID (or `common`), Client ID, and Client Secret when prompted. 
 ## 5. Pull data
 
 ```bash
-python scripts/integrations/microsoft.py mail
-python scripts/integrations/microsoft.py calendar --days 7
-python scripts/integrations/microsoft.py onedrive
-python scripts/integrations/microsoft.py teams
-python scripts/integrations/microsoft.py sharepoint
-python scripts/integrations/microsoft.py todo
-python scripts/integrations/microsoft.py planner
-python scripts/integrations/microsoft.py onenote
+python manifest/framework/scripts/integrations/microsoft.py mail
+python manifest/framework/scripts/integrations/microsoft.py calendar --days 7
+python manifest/framework/scripts/integrations/microsoft.py onedrive
+python manifest/framework/scripts/integrations/microsoft.py teams
+python manifest/framework/scripts/integrations/microsoft.py sharepoint
+python manifest/framework/scripts/integrations/microsoft.py todo
+python manifest/framework/scripts/integrations/microsoft.py planner
+python manifest/framework/scripts/integrations/microsoft.py onenote
 ```
 
 Or just ask your scribe: *"What's unread in Teams?"*, *"Pull my Outlook calendar"*, *"Show my open To Do tasks."*

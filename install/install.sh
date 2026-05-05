@@ -268,7 +268,7 @@ if [[ -d "$CLONE_DEST/.git" ]]; then
         fi
         echo ""
         printf "${BOLD}Running setup...${RESET}\n"
-        "$PYTHON" "$CLONE_DEST/scripts/setup.py" --system
+        "$PYTHON" "$CLONE_DEST/manifest/framework/scripts/setup.py" --system
         echo ""
         printf "${BOLD}${GREEN}Done.${RESET}\n"
         echo ""
@@ -310,7 +310,7 @@ echo ""
 # ── Setup ─────────────────────────────────────────────────────────────────────
 
 printf "${BOLD}Running setup...${RESET}\n"
-"$PYTHON" "$CLONE_DEST/scripts/setup.py" --system
+"$PYTHON" "$CLONE_DEST/manifest/framework/scripts/setup.py" --system
 
 # ── Upstream remote + .cortex-version ────────────────────────────────────────
 

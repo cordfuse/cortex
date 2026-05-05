@@ -85,5 +85,5 @@ Open a new chat in your Cortex project. Say `hello`. The scribe clones fresh and
 ## Notes
 
 - Your `CONNECT.md` PAT is visible in the project knowledge — keep the project private
-- The scribe can store your PAT in the vault after first session: `python scripts/secrets.py store github-pat`
+- The scribe can store your PAT in the vault after first session: `python manifest/framework/scripts/secrets.py store github-pat`
 - If your PAT expires, generate a new one and update `CONNECT.md` in the project knowledge

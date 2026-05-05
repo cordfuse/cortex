@@ -3,7 +3,7 @@
  * Cortex healthcheck script.
  * Verifies all required protocol files exist and are non-empty.
  * Called by the scribe at session start.
- * Run manually: bun scripts/healthcheck.ts
+ * Run manually: bun manifest/framework/scripts/healthcheck.ts
  */
 
 import { existsSync, statSync } from 'node:fs'

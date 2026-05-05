@@ -11,7 +11,7 @@
  *   PBKDF2-SHA256, 600,000 iterations, 32-byte key
  *   AES-256-GCM — GCM tag (16 bytes) appended to ciphertext
  *
- * Run: bun scripts/secrets.ts <command> [options]
+ * Run: bun manifest/framework/scripts/secrets.ts <command> [options]
  */
 
 import {
@@ -433,7 +433,7 @@ function parseArgs(argv: string[]): Record<string, string | boolean | undefined>
 async function main(): Promise<void> {
   const argv = process.argv.slice(2)
   if (argv.length === 0) {
-    console.log('Usage: bun scripts/secrets.ts <command> [options]')
+    console.log('Usage: bun manifest/framework/scripts/secrets.ts <command> [options]')
     console.log('Commands: store, get, list, delete, repassphrase, migrate')
     process.exit(1)
   }

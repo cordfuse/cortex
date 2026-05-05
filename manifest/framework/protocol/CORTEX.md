@@ -241,12 +241,12 @@ Current upstream scope — explicit file list (never glob `attachments/` — use
 - `manifest/framework/protocol/` (all files)
 - `manifest/framework/templates/` (all files)
 - `install/` (all files — bootstrap installers + setup scripts)
-- `scripts/*.ts` (top-level only — never `scripts/integrations/`)
+- `manifest/framework/scripts/*.ts` (top-level only — never `manifest/framework/scripts/integrations/`)
 - `manifest/framework/actors/*.md` (built-in personalities only — never `PERSONALITY-CUSTOM-*`)
 - `README.md`, `ROADMAP.md`
 - `manifest/framework/README-SIMPLE.md`, `manifest/framework/PERSONALITIES.md`, `manifest/framework/CONNECTORS.md`, `manifest/framework/SETUP-DESKTOP.md`, `manifest/framework/SETUP-MOBILE.md`, `manifest/framework/VERBS.md`, `manifest/framework/CORTEX-CHANGELOG.md`, `manifest/framework/CORTEX-DEV.md`
 
-Never sync: `scripts/integrations/`, `manifest/custom/actors/*.md`, any `*-CUSTOM.md` file, the entire `manifest/custom/` directory (user-territory: `manifest/custom/VERBS.md`, `manifest/custom/protocol/ROE.md`, `manifest/custom/protocol/GUARDRAILS.md`, etc.), or `attachments/`. Users store personal documents in `attachments/` — a blind checkout would delete them.
+Never sync: `manifest/framework/scripts/integrations/`, `manifest/custom/actors/*.md`, any `*-CUSTOM.md` file, the entire `manifest/custom/` directory (user-territory: `manifest/custom/VERBS.md`, `manifest/custom/protocol/ROE.md`, `manifest/custom/protocol/GUARDRAILS.md`, etc.), or `attachments/`. Users store personal documents in `attachments/` — a blind checkout would delete them.
 
 **Out-of-scope file design rule (v4.0.0-alpha.29+):** files NOT in sync scope (notably `CLAUDE.md` at the repo root) cannot reach consumers via sync. If a framework-wide rule needs to live in `CLAUDE.md` (because the AI client reads CLAUDE.md before anything else), the rule MUST also be mirrored into a synced file (typically `manifest/framework/protocol/CORTEX.md`) so consumers receive it on their next sync. CLAUDE.md is the visibility beacon; the protocol file is the durable contract. Surfaced 2026-05-03 alpha.28 ship — the verb-precedence rule shipped to framework CLAUDE.md only on first attempt and didn't reach personal-cortex consumers; mirrored into manifest/framework/protocol/CORTEX.md as a follow-up.
 
@@ -254,7 +254,7 @@ Never sync: `scripts/integrations/`, `manifest/custom/actors/*.md`, any `*-CUSTO
 
 **Step 1 — Check for uncommitted local changes in sync scope**
 ```
-git diff HEAD -- manifest/framework/protocol/ manifest/framework/templates/ 'scripts/*.ts' 'manifest/framework/actors/*.md'
+git diff HEAD -- manifest/framework/protocol/ manifest/framework/templates/ 'manifest/framework/scripts/*.ts' 'manifest/framework/actors/*.md'
 ```
 If dirty: defer the sync. Note it in the greeting:
 > *Your Cortex has a framework update available (v[X.Y.Z]). Your protocol files have local changes — run `sync` when ready.*
@@ -264,7 +264,7 @@ Do not gate. Do not block the session. Continue on the current version.
 **Step 2 — Conflict check**
 Check if the user has locally modified any file that upstream also changed:
 ```
-git diff HEAD upstream/main -- manifest/framework/protocol/ manifest/framework/templates/ 'scripts/*.ts' 'manifest/framework/actors/*.md'
+git diff HEAD upstream/main -- manifest/framework/protocol/ manifest/framework/templates/ 'manifest/framework/scripts/*.ts' 'manifest/framework/actors/*.md'
 ```
 Cross-reference with local changes to find overlapping edits.
 
@@ -276,7 +276,7 @@ Cross-reference with local changes to find overlapping edits.
 
 Apply directory-scoped files from upstream:
 ```
-git checkout upstream/main -- manifest/framework/protocol/ manifest/framework/templates/ scripts/*.ts
+git checkout upstream/main -- manifest/framework/protocol/ manifest/framework/templates/ manifest/framework/scripts/*.ts
 ```
 
 **For personalities, MUST use live `git ls-tree` enumeration against `upstream/main` (v4.0.0-alpha.15+):**
@@ -304,7 +304,7 @@ Only pull files that differ — do not overwrite files that are already current.
 
 Then commit and push everything together:
 ```
-git add manifest/framework/protocol/ manifest/framework/templates/ scripts/*.ts manifest/custom/actors/ .cortex-version
+git add manifest/framework/protocol/ manifest/framework/templates/ manifest/framework/scripts/*.ts manifest/custom/actors/ .cortex-version
 git commit -m "sync: framework vX.Y.Z"
 git push origin main
 ```
@@ -348,7 +348,7 @@ The `reconcile` verb performs a deep three-category diff between local and `upst
 
 ```
 git fetch upstream
-git diff --name-status upstream/main HEAD -- manifest/framework/protocol/ manifest/framework/templates/ 'scripts/*.ts' 'manifest/framework/actors/*.md' README.md ROADMAP.md manifest/framework/README-SIMPLE.md manifest/framework/PERSONALITIES.md manifest/framework/CONNECTORS.md manifest/framework/SETUP-DESKTOP.md manifest/framework/SETUP-MOBILE.md manifest/framework/VERBS.md manifest/framework/CORTEX-DEV.md manifest/framework/CORTEX-CHANGELOG.md
+git diff --name-status upstream/main HEAD -- manifest/framework/protocol/ manifest/framework/templates/ 'manifest/framework/scripts/*.ts' 'manifest/framework/actors/*.md' README.md ROADMAP.md manifest/framework/README-SIMPLE.md manifest/framework/PERSONALITIES.md manifest/framework/CONNECTORS.md manifest/framework/SETUP-DESKTOP.md manifest/framework/SETUP-MOBILE.md manifest/framework/VERBS.md manifest/framework/CORTEX-DEV.md manifest/framework/CORTEX-CHANGELOG.md
 ```
 
 Categorize each line:
@@ -566,6 +566,8 @@ manifest/
     CORTEX-CHANGELOG.md
     CORTEX-DEV.md
     README-SIMPLE.md
+    scripts/           # Environment-aware tools (setup, healthcheck, secrets, etc.)
+      integrations/    # Connector scripts (Google, Microsoft, rclone, Tailscale)
   custom/              # User territory — never synced from upstream
     protocol/          # User protocol overrides
       ROE.md           # Custom rules of engagement
@@ -585,7 +587,6 @@ attachments/           # Source documents and record attachments
   YYYY-MM-DD-[provider]-[type].[ext]  # Standalone source documents
   assets/              # Shared static assets
 archive/               # Retired files — read only on explicit request
-scripts/               # Environment-aware tools (setup, healthcheck, secrets, etc.)
 install/               # Bootstrap installers
 CLAUDE.md              # Claude Code + Claude Desktop
 GEMINI.md              # Gemini CLI
@@ -673,7 +674,7 @@ Resolve `get_current_time` via the best available tier in this order:
 1. **Tier 1 — Native provider tool.** Claude (`user_time_v0`), ChatGPT, Gemini, and other hosted providers expose a built-in time tool. Call it. Returns current time + timezone.
 2. **Tier 2 — Bash `date`.** If the agent has shell access (Claude Code, agent CLIs, Claude web project mode with bash), `date -u` and `date` give system clock + timezone. Convert to user's timezone if needed.
 3. **Tier 3 — MCP time server.** For MCP-capable agents without a native tool or shell access. A lightweight MCP server exposing one endpoint: `get_current_time → ISO 8601 + timezone`. Stateless. No dependencies.
-4. **Tier 4 — Script fallback.** `bun scripts/get_time.ts` — for Ollama/OpenWebUI, headless agents without bash. Returns ISO 8601 + timezone offset. Already inside the GUARDRAILS permitted scripts boundary.
+4. **Tier 4 — Script fallback.** `bun manifest/framework/scripts/get_time.ts` — for Ollama/OpenWebUI, headless agents without bash. Returns ISO 8601 + timezone offset. Already inside the GUARDRAILS permitted scripts boundary.
 5. **Tier 5 — Ask the user, at point of use only.** If Tiers 1-4 are unavailable, the scribe asks the user for the current time **each time** it needs one — never reuses an earlier answer, never assumes time elapsed since.
 
 > *"I can't reach a clock right now — what time is it for you?"*
@@ -1895,34 +1896,34 @@ Available integrations:
 
 | Service | Command |
 |---|---|
-| **Tailscale (mesh network)** | `bun scripts/integrations/tailscale.ts up` |
-| Tailscale — peer list + IPs | `bun scripts/integrations/tailscale.ts peers` |
-| Tailscale — get peer IP | `bun scripts/integrations/tailscale.ts ip <hostname>` |
-| **rclone (any remote)** | `bun scripts/integrations/rclone.ts pull <remote:path>` |
-| rclone — list remotes | `bun scripts/integrations/rclone.ts remotes` |
-| rclone — list files | `bun scripts/integrations/rclone.ts ls <remote:path>` |
-| rclone — backup push | `bun scripts/integrations/rclone.ts push <remote:path>` |
-| rclone — mount remote | `bun scripts/integrations/rclone.ts mount <remote:path>` |
-| Google Calendar | `bun scripts/integrations/google.ts calendar [--days 7]` |
-| Gmail | `bun scripts/integrations/google.ts gmail [--count 20]` |
-| Google Drive | `bun scripts/integrations/google.ts drive [--count 20]` |
-| Google Tasks | `bun scripts/integrations/google.ts tasks` |
-| Google Contacts | `bun scripts/integrations/google.ts contacts [--count 50]` |
-| Outlook Mail | `bun scripts/integrations/microsoft.ts mail [--count 20]` |
-| Outlook Calendar | `bun scripts/integrations/microsoft.ts calendar [--days 7]` |
-| OneDrive | `bun scripts/integrations/microsoft.ts onedrive [--count 20]` |
-| Microsoft Teams | `bun scripts/integrations/microsoft.ts teams [--count 20]` |
-| SharePoint | `bun scripts/integrations/microsoft.ts sharepoint [--count 20]` |
-| Microsoft To Do | `bun scripts/integrations/microsoft.ts todo` |
-| Microsoft Planner | `bun scripts/integrations/microsoft.ts planner` |
-| OneNote | `bun scripts/integrations/microsoft.ts onenote [--count 20]` |
+| **Tailscale (mesh network)** | `bun manifest/framework/scripts/integrations/tailscale.ts up` |
+| Tailscale — peer list + IPs | `bun manifest/framework/scripts/integrations/tailscale.ts peers` |
+| Tailscale — get peer IP | `bun manifest/framework/scripts/integrations/tailscale.ts ip <hostname>` |
+| **rclone (any remote)** | `bun manifest/framework/scripts/integrations/rclone.ts pull <remote:path>` |
+| rclone — list remotes | `bun manifest/framework/scripts/integrations/rclone.ts remotes` |
+| rclone — list files | `bun manifest/framework/scripts/integrations/rclone.ts ls <remote:path>` |
+| rclone — backup push | `bun manifest/framework/scripts/integrations/rclone.ts push <remote:path>` |
+| rclone — mount remote | `bun manifest/framework/scripts/integrations/rclone.ts mount <remote:path>` |
+| Google Calendar | `bun manifest/framework/scripts/integrations/google.ts calendar [--days 7]` |
+| Gmail | `bun manifest/framework/scripts/integrations/google.ts gmail [--count 20]` |
+| Google Drive | `bun manifest/framework/scripts/integrations/google.ts drive [--count 20]` |
+| Google Tasks | `bun manifest/framework/scripts/integrations/google.ts tasks` |
+| Google Contacts | `bun manifest/framework/scripts/integrations/google.ts contacts [--count 50]` |
+| Outlook Mail | `bun manifest/framework/scripts/integrations/microsoft.ts mail [--count 20]` |
+| Outlook Calendar | `bun manifest/framework/scripts/integrations/microsoft.ts calendar [--days 7]` |
+| OneDrive | `bun manifest/framework/scripts/integrations/microsoft.ts onedrive [--count 20]` |
+| Microsoft Teams | `bun manifest/framework/scripts/integrations/microsoft.ts teams [--count 20]` |
+| SharePoint | `bun manifest/framework/scripts/integrations/microsoft.ts sharepoint [--count 20]` |
+| Microsoft To Do | `bun manifest/framework/scripts/integrations/microsoft.ts todo` |
+| Microsoft Planner | `bun manifest/framework/scripts/integrations/microsoft.ts planner` |
+| OneNote | `bun manifest/framework/scripts/integrations/microsoft.ts onenote [--count 20]` |
 
 If credentials are not yet stored, direct the user to run:
 ```
-bun scripts/integrations/tailscale.ts auth   # Tailscale mesh network
-bun scripts/integrations/rclone.ts auth      # rclone (any filesystem/cloud backend)
-bun scripts/integrations/google.ts auth      # Google
-bun scripts/integrations/microsoft.ts auth   # Microsoft 365
+bun manifest/framework/scripts/integrations/tailscale.ts auth   # Tailscale mesh network
+bun manifest/framework/scripts/integrations/rclone.ts auth      # rclone (any filesystem/cloud backend)
+bun manifest/framework/scripts/integrations/google.ts auth      # Google
+bun manifest/framework/scripts/integrations/microsoft.ts auth   # Microsoft 365
 ```
 
 Never store or log credentials outside the vault. Never pass credentials as plain text in conversation.

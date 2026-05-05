@@ -5,15 +5,15 @@
  * Brings up Tailscale headlessly using an auth key stored in the Cortex vault.
  *
  * Setup:
- *   bun scripts/integrations/tailscale.ts auth
+ *   bun manifest/framework/scripts/integrations/tailscale.ts auth
  *
  * Usage:
- *   bun scripts/integrations/tailscale.ts [--passphrase <p>] auth
- *   bun scripts/integrations/tailscale.ts status
- *   bun scripts/integrations/tailscale.ts [--passphrase <p>] up
- *   bun scripts/integrations/tailscale.ts down
- *   bun scripts/integrations/tailscale.ts ip <hostname>
- *   bun scripts/integrations/tailscale.ts peers
+ *   bun manifest/framework/scripts/integrations/tailscale.ts [--passphrase <p>] auth
+ *   bun manifest/framework/scripts/integrations/tailscale.ts status
+ *   bun manifest/framework/scripts/integrations/tailscale.ts [--passphrase <p>] up
+ *   bun manifest/framework/scripts/integrations/tailscale.ts down
+ *   bun manifest/framework/scripts/integrations/tailscale.ts ip <hostname>
+ *   bun manifest/framework/scripts/integrations/tailscale.ts peers
  *
  * Requires: tailscale installed and in PATH
  */
@@ -117,13 +117,13 @@ function requireTailscale(): void {
 
 async function getSecret(name: string, passphrase: string): Promise<string> {
   const proc = Bun.spawn(
-    ['bun', join(ROOT, 'scripts/secrets.ts'), 'get', name, '--passphrase', passphrase],
+    ['bun', join(ROOT, 'manifest/framework/scripts/secrets.ts'), 'get', name, '--passphrase', passphrase],
     { stdout: 'pipe', stderr: 'pipe' }
   )
   const code = await proc.exited
   if (code !== 0) {
     console.error(`ERROR: Could not retrieve '${name}' from vault.`)
-    console.error('Run: bun scripts/integrations/tailscale.ts auth')
+    console.error('Run: bun manifest/framework/scripts/integrations/tailscale.ts auth')
     process.exit(1)
   }
   return (await new Response(proc.stdout).text()).trim()
@@ -131,7 +131,7 @@ async function getSecret(name: string, passphrase: string): Promise<string> {
 
 async function storeSecret(name: string, value: string, passphrase: string): Promise<void> {
   const proc = Bun.spawn(
-    ['bun', join(ROOT, 'scripts/secrets.ts'), 'store', name, '--value', value, '--passphrase', passphrase],
+    ['bun', join(ROOT, 'manifest/framework/scripts/secrets.ts'), 'store', name, '--value', value, '--passphrase', passphrase],
     { stdout: 'inherit', stderr: 'inherit' }
   )
   const code = await proc.exited
@@ -155,7 +155,7 @@ async function cmdAuth(passphrase: string): Promise<void> {
 
   await storeSecret(VAULT_KEY, key, passphrase)
   console.log(`\nStored as '${VAULT_KEY}' in vault.`)
-  console.log('Run: bun scripts/integrations/tailscale.ts up')
+  console.log('Run: bun manifest/framework/scripts/integrations/tailscale.ts up')
 }
 
 // --- Status ---
@@ -165,7 +165,7 @@ function cmdStatus(): void {
   const proc = Bun.spawnSync(['tailscale', 'status'], { stdout: 'pipe', stderr: 'pipe' })
   if (proc.exitCode !== 0) {
     console.log('Tailscale is not running or not connected.')
-    console.log('Run: bun scripts/integrations/tailscale.ts up')
+    console.log('Run: bun manifest/framework/scripts/integrations/tailscale.ts up')
     return
   }
   console.log(proc.stdout.toString())
@@ -217,7 +217,7 @@ function cmdIp(hostname: string): void {
     console.log(`  host = ${ip}`)
   } else {
     console.error(`ERROR: ${proc.stderr.toString().trim()}`)
-    console.error('Is Tailscale up? Run: bun scripts/integrations/tailscale.ts up')
+    console.error('Is Tailscale up? Run: bun manifest/framework/scripts/integrations/tailscale.ts up')
     process.exit(1)
   }
 }
@@ -228,7 +228,7 @@ function cmdPeers(): void {
   requireTailscale()
   const proc = Bun.spawnSync(['tailscale', 'status', '--json'], { stdout: 'pipe', stderr: 'pipe' })
   if (proc.exitCode !== 0) {
-    console.error('Tailscale is not running. Run: bun scripts/integrations/tailscale.ts up')
+    console.error('Tailscale is not running. Run: bun manifest/framework/scripts/integrations/tailscale.ts up')
     process.exit(1)
   }
 
@@ -263,7 +263,7 @@ function cmdPeers(): void {
     console.log(`  ${ip}  ${hostname}${osStr}  (${online})`)
   }
 
-  console.log('\nTo get IP for rclone: bun scripts/integrations/tailscale.ts ip <hostname>')
+  console.log('\nTo get IP for rclone: bun manifest/framework/scripts/integrations/tailscale.ts ip <hostname>')
 }
 
 // --- Main ---
@@ -271,7 +271,7 @@ function cmdPeers(): void {
 async function main(): Promise<void> {
   const argv = process.argv.slice(2)
   if (argv.length === 0) {
-    console.log('Usage: bun scripts/integrations/tailscale.ts [--passphrase <p>] <subcommand>')
+    console.log('Usage: bun manifest/framework/scripts/integrations/tailscale.ts [--passphrase <p>] <subcommand>')
     console.log('Subcommands: auth, status, up, down, ip <hostname>, peers')
     process.exit(1)
   }

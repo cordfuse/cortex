@@ -72,7 +72,7 @@ The vault uses one passphrase for everything. Never use different passphrases fo
 ### Changing the passphrase
 
 ```
-python scripts/secrets.ts repassphrase
+python manifest/framework/scripts/secrets.ts repassphrase
 ```
 
 This re-encrypts every secret with the new passphrase in one operation. Commit and push immediately after.
@@ -80,7 +80,7 @@ This re-encrypts every secret with the new passphrase in one operation. Commit a
 ### Removing a secret
 
 ```
-python scripts/secrets.ts delete <name>
+python manifest/framework/scripts/secrets.ts delete <name>
 ```
 
 The script will ask the user to type the secret name to confirm. Deletion is permanent — it cannot be undone from git history once committed and pushed. Surface this to the user before proceeding:
@@ -91,7 +91,7 @@ The script will ask the user to type the secret name to confirm. Deletion is per
 
 Interactive terminals (desktop agents) — run directly and let the user type at the prompts:
 ```
-python scripts/secrets.ts store <name>
+python manifest/framework/scripts/secrets.ts store <name>
 ```
 
 Mobile / sandboxed agents (Claude mobile, ChatGPT mobile) — interactive prompts do not work. Instead:
@@ -99,7 +99,7 @@ Mobile / sandboxed agents (Claude mobile, ChatGPT mobile) — interactive prompt
 2. Ask the user for a passphrase in chat: *"Choose a passphrase for the vault."*
 3. Run with inline flags — never display the values back to the user:
 ```
-python scripts/secrets.ts store <name> --value <value> --passphrase <passphrase>
+python manifest/framework/scripts/secrets.ts store <name> --value <value> --passphrase <passphrase>
 ```
 4. Commit `cortex.secrets.enc` and push immediately.
 
@@ -108,7 +108,7 @@ python scripts/secrets.ts store <name> --value <value> --passphrase <passphrase>
 ### Retrieving a secret
 
 ```
-python scripts/secrets.ts get <name> --passphrase <passphrase>
+python manifest/framework/scripts/secrets.ts get <name> --passphrase <passphrase>
 ```
 
 Ask the user for their passphrase in chat first if needed.
@@ -121,9 +121,9 @@ Ask the user for their passphrase in chat first if needed.
 
 ### Making the repo private
 
-`scripts/make_private.py` calls the GitHub API — **this does not work in Claude mobile or any sandboxed environment** where only git is allowed.
+`manifest/framework/scripts/make_private.py` calls the GitHub API — **this does not work in Claude mobile or any sandboxed environment** where only git is allowed.
 
-- **Desktop:** run `python scripts/make_private.py --passphrase <passphrase>`
+- **Desktop:** run `python manifest/framework/scripts/make_private.py --passphrase <passphrase>`
 - **Mobile:** tell the user to flip it manually — GitHub → repo Settings → scroll to Danger Zone → Change visibility → Make private. Takes 10 seconds.
 
 ## 11. Financial summaries for third parties
@@ -223,7 +223,7 @@ Framework files in a personal cortex repo are **read-only for the scribe**. Any 
 - Built-in personality files — `manifest/framework/actors/*.md`
 - README.md, README-SIMPLE.md
 - Framework files in `manifest/framework/` (PERSONALITIES.md, CONNECTORS.md, SETUP-DESKTOP.md, SETUP-MOBILE.md, etc.)
-- All `scripts/` files (integration scripts, vault tools, time fallback)
+- All `manifest/framework/scripts/` files (integration scripts, vault tools, time fallback)
 - VERBS.md (framework verbs)
 - All `manifest/framework/templates/` files
 - ROADMAP.md, CORTEX-CHANGELOG.md, version.txt
@@ -233,7 +233,7 @@ Framework files in a personal cortex repo are **read-only for the scribe**. Any 
 - All `manifest/custom/actors/*.md` files
 - All `records/` files
 - `context.md` and any `context-*.md` sub-files
-- `cortex.secrets/` vault files (via `scripts/secrets.ts`)
+- `cortex.secrets/` vault files (via `manifest/framework/scripts/secrets.ts`)
 - `cortex-upgrade.md`
 - Any other user-created file not on the framework list
 
@@ -251,7 +251,7 @@ Removing a framework personality from the framework itself (e.g. deprecating Osc
 
 ## 19. Fail Gracefully on External Service Errors
 
-Any cortex script that calls a non-git external service (e.g. `scripts/integrations/google.py`, `scripts/integrations/microsoft.py`, `scripts/integrations/rclone.py`, `scripts/get_time.py`'s API tier) MUST catch network and authentication errors and surface a clear manual-fallback message — never crash with a stack trace at the user.
+Any cortex script that calls a non-git external service (e.g. `manifest/framework/scripts/integrations/google.py`, `manifest/framework/scripts/integrations/microsoft.py`, `manifest/framework/scripts/integrations/rclone.py`, `manifest/framework/scripts/get_time.py`'s API tier) MUST catch network and authentication errors and surface a clear manual-fallback message — never crash with a stack trace at the user.
 
 Required failure modes:
 - **Network unreachable** (DNS failure, connection refused, TLS handshake failure): print *"<service> unreachable from this environment. <specific manual fallback>"* and exit non-zero. Common cause: sandboxed AI client environments with egress allowlists; manual fallback is to run the script from a non-sandboxed environment (CLI on host, AgentBox-hosted CLI agent).

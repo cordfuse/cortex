@@ -70,7 +70,7 @@ Say `hello`.
 
 ```bash
 git fetch upstream
-git checkout upstream/main -- manifest/framework/protocol/ manifest/framework/templates/ scripts/ install/
+git checkout upstream/main -- manifest/framework/protocol/ manifest/framework/templates/ manifest/framework/scripts/ install/
 git commit -m "sync: cortex vX.X.X"
 ```
 

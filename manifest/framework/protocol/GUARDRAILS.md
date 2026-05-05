@@ -206,18 +206,18 @@ If yes — add it to `GUARDRAILS-CUSTOM.md` and commit: `guardrails: add trusted
 
 #### Scripts — repo-internal only
 
-The following scripts may be run by path. No scripts outside `scripts/` are permitted:
+The following scripts may be run by path. No scripts outside `manifest/framework/scripts/` are permitted:
 
 ```
-bun scripts/setup.ts                 # environment setup + system deps
-bun scripts/healthcheck.ts           # protocol file integrity check
-bun scripts/secrets.ts               # vault: store, get, list, delete
-bun scripts/get_time.ts              # current time ISO 8601 with tz offset
-bun scripts/make_private.ts          # flip repo to private via GitHub API
-bun scripts/integrations/tailscale.ts   # Tailscale mesh VPN
-bun scripts/integrations/rclone.ts      # rclone filesystem connector
-bun scripts/integrations/google.ts      # Google (Calendar, Gmail, Drive, Tasks, Contacts)
-bun scripts/integrations/microsoft.ts   # Microsoft 365 (Mail, Calendar, OneDrive, Teams)
+bun manifest/framework/scripts/setup.ts                 # environment setup + system deps
+bun manifest/framework/scripts/healthcheck.ts           # protocol file integrity check
+bun manifest/framework/scripts/secrets.ts               # vault: store, get, list, delete
+bun manifest/framework/scripts/get_time.ts              # current time ISO 8601 with tz offset
+bun manifest/framework/scripts/make_private.ts          # flip repo to private via GitHub API
+bun manifest/framework/scripts/integrations/tailscale.ts   # Tailscale mesh VPN
+bun manifest/framework/scripts/integrations/rclone.ts      # rclone filesystem connector
+bun manifest/framework/scripts/integrations/google.ts      # Google (Calendar, Gmail, Drive, Tasks, Contacts)
+bun manifest/framework/scripts/integrations/microsoft.ts   # Microsoft 365 (Mail, Calendar, OneDrive, Teams)
 ```
 
 Scripts may use `sudo` only for system package installation (`pacman`, `apt`, `dnf`) and `tailscale set --operator`. No other sudo operations are permitted.

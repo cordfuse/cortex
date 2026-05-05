@@ -4,10 +4,10 @@
  * Flips your Cortex repo from public to private using a stored GitHub PAT.
  *
  * Prerequisites:
- *   bun scripts/secrets.ts store github-pat
+ *   bun manifest/framework/scripts/secrets.ts store github-pat
  *
  * Run:
- *   bun scripts/make_private.ts [--passphrase <p>]
+ *   bun manifest/framework/scripts/make_private.ts [--passphrase <p>]
  *
  * The PAT needs the 'repo' scope on GitHub.
  */
@@ -131,7 +131,7 @@ async function promptPassphrase(): Promise<string> {
 
 async function getSecret(name: string, passphrase: string): Promise<string> {
   const proc = Bun.spawn(
-    ['bun', join(ROOT, 'scripts/secrets.ts'), 'get', name, '--passphrase', passphrase],
+    ['bun', join(ROOT, 'manifest/framework/scripts/secrets.ts'), 'get', name, '--passphrase', passphrase],
     { stdout: 'pipe', stderr: 'pipe' }
   )
   const code = await proc.exited

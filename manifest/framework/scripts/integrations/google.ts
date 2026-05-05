@@ -4,20 +4,20 @@
  *
  * Credentials are stored in the Cortex secrets vault.
  * Run once to set up:
- *   bun scripts/integrations/google.ts auth
+ *   bun manifest/framework/scripts/integrations/google.ts auth
  *
  * Usage (read):
- *   bun scripts/integrations/google.ts [--passphrase <p>] auth
- *   bun scripts/integrations/google.ts [--passphrase <p>] calendar [--days 7]
- *   bun scripts/integrations/google.ts [--passphrase <p>] gmail [--count 20]
- *   bun scripts/integrations/google.ts [--passphrase <p>] drive [--count 20]
- *   bun scripts/integrations/google.ts [--passphrase <p>] tasks
- *   bun scripts/integrations/google.ts [--passphrase <p>] contacts [--count 50]
+ *   bun manifest/framework/scripts/integrations/google.ts [--passphrase <p>] auth
+ *   bun manifest/framework/scripts/integrations/google.ts [--passphrase <p>] calendar [--days 7]
+ *   bun manifest/framework/scripts/integrations/google.ts [--passphrase <p>] gmail [--count 20]
+ *   bun manifest/framework/scripts/integrations/google.ts [--passphrase <p>] drive [--count 20]
+ *   bun manifest/framework/scripts/integrations/google.ts [--passphrase <p>] tasks
+ *   bun manifest/framework/scripts/integrations/google.ts [--passphrase <p>] contacts [--count 50]
  *
  * Usage (write):
- *   bun scripts/integrations/google.ts [--passphrase <p>] send-mail --to <addr> --subject <s> --body <b>
- *   bun scripts/integrations/google.ts [--passphrase <p>] create-event --summary <s> --start <ISO> --end <ISO> [--calendar primary] [--description <d>] [--location <l>] [--attendees a@b,c@d]
- *   bun scripts/integrations/google.ts [--passphrase <p>] create-task --title <t> [--list @default] [--notes <n>] [--due <YYYY-MM-DD>]
+ *   bun manifest/framework/scripts/integrations/google.ts [--passphrase <p>] send-mail --to <addr> --subject <s> --body <b>
+ *   bun manifest/framework/scripts/integrations/google.ts [--passphrase <p>] create-event --summary <s> --start <ISO> --end <ISO> [--calendar primary] [--description <d>] [--location <l>] [--attendees a@b,c@d]
+ *   bun manifest/framework/scripts/integrations/google.ts [--passphrase <p>] create-task --title <t> [--list @default] [--notes <n>] [--due <YYYY-MM-DD>]
  *
  * `--passphrase` must come BEFORE the subcommand.
  * No npm dependencies — uses fetch + node:crypto.
@@ -119,14 +119,14 @@ async function promptPassphrase(label = 'Vault passphrase'): Promise<string> {
 
 async function getSecret(name: string, passphrase: string): Promise<string> {
   const proc = Bun.spawn(
-    ['bun', join(ROOT, 'scripts/secrets.ts'), 'get', name, '--passphrase', passphrase],
+    ['bun', join(ROOT, 'manifest/framework/scripts/secrets.ts'), 'get', name, '--passphrase', passphrase],
     { stdout: 'pipe', stderr: 'pipe' }
   )
   const code = await proc.exited
   if (code !== 0) {
     const err = await new Response(proc.stderr).text()
     console.error(`ERROR: Could not retrieve '${name}' from vault.`)
-    console.error('Run: bun scripts/integrations/google.ts auth')
+    console.error('Run: bun manifest/framework/scripts/integrations/google.ts auth')
     if (err.trim()) console.error(err.trim())
     process.exit(1)
   }
@@ -135,7 +135,7 @@ async function getSecret(name: string, passphrase: string): Promise<string> {
 
 async function tryGetSecret(name: string, passphrase: string): Promise<string | null> {
   const proc = Bun.spawn(
-    ['bun', join(ROOT, 'scripts/secrets.ts'), 'get', name, '--passphrase', passphrase],
+    ['bun', join(ROOT, 'manifest/framework/scripts/secrets.ts'), 'get', name, '--passphrase', passphrase],
     { stdout: 'pipe', stderr: 'pipe' }
   )
   const code = await proc.exited
@@ -145,7 +145,7 @@ async function tryGetSecret(name: string, passphrase: string): Promise<string | 
 
 async function storeSecret(name: string, value: string, passphrase: string): Promise<void> {
   const proc = Bun.spawn(
-    ['bun', join(ROOT, 'scripts/secrets.ts'), 'store', name, '--value', value, '--passphrase', passphrase],
+    ['bun', join(ROOT, 'manifest/framework/scripts/secrets.ts'), 'store', name, '--value', value, '--passphrase', passphrase],
     { stdout: 'inherit', stderr: 'inherit' }
   )
   const code = await proc.exited
@@ -201,11 +201,11 @@ async function gapi(token: string, path: string, params?: Record<string, string 
   if (!resp.ok) {
     const body = await resp.text()
     if (resp.status === 401) {
-      console.error('ERROR: Google auth expired. Re-run: bun scripts/integrations/google.ts auth')
+      console.error('ERROR: Google auth expired. Re-run: bun manifest/framework/scripts/integrations/google.ts auth')
       process.exit(1)
     }
     if (resp.status === 403) {
-      console.error('ERROR: Google access denied. Re-run auth to upgrade the grant: bun scripts/integrations/google.ts auth')
+      console.error('ERROR: Google access denied. Re-run auth to upgrade the grant: bun manifest/framework/scripts/integrations/google.ts auth')
       process.exit(1)
     }
     console.error(`ERROR: Google API ${path} returned ${resp.status}: ${body.slice(0, 300)}`)
@@ -230,7 +230,7 @@ async function gapiPost(token: string, path: string, body: unknown, params?: Rec
   if (!resp.ok) {
     const text = await resp.text()
     if (resp.status === 403) {
-      console.error('ERROR: Google access denied. Re-run auth to upgrade the grant: bun scripts/integrations/google.ts auth')
+      console.error('ERROR: Google access denied. Re-run auth to upgrade the grant: bun manifest/framework/scripts/integrations/google.ts auth')
       process.exit(1)
     }
     console.error(`ERROR: Google API ${path} returned ${resp.status}: ${text.slice(0, 300)}`)
@@ -255,8 +255,8 @@ async function cmdAuth(passphrase: string): Promise<void> {
   if (existingId && existingSecret) {
     console.log(`Using existing OAuth client from vault (client_id ends in ...${existingId.slice(-12)}).`)
     console.log('To use a different OAuth client, delete the vault entries first:')
-    console.log('  bun scripts/secrets.ts delete google_client_id')
-    console.log('  bun scripts/secrets.ts delete google_client_secret\n')
+    console.log('  bun manifest/framework/scripts/secrets.ts delete google_client_id')
+    console.log('  bun manifest/framework/scripts/secrets.ts delete google_client_secret\n')
     clientId = existingId
     clientSecret = existingSecret
   } else {
@@ -620,7 +620,7 @@ async function cmdCreateTask(opts: {
 async function main(): Promise<void> {
   const argv = process.argv.slice(2)
   if (argv.length === 0) {
-    console.log('Usage: bun scripts/integrations/google.ts [--passphrase <p>] <subcommand> [options]')
+    console.log('Usage: bun manifest/framework/scripts/integrations/google.ts [--passphrase <p>] <subcommand> [options]')
     console.log('Subcommands: auth, calendar, gmail, drive, tasks, contacts, send-mail, create-event, create-task')
     process.exit(1)
   }

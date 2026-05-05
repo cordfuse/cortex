@@ -4,8 +4,8 @@
  * Detects environment, writes cortex.config, creates .gitignore, verifies repo structure.
  *
  * Usage:
- *   bun scripts/setup.ts              # environment check only
- *   bun scripts/setup.ts --system     # also install system dependencies (may use sudo)
+ *   bun manifest/framework/scripts/setup.ts              # environment check only
+ *   bun manifest/framework/scripts/setup.ts --system     # also install system dependencies (may use sudo)
  *
  * Run once on first use, or re-run any time to repair the environment.
  */

@@ -7,15 +7,15 @@
  * never persist on disk outside the vault.
  *
  * Setup:
- *   bun scripts/integrations/rclone.ts auth
+ *   bun manifest/framework/scripts/integrations/rclone.ts auth
  *
  * Usage:
- *   bun scripts/integrations/rclone.ts [--passphrase <p>] auth
- *   bun scripts/integrations/rclone.ts [--passphrase <p>] remotes
- *   bun scripts/integrations/rclone.ts [--passphrase <p>] ls <remote:path>
- *   bun scripts/integrations/rclone.ts [--passphrase <p>] pull <remote:path> [--dest docs/]
- *   bun scripts/integrations/rclone.ts [--passphrase <p>] push <remote:path> [--src docs/]
- *   bun scripts/integrations/rclone.ts [--passphrase <p>] mount <remote:path> [--mountpoint <path>]
+ *   bun manifest/framework/scripts/integrations/rclone.ts [--passphrase <p>] auth
+ *   bun manifest/framework/scripts/integrations/rclone.ts [--passphrase <p>] remotes
+ *   bun manifest/framework/scripts/integrations/rclone.ts [--passphrase <p>] ls <remote:path>
+ *   bun manifest/framework/scripts/integrations/rclone.ts [--passphrase <p>] pull <remote:path> [--dest docs/]
+ *   bun manifest/framework/scripts/integrations/rclone.ts [--passphrase <p>] push <remote:path> [--src docs/]
+ *   bun manifest/framework/scripts/integrations/rclone.ts [--passphrase <p>] mount <remote:path> [--mountpoint <path>]
  *
  * Requires: rclone installed — https://rclone.org/install/
  */
@@ -109,13 +109,13 @@ function requireRclone(): void {
 
 async function getSecret(name: string, passphrase: string): Promise<string> {
   const proc = Bun.spawn(
-    ['bun', join(ROOT, 'scripts/secrets.ts'), 'get', name, '--passphrase', passphrase],
+    ['bun', join(ROOT, 'manifest/framework/scripts/secrets.ts'), 'get', name, '--passphrase', passphrase],
     { stdout: 'pipe', stderr: 'pipe' }
   )
   const code = await proc.exited
   if (code !== 0) {
     console.error(`ERROR: Could not retrieve '${name}' from vault.`)
-    console.error('Run: bun scripts/integrations/rclone.ts auth')
+    console.error('Run: bun manifest/framework/scripts/integrations/rclone.ts auth')
     process.exit(1)
   }
   return (await new Response(proc.stdout).text()).trim()
@@ -123,7 +123,7 @@ async function getSecret(name: string, passphrase: string): Promise<string> {
 
 async function tryGetSecret(name: string, passphrase: string): Promise<string | null> {
   const proc = Bun.spawn(
-    ['bun', join(ROOT, 'scripts/secrets.ts'), 'get', name, '--passphrase', passphrase],
+    ['bun', join(ROOT, 'manifest/framework/scripts/secrets.ts'), 'get', name, '--passphrase', passphrase],
     { stdout: 'pipe', stderr: 'pipe' }
   )
   const code = await proc.exited
@@ -133,7 +133,7 @@ async function tryGetSecret(name: string, passphrase: string): Promise<string | 
 
 async function storeSecret(name: string, value: string, passphrase: string): Promise<void> {
   const proc = Bun.spawn(
-    ['bun', join(ROOT, 'scripts/secrets.ts'), 'store', name, '--value', value, '--passphrase', passphrase],
+    ['bun', join(ROOT, 'manifest/framework/scripts/secrets.ts'), 'store', name, '--value', value, '--passphrase', passphrase],
     { stdout: 'inherit', stderr: 'inherit' }
   )
   const code = await proc.exited
@@ -295,7 +295,7 @@ async function cmdMount(remotePath: string, mountpoint: string, passphrase: stri
 async function main(): Promise<void> {
   const argv = process.argv.slice(2)
   if (argv.length === 0) {
-    console.log('Usage: bun scripts/integrations/rclone.ts [--passphrase <p>] <subcommand> [options]')
+    console.log('Usage: bun manifest/framework/scripts/integrations/rclone.ts [--passphrase <p>] <subcommand> [options]')
     console.log('Subcommands: auth, remotes, ls, pull, push, mount')
     process.exit(1)
   }

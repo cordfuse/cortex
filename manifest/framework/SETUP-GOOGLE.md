@@ -46,7 +46,7 @@ In your new project:
 ## 4. Run auth
 
 ```bash
-python scripts/integrations/google.py auth
+python manifest/framework/scripts/integrations/google.py auth
 ```
 
 Enter your Client ID and Client Secret when prompted. A browser window will open — log in and approve access. Your credentials are stored encrypted in the vault.
@@ -56,11 +56,11 @@ Enter your Client ID and Client Secret when prompted. A browser window will open
 ## 5. Pull data
 
 ```bash
-python scripts/integrations/google.py calendar --days 7
-python scripts/integrations/google.py gmail --count 20
-python scripts/integrations/google.py drive --count 20
-python scripts/integrations/google.py tasks
-python scripts/integrations/google.py contacts
+python manifest/framework/scripts/integrations/google.py calendar --days 7
+python manifest/framework/scripts/integrations/google.py gmail --count 20
+python manifest/framework/scripts/integrations/google.py drive --count 20
+python manifest/framework/scripts/integrations/google.py tasks
+python manifest/framework/scripts/integrations/google.py contacts
 ```
 
 Or just ask your scribe: *"Pull my calendar for the week."*

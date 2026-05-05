@@ -79,7 +79,7 @@ echo "git: $(git --version)"
 # ── Hand off to setup.py --system ─────────────────────────────────────────────
 
 echo ""
-"$PYTHON" "$SCRIPT_DIR/scripts/setup.py" --system
+"$PYTHON" "$SCRIPT_DIR/manifest/framework/scripts/setup.py" --system
 
 # ── .claude/settings.json starter (v4.0.0-alpha.34+) ──────────────────────────
 # If the consumer is using Claude Code, write a starter settings.json from

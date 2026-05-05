@@ -8,18 +8,18 @@
  *   2. New registration — set redirect URI to http://localhost
  *   3. Under API permissions, add Microsoft Graph delegated permissions
  *   4. Under Certificates & secrets, create a client secret
- *   5. Run: bun scripts/integrations/microsoft.ts auth
+ *   5. Run: bun manifest/framework/scripts/integrations/microsoft.ts auth
  *
  * Usage:
- *   bun scripts/integrations/microsoft.ts [--passphrase <p>] auth
- *   bun scripts/integrations/microsoft.ts [--passphrase <p>] mail [--count 20]
- *   bun scripts/integrations/microsoft.ts [--passphrase <p>] calendar [--days 7]
- *   bun scripts/integrations/microsoft.ts [--passphrase <p>] onedrive [--count 20]
- *   bun scripts/integrations/microsoft.ts [--passphrase <p>] teams [--count 20]
- *   bun scripts/integrations/microsoft.ts [--passphrase <p>] sharepoint [--count 20]
- *   bun scripts/integrations/microsoft.ts [--passphrase <p>] todo
- *   bun scripts/integrations/microsoft.ts [--passphrase <p>] planner
- *   bun scripts/integrations/microsoft.ts [--passphrase <p>] onenote [--count 20]
+ *   bun manifest/framework/scripts/integrations/microsoft.ts [--passphrase <p>] auth
+ *   bun manifest/framework/scripts/integrations/microsoft.ts [--passphrase <p>] mail [--count 20]
+ *   bun manifest/framework/scripts/integrations/microsoft.ts [--passphrase <p>] calendar [--days 7]
+ *   bun manifest/framework/scripts/integrations/microsoft.ts [--passphrase <p>] onedrive [--count 20]
+ *   bun manifest/framework/scripts/integrations/microsoft.ts [--passphrase <p>] teams [--count 20]
+ *   bun manifest/framework/scripts/integrations/microsoft.ts [--passphrase <p>] sharepoint [--count 20]
+ *   bun manifest/framework/scripts/integrations/microsoft.ts [--passphrase <p>] todo
+ *   bun manifest/framework/scripts/integrations/microsoft.ts [--passphrase <p>] planner
+ *   bun manifest/framework/scripts/integrations/microsoft.ts [--passphrase <p>] onenote [--count 20]
  *
  * `--passphrase` must come BEFORE the subcommand.
  * No npm dependencies — uses fetch only.
@@ -123,13 +123,13 @@ async function promptPassphrase(label = 'Vault passphrase'): Promise<string> {
 
 async function getSecret(name: string, passphrase: string): Promise<string> {
   const proc = Bun.spawn(
-    ['bun', join(ROOT, 'scripts/secrets.ts'), 'get', name, '--passphrase', passphrase],
+    ['bun', join(ROOT, 'manifest/framework/scripts/secrets.ts'), 'get', name, '--passphrase', passphrase],
     { stdout: 'pipe', stderr: 'pipe' }
   )
   const code = await proc.exited
   if (code !== 0) {
     console.error(`ERROR: Could not retrieve '${name}' from vault.`)
-    console.error('Run: bun scripts/integrations/microsoft.ts auth')
+    console.error('Run: bun manifest/framework/scripts/integrations/microsoft.ts auth')
     process.exit(1)
   }
   return (await new Response(proc.stdout).text()).trim()
@@ -137,7 +137,7 @@ async function getSecret(name: string, passphrase: string): Promise<string> {
 
 async function storeSecret(name: string, value: string, passphrase: string): Promise<void> {
   const proc = Bun.spawn(
-    ['bun', join(ROOT, 'scripts/secrets.ts'), 'store', name, '--value', value, '--passphrase', passphrase],
+    ['bun', join(ROOT, 'manifest/framework/scripts/secrets.ts'), 'store', name, '--value', value, '--passphrase', passphrase],
     { stdout: 'inherit', stderr: 'inherit' }
   )
   const code = await proc.exited
@@ -608,7 +608,7 @@ async function cmdOnenote(count: number, passphrase: string): Promise<void> {
 async function main(): Promise<void> {
   const argv = process.argv.slice(2)
   if (argv.length === 0) {
-    console.log('Usage: bun scripts/integrations/microsoft.ts [--passphrase <p>] <subcommand> [options]')
+    console.log('Usage: bun manifest/framework/scripts/integrations/microsoft.ts [--passphrase <p>] <subcommand> [options]')
     console.log('Subcommands: auth, mail, calendar, onedrive, teams, sharepoint, todo, planner, onenote')
     process.exit(1)
   }
