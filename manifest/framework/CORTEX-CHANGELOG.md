@@ -4,6 +4,8 @@ One line per change. Newest at top. Append in the same commit as the change.
 
 Format: `YYYY-MM-DD HH:MM TZ | file | what changed`
 
+2026-05-05 UTC | protocol/CORTEX.md | sync flow Step 3c: auto-migrate pre-v4.6.0 data layout (sessions/+records/+attachments/ → data/) on first sync after upgrade; conflict detection if both old and new paths exist
+2026-05-05 UTC | protocol/CORTEX.md | hello flow: re-read .cortex-version from disk after origin pull, not from startup cache — fixes version pre-check reporting stale version when another device pushed mid-hello
 2026-05-05 UTC | version.txt | **bump to 4.6.0** — data/ refactor: sessions/, records/, attachments/ consolidated under data/; Bootstrap first-run gitignore strip wired at Gate 3c
 2026-05-05 UTC | (all files) | path migration: sessions/ → data/sessions/, records/ → data/records/, attachments/ → data/attachments/, archive/sessions/ → archive/data/sessions/ — 5-pass sweep + double-replacement fix; zero stale refs in both repos
 2026-05-05 UTC | .gitignore | three separate entries (sessions/, records/, attachments/) consolidated into single data/ entry with unified comment block

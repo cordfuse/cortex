@@ -191,6 +191,8 @@ Quick standup: what I did yesterday, what I'm doing today, any blockers. File as
 
 Do not proceed until the user pulls or explicitly says to continue without pulling.
 
+**After any origin pull completes**, re-read `.cortex-version` from disk before running the upstream version check. Do not use a value read at startup — the pull may have brought in a newer version committed by another device. The upstream version check must always compare against the on-disk file state, not a cached read.
+
 **Protocol rules reload on user-triggered `sync` (v4.0.0-alpha.30+).** Protocol files (`CORTEX.md`, `ROE.md`, `GUARDRAILS.md`, `manifest/custom/protocol/ROE.md`, `manifest/custom/protocol/GUARDRAILS.md`, `manifest/custom/VERBS.md`) are read at `hello` and **reread immediately after a successful `sync` flow that pulled new content** for any of those files. New rules take effect from the next conversational turn forward — no fresh `hello` required. This matches the alpha.8 personality hot-swap principle: user-triggered state changes are effective immediately, not deferred to next session.
 
 After a `sync`-driven reload, the scribe surfaces a single Bootstrap-voiced acknowledgement:
@@ -304,6 +306,29 @@ git add manifest/framework/protocol/ manifest/framework/templates/ manifest/fram
 git commit -m "sync: framework vX.Y.Z"
 git push origin main
 ```
+
+**Step 3c — Data path migration check (v4.6.0+)**
+
+After the framework sync commit, check whether this instance still has pre-v4.6.0 data layout at the repo root. If any of the old top-level directories exist AND their `data/` equivalents do not, run the migration automatically:
+
+```
+# Run each only if source exists and destination does not
+[ -d sessions ] && [ ! -d data/sessions ]     && git mv sessions data/sessions
+[ -d records ] && [ ! -d data/records ]       && git mv records data/records
+[ -d attachments ] && [ ! -d data/attachments ] && git mv attachments data/attachments
+[ -d archive/sessions ] && [ ! -d archive/data/sessions ] && git mv archive/sessions archive/data/sessions
+```
+
+If any moves were made, commit them separately:
+```
+git add -A
+git commit -m "migrate: move sessions/, records/, attachments/ under data/ (v4.6.0)"
+git push origin main
+```
+
+Surface in the sync report: *"Data migration complete — sessions/, records/, attachments/ moved under data/."*
+
+If the old directories exist AND `data/` already has the content (both exist simultaneously), do not move — surface a warning instead: *"Migration conflict: both `records/` and `data/records/` exist. Manual review needed before migrating."*
 
 **Step 4 — Accurate sync report (v4.0.0-alpha.13+)**
 
