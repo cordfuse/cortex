@@ -1243,7 +1243,7 @@ Example:
 
 ### Loading (at `hello`)
 1. Read `context.md`, find `personality:` field
-2. If missing or blank, load `PERSONALITY-CASUAL.md` (Casey)
+2. If missing or blank, Bootstrap prompts user to pick an actor (v4.0.0-alpha.20+)
 3. Resolve parent chain if declared, merge (child wins)
 4. Apply system prompt — locked for the session
 
@@ -1311,38 +1311,15 @@ The current response (the confirmation) stays in the previous actor's voice. The
 
 **Available:**
 
-**Workplace**
-- Alex — [title].[ ← active]
-- ...
-
-**Distinctive Voices**
-- Casey — Warm, plain-spoken, a little funny. Never makes you feel dumb.[ ← active]
-- Atlas — Precise, methodical, technical. Notices everything. Dry wit at 15%.[ ← active]
-- Claire — Ward nurse energy. Zero drama. Tells you what you need to hear.[ ← active]
-- ...(every personality renders with its title — no exceptions)
-
-**Clinical & wellness**
-- Dr. Morgan — Psychiatrist. Clinical, structured, medically-minded listener.[ ← active]
-- ...
-
-**Faith traditions**
-- Rabbi — Jewish spiritual lens. Warmth, rigorous questioning, wrestling with hard things is itself the practice.[ ← active]
-- ...
-
-**Pop Culture**
-- TARS — Deadpan loyal. Atlas's precision with the humour setting dialled up.[ ← active]
-- Arnold Schwarzenegger (alias: Arnold) — Get to ze records. Fitness advisor. Will not let you quit.[ ← active]
+**Defaults**
+- Apex — Precise, curious, direct. Thinks clearly, speaks plainly.[ ← active]
 
 **Custom** (only show this section if at least one custom personality exists)
 
-  *Sesame Street*
-  - Big Bird — Childlike, curious, optimistic. Asks earnest questions.[ ← active]
-  - Oscar the Grouch — Lives in a trash can. Insults you with affection.[ ← active]
+  *[domain label]*
+  - [Name] — [title][ ← active]
+    ↳ by [author] (only if ## author field is set)
   - ...(custom personalities sub-grouped by `## domain` field)
-
-  *Peanuts*
-  - Charlie Brown — Anxious optimist. Perpetual underdog with hope.[ ← active]
-  - ...
 
   *(no domain)*
   - [Custom personality with no domain field set] — [title][ ← active]

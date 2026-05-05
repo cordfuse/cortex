@@ -119,19 +119,19 @@ If this has been useful to you — or if you just believe mental health infrastr
 
 **You own everything.** Records live in your private git repository — not a vendor's database. Plain markdown. Readable by any tool, forever. Portable the day you want out.
 
-**Three AI layers, not a product.** A **Bootstrap actor** runs the operational layer (sync, version checks, scoped session verbs) in clinical voice; an **active actor** (Casey, Atlas, Magnus, etc.) handles conversation; a **hidden scribe** files everything underneath, silently. All three follow a protocol you can read and modify. No upsell, no monetised insights, no lock-in. *(See [docs/PERSONALITIES.md](docs/PERSONALITIES.md) for the full active-actor + hidden-scribe split shipped in v4.0.0-alpha.1, and the operational/conversational mode split shipped in v4.0.0-alpha.20.)*
+**Three AI layers, not a product.** A **Bootstrap actor** runs the operational layer (sync, version checks, scoped session verbs) in clinical voice; an **active actor** (Apex, or any custom personality you create) handles conversation; a **hidden scribe** files everything underneath, silently. All three follow a protocol you can read and modify. No upsell, no monetised insights, no lock-in. *(See [docs/PERSONALITIES.md](docs/PERSONALITIES.md) for the full active-actor + hidden-scribe split shipped in v4.0.0-alpha.1, and the operational/conversational mode split shipped in v4.0.0-alpha.20.)*
 
 **Context that carries.** At session start the scribe reads your recent records. It knows what you were working through, what's unresolved, what patterns have been building. Every session picks up where the last one left off.
 
 **Always in sync.** Every `hello` runs `git fetch origin` and `git fetch upstream` before the greeting renders. Local behind remote? Scribe surfaces the delta and applies your `auto_upgrade:` preference (always / ask / never). Silent stale-state operation is a protocol violation as of v4.0.0-alpha.13.
 
-**Hot-swap personalities mid-session (v4.0.0-alpha.8+).** Say *"change actor to Atlas"* and the next response is in Atlas's voice. No fresh hello required.
+**Hot-swap personalities mid-session (v4.0.0-alpha.8+).** Say *"change actor to [name]"* and the next response is in that actor's voice. No fresh hello required.
 
 **Multi-session state isolation (v4.0.0-alpha.17+).** `spawn session "phase 2 design"` creates a scoped session at `sessions/{guid}/`. `engage session` swaps in any time. `close session` archives. The default ("main session" / singleton) is shared across every chat that doesn't explicitly spawn a scoped one. Test isolation, parallel work threads, and cross-machine continuity all work cleanly.
 
 **Multi-parent personality inheritance (v4.0.0-alpha.11+).** Custom personalities can inherit from multiple parents simultaneously — useful for "everything-guy" SMEs who span developer + infrastructure + cloud architect + functional consultant in one role.
 
-**Your active actor has a personality.** 73 built-in personalities — from Casey (warm, funny, plain English) to Atlas (precise, methodical) to Dr. Quinn (psychologist) to Yoda to Magnus the Business Central SME. Switch with one line. Create your own in plain English. [Full personality reference →](docs/PERSONALITIES.md)
+**Your active actor has a personality.** One framework default ships: **Apex** — generic, precise, no domain specialty. Build your own in plain English and commit them as `PERSONALITY-CUSTOM-*.md`. Credit your work with an `## author` field. [Full personality reference →](docs/PERSONALITIES.md)
 
 **Extensible.** Built-in session commands. Define your own in `customs/VERBS-CUSTOM.md` — `weekly review`, `bills`, `checkin`, anything you want. **Natural language only — no slash prefixes** (Claude web and other clients hijack `/`).
 
@@ -143,22 +143,15 @@ If this has been useful to you — or if you just believe mental health infrastr
 
 ## Personalities
 
-Your active actor has a personality. Cortex ships with **73 built-in personalities** plus the **Bootstrap actor** that handles operational reporting. Switch active actors with one line in `context.md`, or in plain English: *"change actor to Atlas."* See the full reference for descriptions and trait sliders.
+Cortex ships with **one framework actor** plus the **Bootstrap actor** that handles operational reporting.
 
-| Category | Personalities |
+| Category | Actor |
 |---|---|
 | **Bootstrap** | Bootstrap (auto-loaded; never user-selected; clinical operational voice) |
-| **Workplace** | Alex, Bishop, Max |
-| **Creative & Visionary** | Harper, Ziggy, Nova |
-| **Wisdom & Reflection** | Sage, Ivy, Rowan, Dante |
-| **Distinctive Voices** | Casey (warm, plain English), Atlas (precise, methodical), Riff, Marlowe, Reed, Cleo, Finn, Claire |
-| **Information Technology** | Devon (Tech Lead), Kai (Junior Dev), Riley (DevOps), Knox (Infrastructure), Vega (Cloud Architect), Avery (PM), Sloane (QA), Orion (UX/UI), Drew (Functional Consultant) |
-| **Clinical & wellness** | Dr. Morgan (psychiatrist), Dr. Quinn (psychologist), Jordan (wellness), Dr. Walsh (family doctor), Dr. Mira (registered dietitian, she/her) |
-| **Faith traditions** | Rabbi, Pastor, Father Thomas, Imam, Swami, Lama, Granthi, Daoist, Elder |
-| **Mindfulness & Stoicism** | Mindfulness Teacher, Marcus (Stoic philosopher) |
-| **Recovery & Peer Support** | AA Sponsor, SAA Sponsor |
-| **Family & Friends** | Mama, Pop, Terry (best friend) |
-| **Pop Culture** | TARS, Arnold Schwarzenegger, Mr. Miyagi, John Kreese, Bruce Lee, Chuck Norris, Jean-Claude Van Damme, Sylvester Stallone, Hulk Hogan, Bob Ross, Mr. Rogers, Doc Brown, Yoda, Spock, Robin Williams, Han Solo, The Dude, Indiana Jones, Captain Jean-Luc Picard, Buffy Summers, Bill Murray, Angus MacGyver, Lieutenant Columbo, Tony Soprano |
+| **Defaults** | Apex — generic, precise, no domain specialty |
+| **Custom** | Any `PERSONALITY-CUSTOM-*.md` you add to your personal fork |
+
+The framework is deliberately minimal. Specialty actors — skill-based, character-based, domain-specific — belong in your personal fork as `PERSONALITY-CUSTOM-*.md` files. They're never overwritten by framework sync. Add an `## author` field to credit yourself or anyone you're sharing with.
 
 Every personality has tunable sliders across vibe, virtues, vices, soft skills, and hard skills — all 0–100. Create your own with a description. The scribe writes the file and commits it.
 
@@ -166,7 +159,7 @@ Every personality has tunable sliders across vibe, virtues, vices, soft skills, 
 
 ```
 # context.md
-personality: casey       ← change this to switch (or leave blank — Bootstrap will ask you to pick)
+personality: apex        ← change this to switch (or leave blank — Bootstrap will ask you to pick)
 provider: Anthropic Claude
 model: claude-sonnet-4-6
 ```
@@ -262,10 +255,8 @@ protocol/              # Protocol engine — do not edit
   CORTEX-PROJECT.md    # Self-contained prompt for Claude/ChatGPT projects
 personalities/         # Personality files (73 framework + your customs)
   PERSONALITY-BOOTSTRAP.md     # Bootstrap (operational voice, auto-loaded)
-  PERSONALITY-CASUAL.md        # Casey
-  PERSONALITY-VERBOSE.md       # Atlas
-  PERSONALITY-[NAME].md        # 70 additional framework personalities
-  PERSONALITY-CUSTOM-*.md      # Your custom personalities
+  PERSONALITY-APEX.md          # Apex (framework default)
+  PERSONALITY-CUSTOM-*.md      # Your custom personalities (never overwritten by sync)
 records/               # Your dated entries — one file per topic per commit
 sessions/              # Scoped sessions (v4.0.0-alpha.17+); each is a folder with its own context.md
 attachments/           # One subfolder per record
