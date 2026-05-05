@@ -9,34 +9,21 @@ $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 Write-Host "Cortex bootstrap"
 Write-Host "----------------"
 
-# ── Python ────────────────────────────────────────────────────────────────────
+# ── Bun ──────────────────────────────────────────────────────────────────────
 
-$Python = $null
-foreach ($cmd in @("python3", "python")) {
-    if (Get-Command $cmd -ErrorAction SilentlyContinue) {
-        $Python = $cmd
-        break
-    }
-}
-
-if (-not $Python) {
+if (-not (Get-Command bun -ErrorAction SilentlyContinue)) {
     Write-Host ""
-    Write-Host "Python not found. Installing via winget..."
+    Write-Host "Bun not found. Installing..."
     if (Get-Command winget -ErrorAction SilentlyContinue) {
-        winget install -e --id Python.Python.3 --silent
+        winget install -e --id Oven-sh.Bun --silent
         $env:Path = [System.Environment]::GetEnvironmentVariable("Path", "Machine") + ";" +
                     [System.Environment]::GetEnvironmentVariable("Path", "User")
-        $Python = "python"
     } else {
-        Write-Host "ERROR: winget not available."
-        Write-Host "Install Python 3.9+ from https://python.org/downloads"
-        Write-Host "Enable 'Add Python to PATH' during install, then re-run this script."
-        exit 1
+        irm bun.sh/install.ps1 | iex
     }
 }
 
-$PyVersion = & $Python --version 2>&1
-Write-Host "Python: $Python ($PyVersion)"
+Write-Host "Bun: $(bun --version)"
 
 # ── Git ───────────────────────────────────────────────────────────────────────
 

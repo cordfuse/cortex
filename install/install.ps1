@@ -27,20 +27,9 @@ if (Get-Command git -ErrorAction SilentlyContinue) {
     $GitOk = $true
 } else { Warn "git: not found — will install" }
 
-$Python = $null
-foreach ($cmd in @("python3", "python")) {
-    if (Get-Command $cmd -ErrorAction SilentlyContinue) { $Python = $cmd; break }
-}
-if ($Python) {
-    $v = (& $Python --version 2>&1) -replace "Python ", ""
-    Ok "python $v"
-} else { Warn "python: not found — will install" }
-
-if ($Python) {
-    $cryptoOk = & $Python -c "import cryptography; print('ok')" 2>&1
-    if ($cryptoOk -eq "ok") { Ok "cryptography: installed" }
-    else { Warn "cryptography: not installed (setup will install)" }
-}
+if (Get-Command bun -ErrorAction SilentlyContinue) {
+    Ok "bun $(bun --version)"
+} else { Warn "bun: not found — will install" }
 
 if (Get-Command rclone -ErrorAction SilentlyContinue) {
     $v = (rclone --version 2>&1 | Select-Object -First 1) -replace "rclone ", ""
@@ -70,22 +59,18 @@ if (-not $GitOk) {
     Write-Host ""
 }
 
-# ── Install Python if missing ─────────────────────────────────────────────────
+# ── Install Bun if missing ────────────────────────────────────────────────────
 
-if (-not $Python) {
-    Write-Host "Installing Python..." -ForegroundColor Cyan
+if (-not (Get-Command bun -ErrorAction SilentlyContinue)) {
+    Write-Host "Installing Bun..." -ForegroundColor Cyan
     if (Get-Command winget -ErrorAction SilentlyContinue) {
-        winget install -e --id Python.Python.3 --silent
+        winget install -e --id Oven-sh.Bun --silent
         $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" +
                     [System.Environment]::GetEnvironmentVariable("Path","User")
-        $Python = "python"
-        Ok "Python installed"
     } else {
-        Err "winget not available."
-        Write-Host "  Install Python from https://python.org/downloads/"
-        Write-Host "  Check 'Add Python to PATH' during install, then re-run this script."
-        exit 1
+        irm bun.sh/install.ps1 | iex
     }
+    Ok "Bun installed"
     Write-Host ""
 }
 
