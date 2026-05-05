@@ -73,7 +73,7 @@ Note: if a name collision exists (same `## name` as an existing actor), surfaces
 
 Triggers: "spawn session [name]" | "new session [name]" | "start a new session called [name]" | "create session [name]"
 
-Create a new scoped session. Scribe generates GUID, writes `sessions/{guid}/context.md`, commits, pushes, and switches the chat to the new session. If no name given, scribe asks.
+Create a new scoped session. Scribe generates GUID, writes `data/sessions/{guid}/context.md`, commits, pushes, and switches the chat to the new session. If no name given, scribe asks.
 
 ## list sessions
 
@@ -91,7 +91,7 @@ Attach to an existing session. Scribe finds the session, cross-machine race-chec
 
 Triggers: "close session [name]" | "archive session [name]" | "end session [name]"
 
-Archive a session. Scribe moves `sessions/{guid}/` → `archive/sessions/{guid}/`, sets state to `closed`, commits, pushes.
+Archive a session. Scribe moves `data/sessions/{guid}/` → `archive/data/sessions/{guid}/`, sets state to `closed`, commits, pushes.
 
 ---
 
@@ -178,19 +178,19 @@ Pull and summarise recent emails from Gmail or Outlook. Flag anything that needs
 Pull open tasks from Google Tasks or Microsoft To Do. Merge with my current tasks record. (Alias: *tasks-sync*.)
 
 ## drive
-Check recent files in Google Drive or OneDrive. Ask if anything needs to come into attachments/.
+Check recent files in Google Drive or OneDrive. Ask if anything needs to come into data/attachments/.
 
 ## contacts
 Look up a person in Google or Microsoft contacts. Useful for filing person records.
 
 ## nas
-Connect to my home NAS via Tailscale and rclone. Browse available files or pull into attachments/.
+Connect to my home NAS via Tailscale and rclone. Browse available files or pull into data/attachments/.
 
 ## backup
-Push my attachments/ folder to remote storage via rclone.
+Push my data/attachments/ folder to remote storage via rclone.
 
 ## pull files
-Pull files from a configured rclone remote into attachments/. (Alias: *pull-files*.)
+Pull files from a configured rclone remote into data/attachments/. (Alias: *pull-files*.)
 
 ## vpn
 Check Tailscale status. Bring it up if it's down.

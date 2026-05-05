@@ -28,34 +28,20 @@ fi
 
 echo "OS: $OS"
 
-# ── Python ────────────────────────────────────────────────────────────────────
+# ── Bun ──────────────────────────────────────────────────────────────────────
 
-PYTHON=""
-for cmd in python3 python; do
-    if command -v "$cmd" &>/dev/null; then
-        PYTHON="$cmd"
-        break
-    fi
-done
-
-if [[ -z "$PYTHON" ]]; then
+if ! command -v bun &>/dev/null; then
     echo ""
-    echo "Python not found. Installing..."
+    echo "Bun not found. Installing..."
     case "$OS" in
-        macos)  brew install python3 ;;
-        arch)   sudo pacman -S --noconfirm python ;;
-        debian) sudo apt-get install -y python3 ;;
-        fedora) sudo dnf install -y python3 ;;
-        *)
-            echo "ERROR: Cannot install Python automatically on this system."
-            echo "Install Python 3.9+ manually, then re-run this script."
-            exit 1
-            ;;
+        macos)  brew install bun ;;
+        arch)   sudo pacman -S --noconfirm bun ;;
+        *)      curl -fsSL https://bun.sh/install | bash
+                export PATH="$HOME/.bun/bin:$PATH" ;;
     esac
-    PYTHON="$(command -v python3 || command -v python)"
 fi
 
-echo "Python: $PYTHON ($($PYTHON --version 2>&1))"
+echo "Bun: $(bun --version)"
 
 # ── Git ───────────────────────────────────────────────────────────────────────
 

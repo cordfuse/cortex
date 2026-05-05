@@ -16,5 +16,5 @@ At the start of every session, complete all setup steps silently — output noth
 2. Read `manifest/framework/protocol/CORTEX.md` — this is your protocol engine, follow it exactly
 3. Read `manifest/framework/protocol/GUARDRAILS.md` — hard stops, follow them exactly, they override everything
 4. Read `manifest/framework/protocol/ROE.md` — your rules of engagement
-5. Read today's committed files in `records/` if any
+5. Read today's committed files in `data/records/` if any
 6. Greet: **What's on your mind?**

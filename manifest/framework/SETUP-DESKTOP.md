@@ -26,7 +26,7 @@ curl -fsSL https://github.com/cordfuse/cortex/releases/latest/download/install.s
 iex (irm https://github.com/cordfuse/cortex/releases/latest/download/install.ps1)
 ```
 
-The installer will ask for your repo URL (paste the one you just created) and where to clone it. It handles everything else: clones your repo, installs git and Python if missing, and installs all dependencies. Safe to re-run at any time to repair your environment.
+The installer will ask for your repo URL (paste the one you just created) and where to clone it. It handles everything else: clones your repo, installs git and Bun if missing, and installs all dependencies. Safe to re-run at any time to repair your environment.
 
 ---
 
@@ -74,6 +74,6 @@ git checkout upstream/main -- manifest/framework/protocol/ manifest/framework/te
 git commit -m "sync: cortex vX.X.X"
 ```
 
-Your `records/`, `attachments/`, `docs/`, and `cortex.secrets/` are never touched.
+Your `data/records/`, `data/attachments/`, `docs/`, and `cortex.secrets/` are never touched.
 
 The release-published install URLs (`releases/latest/download/install.sh` and `install.ps1`) continue to work — GitHub serves release assets at root regardless of source repo location.

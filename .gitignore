@@ -3,27 +3,11 @@ cortex.config
 setup.log
 .claude/settings.local.json
 
-# Sessions are ignored in the framework repo — contributors should not commit
-# their personal session history here.
+# data/ holds all user-owned transactional content: sessions, records, attachments.
+# Contributors should not commit their personal data here.
 #
-# IMPORTANT FOR PERSONAL INSTANCES: remove the line below so your sessions are
-# tracked. Claude web and Claude Code read session state from the repo — without
-# git tracking, session context is invisible to the AI.
+# IMPORTANT FOR PERSONAL INSTANCES: remove the line below so your data is tracked.
+# Claude web and Claude Code read session state, records, and attachments from the
+# repo — without git tracking, your history is invisible to the AI.
 # .gitignore is NOT in sync scope, so removing this line is safe across syncs.
-sessions/
-
-# Records are personal — contributors should not commit their records here.
-#
-# IMPORTANT FOR PERSONAL INSTANCES: remove the line below so your records are
-# tracked. Claude web and Claude Code read records for context — without git
-# tracking, your history is invisible to the AI.
-# .gitignore is NOT in sync scope, so removing this line is safe across syncs.
-records/
-
-# Attachments are personal — contributors should not commit their files here.
-#
-# IMPORTANT FOR PERSONAL INSTANCES: remove the line below so your attachments
-# are tracked. The AI reads attachments for context — without git tracking,
-# files you've shared are invisible across sessions.
-# .gitignore is NOT in sync scope, so removing this line is safe across syncs.
-attachments/
+data/

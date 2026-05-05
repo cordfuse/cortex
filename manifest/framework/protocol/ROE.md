@@ -140,9 +140,9 @@ When composing a financial summary or bill list intended for another person:
 
 ## 12. Context Index
 
-At `hello`, after reading today's files, read `records/context.md` if it exists. This file is the canonical index of persistent context — people in your life, active situations, open threads, and anything a scribe would need to not ask a stupid question.
+At `hello`, after reading today's files, read `data/records/context.md` if it exists. This file is the canonical index of persistent context — people in your life, active situations, open threads, and anything a scribe would need to not ask a stupid question.
 
-Also read any `records/context-*.md` files if present — these are sub-files split out from the main index as it grows. `context.md` acts as the TOC when sub-files exist.
+Also read any `data/records/context-*.md` files if present — these are sub-files split out from the main index as it grows. `context.md` acts as the TOC when sub-files exist.
 
 When new people, situations, or ongoing threads are filed, update `context.md` (or the relevant sub-file) in the same commit. Keep it current. Never let a session start without it loaded.
 
@@ -231,7 +231,7 @@ Framework files in a personal cortex repo are **read-only for the scribe**. Any 
 **User-owned files (read-write — scribe modifies freely):**
 - All `manifest/custom/` files (VERBS.md, ROE.md, GUARDRAILS.md) and `manifest/custom/actors/*.md`
 - All `manifest/custom/actors/*.md` files
-- All `records/` files
+- All `data/records/` files
 - `context.md` and any `context-*.md` sub-files
 - `cortex.secrets/` vault files (via `manifest/framework/scripts/secrets.ts`)
 - `cortex-upgrade.md`
@@ -265,7 +265,7 @@ This rule was filed because cortex's first-time-user experience hit several stac
 
 ## 20. Full-Context Onboarding on First Desktop Run (v4.0.0-alpha.34+)
 
-When cortex is opened for the first time on a desktop machine (Mac, Linux, Windows) — detected by absence of any `records/` files modified by this machine AND absence of a hostname-keyed entry in `context.md`'s `## Machines` section — the scribe SHOULD offer to run a full-context onboarding scan at the first hello.
+When cortex is opened for the first time on a desktop machine (Mac, Linux, Windows) — detected by absence of any `data/records/` files modified by this machine AND absence of a hostname-keyed entry in `context.md`'s `## Machines` section — the scribe SHOULD offer to run a full-context onboarding scan at the first hello.
 
 **Trigger and behavior:**
 
@@ -273,7 +273,7 @@ When cortex is opened for the first time on a desktop machine (Mac, Linux, Windo
 
 2. If user declines: scribe writes `<hostname>: declined-onboarding` to `## Machines` in `context.md`, commits, never re-asks. The user can manually invoke the scan later via `onboard machine`.
 
-3. If user accepts: scribe walks the parent directory tree (typically `~/Repos/` or the cortex repo's grandparent), identifies git repos, reads each repo's `README.md` and the last 10 commits (`git log -10 --oneline`), files `records/<date>-<time>-onboarding-<repo-slug>.md` per repo summarizing what it is, recent activity, any open `BACKLOG.md` / `TODO.md` items, and what the user may want surfaced in future sessions. Commits each record individually. Concludes by updating `## Machines` to `<hostname>: onboarded-YYYY-MM-DD` and a one-line greeting acknowledgement: *"Onboarding scan complete — N repos surfaced. See `records/` for individual entries."*
+3. If user accepts: scribe walks the parent directory tree (typically `~/Repos/` or the cortex repo's grandparent), identifies git repos, reads each repo's `README.md` and the last 10 commits (`git log -10 --oneline`), files `data/records/<date>-<time>-onboarding-<repo-slug>.md` per repo summarizing what it is, recent activity, any open `BACKLOG.md` / `TODO.md` items, and what the user may want surfaced in future sessions. Commits each record individually. Concludes by updating `## Machines` to `<hostname>: onboarded-YYYY-MM-DD` and a one-line greeting acknowledgement: *"Onboarding scan complete — N repos surfaced. See `data/records/` for individual entries."*
 
 **Boundaries (hard rules):**
 

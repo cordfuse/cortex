@@ -27,4 +27,4 @@
 <!-- Date, provider, purpose. -->
 
 ## Source documents
-<!-- Files in attachments/ related to this record. Format: attachments/YYYY-MM-DD-[provider]-[type].[ext] -->
+<!-- Files in data/attachments/ related to this record. Format: data/attachments/YYYY-MM-DD-[provider]-[type].[ext] -->

@@ -84,22 +84,10 @@ else
     warn "git: not found — will install"
 fi
 
-PYTHON=""
-for _cmd in python3 python; do
-    if command -v "$_cmd" &>/dev/null && "$_cmd" --version &>/dev/null 2>&1; then
-        PYTHON="$_cmd"; break
-    fi
-done
-if [[ -n "$PYTHON" ]]; then
-    ok "python $($PYTHON --version 2>&1 | awk '{print $2}')"
+if command -v bun &>/dev/null; then
+    ok "bun $(bun --version)"
 else
-    warn "python: not found — will install"
-fi
-
-if [[ -n "$PYTHON" ]] && "$PYTHON" -c "import cryptography" 2>/dev/null; then
-    ok "cryptography: installed"
-else
-    warn "cryptography: not installed (setup will install)"
+    warn "bun: not found — will install"
 fi
 
 if command -v rclone &>/dev/null; then
@@ -134,22 +122,19 @@ if ! $GIT_OK; then
     echo ""
 fi
 
-# ── Install Python if missing ─────────────────────────────────────────────────
+# ── Install Bun if missing ────────────────────────────────────────────────────
 
-if [[ -z "$PYTHON" ]]; then
-    printf "${BOLD}Installing Python...${RESET}\n"
+if ! command -v bun &>/dev/null; then
+    printf "${BOLD}Installing Bun...${RESET}\n"
     case "$OS" in
         macos)
-            if command -v brew &>/dev/null; then brew install python3
-            else err "Homebrew not found. Install Python from https://python.org/downloads/"; exit 1; fi
-            PYTHON="python3"
+            if command -v brew &>/dev/null; then brew install bun
+            else curl -fsSL https://bun.sh/install | bash; export PATH="$HOME/.bun/bin:$PATH"; fi
             ;;
-        arch)   sudo pacman -S --noconfirm python; PYTHON="python3" ;;
-        debian) sudo apt-get install -y python3; PYTHON="python3" ;;
-        fedora) sudo dnf install -y python3; PYTHON="python3" ;;
-        *) err "Cannot auto-install Python. Install Python 3.9+ then re-run."; exit 1 ;;
+        arch)   sudo pacman -S --noconfirm bun ;;
+        *)      curl -fsSL https://bun.sh/install | bash; export PATH="$HOME/.bun/bin:$PATH" ;;
     esac
-    ok "Python installed"
+    ok "Bun installed"
     echo ""
 fi
 

@@ -127,7 +127,7 @@ If this has been useful to you — or if you just believe mental health infrastr
 
 **Hot-swap personalities mid-session (v4.0.0-alpha.8+).** Say *"change actor to [name]"* and the next response is in that actor's voice. No fresh hello required.
 
-**Multi-session state isolation (v4.0.0-alpha.17+).** `spawn session "phase 2 design"` creates a scoped session at `sessions/{guid}/`. `engage session` swaps in any time. `close session` archives. The default ("main session" / singleton) is shared across every chat that doesn't explicitly spawn a scoped one. Test isolation, parallel work threads, and cross-machine continuity all work cleanly.
+**Multi-session state isolation (v4.0.0-alpha.17+).** `spawn session "phase 2 design"` creates a scoped session at `data/sessions/{guid}/`. `engage session` swaps in any time. `close session` archives. The default ("main session" / singleton) is shared across every chat that doesn't explicitly spawn a scoped one. Test isolation, parallel work threads, and cross-machine continuity all work cleanly.
 
 **Multi-parent personality inheritance (v4.0.0-alpha.11+).** Custom personalities can inherit from multiple parents simultaneously — useful for "everything-guy" SMEs who span developer + infrastructure + cloud architect + functional consultant in one role.
 
@@ -283,8 +283,8 @@ manifest/
     PERSONALITIES.md   # Notes on personalities + custom actors
     CONNECTORS.md      # Personal connector setup notes
     cortex-upgrade.md  # Auto-upgrade preferences
-records/               # Dated entries -- one file per topic per commit
-attachments/           # Source documents + record attachments
+data/records/               # Dated entries -- one file per topic per commit
+data/attachments/           # Source documents + record attachments
   YYYY-MM-DD-HHMM-[slug]/   # Record-specific attachments
   YYYY-MM-DD-[provider]-[type].[ext]  # Standalone source docs
   assets/              # Shared static assets
@@ -338,7 +338,7 @@ In all of these the boundary is **who can see what**, not **what is it about**.
 Within a monocortex, topic context is handled by:
 
 - **Personalities** — `change actor to Dr. Quinn` for health/reflection mode; `change actor to Magnus` for BC engineering; `change actor to AA Sponsor` for recovery work. The voice + lens shifts naturally.
-- **Phase 6 scoped sessions** — `spawn session "phase 2 design"` keeps a programming sprint's runtime state isolated from main; `spawn session "weekly checkin"` keeps a health journal's actor and context separate. Records still file to the unified `records/` folder with `Session: phase 2 design` in provenance, so cross-domain searches still work.
+- **Phase 6 scoped sessions** — `spawn session "phase 2 design"` keeps a programming sprint's runtime state isolated from main; `spawn session "weekly checkin"` keeps a health journal's actor and context separate. Records still file to the unified `data/records/` folder with `Session: phase 2 design` in provenance, so cross-domain searches still work.
 - **Records folder** — naturally chronological + searchable across all topics
 
 You get the cognitive separation without losing the integrating layer.

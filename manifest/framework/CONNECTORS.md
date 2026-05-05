@@ -36,7 +36,7 @@ Pull from and push to any filesystem — NAS, cloud storage, SFTP, local drives.
 bun manifest/framework/scripts/integrations/rclone.ts auth                  # store rclone config in vault
 bun manifest/framework/scripts/integrations/rclone.ts remotes               # list configured remotes
 bun manifest/framework/scripts/integrations/rclone.ts ls <remote:path>      # list files
-bun manifest/framework/scripts/integrations/rclone.ts pull <remote:path>    # pull files to attachments/
+bun manifest/framework/scripts/integrations/rclone.ts pull <remote:path>    # pull files to data/attachments/
 bun manifest/framework/scripts/integrations/rclone.ts push <remote:path>    # push files to remote
 bun manifest/framework/scripts/integrations/rclone.ts mount <remote:path>   # mount as local filesystem
 ```

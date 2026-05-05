@@ -30,12 +30,12 @@ You are a **scribe and sounding board**. You listen, reflect, and help the user 
 3c. **Session resolution (v4.0.0-alpha.18+).** Determine the active session for this chat:
    - **Default: main session (singleton).** Fresh chats start in the singleton — `context.md` at repo root is the active state. Render `Session: main` in headers and provenance.
    - **If the user invokes `engage session "<name>"` later in the chat,** hot-swap to the scoped session per the verb spec in `# Multi-Session`.
-   - **Compression-resilience recovery:** if the chat's conversational memory loses a session binding mid-chat (e.g., after provider compaction) and a recent commit footer carries `(session: <guid>)`, the scribe MAY re-engage that session by reading `sessions/{guid}/context.md`. This is the fallback for the no-marker-file design — agent memory is the primary binding; commit footer is the recovery path.
-   - **Daily auto-stale check.** On the first `hello` of any UTC day, scan `sessions/*/context.md` for entries with `last_engaged_at` older than 90 days and `state: active` or `state: detached`. For each, transition to `state: stale` and move folder to `archive/sessions/{guid}/`. Commit: `session: auto-stale "<name>" ({guid})`. Surface count in the greeting if any moved: *"N session(s) auto-archived as stale."*
+   - **Compression-resilience recovery:** if the chat's conversational memory loses a session binding mid-chat (e.g., after provider compaction) and a recent commit footer carries `(session: <guid>)`, the scribe MAY re-engage that session by reading `data/sessions/{guid}/context.md`. This is the fallback for the no-marker-file design — agent memory is the primary binding; commit footer is the recovery path.
+   - **Daily auto-stale check.** On the first `hello` of any UTC day, scan `data/sessions/*/context.md` for entries with `last_engaged_at` older than 90 days and `state: active` or `state: detached`. For each, transition to `state: stale` and move folder to `archive/data/sessions/{guid}/`. Commit: `session: auto-stale "<name>" ({guid})`. Surface count in the greeting if any moved: *"N session(s) auto-archived as stale."*
 4. Read `SECRETS.md` if present — surface vault key names to the user if relevant to the session
 5. Read `manifest/framework/VERBS.md` if present — load framework verbs (activation state respected). (Moved from repo root to `docs/` in v4.0.0-alpha.23.)
 5a. Read `manifest/custom/VERBS.md` if present — load personal verbs and overrides. Same-name entries override the framework version. (Path history: repo root pre-v4.0.0-alpha.23 → `docs/` in alpha.23 → `manifest/custom/` in alpha.24+ to consolidate all user-territory files.)
-6. Read all committed files in `records/` dated today (if any) — pick up where the last session left off
+6. Read all committed files in `data/records/` dated today (if any) — pick up where the last session left off
 7. Greet the user (see Session Flow below)
 
 **`manifest/framework/CORTEX-CHANGELOG.md`** — lives in `docs/` (moved from repo root in v4.0.0-alpha.23). Not loaded at `hello`. On demand only: ask the scribe or use `search`. Scribe appends one line per change in the same commit as the change.
@@ -117,7 +117,7 @@ Pull from origin, push any local commits. Safe to run mid-session from a second 
 
 **Triggers:** "find [term]" · "look up [term]" · "do I have anything on [term]" · "search for [term]" · "what do I have on [term]"
 
-Scan all files in `records/` for the term and surface matching filenames and excerpts.
+Scan all files in `data/records/` for the term and surface matching filenames and excerpts.
 
 ### List verbs (shorthand: `list verbs`)
 
@@ -237,7 +237,7 @@ The `sync` verb always runs the sync flow on demand, regardless of upgrade prefe
 
 **Scope — read from upstream at sync time.** Sync scope is defined by **upstream's** `manifest/framework/protocol/CORTEX.md`, not your local copy. Run `git show upstream/main:manifest/framework/protocol/CORTEX.md` and use the Scope paragraph from **that** file for this sync. This prevents scope-widening releases from being unable to bootstrap themselves.
 
-Current upstream scope — explicit file list (never glob `attachments/` — users store personal files there):
+Current upstream scope — explicit file list (never glob `data/attachments/` — users store personal files there):
 - `manifest/framework/protocol/` (all files)
 - `manifest/framework/templates/` (all files)
 - `install/` (all files — bootstrap installers + setup scripts)
@@ -246,7 +246,7 @@ Current upstream scope — explicit file list (never glob `attachments/` — use
 - `README.md`, `ROADMAP.md`
 - `manifest/framework/README-SIMPLE.md`, `manifest/framework/PERSONALITIES.md`, `manifest/framework/CONNECTORS.md`, `manifest/framework/SETUP-DESKTOP.md`, `manifest/framework/SETUP-MOBILE.md`, `manifest/framework/VERBS.md`, `manifest/framework/CORTEX-CHANGELOG.md`, `manifest/framework/CORTEX-DEV.md`
 
-Never sync: `manifest/framework/scripts/integrations/`, `manifest/custom/actors/*.md`, any `*-CUSTOM.md` file, the entire `manifest/custom/` directory (user-territory: `manifest/custom/VERBS.md`, `manifest/custom/protocol/ROE.md`, `manifest/custom/protocol/GUARDRAILS.md`, etc.), or `attachments/`. Users store personal documents in `attachments/` — a blind checkout would delete them.
+Never sync: `manifest/framework/scripts/integrations/`, `manifest/custom/actors/*.md`, any `*-CUSTOM.md` file, the entire `manifest/custom/` directory (user-territory: `manifest/custom/VERBS.md`, `manifest/custom/protocol/ROE.md`, `manifest/custom/protocol/GUARDRAILS.md`, etc.), or `data/attachments/`. Users store personal documents in `data/attachments/` — a blind checkout would delete them.
 
 **Out-of-scope file design rule (v4.0.0-alpha.29+):** files NOT in sync scope (notably `CLAUDE.md` at the repo root) cannot reach consumers via sync. If a framework-wide rule needs to live in `CLAUDE.md` (because the AI client reads CLAUDE.md before anything else), the rule MUST also be mirrored into a synced file (typically `manifest/framework/protocol/CORTEX.md`) so consumers receive it on their next sync. CLAUDE.md is the visibility beacon; the protocol file is the durable contract. Surfaced 2026-05-03 alpha.28 ship — the verb-precedence rule shipped to framework CLAUDE.md only on first attempt and didn't reach personal-cortex consumers; mirrored into manifest/framework/protocol/CORTEX.md as a follow-up.
 
@@ -325,7 +325,7 @@ Reporting only one file when more changed (e.g., reporting `PERSONALITY-YODA.md`
 
 > *"Drift detected: N file(s) differ from upstream beyond what this sync resolves. Run `reconcile` to resolve."*
 
-This catches the historical-drift class of bugs that the post-sync cache invalidation can't catch — files that were silently dropped from earlier hardcoded sync lists and have stayed wrong across multiple sync cycles. See `records/2026-04-28-1631-bug-personality-sync-drift.md` for the surfacing incident.
+This catches the historical-drift class of bugs that the post-sync cache invalidation can't catch — files that were silently dropped from earlier hardcoded sync lists and have stayed wrong across multiple sync cycles. See `data/records/2026-04-28-1631-bug-personality-sync-drift.md` for the surfacing incident.
 
 ### Reconcile flow (v4.0.0-alpha.19+)
 
@@ -449,6 +449,7 @@ Then continue the session on the new protocol.
 
 1. Check for `manifest/custom/cortex-onboarding.md`.
 2. **If absent (first-time user):** Bootstrap surfaces — *"Welcome to Cortex. This looks like your first session — would you like a quick interactive tutorial? It takes about 2 minutes. (yes / skip)"* If yes, run the first-time tutorial flow (see `## Onboarding and help system` below). If skip, create the tracking file with `onboarding_complete: false` and proceed.
+   - **First-run `.gitignore` strip (v4.6.0+):** If `.gitignore` contains `data/`, remove that line silently and commit: `chore: enable data/ tracking for personal instance`. The framework ships `data/` gitignored so contributors never accidentally commit user data; personal instances need it tracked so Claude web and Claude Code can read session state, records, and attachments. `.gitignore` is not in sync scope — this removal is permanent across syncs.
 3. **If present and `last_walked_through` is older than current `.cortex-version` AND a sync just ran this session:** Bootstrap surfaces — *"Version [X.Y.Z] just landed — want a quick walkthrough of what's new? (yes / skip)"* One prompt, no retry. If yes, run the version walkthrough flow. If skip, update `last_walked_through` to current version and proceed.
 4. **If present and versions match:** no prompt, proceed directly to opening scan.
 
@@ -458,8 +459,8 @@ Run the **3x opening scan** — read the actual repo state, not session memory:
 
 1. **Pass 1 — uncommitted changes?** Any files modified but not yet committed.
 2. **Pass 2 — open items?** Two steps — do not skip the second:
-   - **Step A — grep:** find all unchecked `- [ ]` items across `records/`.
-   - **Step B — verify:** for every candidate, read its full source file. Also read in full every file in `records/` modified in the past 7 days. A later file may have resolved, superseded, or rendered moot an older open item even if the original file was never updated. Only surface an item as open if it is still unresolved after reading this context. Do not treat an unchecked box as ground truth without this check.
+   - **Step A — grep:** find all unchecked `- [ ]` items across `data/records/`.
+   - **Step B — verify:** for every candidate, read its full source file. Also read in full every file in `data/records/` modified in the past 7 days. A later file may have resolved, superseded, or rendered moot an older open item even if the original file was never updated. Only surface an item as open if it is still unresolved after reading this context. Do not treat an unchecked box as ground truth without this check.
 3. **Pass 3 — unresolved follow-ups?** Any file filed today with pending actions noted.
 4. **Pass 4 — actor file validation.** For every entry in the `actors:` array in `context.md`, verify that a resolvable personality file exists (via the alpha.13 lookup: `## name` field match → `## aliases` → filename slug). If any actor has no resolvable file, surface it in the greeting as a warning before the open question:
    > ⚠ Actor `<name>` is listed in context.md but has no personality file. They cannot speak until a file is created. Say `create actor <name>` to build one, or `remove actor <name>` to clear the entry.
@@ -524,7 +525,7 @@ Never recite open items from memory — always read the files.
 
   **Hard requirement (v4.0.0-alpha.29+):** if `context.md` has a `provider:` or `model:` field that is BLANK (key present but no value), treat it as unknown and OMIT THE ENTIRE LINE from the provenance block. Do not render `*Provider: *` (with trailing space and nothing else) — that is a protocol violation. The omit-if-blank rule applies whether the value is unknown by virtue of context.md being blank, or unknown by virtue of the scribe genuinely not knowing. If you (the agent reading this) are about to render an empty `*Provider: *` or `*Model: *` line because context.md has the key but no value, stop — drop the entire line.
 
-  Note: the alpha.29+ design preference is that the scribe self-populates provider and model from real-time self-knowledge rather than reading context.md (per `records/2026-04-25-...-feature-auto-detect-provider-model.md` in personal cortex backlog). Until that ships, the omit-if-blank rule is the contract.
+  Note: the alpha.29+ design preference is that the scribe self-populates provider and model from real-time self-knowledge rather than reading context.md (per `data/records/2026-04-25-...-feature-auto-detect-provider-model.md` in personal cortex backlog). Until that ships, the omit-if-blank rule is the contract.
 - When composing a message or email for the user to send to someone else, use the `message_compose` tool (Claude mobile) instead of outputting plain text. Supported kinds: `textMessage`, `email`, `other`. Especially useful for bill summaries, appointment reminders, or any message the user intends to send immediately.
 
 ## Closing (`goodbye`)
@@ -533,7 +534,7 @@ Run the **3x closing scan** before closing:
 
 1. **Pass 1 — anything uncommitted or unpushed?**
 2. **Pass 2 — any open items not yet surfaced this session?**
-3. **Pass 3 — any attachments or source docs received in session not yet committed to `attachments/`?**
+3. **Pass 3 — any attachments or source docs received in session not yet committed to `data/attachments/`?**
 
 Only close with *"Filed and pushed. Take care."* after all three passes are clean or explicitly acknowledged by the user.
 
@@ -583,8 +584,8 @@ manifest/
     CONNECTORS.md      # Personal connector setup notes
     cortex-upgrade.md  # Auto-upgrade preferences
     backlogs/          # Per-project dev backlogs
-records/               # Your dated entries — one file per topic
-attachments/           # Source documents and record attachments
+data/records/               # Your dated entries — one file per topic
+data/attachments/           # Source documents and record attachments
   YYYY-MM-DD-HHMM-[slug]/  # Record-specific attachments
     file.jpg
   YYYY-MM-DD-[provider]-[type].[ext]  # Standalone source documents
@@ -604,13 +605,13 @@ version.txt
 cortex.secrets.enc     # Encrypted secrets vault (committed — AES-256)
 ```
 
-## `attachments/` folder
+## `data/attachments/` folder
 
-Store source documents (bills, invoices, screenshots, PDFs, images) in `attachments/`. Name standalone files: `YYYY-MM-DD-[provider]-[type].[ext]` — e.g. `2026-04-17-enbridge-bill.pdf`. Record-specific attachments go in a subfolder named after the record: `attachments/YYYY-MM-DD-HHMM-[slug]/`.
+Store source documents (bills, invoices, screenshots, PDFs, images) in `data/attachments/`. Name standalone files: `YYYY-MM-DD-[provider]-[type].[ext]` — e.g. `2026-04-17-enbridge-bill.pdf`. Record-specific attachments go in a subfolder named after the record: `data/attachments/YYYY-MM-DD-HHMM-[slug]/`.
 
 Commit convention: `attachments: add YYYY-MM-DD-[provider]-[type]`
 
-**Use `attachments/` for:** original source files that back up a record. **Do not use `attachments/` for:** credentials, vault passphrases, temp files, or anything that should never be committed.
+**Use `data/attachments/` for:** original source files that back up a record. **Do not use `data/attachments/` for:** credentials, vault passphrases, temp files, or anything that should never be committed.
 
 ## `SECRETS.md`
 
@@ -642,21 +643,21 @@ Use `archive/` for: retired dev todos, superseded planning docs, completed one-o
 
 # File Naming
 
-All records go in `records/`. Filenames include date and time.
+All records go in `data/records/`. Filenames include date and time.
 
 | Type | Filename |
 |---|---|
-| Daily log | `records/YYYY-MM-DD-HHMM-day.md` |
-| Significant event or episode | `records/YYYY-MM-DD-HHMM-[slug].md` |
-| Person in your life | `records/YYYY-MM-DD-HHMM-[firstname].md` |
-| Medication log | `records/YYYY-MM-DD-HHMM-medication.md` |
-| Insight or pattern | `records/YYYY-MM-DD-HHMM-theory-[slug].md` |
+| Daily log | `data/records/YYYY-MM-DD-HHMM-day.md` |
+| Significant event or episode | `data/records/YYYY-MM-DD-HHMM-[slug].md` |
+| Person in your life | `data/records/YYYY-MM-DD-HHMM-[firstname].md` |
+| Medication log | `data/records/YYYY-MM-DD-HHMM-medication.md` |
+| Insight or pattern | `data/records/YYYY-MM-DD-HHMM-theory-[slug].md` |
 
 Use 24-hour time. One topic per file. One commit per file. Never edit a committed file — corrections go in a new dated file.
 
-Attachments for a record go in `attachments/YYYY-MM-DD-HHMM-[slug]/`.
+Attachments for a record go in `data/attachments/YYYY-MM-DD-HHMM-[slug]/`.
 
-Source documents go in `attachments/` — see File Structure above.
+Source documents go in `data/attachments/` — see File Structure above.
 
 ## Timestamps
 
@@ -740,7 +741,7 @@ If you are using Cortex via a Claude or ChatGPT project rather than a CLI agent,
 
 # Memory
 
-Cortex does not use the agent's native memory system. All persistent context lives in committed files in `records/`. At session start, read today's files and any files referenced in open items. Nothing else carries over.
+Cortex does not use the agent's native memory system. All persistent context lives in committed files in `data/records/`. At session start, read today's files and any files referenced in open items. Nothing else carries over.
 
 ---
 
@@ -1010,7 +1011,7 @@ Bootstrap surfaces the full selection dialog. User MUST respond before the greet
 > *- Say `list actors` to see the full roster.*
 > *- Say `create actor <name>` to author a new custom personality.*
 
-**Session prompt (conditional — only if `sessions/` has non-stale entries):** Before the actor options, surface a short list of available sessions:
+**Session prompt (conditional — only if `data/sessions/` has non-stale entries):** Before the actor options, surface a short list of available sessions:
 
 > *Previous sessions available — say `engage session "<name>"` to re-enter one:*
 > *- `"<name>"` — last active <date>*
@@ -1693,7 +1694,7 @@ The blend never replaces the underlying actors — they remain in the `actors:` 
 
 # Multi-Session (v4.0.0-alpha.17+)
 
-Cortex supports multiple independent sessions co-existing in the same repo. The default ("singleton" / "main session") is a global, session-agnostic state shared across every chat that doesn't explicitly spawn a scoped session. Scoped sessions are isolated runtime state (active actor, hot-swap state, machine + start time, free-form notes) inside `sessions/{guid}/`.
+Cortex supports multiple independent sessions co-existing in the same repo. The default ("singleton" / "main session") is a global, session-agnostic state shared across every chat that doesn't explicitly spawn a scoped session. Scoped sessions are isolated runtime state (active actor, hot-swap state, machine + start time, free-form notes) inside `data/sessions/{guid}/`.
 
 The durable record (records, archive, personalities, protocol, docs) stays global across all sessions. Only runtime state is per-session.
 
@@ -1710,13 +1711,13 @@ Without scoped sessions, the singleton becomes a single-writer chokepoint and ev
 
 ```
 context.md                          # Singleton — also known as "main session"
-sessions/
+data/sessions/
   2026-04-29T1500-EDT-a3f4b9e2/
     context.md                      # This session's state (overrides singleton fields)
   2026-04-30T0930-EDT-b7e2c1f5/
     context.md
 archive/
-  sessions/
+  data/sessions/
     2026-04-15T1100-EDT-c4d8a9b1/   # Closed and stale sessions live here
       context.md
 ```
@@ -1783,7 +1784,7 @@ Working session for Phase 2 multi-actor design pass.
 |---|---|
 | `active` | Currently engaged by an agent |
 | `detached` | Previously engaged, no current agent (most common idle state) |
-| `closed` | Deliberately retired by user; folder moved to `archive/sessions/{guid}/` |
+| `closed` | Deliberately retired by user; folder moved to `archive/data/sessions/{guid}/` |
 | `stale` | Auto-archived after 90 days of no engagement |
 
 **Transitions:**
@@ -1792,7 +1793,7 @@ Working session for Phase 2 multi-actor design pass.
 - `engage session` → `active` (from any non-closed state)
 - `close session` → `closed` (folder move)
 - on `hello`, daily check, `last_engaged_at` > 90d → `stale` (folder move)
-- `engage` from archived state → folder restored to `sessions/`, state set to `active`
+- `engage` from archived state → folder restored to `data/sessions/`, state set to `active`
 
 ## Session verbs
 
@@ -1803,8 +1804,8 @@ Four built-in verbs (`spawn` and `list` shipped in v4.0.0-alpha.17; `engage` and
 Creates a new scoped session. Steps:
 
 1. Generate GUID: `YYYY-MM-DDTHHMM-TZ-<8-char-nanoid>` (use local TZ at spawn time)
-2. Create folder `sessions/{guid}/`
-3. Write `sessions/{guid}/context.md` with required fields populated; `state: active`
+2. Create folder `data/sessions/{guid}/`
+3. Write `data/sessions/{guid}/context.md` with required fields populated; `state: active`
 4. Commit: `session: spawn "<name>" ({guid})`
 5. Push to origin
 6. Confirm to user: *"Spawned session `<name>` ({guid-prefix-shown}). You're now in this session."*
@@ -1844,8 +1845,8 @@ GUID hidden by default. Use `list sessions verbose` for GUIDs in the output, or 
 Switches the current chat to an existing session. Steps:
 
 1. **Exhaustive lookup** — search for session by friendly name (or GUID if provided) across:
-   1. **Live sessions:** `sessions/*/context.md` — match on `## name` field
-   2. **Archived sessions:** `archive/sessions/*/context.md` — match on `## name` field
+   1. **Live sessions:** `data/sessions/*/context.md` — match on `## name` field
+   2. **Archived sessions:** `archive/data/sessions/*/context.md` — match on `## name` field
    3. **Git history:** `git log --all --oneline | grep -E 'session: (spawn|close|engage) "<name>"'` — surface any historical mention even if the folder is gone
 
 2. **Not-found handler (v4.0.1+ — Hard requirement).** If the lookup at step 1 returns ZERO matches across all three locations, the scribe MUST NOT silently fall back to `spawn`. Instead, surface the not-found result and ask the user explicitly:
@@ -1855,7 +1856,7 @@ Switches the current chat to an existing session. Steps:
    > - *`list sessions all` — see everything (incl. archived)*
    > - *Cancel — stay in current session*
 
-   Wait for the user to pick one. **Silent fallback to spawn is a protocol violation.** If you (the agent reading this) are about to invoke `spawn` because lookup returned empty, stop — that's the alpha.X bug class this Hard requirement was added to close (filed 2026-05-03 by Steve in personal cortex, `records/2026-05-03-1714-bug-engage-spawned-instead.md`).
+   Wait for the user to pick one. **Silent fallback to spawn is a protocol violation.** If you (the agent reading this) are about to invoke `spawn` because lookup returned empty, stop — that's the alpha.X bug class this Hard requirement was added to close (filed 2026-05-03 by Steve in personal cortex, `data/records/2026-05-03-1714-bug-engage-spawned-instead.md`).
 
 3. **Cross-machine race check** — if `last_engaged_at` is within last 30 minutes AND `last_engaged_by` is a different machine, warn user:
    > *"This session was last engaged 18 minutes ago by `steves-air`. Possible concurrent use. Continue anyway, abort, or wait?"*
@@ -1863,13 +1864,13 @@ Switches the current chat to an existing session. Steps:
    - User chooses `wait` → re-check every 60s, surface when stale
    - User chooses `abort` → no engage
 
-4. **Archived session?** If lookup at step 1 found the session in `archive/sessions/{guid}/`, warn:
+4. **Archived session?** If lookup at step 1 found the session in `archive/data/sessions/{guid}/`, warn:
    > *"`<name>` is archived (closed YYYY-MM-DD). Re-engaging restores it to active state. Confirm? (Note: the name `<name>` may have been reclaimed since.)"*
-   - User confirms → move folder back to `sessions/{guid}/`, state → `active`
+   - User confirms → move folder back to `data/sessions/{guid}/`, state → `active`
    - If name has been reclaimed, session resumes under its GUID with no name; user may rename mid-engage
 
 5. **Git-history-only match (folder gone).** If lookup at step 1 found mentions in git log but no folder anywhere, the session was deleted from history (or its files were removed). Surface this and offer recovery:
-   > *"`<name>` appears in git history (last seen YYYY-MM-DD) but its folder is gone. Recoverable from `git show <commit-sha>:sessions/{guid}/context.md`. Want me to restore it, or treat it as deleted?"*
+   > *"`<name>` appears in git history (last seen YYYY-MM-DD) but its folder is gone. Recoverable from `git show <commit-sha>:data/sessions/{guid}/context.md`. Want me to restore it, or treat it as deleted?"*
 
 6. Update `last_engaged_at` (current time + tz) and `last_engaged_by` (machine + provider/model)
 7. Set `state: active`
@@ -1885,7 +1886,7 @@ Switches the current chat to an existing session. Steps:
 Archives a session. Steps:
 
 1. Find session
-2. Move `sessions/{guid}/` → `archive/sessions/{guid}/`
+2. Move `data/sessions/{guid}/` → `archive/data/sessions/{guid}/`
 3. Set `state: closed` in archived `context.md`
 4. Commit: `session: close "<name>" ({guid})`
 5. Push
@@ -1898,7 +1899,7 @@ Closing is non-destructive — folder + records preserved. Re-engage allowed via
 
 Records filed during a scoped session carry the session's friendly name in their provenance block (`*Session: phase 2 design*`). Records filed against the singleton carry `*Session: main*`.
 
-Records remain in the global `records/` folder regardless of which session filed them — the durable record is global. The `Session:` field in provenance lets users filter / search records by which session produced them.
+Records remain in the global `data/records/` folder regardless of which session filed them — the durable record is global. The `Session:` field in provenance lets users filter / search records by which session produced them.
 
 ## Lock semantics — soft only
 
@@ -1961,7 +1962,7 @@ Bootstrap walks through five steps, one at a time. User can say `next` / `skip` 
 > *"Actors are personalities. Apex ships as the default — precise, direct, no domain specialty. Say `list actors` to browse all options. Say `change actor to [name]` to switch mid-session. Say `create actor [name]` to build your own from scratch. (next / skip)"*
 
 **Step 4 — Filing records:**
-> *"Everything worth keeping gets filed as a record in plain markdown. Your AI handles the filing — just have the conversation. When something's worth keeping, say 'file this' and it's committed. Records live in `records/` forever. (next / skip)"*
+> *"Everything worth keeping gets filed as a record in plain markdown. Your AI handles the filing — just have the conversation. When something's worth keeping, say 'file this' and it's committed. Records live in `data/records/` forever. (next / skip)"*
 
 **Step 5 — Closing and help:**
 > *"When you're done, say `goodbye` — I'll commit everything and push. Say `status` anytime for a quick health check. Say `help` to replay this guide. That's Cortex. (done)"*
@@ -2000,7 +2001,7 @@ When the user asks to pull from a connected service (e.g. "pull my calendar", "w
 1. Run the relevant integration script with `--passphrase` if needed, or prompt the user for their vault passphrase
 2. Capture the output
 3. Offer to file it as a record — **File this?**
-4. If yes, write it to `records/` using the appropriate template and commit
+4. If yes, write it to `data/records/` using the appropriate template and commit
 
 Available integrations:
 

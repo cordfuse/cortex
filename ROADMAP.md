@@ -64,7 +64,7 @@ Closes the last meaningful gap in the personality system for v4.
 
 **New verb:** `create actor <name>` — guided dialog for authoring a custom personality. Walks the user through title, domain, speech style, archetype, trait sliders, system prompt. Writes `personalities/PERSONALITY-CUSTOM-<NAME>.md`, supports `## parents` inheritance.
 
-**Source ideas:** filed in personal cortex overnight (`records/2026-05-02-0131-idea-actor-selection-at-hello.md` and `records/2026-05-02-0159-idea-actor-drift-detection.md`). 11 open questions resolved with reasonable defaults (informational-by-default, Bootstrap-voiced suggestions, 3-turn drift threshold, anti-nag per session, `## domain` field for matching).
+**Source ideas:** filed in personal cortex overnight (`data/records/2026-05-02-0131-idea-actor-selection-at-hello.md` and `data/records/2026-05-02-0159-idea-actor-drift-detection.md`). 11 open questions resolved with reasonable defaults (informational-by-default, Bootstrap-voiced suggestions, 3-turn drift threshold, anti-nag per session, `## domain` field for matching).
 
 **Why this matters:** addresses two real friction points — actor amnesia between sessions ("what did I set last time?") and topic drift mid-session ("I should have switched to a different actor 20 turns ago"). The personality system goes from passive (set-once-and-forget) to actively-aware of fit.
 
@@ -119,7 +119,7 @@ Reduces repo root from 13 to 10 files. Introduces `customs/` as the single home 
 - 5 agent pointers (CLAUDE.md, AGENTS.md, GEMINI.md, OPENCODE.md, QWEN.md)
 - version.txt, context.md
 
-**Why `customs/`:** all user-territory files now live in one folder. The convention is clean: framework files in `protocol/`, `docs/`, `personalities/`, `templates/`; user files in `customs/`, `personalities/PERSONALITY-CUSTOM-*`, `records/`, `attachments/`, `sessions/`. No more user files scattered at root.
+**Why `customs/`:** all user-territory files now live in one folder. The convention is clean: framework files in `protocol/`, `docs/`, `personalities/`, `templates/`; user files in `customs/`, `personalities/PERSONALITY-CUSTOM-*`, `data/records/`, `data/attachments/`, `data/sessions/`. No more user files scattered at root.
 
 ### v4.0.0-alpha.23 — Root declutter (5 framework markdowns moved to docs/ or archive/)
 
@@ -164,10 +164,10 @@ A small grooming alpha. No protocol changes, no new features.
 A focused docs grooming alpha. README + interlinked markdown documents brought to alpha.20 reality. No new features.
 
 **What changed:**
-- README.md: personality count corrected (55 → 73), categories table fully rewritten to reflect alpha.10/alpha.12/alpha.20 additions, roadmap section rebuilt, repo structure updated for `.claude/` / `sessions/` / `archive/`, three-AI-layer (Bootstrap + active actor + hidden scribe) reflected throughout, Cross-Agent Coordination (CNAC) section added.
+- README.md: personality count corrected (55 → 73), categories table fully rewritten to reflect alpha.10/alpha.12/alpha.20 additions, roadmap section rebuilt, repo structure updated for `.claude/` / `data/sessions/` / `archive/`, three-AI-layer (Bootstrap + active actor + hidden scribe) reflected throughout, Cross-Agent Coordination (CNAC) section added.
 - README-SIMPLE.md: count corrected, three-AI-layer model and current personality coverage acknowledged.
 - docs/PERSONALITIES.md: intro rewritten for alpha.20 model, missing top-level sections added (Mindfulness & Stoicism, Recovery & Peer Support, Family & Friends, Information Technology, Pop Culture), Dr. Walsh added to Clinical & wellness.
-- protocol/CORTEX.md: canonical category map updated. Closes the staleness flagged by mobile-Sonnet during 2026-05-01 Phase 6 validation (records/2026-05-01-1029-bug-canonical-category-map-stale.md).
+- protocol/CORTEX.md: canonical category map updated. Closes the staleness flagged by mobile-Sonnet during 2026-05-01 Phase 6 validation (data/records/2026-05-01-1029-bug-canonical-category-map-stale.md).
 - docs/SETUP-DESKTOP.md and docs/SETUP-MOBILE.md: "scribe sets up silently" line corrected to reflect Bootstrap actor + Gate 3 tool-call activity (alpha.13+).
 
 **Known follow-up:** the "Other Framework Personalities" section in docs/PERSONALITIES.md combines Workplace, Creative & Visionary, Wisdom & Reflection, and Distinctive Voices entries from the pre-alpha.6 "General" section. A full per-category split of that section is queued for a follow-up alignment pass.
@@ -202,7 +202,7 @@ The "framework default" concept is retired. Cortex now has a dedicated **Bootstr
 
 ### v4.0.0-alpha.19 — `reconcile` verb
 
-The last open piece of the personality-sync-drift bug class (filed in `records/2026-04-28-1631-bug-personality-sync-drift.md`). Alpha.15 detects historical drift in the pre-sync check; alpha.19 resolves it.
+The last open piece of the personality-sync-drift bug class (filed in `data/records/2026-04-28-1631-bug-personality-sync-drift.md`). Alpha.15 detects historical drift in the pre-sync check; alpha.19 resolves it.
 
 **What `reconcile` does:**
 
@@ -230,7 +230,7 @@ The second half of the big v4 feature. Phase 6 is now complete — full multi-se
 
 **What ships in alpha.18 (runtime):**
 - `engage session "<name>"` verb — active. Cross-machine race detection via `last_engaged_at` heuristic, archived-session re-engage warning + folder restore, hot-reload personality if scoped session declares one.
-- `close session "<name>"` verb — active. Folder moves to `archive/sessions/{guid}/`, friendly name freed for reuse immediately, chat returns to main session if the closed session was the engaged one.
+- `close session "<name>"` verb — active. Folder moves to `archive/data/sessions/{guid}/`, friendly name freed for reuse immediately, chat returns to main session if the closed session was the engaged one.
 - **Hello-time session resolution** — Loading Order step 3c. Fresh chats default to main session; `engage session` is the explicit opt-in. Compression-resilience recovery: if chat memory loses session binding mid-chat, scribe reads commit footer for GUID and re-engages.
 - **Daily auto-stale check** — runs on first hello of any UTC day. Sessions with `last_engaged_at` > 90 days transition to `stale` state and move to archive. Greeting surfaces count if any moved.
 - **Goodbye behavior in scoped sessions** — updates `last_engaged_at` on goodbye but does NOT transition state to `closed`. Goodbye = end-of-chat; close = end-of-session. Two different mechanics.
@@ -256,7 +256,7 @@ The big v4 feature ships its first half. After 18 months of cortex being singlet
 - New `# Multi-Session` section (~150 lines) in `protocol/CORTEX.md` — full design surface from the Phase 6 working spec
 - Session `context.md` schema — required + system-managed + user-editable fields with inheritance from singleton
 - Lifecycle states: `active` / `detached` / `closed` / `stale` (90d auto-archive)
-- File layout: `sessions/{guid}/` for active, `archive/sessions/{guid}/` for closed/stale
+- File layout: `data/sessions/{guid}/` for active, `archive/data/sessions/{guid}/` for closed/stale
 - GUID format: `YYYY-MM-DDTHHMM-TZ-<8-char-nanoid>` — sortable + collision-proof
 - Two verbs live: `spawn session "<name>"` and `list sessions [filter]`
 - Records `Session:` field added to provenance block — required, defaults to `main` for singleton-filed records (user-facing friendly name, not GUID)
@@ -273,7 +273,7 @@ The big v4 feature ships its first half. After 18 months of cortex being singlet
 **Why split into two:** alpha.17 is the schema + creation surface (additive only — nothing breaks). alpha.18 is the runtime + lifecycle (touches engage / close paths). Splitting lets alpha.17 be field-tested before alpha.18 builds on it.
 
 **Source records:**
-- `records/2026-04-27-1707-design-phase-6-multi-session.md` — working spec, 9 of 10 open questions resolved 2026-04-30
+- `data/records/2026-04-27-1707-design-phase-6-multi-session.md` — working spec, 9 of 10 open questions resolved 2026-04-30
 - Q3 (multi-actor roster) deferred to Phase 2 design
 
 ### v4.0.0-alpha.16 — Claude Code deny-list (framework files protected at OS layer)
@@ -493,7 +493,7 @@ What changed:
 
 What's NOT in Phase 1: multi-actor spawn (Phase 2), panel vs independent modes (Phase 3), hot-swap + actor response headers + mid-session protocol reload (Phase 4), `list actors` expansion (Phase 5).
 
-Spec: [`records/2026-04-26-v4-phase-1-hidden-scribe-spec.md`](records/2026-04-26-v4-phase-1-hidden-scribe-spec.md)
+Spec: [`data/records/2026-04-26-v4-phase-1-hidden-scribe-spec.md`](data/records/2026-04-26-v4-phase-1-hidden-scribe-spec.md)
 
 ### v3.4.15 — Claude Cowork/Dispatch row in README
 - README.md and README-SIMPLE.md now disclose that Cortex with full connector functionality works in Claude Cowork / Dispatch (Claude Code dispatched to the cloud from Claude.ai) — but with an explicit flakiness warning. Cowork is in active development on Anthropic's side; hung tooling calls and unstable behavior are common. Out of cortex's control. Treat as experimental.
