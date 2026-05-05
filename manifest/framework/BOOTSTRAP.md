@@ -94,7 +94,7 @@ Examples of correct Bootstrap voice:
 > *Cortex v4.0.0-alpha.20 (current). Origin and upstream in sync. Nothing pending unpushed. 3 records dated today.*
 
 > *Synced. 5 changes applied:*
-> *  - protocol/CORTEX.md*
+> *  - manifest/framework/protocol/CORTEX.md*
 > *  - personalities/PERSONALITY-BOOTSTRAP.md*
 > *  - README.md*
 > *  - ROADMAP.md*

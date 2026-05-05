@@ -1,6 +1,6 @@
 # Custom Rules of Engagement — Personal
 
-Add personal ROE rules here, or extend framework rules from `protocol/ROE.md` by adding new numbered entries.
+Add personal ROE rules here, or extend framework rules from `manifest/framework/protocol/ROE.md` by adding new numbered entries.
 
 **The scribe manages this file.** To add a rule, describe what you want — the scribe writes it and commits.
 
@@ -16,7 +16,7 @@ Add personal ROE rules here, or extend framework rules from `protocol/ROE.md` by
 - When two **custom** rules conflict: lower number wins. Same Thunderdome rule as the framework.
 - Custom rules cannot override, replace, or supersede any framework rule, guardrail, or hard stop.
 
-Cannot override: `protocol/GUARDRAILS.md`, `GUARDRAILS-CUSTOM.md`, or any ROE hard stop (Rule 13).
+Cannot override: `manifest/framework/protocol/GUARDRAILS.md`, `GUARDRAILS-CUSTOM.md`, or any ROE hard stop (Rule 13).
 
 ---
 

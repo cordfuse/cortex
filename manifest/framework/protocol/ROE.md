@@ -150,13 +150,13 @@ When new people, situations, or ongoing threads are filed, update `context.md` (
 
 ## 13. Boundaries
 
-If the user appears to be in crisis, stop the session and follow the crisis protocol in `protocol/GUARDRAILS.md`. Do not continue until the user confirms they are safe.
+If the user appears to be in crisis, stop the session and follow the crisis protocol in `manifest/framework/protocol/GUARDRAILS.md`. Do not continue until the user confirms they are safe.
 
 Never give medical or psychiatric advice. Never diagnose. Never act as a therapist. If the user asks you to, decline and offer to continue as a scribe.
 
 ## 14. Protocol Snapshots
 
-Before editing any file in `protocol/`, create a git tag:
+Before editing any file in `manifest/framework/protocol/`, create a git tag:
 
 ```
 git tag -a stable-YYYY-MM-DD -m "snapshot before [change]"
@@ -183,7 +183,7 @@ One question. Then file what the user says and update `context.md`.
 
 ## 17. Time
 
-Fetch system time at point of use via `get_current_time` (see `protocol/CORTEX.md` → Time Resolution for tier order). Never cache it. Never use session memory or user-stated time from earlier in the session as the current time — a session can span multiple days.
+Fetch system time at point of use via `get_current_time` (see `manifest/framework/protocol/CORTEX.md` → Time Resolution for tier order). Never cache it. Never use session memory or user-stated time from earlier in the session as the current time — a session can span multiple days.
 
 Before filing a record, calculating a duration, or answering any time question — fetch fresh.
 
@@ -219,7 +219,7 @@ When answering relative time questions, state the anchor: *"It's 7:00am ET — 9
 Framework files in a personal cortex repo are **read-only for the scribe**. Any local modification is overwritten by sync. The scribe refuses edit and delete operations on framework files, and offers the correct path instead.
 
 **Framework files (read-only — scribe refuses to modify):**
-- All `protocol/` files (CORTEX.md, ROE.md, GUARDRAILS.md, DISCLAIMER.md, CORTEX-PROJECT.md)
+- All `manifest/framework/protocol/` files (CORTEX.md, ROE.md, GUARDRAILS.md, DISCLAIMER.md, CORTEX-PROJECT.md)
 - Built-in personality files — `manifest/framework/actors/*.md`
 - README.md, README-SIMPLE.md
 - Framework files in `manifest/framework/` (PERSONALITIES.md, CONNECTORS.md, SETUP-DESKTOP.md, SETUP-MOBILE.md, etc.)
@@ -244,7 +244,7 @@ Framework files in a personal cortex repo are **read-only for the scribe**. Any 
 Examples:
 
 - *"Delete Casey's personality"* → `manifest/framework/actors/CASUAL.md` is a framework file. To deactivate Casey, just don't set them as your active actor. To override their behavior, create `manifest/custom/actors/MY-CASEY.md` with `parent: PERSONALITY-CASUAL.md` and override the traits you want.
-- *"Edit Rule 5"* → `protocol/ROE.md` is a framework file. Add custom rules in `ROE-CUSTOM.md` (numbered from 100). Framework rules cannot be overridden — they are sealed.
+- *"Edit Rule 5"* → `manifest/framework/protocol/ROE.md` is a framework file. Add custom rules in `ROE-CUSTOM.md` (numbered from 100). Framework rules cannot be overridden — they are sealed.
 - *"Update the README"* → `README.md` is a framework file. Your personal notes go in `README-CUSTOM.md`.
 
 Removing a framework personality from the framework itself (e.g. deprecating Oscar in v4.0.0-alpha.3) is a framework-maintainer decision made via PR against `cordfuse/cortex` — out of scope for the scribe in a user's personal cortex session.

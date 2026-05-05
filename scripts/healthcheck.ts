@@ -13,10 +13,10 @@ import { fileURLToPath } from 'node:url'
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..')
 
 const REQUIRED: Record<string, string> = {
-  'protocol/CORTEX.md': 'Protocol engine',
-  'protocol/GUARDRAILS.md': 'Safety guardrails',
-  'protocol/DISCLAIMER.md': 'Disclaimer and legal warnings',
-  'protocol/ROE.md': 'Rules of engagement',
+  'manifest/framework/protocol/CORTEX.md': 'Protocol engine',
+  'manifest/framework/protocol/GUARDRAILS.md': 'Safety guardrails',
+  'manifest/framework/protocol/DISCLAIMER.md': 'Disclaimer and legal warnings',
+  'manifest/framework/protocol/ROE.md': 'Rules of engagement',
 }
 
 const errors: string[] = []
@@ -42,7 +42,7 @@ if (errors.length > 0) {
   }
   console.log()
 
-  if (errors.some(e => e.includes('protocol/GUARDRAILS.md'))) {
+  if (errors.some(e => e.includes('manifest/framework/protocol/GUARDRAILS.md'))) {
     console.log('WARNING: GUARDRAILS.md is missing or empty.')
     console.log('Cortex has no safety guardrails. Cordfuse accepts zero liability for any consequences.')
     console.log('Do not proceed without restoring this file.')

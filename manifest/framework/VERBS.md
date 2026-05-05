@@ -88,7 +88,7 @@ Surface the CAMH Foundation donation link. One-liner response, no filing, no com
 
 Triggers: "reconcile" | "deep sync" | "sync --hard" | "reconcile sync" | "full drift check"
 
-Deep three-category diff against `upstream/main` with per-file gating. Catches historical drift that routine `sync` doesn't catch. Each file gated individually; nothing happens silently. See `# Sync flow → Reconcile flow` in protocol/CORTEX.md (v4.0.0-alpha.19+).
+Deep three-category diff against `upstream/main` with per-file gating. Catches historical drift that routine `sync` doesn't catch. Each file gated individually; nothing happens silently. See `# Sync flow → Reconcile flow` in manifest/framework/protocol/CORTEX.md (v4.0.0-alpha.19+).
 
 ---
 

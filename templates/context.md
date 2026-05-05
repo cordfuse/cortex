@@ -11,7 +11,7 @@ actors:
     active_speaker: true
     joined_at: 2026-01-01 00:00 UTC
 
-*`actors:` (v4.0.0-alpha.32+) — array of named personalities present in the session. Each entry: `name` (required), `active_speaker: true|false` (exactly one entry must be `true` — that's the default responder when no actor is named in a turn), `joined_at` (informational timestamp). Add actors via natural language: "Hey Oscar, join us" or "add actor oscar". Remove via "Oscar, you can step out" or "remove actor oscar". Switch the active speaker via "change actor to oscar". See protocol/CORTEX.md → Multi-actor sessions.*
+*`actors:` (v4.0.0-alpha.32+) — array of named personalities present in the session. Each entry: `name` (required), `active_speaker: true|false` (exactly one entry must be `true` — that's the default responder when no actor is named in a turn), `joined_at` (informational timestamp). Add actors via natural language: "Hey Oscar, join us" or "add actor oscar". Remove via "Oscar, you can step out" or "remove actor oscar". Switch the active speaker via "change actor to oscar". See manifest/framework/protocol/CORTEX.md → Multi-actor sessions.*
 
 *Legacy single-actor format (pre-alpha.32) is still supported for backward compatibility:*
 
@@ -22,7 +22,7 @@ personality: casey
 *If both `personality:` and `actors:` are present, `actors:` wins. Sync flow offers an opt-in migration from `personality:` to `actors:` at the alpha.32 upgrade.*
 
 *Provider and model are read from the model's real-time self-knowledge when filing records. They are NOT persisted here — that would go stale the moment you switch providers or devices.*
-*The hidden scribe (the protocol role that handles all filing) is implicit and has no configuration — see protocol/CORTEX.md → Hidden Scribe.*
+*The hidden scribe (the protocol role that handles all filing) is implicit and has no configuration — see manifest/framework/protocol/CORTEX.md → Hidden Scribe.*
 
 ---
 

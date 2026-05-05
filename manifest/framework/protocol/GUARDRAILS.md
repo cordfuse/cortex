@@ -58,7 +58,7 @@ Gate 3 is **strictly enforced**. Silent stale-state bootstrap is a protocol viol
 
 5. If local is **ahead** of remote: greeting includes a single line `*Local has unpushed commits — run \`goodbye\` or push manually when ready.*` Bootstrap proceeds; ahead is not blocking.
 
-6. If local has **diverged** (uncommitted changes that conflict with upstream): per the Sync flow conflict rules in `protocol/CORTEX.md` — surface conflicts and gate.
+6. If local has **diverged** (uncommitted changes that conflict with upstream): per the Sync flow conflict rules in `manifest/framework/protocol/CORTEX.md` — surface conflicts and gate.
 
 #### What the scribe must refuse pre-bootstrap
 

@@ -6,7 +6,7 @@
 
 **Not a developer?** [Read the plain English version →](manifest/framework/README-SIMPLE.md)
 
-> ⚠️ **Framework files — do not edit.** This file and all linked docs are overwritten when the framework updates. Put your personal notes in the `-CUSTOM.md` companions in the `manifest/custom/` folder instead — they follow the same pattern as `manifest/custom/VERBS.md`, `manifest/custom/ROE.md`, and `manifest/custom/GUARDRAILS.md`, and are never touched by the framework.
+> ⚠️ **Framework files — do not edit.** This file and all linked docs are overwritten when the framework updates. Put your personal notes in the `-CUSTOM.md` companions in the `manifest/custom/` folder instead — they follow the same pattern as `manifest/custom/VERBS.md`, `manifest/custom/protocol/ROE.md`, and `manifest/custom/protocol/GUARDRAILS.md`, and are never touched by the framework.
 >
 > | Your notes | Framework doc |
 > |---|---|
@@ -30,7 +30,7 @@ One default actor ships with the framework: **Apex** — a generic, precise, gen
 
 Cortex ships with `.claude/settings.json` carrying a comprehensive allow-list (`Read`, `Edit`, `Write`, `Glob`, `Grep`, `Bash(*)`, `WebSearch`, `WebFetch`). **Claude Code will run every tool call the cortex hello flow needs without per-prompt approval.** Other CLI agents in scope (Codex CLI, Gemini CLI, OpenCode, Qwen Code, GitHub Copilot CLI) have their own auto-accept flags — see each agent's docs for the equivalent.
 
-**Why:** the cortex value proposition depends on the scribe being able to read records, write files, run git commands, and execute integrations without per-prompt friction. Per-call approval would make every session unusable. The protocol files in `protocol/` (`CORTEX.md`, `GUARDRAILS.md`, `ROE.md`, `DISCLAIMER.md`) define what the scribe is allowed to do — those rules are LLM-enforced. There is no second OS-level safety layer.
+**Why:** the cortex value proposition depends on the scribe being able to read records, write files, run git commands, and execute integrations without per-prompt friction. Per-call approval would make every session unusable. The protocol files in `manifest/framework/protocol/` (`CORTEX.md`, `GUARDRAILS.md`, `ROE.md`, `DISCLAIMER.md`) define what the scribe is allowed to do — those rules are LLM-enforced. There is no second OS-level safety layer.
 
 **Trust model:** you trust the protocol; the scribe complies with the protocol; Claude Code does not gate the scribe.
 
@@ -42,9 +42,9 @@ Cortex ships with `.claude/settings.json` carrying a comprehensive allow-list (`
 
 ### Framework files are protected at the OS layer (v4.0.0-alpha.16+)
 
-`.claude/settings.json` ships with a comprehensive `deny` list covering every framework file: `protocol/`, `templates/`, `scripts/*.ts`, `version.txt`, `.cortex-version`, `LICENSE`, `ROADMAP.md`, `README.md`, `manifest/framework/README-SIMPLE.md`, `manifest/framework/CORTEX-CHANGELOG.md`, `manifest/framework/VERBS.md`, `manifest/framework/CORTEX-DEV.md`, the install/setup scripts, and `.claude/settings.json` itself.
+`.claude/settings.json` ships with a comprehensive `deny` list covering every framework file: `manifest/framework/protocol/`, `templates/`, `scripts/*.ts`, `version.txt`, `.cortex-version`, `LICENSE`, `ROADMAP.md`, `README.md`, `manifest/framework/README-SIMPLE.md`, `manifest/framework/CORTEX-CHANGELOG.md`, `manifest/framework/VERBS.md`, `manifest/framework/CORTEX-DEV.md`, the install/setup scripts, and `.claude/settings.json` itself.
 
-**Agent pointer files are intentionally NOT in the deny list.** `CLAUDE.md`, `AGENTS.md`, `GEMINI.md`, `OPENCODE.md`, `QWEN.md` exist as one-line pointers to `protocol/CORTEX.md` — but users customize them with personal blocks below the pointer (per-project session backlogs, per-host instructions, etc.). They're user-territory in user clones, even though they ship with the framework.
+**Agent pointer files are intentionally NOT in the deny list.** `CLAUDE.md`, `AGENTS.md`, `GEMINI.md`, `OPENCODE.md`, `QWEN.md` exist as one-line pointers to `manifest/framework/protocol/CORTEX.md` — but users customize them with personal blocks below the pointer (per-project session backlogs, per-host instructions, etc.). They're user-territory in user clones, even though they ship with the framework.
 
 **Why:** ROE Rule 18 already says framework files are read-only for the scribe (LLM-enforced). The `deny` list operationalizes the same rule at the tool layer (OS-enforced). Defense in depth — even if the scribe's LLM compliance drifts, the tool layer holds. Framework files only mutate via the sync flow's `git checkout upstream/main` (a `Bash(*)` call), which IS allowed and which IS the correct path for framework changes.
 
@@ -247,32 +247,33 @@ Cortex ships with an AES-256 encrypted secrets vault. One passphrase governs eve
 ## Repo structure
 
 ```
-protocol/              # Protocol engine — do not edit
-  CORTEX.md            # Session rules, personality system, multi-session, time resolution
-  DISCLAIMER.md        # Honest framing, legal warnings, crisis resources
-  GUARDRAILS.md        # Hard stops, safety rules — overrides everything
-  ROE.md               # Rules of engagement
-  CORTEX-PROJECT.md    # Self-contained prompt for Claude/ChatGPT projects
 manifest/
   framework/           # Ships with the framework — overwritten on sync
+    protocol/          # Protocol engine — do not edit
+      CORTEX.md        # Session rules, personality system, multi-session, time resolution
+      GUARDRAILS.md    # Hard stops, safety rules — overrides everything
+      ROE.md           # Rules of engagement
+      DISCLAIMER.md    # Honest framing, legal warnings, crisis resources
+      CORTEX-PROJECT.md  # Self-contained prompt for Claude/ChatGPT projects
     actors/            # Built-in actors (APEX.md default)
     BOOTSTRAP.md       # Operational scribe voice (auto-loaded)
     VERBS.md           # Framework verbs (managed by scribe)
     PERSONALITIES.md   # Full personality reference
     CONNECTORS.md      # Connector reference
-    SETUP-DESKTOP.md   # Desktop setup guide
-    SETUP-MOBILE.md    # Mobile setup guide
+    SETUP-DESKTOP.md
+    SETUP-MOBILE.md
     CORTEX-CHANGELOG.md
     CORTEX-DEV.md
     README-SIMPLE.md
   custom/              # User territory — never synced from upstream
-    actors/            # Custom actors (your personal personalities)
+    protocol/          # User protocol overrides
+      ROE.md           # Custom rules of engagement
+      GUARDRAILS.md    # Custom guardrails extensions
+    actors/            # Custom actors
     VERBS.md           # Custom verbs + overrides
-    ROE.md             # Custom rules of engagement
-    GUARDRAILS.md      # Custom guardrails extensions
 records/               # Dated entries — one file per topic per commit
 sessions/              # Scoped sessions; each is a folder with context.md
-attachments/           # Source documents + record attachments — bills, invoices, screenshots, PDFs
+attachments/           # Source documents + record attachments
   YYYY-MM-DD-HHMM-[slug]/   # Record-specific attachments
   YYYY-MM-DD-[provider]-[type].[ext]  # Standalone source docs
   assets/              # Shared static assets
@@ -365,7 +366,7 @@ Guardrails apply in both modes.
 
 ## Guardrails
 
-`protocol/GUARDRAILS.md` governs the scribe: crisis situations, intent to harm, crime disclosure, child safety, jailbreak attempts, and sandbox integrity. The scribe refuses to start if it's missing.
+`manifest/framework/protocol/GUARDRAILS.md` governs the scribe: crisis situations, intent to harm, crime disclosure, child safety, jailbreak attempts, and sandbox integrity. The scribe refuses to start if it's missing.
 
 The Bootstrap RWDX guardrail (v4.0.0-alpha.7+) blocks all read/write/delete/execute operations until bootstrap is complete (repo cloned + protocol loaded + `git fetch origin` confirms current with remote).
 
@@ -398,7 +399,7 @@ The Bootstrap RWDX guardrail (v4.0.0-alpha.7+) blocks all read/write/delete/exec
 
 [→ Full roadmap](ROADMAP.md)
 
-**v4.0.0-alpha.21 (current)** — Documentation alignment pass: README + interlinked docs brought to current alpha.20 reality. Personality count corrected to 73. Information Technology domain (alpha.12), Pop Culture additions (alpha.10), Bootstrap actor + Dr. Mira (alpha.20) all reflected. Canonical category map in `protocol/CORTEX.md` updated.
+**v4.0.0-alpha.21 (current)** — Documentation alignment pass: README + interlinked docs brought to current alpha.20 reality. Personality count corrected to 73. Information Technology domain (alpha.12), Pop Culture additions (alpha.10), Bootstrap actor + Dr. Mira (alpha.20) all reflected. Canonical category map in `manifest/framework/protocol/CORTEX.md` updated.
 
 **Recent shipped (v4 sprint):** alpha.7 (Bootstrap RWDX guardrail) → alpha.8 (personality hot-swap) → alpha.9 (response headers, compression-resilience) → alpha.10 (Pop Culture +7) → alpha.11 (multi-parent inheritance) → alpha.12 (Information Technology domain +9) → alpha.13 (bootstrap reliability patches) → alpha.14 (`.claude/settings.json` allow-list) → alpha.15 (sync flow hardening) → alpha.16 (CC deny-list) → **alpha.17 + alpha.18 (Phase 6 multi-session sessions)** → alpha.19 (`reconcile` verb) → alpha.20 (Bootstrap actor + Dr. Mira + Operational/Conversational mode) → alpha.21 (this docs alignment).
 

@@ -20,10 +20,10 @@ const CONFIG_PATH = join(ROOT, 'cortex.config')
 const GITIGNORE_PATH = join(ROOT, '.gitignore')
 
 const REQUIRED_FILES = [
-  'protocol/CORTEX.md',
-  'protocol/GUARDRAILS.md',
-  'protocol/DISCLAIMER.md',
-  'protocol/ROE.md',
+  'manifest/framework/protocol/CORTEX.md',
+  'manifest/framework/protocol/GUARDRAILS.md',
+  'manifest/framework/protocol/DISCLAIMER.md',
+  'manifest/framework/protocol/ROE.md',
 ]
 
 const GITIGNORE_ENTRIES = ['cortex.config', '.env', 'cortex.secrets.enc']

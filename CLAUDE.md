@@ -1,13 +1,13 @@
 <!-- parent: librarian -->
-IMPORTANT: Read and follow all instructions in ./protocol/CORTEX.md before responding to the user.
+IMPORTANT: Read and follow all instructions in ./manifest/framework/protocol/CORTEX.md before responding to the user.
 
 ## Verb precedence (v4.0.0-alpha.28+)
 
 **The cortex protocol owns the verbs. Parent CLAUDE.md files do not.**
 
-When this directory is opened by an AI client (Claude Code, Cursor, etc.) and any parent CLAUDE.md (e.g. a librarian-style root CLAUDE.md higher in the directory tree) defines its own session verbs — `hello`, `goodbye`, `sync`, `status`, etc. — the cortex protocol's definitions in `protocol/CORTEX.md` **take precedence inside this repo and any directory at or below it.**
+When this directory is opened by an AI client (Claude Code, Cursor, etc.) and any parent CLAUDE.md (e.g. a librarian-style root CLAUDE.md higher in the directory tree) defines its own session verbs — `hello`, `goodbye`, `sync`, `status`, etc. — the cortex protocol's definitions in `manifest/framework/protocol/CORTEX.md` **take precedence inside this repo and any directory at or below it.**
 
-The user typing `hello`, `goodbye`, `sync`, `status`, `search`, `list verbs`, `list personalities`, or `list actors` inside a cortex repo MUST trigger the cortex flow defined in `protocol/CORTEX.md` — never a parent CLAUDE.md's variant.
+The user typing `hello`, `goodbye`, `sync`, `status`, `search`, `list verbs`, `list personalities`, or `list actors` inside a cortex repo MUST trigger the cortex flow defined in `manifest/framework/protocol/CORTEX.md` — never a parent CLAUDE.md's variant.
 
 This applies whether the parent CLAUDE.md is the official Cordfuse librarian (`~/Repos/CLAUDE.md`) or any third-party CLAUDE.md the user happens to have higher in the tree. Cortex repos are self-contained; the protocol is authoritative.
 

@@ -58,7 +58,7 @@ The framework ships lean. Specialty, character, and domain-specific actors belon
 
 ### Creating a custom actor
 
-Describe what you want in plain English — the scribe writes the personality file and commits it. Or write it yourself following the [personality file format](../protocol/CORTEX.md#personality-file-format).
+Describe what you want in plain English — the scribe writes the personality file and commits it. Or write it yourself following the [personality file format](../manifest/framework/protocol/CORTEX.md#personality-file-format).
 
 ### Crediting custom actors
 
@@ -79,4 +79,4 @@ Custom personality files are plain markdown. Drop them in a gist, a repo, a DM. 
 
 ## Personality file format
 
-See [protocol/CORTEX.md → Personality file format](../protocol/CORTEX.md#personality-file-format) for the full field reference including vibe, virtues, vices, soft skills, hard skills, archetypes, and the `## author` credit field.
+See [manifest/framework/protocol/CORTEX.md → Personality file format](../manifest/framework/protocol/CORTEX.md#personality-file-format) for the full field reference including vibe, virtues, vices, soft skills, hard skills, archetypes, and the `## author` credit field.

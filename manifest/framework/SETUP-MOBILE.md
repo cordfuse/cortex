@@ -44,7 +44,7 @@ This is how the scribe authenticates and knows where your repo lives. Keep it lo
 
 ## Step 4 — Get the system prompt
 
-Open your repo on GitHub. Navigate to `protocol/CORTEX-PROJECT.md`. Copy the full contents — this is your system prompt.
+Open your repo on GitHub. Navigate to `manifest/framework/protocol/CORTEX-PROJECT.md`. Copy the full contents — this is your system prompt.
 
 ---
 
@@ -53,14 +53,14 @@ Open your repo on GitHub. Navigate to `protocol/CORTEX-PROJECT.md`. Copy the ful
 ### Claude (claude.ai)
 
 1. claude.ai → Projects → New project
-2. **Instructions (system prompt):** paste the full contents of `protocol/CORTEX-PROJECT.md`
+2. **Instructions (system prompt):** paste the full contents of `manifest/framework/protocol/CORTEX-PROJECT.md`
 3. **Project knowledge:** upload your `CONNECT.md`
 4. Open a new chat in the project
 
 ### ChatGPT (chat.openai.com)
 
 1. Explore GPTs → Create a GPT → Configure
-2. **Instructions:** paste the full contents of `protocol/CORTEX-PROJECT.md`
+2. **Instructions:** paste the full contents of `manifest/framework/protocol/CORTEX-PROJECT.md`
 3. **Knowledge:** upload your `CONNECT.md`
 4. Save and open a chat
 
