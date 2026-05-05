@@ -4,6 +4,8 @@ One line per change. Newest at top. Append in the same commit as the change.
 
 Format: `YYYY-MM-DD HH:MM TZ | file | what changed`
 
+2026-05-05 UTC | version.txt | **bump to 4.5.5** — gitignore housekeeping: sessions/ and records/ excluded from framework, must be tracked in personal instances
+2026-05-05 UTC | .gitignore | sessions/ and records/ ignored in framework repo; personal instances must remove both entries — AI reads session state and records history from git
 2026-05-05 UTC | version.txt | **bump to 4.5.4** — onboarding + help system
 2026-05-05 UTC | protocol/CORTEX.md | Gate 3c: onboarding check after sync, before opening scan — absent tracking file triggers first-time tutorial; version delta after sync triggers walkthrough offer; full onboarding spec section added (tracking file schema, 5-step tutorial flow, version walkthrough content translation rule)
 2026-05-05 UTC | VERBS.md | new verb `help` / `tutorial` — re-runs interactive tutorial at any time
