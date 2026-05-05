@@ -4,6 +4,8 @@ One line per change. Newest at top. Append in the same commit as the change.
 
 Format: `YYYY-MM-DD HH:MM TZ | file | what changed`
 
+2026-05-05 UTC | version.txt | **bump to 4.5.6** — gitignore: attachments/ excluded from framework, tracked in personal instances
+2026-05-05 UTC | .gitignore | attachments/ ignored in framework repo; personal instances must remove this entry so the AI can read shared files across sessions
 2026-05-05 UTC | version.txt | **bump to 4.5.5** — gitignore housekeeping: sessions/ and records/ excluded from framework, must be tracked in personal instances
 2026-05-05 UTC | .gitignore | sessions/ and records/ ignored in framework repo; personal instances must remove both entries — AI reads session state and records history from git
 2026-05-05 UTC | version.txt | **bump to 4.5.4** — onboarding + help system

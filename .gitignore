@@ -19,3 +19,11 @@ sessions/
 # tracking, your history is invisible to the AI.
 # .gitignore is NOT in sync scope, so removing this line is safe across syncs.
 records/
+
+# Attachments are personal — contributors should not commit their files here.
+#
+# IMPORTANT FOR PERSONAL INSTANCES: remove the line below so your attachments
+# are tracked. The AI reads attachments for context — without git tracking,
+# files you've shared are invisible across sessions.
+# .gitignore is NOT in sync scope, so removing this line is safe across syncs.
+attachments/
