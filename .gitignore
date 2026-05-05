@@ -2,3 +2,12 @@ cortex.config
 .env
 setup.log
 .claude/settings.local.json
+
+# Sessions are ignored in the framework repo — contributors should not commit
+# their personal session history here.
+#
+# IMPORTANT FOR PERSONAL INSTANCES: remove the line below so your sessions are
+# tracked. Claude web and Claude Code read session state from the repo — without
+# git tracking, session context is invisible to the AI.
+# .gitignore is NOT in sync scope, so removing this line is safe across syncs.
+sessions/
