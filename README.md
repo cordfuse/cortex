@@ -1,6 +1,6 @@
 # Cortex
 
-[![Version](https://img.shields.io/badge/version-4.5.3-blue)](manifest/framework/CORTEX-CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-4.5.4-blue)](manifest/framework/CORTEX-CHANGELOG.md)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![Donate to CAMH](https://img.shields.io/badge/Donate-CAMH%20Foundation-blue)](https://camhfoundation.ca/donate)
 
@@ -408,7 +408,9 @@ The Bootstrap RWDX guardrail (v4.0.0-alpha.7+) blocks all read/write/delete/exec
 
 [→ Full roadmap](ROADMAP.md)
 
-**v4.5.3 (current)** — Deprecated actors + imported actor namespaces. `## deprecated: true` retires an actor without deleting it — stays in `list actors` with a `[deprecated]` label, warns before activation, keeps inheritance chains intact. `import actor from [link]` places someone else's actor in `manifest/custom/actors/[source-handle]/` automatically — name collisions resolved by Bootstrap asking which you mean, once per session.
+**v4.5.4 (current)** — Onboarding + help system. First-time users get an interactive 5-step tutorial at hello. Version walkthroughs offered automatically after each sync that lands a new version. `help` verb re-runs the tutorial any time. State tracked in `manifest/custom/cortex-onboarding.md`.
+
+**v4.5.3** — Deprecated actors + imported actor namespaces. `## deprecated: true` retires an actor without deleting it — stays in `list actors` with a `[deprecated]` label, warns before activation, keeps inheritance chains intact. `import actor from [link]` places someone else's actor in `manifest/custom/actors/[source-handle]/` automatically — name collisions resolved by Bootstrap asking which you mean, once per session.
 
 **Recent shipped:** → **v4.5.1** (Bootstrap-always-prompts, manifest/ restructure) → **v4.5.2** (abstract actors) → **v4.5.3** (deprecated actors + actor namespaces via import).
 

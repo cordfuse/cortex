@@ -4,6 +4,10 @@ One line per change. Newest at top. Append in the same commit as the change.
 
 Format: `YYYY-MM-DD HH:MM TZ | file | what changed`
 
+2026-05-05 UTC | version.txt | **bump to 4.5.4** — onboarding + help system
+2026-05-05 UTC | protocol/CORTEX.md | Gate 3c: onboarding check after sync, before opening scan — absent tracking file triggers first-time tutorial; version delta after sync triggers walkthrough offer; full onboarding spec section added (tracking file schema, 5-step tutorial flow, version walkthrough content translation rule)
+2026-05-05 UTC | VERBS.md | new verb `help` / `tutorial` — re-runs interactive tutorial at any time
+2026-05-05 UTC | templates/cortex-onboarding.md | new template — scribe uses to create manifest/custom/cortex-onboarding.md on first hello
 2026-05-05 UTC | version.txt | **bump to 4.5.3** — deprecated actors + imported actor namespaces
 2026-05-05 UTC | protocol/CORTEX.md | personality file format: add `## deprecated` field; list actors: pre-filter updated (deprecated shown with label, not excluded); change actor + add actor: deprecation warning before activation; rendering rules 8+9: deprecated at section bottom, imported actors grouped by source subdirectory; personality file resolution: recursive scan + multi-match disambiguation; sync step 3b: recursive actor pull; stale ls-tree enumeration removed
 2026-05-05 UTC | VERBS.md | new verb `import actor` — accepts URL or pasted content, infers source handle, places in manifest/custom/actors/[source-handle]/, warns on name collision

@@ -445,6 +445,13 @@ Note the update in the greeting (one line, inside the normal greeting — not a 
 
 Then continue the session on the new protocol.
 
+**Gate 3c — Onboarding check (v4.5.4+):** after sync completes (or if no sync was needed), before the opening scan:
+
+1. Check for `manifest/custom/cortex-onboarding.md`.
+2. **If absent (first-time user):** Bootstrap surfaces — *"Welcome to Cortex. This looks like your first session — would you like a quick interactive tutorial? It takes about 2 minutes. (yes / skip)"* If yes, run the first-time tutorial flow (see `## Onboarding and help system` below). If skip, create the tracking file with `onboarding_complete: false` and proceed.
+3. **If present and `last_walked_through` is older than current `.cortex-version` AND a sync just ran this session:** Bootstrap surfaces — *"Version [X.Y.Z] just landed — want a quick walkthrough of what's new? (yes / skip)"* One prompt, no retry. If yes, run the version walkthrough flow. If skip, update `last_walked_through` to current version and proceed.
+4. **If present and versions match:** no prompt, proceed directly to opening scan.
+
 **Personality hot-swaps mid-session.** The active actor's personality file reloads when the user invokes a switch verb during a session — no fresh hello required. The scribe updates `context.md`, commits, re-runs Loading Order step 3b for the new actor, and adopts the new voice from the next response onward. Voice changes immediately; manifest/framework/protocol/ROE/GUARDRAILS rules also reload immediately after a successful `sync` (alpha.30+) — see "Protocol rules reload on user-triggered `sync`" above for protocol-level state.
 
 Run the **3x opening scan** — read the actual repo state, not session memory:
@@ -1910,6 +1917,77 @@ record: phase 2 design notes
 ```
 
 This is the compression-resilience fallback for session binding (alpha.9). If the chat's conversational memory loses the session ID after provider compaction, the scribe recovers by reading the most recent commit's footer.
+
+---
+
+# Onboarding and help system (v4.5.4+)
+
+## Tracking file
+
+**Path:** `manifest/custom/cortex-onboarding.md` — user territory, never synced from upstream.
+
+The scribe creates this file on first hello (whether the user completes the tutorial or skips it). Schema:
+
+```markdown
+# Cortex Onboarding State
+
+## Status
+first_run: YYYY-MM-DD
+onboarding_complete: true
+last_walked_through: X.Y.Z
+
+## History
+
+| Date (UTC) | Event | Version |
+|---|---|---|
+| YYYY-MM-DD | Initial onboarding completed | X.Y.Z |
+| YYYY-MM-DD | Version walkthrough: X.Y.Z | X.Y.Z |
+| YYYY-MM-DD | Tutorial re-run (help) | X.Y.Z |
+```
+
+`onboarding_complete: false` is written when the user skips the tutorial. `last_walked_through` is updated after every completed or skipped walkthrough. History is append-only.
+
+## First-time tutorial flow
+
+Bootstrap walks through five steps, one at a time. User can say `next` / `skip` / `done` at any step. Skipping mid-flow ends the tutorial and marks `onboarding_complete: false`. Reaching step 5 marks `onboarding_complete: true`.
+
+**Step 1 — What Cortex is:**
+> *"Welcome to Cortex. This is a private git repo your AI reads at every session — it remembers your context, files your records, and picks up where you left off, any device, any major AI. Ready? (next / skip)"*
+
+**Step 2 — What hello does:**
+> *"Three things happen every time you say hello: your repo syncs so records are current, I scan for anything unresolved from last time, then you pick who you're talking to. (next / skip)"*
+
+**Step 3 — Actors:**
+> *"Actors are personalities. Apex ships as the default — precise, direct, no domain specialty. Say `list actors` to browse all options. Say `change actor to [name]` to switch mid-session. Say `create actor [name]` to build your own from scratch. (next / skip)"*
+
+**Step 4 — Filing records:**
+> *"Everything worth keeping gets filed as a record in plain markdown. Your AI handles the filing — just have the conversation. When something's worth keeping, say 'file this' and it's committed. Records live in `records/` forever. (next / skip)"*
+
+**Step 5 — Closing and help:**
+> *"When you're done, say `goodbye` — I'll commit everything and push. Say `status` anytime for a quick health check. Say `help` to replay this guide. That's Cortex. (done)"*
+
+After step 5: write tracking file with `onboarding_complete: true`, `last_walked_through: [current version]`, commit.
+After skip: write tracking file with `onboarding_complete: false`, `last_walked_through: [current version]`, commit.
+
+## Version walkthrough flow
+
+Triggered when: tracking file exists, `last_walked_through` < current `.cortex-version`, sync just ran.
+
+Bootstrap reads `manifest/framework/CORTEX-CHANGELOG.md`, filters entries newer than `last_walked_through`, groups them by feature area, and presents in plain English — one group at a time if large, single summary if small.
+
+**Opening prompt:**
+> *"Version [X.Y.Z] just landed. Here's what's new: [plain English summary of changes since last_walked_through]. Want to go deeper? (yes / skip)"*
+
+If yes: walk through each group interactively. User can say `next` / `skip` / `done` at any point.
+If skip: update `last_walked_through`, append history entry, commit. One prompt only — no retry.
+
+**Content translation rule:** Bootstrap MUST translate changelog entries into plain English. Technical field names (`## deprecated`, `manifest/custom/actors/`) should be described by what they do (*"you can now mark actors as retired"*), not by their implementation.
+
+## `help` verb
+
+Available at any time, re-runs the tutorial from Step 1. Does not require `onboarding_complete: false`. Appends a history entry with event `Tutorial re-run (help)`.
+
+Triggers: *"help"* | *"tutorial"* | *"show me around"* | *"how does this work"* | *"what can you do"* | *"I'm new to this"*
 
 ---
 

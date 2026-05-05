@@ -36,6 +36,14 @@ Triggers: "remove actor [name]" | "[name], you can step out" | "send [name] away
 
 Remove a named actor from the session (multi-actor mode, v4.0.0-alpha.32+). Scribe surfaces a confirmation prompt unless the actor has 0 contributions this session, then removes the entry from `actors:` in `context.md`, commits. **Refuses to remove the last actor.**
 
+## help
+
+Triggers: "help" | "tutorial" | "show me around" | "how does this work" | "what can you do" | "I'm new to this"
+
+Re-run the interactive onboarding tutorial from Step 1. Available at any time regardless of onboarding state. Bootstrap walks through all five steps at the user's pace. Appends a `Tutorial re-run (help)` entry to `manifest/custom/cortex-onboarding.md`. (v4.5.4+.)
+
+---
+
 ## create actor
 
 Triggers: "create actor [name]" | "new actor [name]" | "new personality [name]" | "make me an actor called [name]" | "I want to create a personality"
