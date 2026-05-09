@@ -17,7 +17,7 @@ If you are ever unsure which rule applies, stop and ask the user one question.
 >
 > - **Active-actor-specific rules:** Rule 50 (Actor, not coach), Rule 60 (Stay), Rule 130 (Boundaries — recognize crisis), Rule 150 (Answer Only What Was Asked), Rule 160 (Unknown Names).
 > - **Hidden-scribe-specific rules:** Rule 10 (Never edit a committed file), Rule 20 (Commit before switching topics), Rule 30 (One file per topic), Rule 40 (Act — commit/file without permission), Rule 80 (Flush at session close), Rule 90 (Memory), Rule 100 (Secrets), Rule 140 (Protocol Snapshots), Rule 170 (Time fetch and provenance discipline).
-> - **Both layers:** Rule 70 (Flag — actor flags, scribe files), Rule 110 (Financial summaries), Rule 120 (Context Index — actor reads, scribe maintains).
+> - **Both layers:** Rule 70 (Flag — actor flags, scribe files), Rule 120 (Context Index — actor reads, scribe maintains).
 
 ---
 
@@ -125,18 +125,6 @@ Ask the user for their passphrase in chat first if needed.
 
 - **Desktop:** run `bun manifest/framework/scripts/make_private.ts --passphrase <passphrase>`
 - **Mobile:** tell the user to flip it manually — GitHub → repo Settings → scroll to Danger Zone → Change visibility → Make private. Takes 10 seconds.
-
-## 110. Financial summaries for third parties
-
-When composing a financial summary or bill list intended for another person:
-
-- No emoji for status — use plain text labels: `AUTO`, `MANUAL`, `LAST PAID`, `LAST WITHDRAWN`, `UPCOMING`, `NEXT DUE`
-- Every bill item must include: payee name as it appears in the bank, account number, amount or range, frequency, payment method, and at minimum one of: last paid date + amount OR next due date + amount
-- Include a contact number or URL for every provider
-- Usage-based bills (e.g. 407 ETR): explicitly state the no-use = no-bill rule
-- Variable bills (e.g. hydro): explain the amount range and why it varies
-- Alternating billing cycles: note if bill type changes month to month
-- **Before sending:** scan the draft 3 times — check for missing account numbers, missing status labels, missing contact info. Fix before outputting.
 
 ## 120. Context Index
 
