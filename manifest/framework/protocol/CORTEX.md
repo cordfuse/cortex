@@ -212,7 +212,7 @@ After a `sync`-driven reload, the scribe surfaces a single Bootstrap-voiced ackn
 
 If `git pull` produces a merge conflict, stop immediately and walk the user through resolving it before continuing.
 
-**Upstream version check — every `hello`:** verify the `upstream` remote exists; if missing, add it: `git remote add upstream https://github.com/cordfuse/cortex.git`. Then run `git fetch upstream` and compare `upstream/main:version.txt` against the local `.cortex-version` file.
+**Upstream version check — every `hello`:** verify the `upstream` remote exists; if missing, add it: `git remote add upstream https://github.com/cordfuse/cortex.git`. Then run `git fetch upstream --tags` and resolve the latest release tag: `git tag -l 'v*' --sort=-version:refname | head -1` (evaluated against the upstream remote's tags). Compare `git show <latest-tag>:version.txt` against the local `.cortex-version` file. This means only tagged releases trigger upgrade prompts — commits pushed to upstream main but not yet tagged are not surfaced.
 
 `.cortex-version` is a single-line file at repo root containing the framework version this instance last synced to (e.g. `3.1.0`). If missing, treat as unsynced — present the upgrade gate.
 
@@ -237,7 +237,7 @@ The `sync` verb always runs the sync flow on demand, regardless of upgrade prefe
 
 ### Sync flow
 
-**Scope — read from upstream at sync time.** Sync scope is defined by **upstream's** `manifest/framework/protocol/CORTEX.md`, not your local copy. Run `git show upstream/main:manifest/framework/protocol/CORTEX.md` and use the Scope paragraph from **that** file for this sync. This prevents scope-widening releases from being unable to bootstrap themselves.
+**Scope — read from upstream at sync time.** Sync scope is defined by **upstream's** `manifest/framework/protocol/CORTEX.md` at the latest release tag, not your local copy and not upstream main. Run `git show <latest-tag>:manifest/framework/protocol/CORTEX.md` (using the same tag resolved in the version check) and use the Scope paragraph from **that** file for this sync. This prevents scope-widening releases from being unable to bootstrap themselves, and ensures sync always operates on a stable, tagged snapshot rather than a moving target.
 
 Current upstream scope — explicit file list (never glob `data/attachments/` — users store personal files there):
 - `manifest/framework/protocol/` (all files)
