@@ -1775,7 +1775,7 @@ phase 2 design
 2026-04-29T15:00:00-04:00
 
 ## spawned_on
-steve-cachyos
+<your-hostname>
 
 ## state
 active
@@ -1784,7 +1784,7 @@ active
 2026-04-29T15:30:00-04:00
 
 ## last_engaged_by
-steve-cachyos / Anthropic Claude (claude-opus-4-7)
+<your-hostname> / Anthropic Claude (claude-opus-4-7)
 
 ## personality
 yoda

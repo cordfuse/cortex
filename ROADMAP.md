@@ -2,7 +2,7 @@
 
 What's shipped, what's in progress, and what's coming.
 
-**Current version:** 4.0.0 *(stable)* — [Changelog](docs/CORTEX-CHANGELOG.md)
+**Current version:** 4.6.5 *(stable)* — [Changelog](manifest/framework/CORTEX-CHANGELOG.md)
 
 ---
 
@@ -126,7 +126,7 @@ Reduces repo root from 13 to 10 files. Introduces `customs/` as the single home 
 Reduces the repo root from 18 root-level files to 13. All five moves are framework files, not user-territory.
 
 **Moved:**
-- `CORTEX-CHANGELOG.md` → `docs/CORTEX-CHANGELOG.md`
+- `CORTEX-CHANGELOG.md` → `manifest/framework/CORTEX-CHANGELOG.md`
 - `VERBS.md` → `docs/VERBS.md`
 - `VERBS-CUSTOM.md` → `docs/VERBS-CUSTOM.md` (companion-pattern with VERBS.md)
 - `CORTEX-DEV.md` → `docs/CORTEX-DEV.md`
@@ -166,11 +166,11 @@ A focused docs grooming alpha. README + interlinked markdown documents brought t
 **What changed:**
 - README.md: personality count corrected (55 → 73), categories table fully rewritten to reflect alpha.10/alpha.12/alpha.20 additions, roadmap section rebuilt, repo structure updated for `.claude/` / `data/sessions/` / `archive/`, three-AI-layer (Bootstrap + active actor + hidden scribe) reflected throughout, Cross-Agent Coordination (CNAC) section added.
 - README-SIMPLE.md: count corrected, three-AI-layer model and current personality coverage acknowledged.
-- docs/PERSONALITIES.md: intro rewritten for alpha.20 model, missing top-level sections added (Mindfulness & Stoicism, Recovery & Peer Support, Family & Friends, Information Technology, Pop Culture), Dr. Walsh added to Clinical & wellness.
+- manifest/framework/PERSONALITIES.md: intro rewritten for alpha.20 model, missing top-level sections added (Mindfulness & Stoicism, Recovery & Peer Support, Family & Friends, Information Technology, Pop Culture), Dr. Walsh added to Clinical & wellness.
 - protocol/CORTEX.md: canonical category map updated. Closes the staleness flagged by mobile-Sonnet during 2026-05-01 Phase 6 validation (data/records/2026-05-01-1029-bug-canonical-category-map-stale.md).
 - docs/SETUP-DESKTOP.md and docs/SETUP-MOBILE.md: "scribe sets up silently" line corrected to reflect Bootstrap actor + Gate 3 tool-call activity (alpha.13+).
 
-**Known follow-up:** the "Other Framework Personalities" section in docs/PERSONALITIES.md combines Workplace, Creative & Visionary, Wisdom & Reflection, and Distinctive Voices entries from the pre-alpha.6 "General" section. A full per-category split of that section is queued for a follow-up alignment pass.
+**Known follow-up:** the "Other Framework Personalities" section in manifest/framework/PERSONALITIES.md combines Workplace, Creative & Visionary, Wisdom & Reflection, and Distinctive Voices entries from the pre-alpha.6 "General" section. A full per-category split of that section is queued for a follow-up alignment pass.
 
 **Why now:** Steve flagged docs likely "horribly stale" — they were. Five-day v4 alpha sprint shipped 13 protocol/feature alphas without docs catching up; alpha.21 is the catch-up.
 
@@ -334,7 +334,7 @@ No new features. One focused cycle to close compounding bootstrap failures surfa
 
 **Why now:** Fluid Protocol's velocity claim depends on platform reliability. Six alphas in 24 hours is meaningless if any of them might be running on stale state without the user knowing. Reliability is the precondition, not a separate concern.
 
-**No new features in this cycle.** alpha.14+ resumes feature work (Phase 6 multi-session, Phase 2 multi-actor, Legal/Education/Marketing domains, `docs/PERSONALITIES.md` alignment, `## domain` field backfill).
+**No new features in this cycle.** alpha.14+ resumes feature work (Phase 6 multi-session, Phase 2 multi-actor, Legal/Education/Marketing domains, `manifest/framework/PERSONALITIES.md` alignment, `## domain` field backfill).
 
 ### v4.0.0-alpha.12 — Information Technology domain (+9 personalities)
 
@@ -382,11 +382,11 @@ Seven new framework personalities under the Pop Culture domain:
 
 **Framework personality count: 55 → 62.** Pop Culture domain: ~17 → ~24.
 
-Filed `docs/PERSONALITIES-CUT.md` capturing references that were considered but cut, with reasons (Marty McFly, Sherlock Holmes, X-Files duo, Crocodile Dundee, Rocky, Terminator, McClane, Clouseau, Lecter, Walter White, Don Draper, Jack Sparrow, Jack Bauer, Dr. House, Ron Burgundy, Hank Hill, Gandalf).
+Filed `manifest/framework/PERSONALITIES-CUT.md` capturing references that were considered but cut, with reasons (Marty McFly, Sherlock Holmes, X-Files duo, Crocodile Dundee, Rocky, Terminator, McClane, Clouseau, Lecter, Walter White, Don Draper, Jack Sparrow, Jack Bauer, Dr. House, Ron Burgundy, Hank Hill, Gandalf).
 
 **Why now:** carved from the long-deferred Pop Culture batch. Direct merge to main — additive only, no protocol/ROE/GUARDRAILS changes, no version-format breaking changes.
 
-**Known gap (follow-up):** `docs/PERSONALITIES.md` is out of date with the `personalities/` folder — missing Pop Culture / Recovery & Peer Support / Family & Friends / Mindfulness & Stoicism sections from alpha.5/alpha.6/alpha.10. Needs an alignment pass.
+**Known gap (follow-up):** `manifest/framework/PERSONALITIES.md` is out of date with the `personalities/` folder — missing Pop Culture / Recovery & Peer Support / Family & Friends / Mindfulness & Stoicism sections from alpha.5/alpha.6/alpha.10. Needs an alignment pass.
 
 ### v4.0.0-alpha.9 — Response headers (compression-resilience)
 
@@ -394,7 +394,7 @@ Every actor response now opens with a single-line header: `**[Actor — Session]
 
 **What changed:**
 - New `# Response Header` section in `protocol/CORTEX.md` specifies the format, recovery semantics on lost binding, and the no-paraphrase rule (the actor renders the header in fixed format, not in their own voice).
-- `docs/PERSONALITIES.md` notes the header.
+- `manifest/framework/PERSONALITIES.md` notes the header.
 - "Main session" is the user-facing alias for the singleton (default); scoped sessions land in Phase 6.
 
 **Why now:** carved out from Phase 4 + Phase 6, same playbook as alpha.8 hot-swap. The header is display-only and pre-bakes the slot for Phase 6 (multi-session); there everything renders as `main session` until scoped sessions arrive. Compression mitigation kicks in immediately for every session run after merge.
@@ -408,7 +408,7 @@ Kills the deferred-switch UX papercut that's been live since v3.4.0. The active 
 - "Session rules locked at session open" reframed as "Protocol rules locked" — personality is the explicit exception. Voice is configurable mid-session; protocol is not.
 - Switch confirmation: *"Switched to X. Loading now."* (was *"Takes effect at next hello."*).
 - Tuning a slider on the active personality also hot-swaps; tuning a non-active personality is saved for next load.
-- VERBS.md, README, docs/PERSONALITIES.md all updated.
+- VERBS.md, README, manifest/framework/PERSONALITIES.md all updated.
 
 **Why now:** complaint surfaced first in v3.4.0 testing (2026-04-25); officially deferred to Phase 4. On reflection, hot-swap doesn't require Phase 2 multi-actor or Phase 3 subagent infrastructure — it's just a small protocol clarification. Carved out and shipped early.
 
@@ -489,7 +489,7 @@ What changed:
 - ROE Rule 5 renamed "Scribe, not coach" → "Actor, not coach"
 - ROE precedence section maps which rules apply to which layer
 - `templates/context.md` heading renamed `## Scribe` → `## Active Actor`
-- README.md, README-SIMPLE.md, docs/PERSONALITIES.md updated for v4 framing
+- README.md, README-SIMPLE.md, manifest/framework/PERSONALITIES.md updated for v4 framing
 
 What's NOT in Phase 1: multi-actor spawn (Phase 2), panel vs independent modes (Phase 3), hot-swap + actor response headers + mid-session protocol reload (Phase 4), `list actors` expansion (Phase 5).
 
@@ -549,7 +549,7 @@ Spec: [`data/records/2026-04-26-v4-phase-1-hidden-scribe-spec.md`](data/records/
 - `personality:` / `actor:` field in `context.md` — both spellings accepted
 - Record provenance block — every filed record now includes actor, provider, model, date
 - `context.md` gains `personality:`, `provider:`, `model:` fields
-- Full personality reference: [docs/PERSONALITIES.md](docs/PERSONALITIES.md)
+- Full personality reference: [manifest/framework/PERSONALITIES.md](manifest/framework/PERSONALITIES.md)
 
 ### v3.3.x — Stability Sprint
 - **v3.3.4** — Pass 2 open items: two-step verification (grep + read recent records) before surfacing open items
