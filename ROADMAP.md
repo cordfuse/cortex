@@ -587,50 +587,41 @@ Spec: [`data/records/2026-04-26-v4-phase-1-hidden-scribe-spec.md`](data/records/
 
 ## In Progress
 
-### v3.4.x — Personality System Refinements
-- [ ] Mid-session personality tuning (currently locked to session open — by design)
-- [ ] Personality history log — which personality was active per session (Hansard-style)
-- [ ] User personality performance notes — "Riff was too much today"
-- [ ] Blend mode — `50% Casey, 50% Atlas` composite personality
+Patch-level refinements and operator-feedback fixes against v4.6.x. No major
+new features are in active development — the v4 surface (multi-actor
+sessions, Phase 6 v2 personality system, full-context onboarding, Bun
+runtime, data layout consolidation) is shipped and stable. See
+[CORTEX-CHANGELOG.md](manifest/framework/CORTEX-CHANGELOG.md) for the
+current patch trail.
 
 ---
 
-## Upcoming
+## Future Possibilities — Community Contributions Welcome
 
-### v3.5.0 — Integrations Expansion
-- [ ] Notion connector
-- [ ] Slack connector
-- [ ] GitHub connector (issues, PRs, activity)
-- [ ] Linear connector
-- [ ] Apple Health / Google Fit ingestion
-- [ ] Spotify listening history
-- [ ] Banking / transactions (read-only, CSV import)
-- [ ] Plex library + watch history
-- [ ] Jellyfin (self-hosted alternative to Plex)
-- [ ] 1Password live connection (`op` CLI — secrets retrieved at runtime, never stored)
-- [ ] Bitwarden connector (self-hosted option)
+These connectors and capabilities have been considered but aren't actively
+being built. PRs welcome. Each would extend the existing
+[`manifest/framework/scripts/integrations/`](manifest/framework/scripts/integrations)
+pattern (today: `google.ts`, `microsoft.ts`, `rclone.ts`, `tailscale.ts`).
 
-### v3.6.0 — Developer Experience
-- [ ] Setup wizard — writes starter `.claude/settings.json` at end of setup (git, gh, docker, npm, mkdir — prevents silent hangs on mobile)
-- [ ] Egress proxy / web fetcher — `scripts/integrations/fetcher.py` for fetching arbitrary URLs inside the permitted scripts boundary
-- [ ] Fail-gracefully rule — any script calling external services catches network errors and prints manual fallback
-- [ ] `donate` verb — surfaces CAMH Foundation link
+### Additional connectors
+- Notion
+- Slack
+- GitHub (issues, PRs, activity)
+- Linear
+- Apple Health / Google Fit ingestion
+- Spotify listening history
+- Banking / transactions (read-only, CSV import)
+- Plex library + watch history
+- Jellyfin (self-hosted Plex alternative)
+- 1Password live connection (`op` CLI — secrets retrieved at runtime, never stored)
+- Bitwarden connector (self-hosted option)
 
-### v3.7.0 — Federation
-- [ ] Multiple isolated Cortex repos linked through a root with read-only pointers
-- [ ] Satellites control exposure via `expose.md`
-- [ ] Cross-repo `search` from root
-- [ ] Full context onboarding on desktop — audit all active projects on first run, file a record per repo
-
-### v4.0.0 — Multi-Actor Sessions *(major, in progress)*
-
-Phased delivery. Phase 1 ships as v4.0.0-alpha.1 (see Shipped above). Subsequent phases roll out as alpha/beta releases until v4.0.0 stable.
-
-- [x] **Phase 1 — Hidden scribe separation** *(shipped v4.0.0-alpha.1, 2026-04-26)* — protocol role split from active actor; conceptual foundation for the rest of v4.
-- [ ] **Phase 2 — Multi-actor sessions** *(next)* — spawn named actors mid-session in plain English (*"Hey Marlowe, join us"*). Each actor carries their full personality profile. Multiple named actors in the room simultaneously.
-- [ ] **Phase 3 — Panel vs Independent modes** — Panel: single inference context, model co-generates all actor responses in one pass, actors may build on each other's context. Independent: subagents, each actor receives the same input with no shared context. Triggered explicitly (*"blind panel:"*).
-- [ ] **Phase 4 — Hot-swap, actor response headers, mid-session protocol reload** — *"switch to Atlas"* changes active actor immediately (no next-hello deferral). Every named actor response opens with `**[Name]** — YYYY-MM-DD HH:MM TZ`. `sync` mid-session reloads protocol rules immediately, not at next hello.
-- [ ] **Phase 5 — `list actors` expansion + actor management** — `list actors` shows all currently-loaded actors plus the hidden scribe line. Mid-session add, remove, modify actors. Personality history per session (Hansard-style log of who was active when).
+### Architectural ideas
+- Federation across multiple isolated Cortex repos — linked via a root with
+  read-only pointers, satellites control exposure via `expose.md`, cross-repo
+  `search` from root
+- Egress proxy / web fetcher — generalised `fetcher.ts` for arbitrary URL
+  fetches inside the permitted scripts boundary
 
 ---
 
