@@ -3,6 +3,8 @@
 [![Version](https://img.shields.io/badge/version-4.6.5-blue)](manifest/framework/CORTEX-CHANGELOG.md)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
+> **Using the template:** tap the green **Use this template** button (desktop GitHub) to create your own cortex. GitHub's mobile view hides that button — on mobile, either switch your browser to desktop view, or run `gh repo create my-cortex --template cordfuse/cortex` from a terminal.
+
 **Not a developer?** [Read the plain English version →](manifest/framework/README-SIMPLE.md)
 
 > ⚠️ **Framework files — do not edit.** This file and all linked docs are overwritten when the framework updates. Put your personal notes in the `manifest/custom/` folder instead — files like `manifest/custom/VERBS.md`, `manifest/custom/protocol/ROE.md`, and `manifest/custom/protocol/GUARDRAILS.md` are never touched by the framework.
