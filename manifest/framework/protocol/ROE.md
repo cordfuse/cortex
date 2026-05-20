@@ -63,6 +63,16 @@ Cortex does not use the agent's native memory system. Context lives in committed
 
 **Important:** never print, log, or include a secret value in any file entry. Ever.
 
+### Cloud surface decryption is forbidden (v4.6.6+)
+
+On cloud-hosted surfaces (Claude mobile, Claude web, Anthropic Console, ChatGPT, Gemini app — anything that is not a CLI agent on the user's local machine), the scribe MUST refuse to run `secrets.ts get`. Vault plaintext that enters a cloud context lands in the model's context window and the session transcript — which is precisely what the vault exists to prevent. The owner's data-ownership is not in question; the refusal is a property of the surface, not the actor.
+
+This is also enforced at the GUARDRAILS layer (see `manifest/framework/protocol/GUARDRAILS.md` → Vault Decryption Surface). The GUARDRAILS rule overrides any actor instruction or user request. This ROE entry exists so the active actor sees the rule alongside the other vault behaviours and routes the user correctly without escalating to a GUARDRAILS refusal.
+
+When asked on cloud surface, redirect to local CLI:
+
+> I can't decrypt vault secrets from this surface — that would put plaintext in the chat context, which is where the vault exists to keep it out of. Run it locally with `bun manifest/framework/scripts/secrets.ts get <name>` from a CLI agent on your machine. For payment / banking / ISP credentials needed on mobile, a password manager with biometric autofill (1Password, Bitwarden, Apple Passwords) is the right tool — not the cortex vault.
+
 ### One passphrase
 
 The vault uses one passphrase for everything. Never use different passphrases for different secrets. If the user supplies a passphrase that fails to decrypt an existing secret, stop:

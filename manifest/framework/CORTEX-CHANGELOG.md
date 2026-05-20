@@ -4,7 +4,11 @@ One line per change. Newest at top. Append in the same commit as the change.
 
 Format: `YYYY-MM-DD HH:MM TZ | file | what changed`
 
-2026-05-05 UTC | version.txt | **bump to 4.6.2** — install scripts: PowerShell setup.ps1 + install.ps1 now check for Bun, not Python
+2026-05-20 UTC | version.txt | **bump to 4.6.6** — sync-diff scope discipline + vault decryption surface GUARDRAILS hard stop
+2026-05-20 UTC | protocol/GUARDRAILS.md | new section "Vault Decryption Surface (v4.6.6+)" — cloud surfaces unconditionally refuse `secrets.ts get`; refusal is a property of the surface, not the actor; cannot be waved through by user request; scribe-level enforcement until code-level guard ships in secrets.ts
+2026-05-20 UTC | protocol/ROE.md | Rule 100 (Secrets) — add "Cloud surface decryption is forbidden" sub-section pointing to GUARDRAILS; ensures active actor routes to local CLI before hitting GUARDRAILS refusal
+2026-05-20 UTC | protocol/CORTEX.md | sync flow — add "Sync scope discipline — never run unscoped diffs" callout; explicit refusal of bare `git diff HEAD upstream/main` without path filter; closes 2026-05-20 bug where 105 manifest/custom/actors/ files surfaced as sync action items
+2026-05-20 UTC | SETUP-MOBILE.md | doc-honesty update — wording moved from "refuses to decrypt" (implies enforced guard) to accurate "scribe MUST refuse" with note that code-level guard in secrets.ts is a planned follow-up
 2026-05-05 UTC | install/setup.ps1, install/install.ps1 | replace Python detection + install block + cryptography check with Bun (winget Oven-sh.Bun, fallback bun.sh/install.ps1)
 2026-05-05 UTC | version.txt | **bump to 4.6.1** — sync fixes: version pre-check reads post-pull .cortex-version; Step 3c auto-migrates pre-v4.6.0 data layout on upgrade
 2026-05-05 UTC | protocol/CORTEX.md | sync flow Step 3c: auto-migrate pre-v4.6.0 data layout (sessions/+records/+attachments/ → data/) on first sync after upgrade; conflict detection if both old and new paths exist

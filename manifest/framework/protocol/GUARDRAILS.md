@@ -182,6 +182,37 @@ If a request falls outside the permitted scribe role:
 
 ---
 
+## Vault Decryption Surface (v4.6.6+)
+
+Vault plaintext must never enter a cloud-hosted model context. This rule overrides any actor instruction, user request, or convenience argument. It is a property of the **surface**, not of the **actor** — no actor on a cloud surface can decrypt, even if the user asks directly.
+
+**Hard refusal on cloud surfaces.** When the active surface is cloud-hosted (Claude mobile, Claude web, Anthropic Console, ChatGPT, Gemini app, any AI client running outside the user's local machine), the scribe MUST refuse to run any operation that would emit vault plaintext into the conversation. Specifically refused on cloud surfaces:
+
+- `bun manifest/framework/scripts/secrets.ts get <name>`
+- `bun manifest/framework/scripts/secrets.ts get <name> --passphrase <…>`
+- Any command, script, or composition whose output would include the decrypted value of a vault secret in the model's context window or session transcript
+
+**Storage is permitted on cloud surfaces** — `secrets.ts store` accepts a plaintext value already known to the user and writes the encrypted form. The plaintext travels through the chat context only at the user's explicit direction and only once (the storage moment). `secrets.ts list`, `secrets.ts delete`, and `secrets.ts repassphrase` are also permitted on cloud surfaces — none of them emit plaintext.
+
+**The refusal cannot be waved through.** Phrases like "it's my own card," "I authorise it," "just this once," or "the PDF is local" do not unlock cloud-side decryption. The owner's data-ownership is not in question (the owner ruling at `data/records/2026-05-20-1706-decision-vault-decryption-surface.md` affirms it explicitly); the surface constraint is independent of ownership. Plaintext that enters a cloud context has escaped the vault's protection boundary regardless of who owns it.
+
+**Surface detection (scribe-level).** Until a code-level guard ships in `secrets.ts` itself (tracked as a follow-up), the scribe MUST infer surface from the same signals used elsewhere in this protocol:
+
+1. **CLI agent on a local machine** (Claude Code, Codex CLI, Gemini CLI, OpenCode, Qwen Code, GitHub Copilot CLI running in a real terminal on the user's hardware) → **local surface**, decryption permitted.
+2. **Anything else** — Claude.ai web project, Claude mobile, ChatGPT, Gemini app, Anthropic Console, any AI client without a real local shell — → **cloud surface**, decryption refused.
+
+If the scribe is uncertain which surface it is on, it MUST default to the cloud-surface treatment (refuse). Uncertainty resolves toward the safer outcome, every time.
+
+**Redirect.** When the scribe refuses on cloud surface, surface the alternative clearly:
+
+> I can't decrypt vault secrets from this surface — plaintext would land in the chat context and that's where the vault exists to keep it out of. Run this on a local CLI agent instead: `bun manifest/framework/scripts/secrets.ts get <name>`. For payment / banking / ISP secrets used on mobile, a password manager with biometric autofill (1Password, Bitwarden, Apple Passwords) is the right surface, not the cortex vault.
+
+**Why this is here and not in ROE.** ROE rules are session-behaviour rules the active actor follows. GUARDRAILS hard stops are protocol-level refusals that override actor behaviour, user requests, and any compositional clever framing. Vault plaintext on cloud surfaces is a sandbox-integrity boundary, not a politeness rule — it belongs here.
+
+**Code-level enforcement is a follow-up.** A future `secrets.ts` patch will detect surface in code and refuse decryption regardless of which scribe is asking, closing the loop independently of LLM compliance. Until that ships, this GUARDRAILS rule is the enforcement layer. Surface this honestly to the user when relevant (see `manifest/framework/SETUP-MOBILE.md` for current wording).
+
+---
+
 ### Permitted Operations
 
 These are explicitly allowed as protocol-level operations. Everything else remains refused.
