@@ -76,30 +76,30 @@ GitHub → your profile photo → Settings → Developer settings → Personal a
 
 Copy the token. It starts with `github_pat_`. Save it somewhere — you only see it once.
 
-**3. Create a CONNECT.md file**
+**3. Set up your AI project**
 
-On your phone, open Notes (or any notes app) and create a note called `CONNECT.md` with exactly this:
+Go to your GitHub repo → `manifest/framework/protocol/CORTEX-PROJECT.md` → copy the full contents.
+
+At the very top, add your connection block:
 
 ```
 repo: https://github.com/YOUR-USERNAME/my-cortex
 pat: github_pat_YOUR_TOKEN_HERE
 ```
 
-Replace with your actual username and token.
-
-**4. Set up your AI project**
+Replace with your actual username and token. This combined text is your complete system prompt.
 
 **On Claude (claude.ai):**
 - Go to Projects → New project
-- System prompt: go to your GitHub repo → `protocol` folder → `CORTEX-PROJECT.md` → copy everything → paste it as your system prompt
-- Project knowledge: upload your `CONNECT.md` note
+- **Instructions:** paste your complete system prompt (connection block + CORTEX-PROJECT.md contents)
+- No file uploads needed
 
 **On ChatGPT:**
 - Create a GPT → Configure
-- Instructions: paste `CORTEX-PROJECT.md` contents
-- Knowledge: upload `CONNECT.md`
+- **Instructions:** paste your complete system prompt (connection block + CORTEX-PROJECT.md contents)
+- No file uploads needed
 
-**5. Say hello**
+**4. Say hello**
 
 Open a new chat in your project. Type: `hello`
 

@@ -29,44 +29,40 @@ Copy the token — starts with `github_pat_`. You only see it once. Save it some
 
 ---
 
-## Step 3 — Create your CONNECT.md
+## Step 3 — Build your system prompt
 
-Create a plain text file called `CONNECT.md` **on your device only. Never commit this to your repo.**
+Open `manifest/framework/protocol/CORTEX-PROJECT.md` in your repo. Copy the full contents.
+
+At the very top, add your connection block:
 
 ```
 repo: https://github.com/you/your-repo-name
 pat: github_pat_...
 ```
 
-This is how the scribe authenticates and knows where your repo lives. Keep it local.
+This is the complete system prompt — repo URL, PAT, and protocol instructions in one place. No separate file needed.
 
 ---
 
-## Step 4 — Get the system prompt
-
-Open your repo on GitHub. Navigate to `manifest/framework/protocol/CORTEX-PROJECT.md`. Copy the full contents — this is your system prompt.
-
----
-
-## Step 5 — Create your project
+## Step 4 — Create your project
 
 ### Claude (claude.ai)
 
 1. claude.ai → Projects → New project
-2. **Instructions (system prompt):** paste the full contents of `manifest/framework/protocol/CORTEX-PROJECT.md`
-3. **Project knowledge:** upload your `CONNECT.md`
-4. Open a new chat in the project
+2. **Instructions:** paste your full system prompt (connection block + CORTEX-PROJECT.md contents)
+3. Open a new chat in the project
 
 ### ChatGPT (chat.openai.com)
 
 1. Explore GPTs → Create a GPT → Configure
-2. **Instructions:** paste the full contents of `manifest/framework/protocol/CORTEX-PROJECT.md`
-3. **Knowledge:** upload your `CONNECT.md`
-4. Save and open a chat
+2. **Instructions:** paste your full system prompt (connection block + CORTEX-PROJECT.md contents)
+3. Save and open a chat
+
+No project knowledge or file uploads needed.
 
 ---
 
-## Step 6 — Say hello
+## Step 5 — Say hello
 
 ```
 hello
@@ -82,9 +78,17 @@ Open a new chat in your Cortex project. Say `hello`. The scribe clones fresh and
 
 ---
 
+## When your PAT expires or is rotated
+
+The scribe detects auth failure automatically and asks:
+
+> *"The PAT isn't working — please paste a current one."*
+
+Paste your new PAT. The session continues. To fix future sessions, update the PAT value at the top of your project instructions.
+
+---
+
 ## Notes
 
-- Your `CONNECT.md` PAT is visible in the project knowledge — keep the project private
-- The scribe can store your PAT in the vault after first session: `bun manifest/framework/scripts/secrets.ts store github-pat`
-- If your PAT expires, generate a new one and update `CONNECT.md` in the project knowledge
-- **Vault decryption is CLI-only by design.** Cloud-hosted Claude (mobile, web) is required to refuse decryption of vault files, because outputting plaintext into a chat would place the secret into the model's context window and the session transcript — which is precisely what the vault exists to prevent. Enforcement layer is the scribe under `manifest/framework/protocol/GUARDRAILS.md` → Vault Decryption Surface (v4.6.6+), with a code-level guard in `manifest/framework/scripts/secrets.ts` planned as a follow-up; until that ships, the guarantee is "scribe MUST refuse," not "the binary refuses regardless of who's asking" — strong but LLM-mediated. Run `bun manifest/framework/scripts/secrets.ts get <name>` from a terminal instead (Claude Code on desktop, or directly via shell). Mobile-critical secrets (banking, ISP, payment) belong in a password manager (1Password / Bitwarden / Apple Passwords), not the cortex vault — biometric unlock + native autofill is the right surface for those.
+- The PAT in your project instructions is visible to your AI provider — keep the project private
+- **Vault decryption is CLI-only by design.** Cloud-hosted Claude (mobile, web) is required to refuse decryption of vault files, because outputting plaintext into a chat would place the secret into the model's context window and the session transcript — which is precisely what the vault exists to prevent. Enforcement layer is the scribe under `manifest/framework/protocol/GUARDRAILS.md` → Vault Decryption Surface (v4.6.6+). Run `bun manifest/framework/scripts/secrets.ts get <name>` from a terminal instead. Mobile-critical secrets (banking, ISP, payment) belong in a password manager (1Password / Bitwarden / Apple Passwords), not the cortex vault — biometric unlock + native autofill is the right surface for those.
