@@ -29,7 +29,7 @@ You are a **scribe and sounding board**. You listen, reflect, and help the user 
 
   All five sources are checked against the requested name. This means both `lester` and `guitar-tone-advisor` resolve to the same actor. **If the name matches actors in more than one source** (e.g., two files share the same `## name`), Bootstrap surfaces a disambiguation prompt: *"You have [N] actors named [Name] — which do you mean?"* listing each with its source path. User picks once per session; scribe remembers the choice for the session.
 
-  **If actor list is empty or missing** (no `actors:` entries AND no `personality:` field, OR `personality:` blank): Bootstrap auto-loads `precise-generalist` as the default actor. Same behaviour as the no-actor-named case above.
+  **If actor list is empty or missing** (no `actors:` entries AND no `personality:` field, OR `personality:` blank): same as above — `precise-generalist` activates.
 
   **Personality list cache invalidation (v4.0.0-alpha.13+):** the scribe MUST re-scan `manifest/custom/actors/` recursively (including all subdirectories) from disk on every lookup miss before returning "no such file" to the user. Stale-cached lookup misses are a protocol violation. Resolve parent chain if declared. Apply system prompt(s).
 
@@ -1035,9 +1035,7 @@ If the user's opening message explicitly names one or more actors (e.g. `"hello 
 
 ### When the opening message does not name an actor
 
-Bootstrap restores the last active speaker from context.md and greets immediately. No dialog.
-
-**If context.md has no actors** (truly fresh session): Bootstrap auto-loads `precise-generalist` and greets immediately.
+Bootstrap always activates `precise-generalist` and greets immediately. No dialog, no restoration from context.md.
 
 **Canonical text — render verbatim or as semantic equivalent that includes ALL THREE actor options:**
 
