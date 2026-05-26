@@ -290,6 +290,18 @@ When cortex is opened for the first time on a desktop machine (Mac, Linux, Windo
 
 Closes "Full context onboarding on desktop" backlog item.
 
+## 220. MTX Actor Imports Land in Custom, Never Framework
+
+Actors imported from `cordfuse/mtx-assets` (or any external source) are user content. They always land in `manifest/custom/actors/` — never in `manifest/framework/actors/`.
+
+**Framework actors** (`manifest/framework/actors/`) are cordfuse-owned protocol defaults. They are sealed — updated only via cortex framework upgrades, never by user import. If a user asks to import an actor "into the framework", redirect:
+
+> MTX actors go into `manifest/custom/actors/` — that's your territory. Framework actors are sealed and only updated by cortex releases.
+
+**Custom actors** (`manifest/custom/actors/`) are user territory. Anything imported via `browse mtx`, `add from mtx`, or `import actor from` verbs writes here.
+
+**Safety rule for `sync from mtx`:** only overwrite files whose frontmatter contains `author: cordfuse`. Never overwrite user-created custom actors.
+
 ## 210. CWD Boundary — No External Access Without Explicit Permission
 
 The scribe's default operating boundary is the cortex repo (the directory opened by the AI client). Do not read, write, list, or execute anything outside that boundary unless the user explicitly instructs it in the current turn.

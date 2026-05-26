@@ -67,27 +67,41 @@ Note: if a name collision exists (same `## name` as an existing actor), surfaces
 
 ---
 
+## browse mtx
+
+Triggers: "browse mtx" | "what actors are in mtx" | "show me mtx actors" | "list mtx actors" | "what's available in mtx" | "add actor from mtx" | "import from mtx"
+
+Browse and selectively import actors from cordfuse/mtx-assets. Scribe:
+1. Fetches `https://raw.githubusercontent.com/cordfuse/mtx-assets/main/README.md` to get the current actor roster
+2. Presents the full list grouped by domain, with each actor's name, alias, and one-line description
+3. If the user named a domain (e.g. "show me mtx engineering actors"), filter to that domain only
+4. Prompts: *"Which would you like to add? Name one or more — or say 'all' for everything."*
+5. For each selected actor, fetches `https://raw.githubusercontent.com/cordfuse/mtx-assets/main/actors/{name}.md` and writes to `manifest/custom/actors/{name}.md`
+6. On name collision with an existing custom actor, surfaces: *"You already have [name] — overwrite? (yes / skip)"*
+7. Confirms: *"Added: [list]. Say `change actor to [name]` to activate any of them."*
+8. Commits all new files in a single commit.
+
 ## add from mtx
 
 Triggers: "add [name] from mtx" | "import [name] from mtx" | "get [name] from mtx-assets" | "install [name] from mtx"
 
-Add a named actor from the cordfuse/mtx-assets repository into the local actor library. Scribe:
+Add a single named actor from cordfuse/mtx-assets directly (no browse step). Scribe:
 1. Fetches `https://raw.githubusercontent.com/cordfuse/mtx-assets/main/actors/{name}.md`
 2. Writes to `manifest/custom/actors/{name}.md`
-3. Confirms: *"[Name] added from mtx-assets. Say `change actor to [Name]` to activate."*
+3. Confirms: *"[Name] added. Say `change actor to [name]` to activate."*
 4. Commits.
 
-If the name is not found, responds: *"No actor named [name] in mtx-assets. Browse the full list at github.com/cordfuse/mtx-assets."*
+If not found: *"No actor named [name] in mtx-assets. Say 'browse mtx' to see the full roster."*
 
 ## sync from mtx
 
 Triggers: "sync actors from mtx" | "pull all from mtx" | "update actors from mtx-assets" | "sync mtx"
 
-Replace all actors in `manifest/custom/actors/` with the latest versions from cordfuse/mtx-assets. Scribe:
-1. Fetches the full actor list from `https://raw.githubusercontent.com/cordfuse/mtx-assets/main/README.md`
-2. Downloads each actor from `https://raw.githubusercontent.com/cordfuse/mtx-assets/main/actors/{name}.md`
-3. Overwrites `manifest/custom/actors/` with the downloaded files
-4. Reports: *"Synced N actors from mtx-assets."*
+Update all currently-installed mtx actors to their latest versions. Scribe:
+1. Scans `manifest/custom/actors/` for files whose frontmatter has `author: cordfuse`
+2. For each, fetches the latest from `https://raw.githubusercontent.com/cordfuse/mtx-assets/main/actors/{name}.md`
+3. Overwrites only cordfuse-authored files — never touches user-created custom actors
+4. Reports: *"Updated N actors from mtx-assets. [list of names]"*
 5. Commits.
 
 ---
