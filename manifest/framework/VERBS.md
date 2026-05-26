@@ -69,12 +69,16 @@ Note: if a name collision exists (same `## name` as an existing actor), surfaces
 
 ## browse mtx
 
-Triggers: "browse mtx" | "what actors are in mtx" | "show me mtx actors" | "list mtx actors" | "what's available in mtx" | "add actor from mtx" | "import from mtx"
+Triggers:
+- Power user: "browse mtx" | "what actors are in mtx" | "show me mtx actors" | "list mtx actors" | "what's available in mtx" | "add actor from mtx" | "import from mtx"
+- Natural language: "what actors are available to add?" | "show me who I can bring in" | "who do you have?" | "what personalities are available?" | "show me available actors" | "who can I add to this session?"
+- By domain: "show me [domain] actors" | "any [domain] personalities?" | "who do you have for [domain]?" | "what [domain] options are there?" — where [domain] is engineering, health, finance, spiritual, music, productivity, communication, general
+- By need: "I need someone more [trait]" | "is there a [role type] I can add?" | "who would be good for [topic]?" | "I'm looking for a [descriptor]"
 
 Browse and selectively import actors from cordfuse/mtx-assets. Scribe:
 1. Fetches `https://raw.githubusercontent.com/cordfuse/mtx-assets/main/README.md` to get the current actor roster
 2. Presents the full list grouped by domain, with each actor's name, alias, and one-line description
-3. If the user named a domain (e.g. "show me mtx engineering actors"), filter to that domain only
+3. If the user named a domain or trait, filter to matching actors only
 4. Prompts: *"Which would you like to add? Name one or more — or say 'all' for everything."*
 5. For each selected actor, fetches `https://raw.githubusercontent.com/cordfuse/mtx-assets/main/actors/{name}.md` and writes to `manifest/custom/actors/{name}.md`
 6. On name collision with an existing custom actor, surfaces: *"You already have [name] — overwrite? (yes / skip)"*
@@ -83,19 +87,24 @@ Browse and selectively import actors from cordfuse/mtx-assets. Scribe:
 
 ## add from mtx
 
-Triggers: "add [name] from mtx" | "import [name] from mtx" | "get [name] from mtx-assets" | "install [name] from mtx"
+Triggers:
+- Power user: "add [name] from mtx" | "import [name] from mtx" | "get [name] from mtx-assets" | "install [name] from mtx"
+- Natural language: "add a [role]" | "bring in a [role]" | "I want to talk to a [role]" | "add someone who [does/knows/specializes in X]" | "give me a [descriptor] voice" | "I need a [role type]"
 
 Add a single named actor from cordfuse/mtx-assets directly (no browse step). Scribe:
-1. Fetches `https://raw.githubusercontent.com/cordfuse/mtx-assets/main/actors/{name}.md`
-2. Writes to `manifest/custom/actors/{name}.md`
-3. Confirms: *"[Name] added. Say `change actor to [name]` to activate."*
-4. Commits.
+1. If a name was given directly, fetches `https://raw.githubusercontent.com/cordfuse/mtx-assets/main/actors/{name}.md`
+2. If a role or description was given (NL path), scans the README roster and finds the closest match — surfaces it to the user for confirmation before adding: *"Closest match: [Name] — [one-line description]. Add them? (yes / browse more)"*
+3. Writes to `manifest/custom/actors/{name}.md`
+4. Confirms: *"[Name] added. Say `change actor to [name]` to activate."*
+5. Commits.
 
-If not found: *"No actor named [name] in mtx-assets. Say 'browse mtx' to see the full roster."*
+If not found: *"No actor matched '[query]'. Say 'show me who's available' to browse the full roster."*
 
 ## sync from mtx
 
-Triggers: "sync actors from mtx" | "pull all from mtx" | "update actors from mtx-assets" | "sync mtx"
+Triggers:
+- Power user: "sync actors from mtx" | "pull all from mtx" | "update actors from mtx-assets" | "sync mtx"
+- Natural language: "update my actors" | "refresh available actors" | "are my actors up to date?"
 
 Update all currently-installed mtx actors to their latest versions. Scribe:
 1. Scans `manifest/custom/actors/` for files whose frontmatter has `author: cordfuse`
