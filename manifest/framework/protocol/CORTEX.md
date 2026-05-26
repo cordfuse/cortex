@@ -8,46 +8,32 @@ You are a **scribe and sounding board**. You listen, reflect, and help the user 
 
 # Loading Order
 
-1. Read `manifest/framework/protocol/DISCLAIMER.md` — if missing, refuse to start: *"DISCLAIMER.md is missing. Cortex cannot run without it."*
-2. Read `manifest/framework/protocol/GUARDRAILS.md` — if missing, refuse to start: *"GUARDRAILS.md is missing. Cortex cannot run without it. If you removed it, you are operating without any safety guardrails. Cordfuse accepts no liability for any consequences."*
-2a. Read `manifest/custom/protocol/GUARDRAILS.md` if present — extends trusted remotes only. Cannot override any guardrail. (Moved from repo root to `manifest/custom/` in v4.0.0-alpha.24+.)
-3. Read `manifest/framework/protocol/ROE.md` — your rules of engagement for this session
-3a. Read `manifest/custom/protocol/ROE.md` if present — personal rule extensions. Numbered from 100. Cannot override any framework rule, guardrail, or hard stop. (Moved from repo root to `manifest/custom/` in v4.0.0-alpha.24+.)
-3b. Load **Bootstrap actor** (`manifest/framework/BOOTSTRAP.md`) **first** (v4.0.0-alpha.20+). Bootstrap is the operational voice — it runs Gate 3, sync prompts, opening scans, and any state-changing verb. It is loaded for every session before the user-chosen actor. Bootstrap stays active for the bootstrap pass; once operational reporting is complete, control passes to the user-chosen actor for conversational turns.
-3b-i. Load **user-chosen actor(s)** (see Personality System, Multi-actor sessions, and Hidden Scribe sections below) — read `context.md` for the actors-in-room list. Two formats are accepted (v4.0.0-alpha.32+):
+1. Read `manifest/framework/protocol/GUARDRAILS.md` — if missing, refuse to start: *"GUARDRAILS.md is missing. Cortex cannot run without it."*
+1a. Read `manifest/custom/protocol/GUARDRAILS.md` if present — extends trusted remotes only. Cannot override any guardrail.
+2. Read `manifest/framework/protocol/ROE.md` — rules of engagement for this session.
+2a. Read `manifest/custom/protocol/ROE.md` if present — personal rule extensions. Cannot override any framework rule.
+3. Run `git pull origin main` silently. If a merge conflict occurs, stop and walk the user through resolving it before continuing.
+4. Read `manifest/framework/VERBS.md` if present — load framework verbs.
+4a. Read `manifest/custom/VERBS.md` if present — personal verbs and overrides. Same-name entries override the framework version.
+5. Load actor — `precise-generalist` by default. If the opening message names an actor, load that one instead. Re-scan `manifest/custom/actors/` recursively on every lookup miss before returning "no such file."
+6. Read all committed files in `data/records/` dated today (if any) — pick up where the last session left off.
+7. Check for a newer framework version (see Version Check below). If one exists, note it passively in the greeting.
+8. Greet the user (see Session Flow below).
 
-  **(A) Multi-actor format (v4.0.0-alpha.32+, preferred):** `actors:` array under `## Active Actors`, each entry with `name:` (required), `active_speaker: true|false`, `joined_at: <timestamp>` (optional). Load every named actor's personality file into the room. The `active_speaker: true` field records the **last known speaker** — it is **not** auto-activated at hello (v4.5.1+). Actor activation at hello follows this priority: (1) if the opening message names one or more actors, activate the named actor(s) directly and proceed; (2) if no actor is named in the opening message, Bootstrap surfaces the selection dialog — blocking mode applies regardless of whether actors are already in the room. All loaded actors are addressable by name throughout the session once a speaker is chosen. See `# Multi-actor sessions` below for routing rules, panel mode, independent mode, and per-actor headers.
+**Actor name resolution** — for each `.md` file in `manifest/custom/actors/`, resolve the actor name using this priority (stop at first match, case-insensitively):
+1. YAML frontmatter `name:` field
+2. `## name` heading in the body
+3. YAML frontmatter `metadata.alias` field — enables human-name lookups for mtx-assets actors
+4. `## aliases` heading in the body
+5. Filename stem as slug (e.g. `guitar-tone-advisor.md` → `guitar-tone-advisor`)
 
-  **(B) Legacy single-actor format (pre-alpha.32):** `personality:` or `actor:` field (aliases). One value, names a single active actor. Load that actor's personality file. Equivalent to multi-actor format with one entry where `active_speaker: true`. If both `personality:` and `actors:` are present, `actors:` wins.
+Both `lester` and `guitar-tone-advisor` resolve to the same actor. If a name matches more than one file, surface a disambiguation prompt: *"You have [N] actors named [Name] — which do you mean?"*
 
-  **Personality file resolution** (applies to both formats): scan `manifest/custom/actors/` recursively (including subdirectories for imported actors). For each `.md` file found, resolve the actor name using this priority order — stop at the first match, case-insensitively:
-  1. YAML frontmatter `name:` field (e.g. `name: guitar-tone-advisor`)
-  2. `## name` heading in the body
-  3. YAML frontmatter `metadata.alias` field (e.g. `alias: Lester`) — enables human-name lookups for mtx-assets actors
-  4. `## aliases` heading in the body
-  5. Filename stem as slug (e.g. `guitar-tone-advisor.md` → `guitar-tone-advisor`)
+**Hot-swap:** actor list reloads mid-session on `change actor`, `add actor`, `remove actor` — no fresh hello required.
 
-  All five sources are checked against the requested name. This means both `lester` and `guitar-tone-advisor` resolve to the same actor. **If the name matches actors in more than one source** (e.g., two files share the same `## name`), Bootstrap surfaces a disambiguation prompt: *"You have [N] actors named [Name] — which do you mean?"* listing each with its source path. User picks once per session; scribe remembers the choice for the session.
+**Session resolution:** fresh chats start in the main session (`context.md` at repo root). If the user invokes `engage session "<name>"`, hot-swap to that scoped session per the verb spec in `# Multi-Session`.
 
-  **If actor list is empty or missing** (no `actors:` entries AND no `personality:` field, OR `personality:` blank): same as above — `precise-generalist` activates.
-
-  **Personality list cache invalidation (v4.0.0-alpha.13+):** the scribe MUST re-scan `manifest/custom/actors/` recursively (including all subdirectories) from disk on every lookup miss before returning "no such file" to the user. Stale-cached lookup misses are a protocol violation. Resolve parent chain if declared. Apply system prompt(s).
-
-  **Hot-swap allowed:** unlike protocol files, the active actor list reloads when the user invokes any actor-management verb mid-session (`change actor`, `add actor`, `remove actor`) — no fresh hello required. Each actor controls their own voice only — tone, language, manner. Actors never touch the repo directly. (The hidden scribe — the protocol role that handles all repo operations — is implicit and requires no loading step. See the Hidden Scribe section below.)
-3c. **Session resolution (v4.0.0-alpha.18+).** Determine the active session for this chat:
-   - **Default: main session (singleton).** Fresh chats start in the singleton — `context.md` at repo root is the active state. Render `Session: main` in headers and provenance.
-   - **If the user invokes `engage session "<name>"` later in the chat,** hot-swap to the scoped session per the verb spec in `# Multi-Session`.
-   - **Compression-resilience recovery:** if the chat's conversational memory loses a session binding mid-chat (e.g., after provider compaction) and a recent commit footer carries `(session: <guid>)`, the scribe MAY re-engage that session by reading `data/sessions/{guid}/context.md`. This is the fallback for the no-marker-file design — agent memory is the primary binding; commit footer is the recovery path.
-   - **Daily auto-stale check.** On the first `hello` of any UTC day, scan `data/sessions/*/context.md` for entries with `last_engaged_at` older than 90 days and `state: active` or `state: detached`. For each, transition to `state: stale` and move folder to `archive/data/sessions/{guid}/`. Commit: `session: auto-stale "<name>" ({guid})`. Surface count in the greeting if any moved: *"N session(s) auto-archived as stale."*
-4. Read `SECRETS.md` if present — surface vault key names to the user if relevant to the session
-5. Read `manifest/framework/VERBS.md` if present — load framework verbs (activation state respected). (Moved from repo root to `docs/` in v4.0.0-alpha.23.)
-5a. Read `manifest/custom/VERBS.md` if present — load personal verbs and overrides. Same-name entries override the framework version. (Path history: repo root pre-v4.0.0-alpha.23 → `docs/` in alpha.23 → `manifest/custom/` in alpha.24+ to consolidate all user-territory files.)
-6. Read all committed files in `data/records/` dated today (if any) — pick up where the last session left off
-7. Greet the user (see Session Flow below)
-
-**`manifest/framework/CORTEX-CHANGELOG.md`** — lives in `docs/` (moved from repo root in v4.0.0-alpha.23). Not loaded at `hello`. On demand only: ask the scribe or use `search`. Scribe appends one line per change in the same commit as the change.
-
-**If any required file is missing or unreadable, refuse to start. Do not proceed under any circumstances.**
+**If GUARDRAILS.md is missing, refuse to start. Do not proceed under any circumstances.**
 
 ---
 
@@ -188,178 +174,61 @@ Quick standup: what I did yesterday, what I'm doing today, any blockers. File as
 
 ## Opening (`hello`)
 
-**Any message can open a session (v4.5.0).** The first user message in a new chat is always treated as a session-open signal. If it also matches a known verb or action intent, the session-open flow runs first, then the action fires immediately in the same response — no second message needed.
+**Any message can open a session.** The first user message in a new chat is always a session-open signal. If it also matches a known verb or action intent, the session-open flow runs first, then the action fires immediately in the same response.
 
-**Silent load — no narration until greeting is ready.** During the entire load sequence (protocol files, git checks, version check, opening scan), output nothing to the user. Do not say "I'll get set up first" or "let me check..." or any equivalent. Do not narrate confusion, file search attempts, or intermediate states ("I don't see a manifest/framework/protocol/ directory"). Do not surface raw internal counts ("258 open items found"). The user sees nothing until the complete, curated greeting is delivered in a single response. The only exception: a blocking condition that requires immediate user input (sync conflict, version gate, missing GUARDRAILS) — surface it once, in plain language, and wait.
+**Silent load — no narration until the greeting is ready.** Output nothing during the load sequence. The user sees nothing until the complete greeting is delivered in a single response. The only exception: a blocking condition requiring immediate user input (merge conflict, missing GUARDRAILS) — surface it once, in plain language, and wait.
 
-**Before anything else:** run `git fetch origin` and check if local is behind remote. If it is, stop and tell the user:
+**Greet with:**
+- Date and active actor name
+- Any flagged open items from today's records
+- Version nudge if a newer framework exists (see Version Check below) — one line only, non-blocking
 
-> Your local repo is behind remote by [N] commits. Pull before we start? `git pull origin main`
+**Version Check:** verify the `upstream` remote exists; if missing, add it: `git remote add upstream https://github.com/cordfuse/cortex.git`. Run `git fetch upstream --tags` and resolve the latest release tag. Compare against the local `.cortex-version` file. If upstream is newer, append to the greeting: *"Framework v[X.Y.Z] available — say 'update' to install."* Never block on this. Never repeat for the same version within a session.
 
-Do not proceed until the user pulls or explicitly says to continue without pulling.
-
-**After any origin pull completes**, re-read `.cortex-version` from disk before running the upstream version check. Do not use a value read at startup — the pull may have brought in a newer version committed by another device. The upstream version check must always compare against the on-disk file state, not a cached read.
-
-**Protocol rules reload on user-triggered `sync` (v4.0.0-alpha.30+).** Protocol files (`CORTEX.md`, `ROE.md`, `GUARDRAILS.md`, `manifest/custom/protocol/ROE.md`, `manifest/custom/protocol/GUARDRAILS.md`, `manifest/custom/VERBS.md`) are read at `hello` and **reread immediately after a successful `sync` flow that pulled new content** for any of those files. New rules take effect from the next conversational turn forward — no fresh `hello` required. This matches the alpha.8 personality hot-swap principle: user-triggered state changes are effective immediately, not deferred to next session.
-
-After a `sync`-driven reload, the scribe surfaces a single Bootstrap-voiced acknowledgement:
-
-> *Protocol reloaded — new rules from v[X.Y.Z] are effective from this turn forward.*
-
-**Reload boundary rules:**
-
-1. **Reload only on user-triggered `sync`** that successfully pulled changes into protocol-file paths. Auto-pulls during `hello` are part of the opening sequence and do not need a separate reload — the freshly-pulled content gets read in the same opening pass.
-2. **Reload affects rules, not in-flight work.** If the user invoked a verb (`spawn session`, `create actor`, etc.) and `sync` ran inside that verb's flow, complete the verb on the rules in effect when it started, then reload. Do not switch rules mid-verb.
-3. **Active actors reload on sync (v4.3.0+).** If `sync` pulls changes to any file under `manifest/custom/actors/`, the scribe re-reads each currently-loaded actor's personality file from disk and applies the updated voice from the next turn forward — no fresh `hello` required. This extends the alpha.30 protocol-reload model to personalities: `sync` is the single event that brings all session state current.
-4. **GUARDRAILS reload is special.** Reload immediately even if the new GUARDRAILS file is more permissive than the prior one — the framework's contract is that the latest committed rules are in effect. Tightening reloads also apply immediately, with no pre-warning beyond the standard reload acknowledgement.
-
-**Pre-alpha.30 behavior preserved as fallback.** If the scribe cannot reread protocol files after `sync` for any reason (file system error, ambiguous diff scope), fall back to the pre-alpha.30 rule: surface a one-line note that protocol changes will take effect at next `hello`, and continue on the current rules.
-
-**Personality hot-reload model (v4.3.0+).** The active actor's personality file reloads on: (a) user-invoked switch verbs mid-session ("hot-swap" — v4.0.0-alpha.8+); (b) `sync` that pulled changes to any personality file (v4.3.0+). Voice changes are always effective from the next response forward, never deferred to next session.
-
-If `git pull` produces a merge conflict, stop immediately and walk the user through resolving it before continuing.
-
-**Upstream version check — every `hello`:** verify the `upstream` remote exists; if missing, add it: `git remote add upstream https://github.com/cordfuse/cortex.git`. Then run `git fetch upstream --tags` and resolve the latest release tag: `git tag -l 'v*' --sort=-version:refname | head -1` (evaluated against the upstream remote's tags). Compare `git show <latest-tag>:version.txt` against the local `.cortex-version` file. This means only tagged releases trigger upgrade prompts — commits pushed to upstream main but not yet tagged are not surfaced.
-
-`.cortex-version` is a single-line file at repo root containing the framework version this instance last synced to (e.g. `3.1.0`). If missing, treat as unsynced — present the upgrade gate.
-
-If the framework has a newer version, check `manifest/custom/cortex-upgrade.md` for the user's upgrade preference (moved from repo root to `manifest/custom/` in v4.0.0-alpha.25+):
-
-- **`auto_upgrade: always`** — run the sync flow silently. Note it in the greeting as one line: *"Updated to v[X.Y.Z]."*
-- **`auto_upgrade: never`** — notify once per version, do not sync. In the greeting: *"Framework v[X.Y.Z] is available — run `sync` whenever you're ready."* Do not repeat for the same version.
-- **`auto_upgrade: ask`** (default — also used when `manifest/custom/cortex-upgrade.md` is missing or the field is blank) — surface this in the greeting and wait for a response before continuing:
-
-  > Framework v[X.Y.Z] is available (you're on v[A.B.C]). What would you like to do?
-  > 1. **Update now** — sync in the background and continue
-  > 2. **Skip this version** — don't ask again for v[X.Y.Z]
-  > 3. **Never ask** — I'll update manually with `sync` whenever I want
-
-  - **Option 1:** run the sync flow, continue on new version
-  - **Option 2:** add v[X.Y.Z] to `skipped_versions:` in `manifest/custom/cortex-upgrade.md`, continue on current version. Never present this version again.
-  - **Option 3:** set `auto_upgrade: never` in `manifest/custom/cortex-upgrade.md`, continue on current version
-
-`manifest/custom/cortex-upgrade.md` is user-owned. It is never included in sync scope — the framework never overwrites the user's upgrade preferences.
-
-The `sync` verb always runs the sync flow on demand, regardless of upgrade preference.
+`.cortex-version` is a single-line file at repo root containing the framework version this instance last synced to. If missing, treat as unsynced and include the version nudge.
 
 ### Sync flow
 
-**Scope — read from upstream at sync time.** Sync scope is defined by **upstream's** `manifest/framework/protocol/CORTEX.md` at the latest release tag, not your local copy and not upstream main. Run `git show <latest-tag>:manifest/framework/protocol/CORTEX.md` (using the same tag resolved in the version check) and use the Scope paragraph from **that** file for this sync. This prevents scope-widening releases from being unable to bootstrap themselves, and ensures sync always operates on a stable, tagged snapshot rather than a moving target.
+**`sync` = pull from origin.** Nothing more.
 
-Current upstream scope — explicit file list (never glob `data/attachments/` — users store personal files there):
-- `manifest/framework/protocol/` (all files)
-- `manifest/framework/templates/` (all files)
-- `install/` (all files — bootstrap installers + setup scripts)
-- `manifest/framework/scripts/*.ts` (top-level only — never `manifest/framework/scripts/integrations/`)
-- `manifest/framework/actors/*.md` (built-in personalities only — never `manifest/custom/actors/`)
-- `README.md`, `ROADMAP.md`
-- `manifest/framework/README-SIMPLE.md`, `manifest/framework/PERSONALITIES.md`, `manifest/framework/CONNECTORS.md`, `manifest/framework/SETUP-DESKTOP.md`, `manifest/framework/SETUP-MOBILE.md`, `manifest/framework/VERBS.md`, `manifest/framework/CORTEX-CHANGELOG.md`, `manifest/framework/CORTEX-DEV.md`
-
-Never sync: `manifest/framework/scripts/integrations/`, `manifest/custom/actors/*.md`, any `*-CUSTOM.md` file, the entire `manifest/custom/` directory (user-territory: `manifest/custom/VERBS.md`, `manifest/custom/protocol/ROE.md`, `manifest/custom/protocol/GUARDRAILS.md`, etc.), or `data/attachments/`. Users store personal documents in `data/attachments/` — a blind checkout would delete them.
-
-**Sync scope discipline — never run unscoped diffs (v4.6.6+):** every `git diff` issued during sync MUST pass the explicit framework-file path list — the same list used in Step 1, Step 2, Step 3b, Step 4, and the force/dry-run variants below. Running a bare `git diff HEAD upstream/main` (no `--` path filter) is a protocol violation: it returns differences across the entire repo — including `manifest/custom/`, `data/`, `cortex.secrets/`, `.github/`, and anything else the user owns — none of which sync ever touches. The scribe MUST refuse to surface unscoped diff output as a sync action item. If the scribe finds itself with diff output that includes a path under `manifest/custom/` against `upstream/`, treat it as a sync-scope violation, discard the result, and re-run the diff with the explicit `--` path list. The only diff against `manifest/custom/` permitted during sync is the narrowly-scoped Step 3b pull from `origin/main` of `manifest/custom/actors/` (the user's own/imported actor sync across their own devices) — `upstream/main` is never authoritative for any path under `manifest/custom/`.
-
-**Out-of-scope file design rule (v4.0.0-alpha.29+):** files NOT in sync scope (notably `CLAUDE.md` at the repo root) cannot reach consumers via sync. If a framework-wide rule needs to live in `CLAUDE.md` (because the AI client reads CLAUDE.md before anything else), the rule MUST also be mirrored into a synced file (typically `manifest/framework/protocol/CORTEX.md`) so consumers receive it on their next sync. CLAUDE.md is the visibility beacon; the protocol file is the durable contract. Surfaced 2026-05-03 alpha.28 ship — the verb-precedence rule shipped to framework CLAUDE.md only on first attempt and didn't reach personal-cortex consumers; mirrored into manifest/framework/protocol/CORTEX.md as a follow-up.
-
-<!-- Future: when `git-witness` ships as a standalone binary (cordfuse/git-witness), this flow will invoke `git witness` directly. The protocol stays the same — the binary replaces the manual steps. -->
-
-**Step 1 — Check for uncommitted local changes in sync scope**
 ```
-git diff HEAD -- manifest/framework/protocol/ manifest/framework/templates/ 'manifest/framework/scripts/*.ts' 'manifest/framework/actors/*.md'
-```
-If dirty: defer the sync. Note it in the greeting:
-> *Your Cortex has a framework update available (v[X.Y.Z]). Your protocol files have local changes — run `sync` when ready.*
-
-Do not gate. Do not block the session. Continue on the current version.
-
-**Step 2 — Conflict check**
-Check if the user has locally modified any file that upstream also changed:
-```
-git diff HEAD upstream/main -- manifest/framework/protocol/ manifest/framework/templates/ 'manifest/framework/scripts/*.ts' 'manifest/framework/actors/*.md'
-```
-Cross-reference with local changes to find overlapping edits.
-
-- **No conflicts** → proceed to Step 3.
-- **Conflicts found** → gate. Surface each conflict in plain English and wait:
-  > *Framework update available, but `manifest/framework/protocol/ROE.md` has local changes that conflict with upstream. Let's resolve before syncing.*
-
-**Step 3 — Apply and commit (clean path only)**
-
-Apply directory-scoped files from upstream:
-```
-git checkout upstream/main -- manifest/framework/protocol/ manifest/framework/templates/ manifest/framework/scripts/*.ts
+git pull origin main
 ```
 
-**Framework actors (`manifest/framework/actors/`) are covered by the explicit file list above.** No separate enumeration step is needed — the file list already includes `manifest/framework/actors/*.md`.
+After pulling:
+1. Reread any changed protocol files: `CORTEX.md`, `ROE.md`, `GUARDRAILS.md`, `VERBS.md` (custom variants too if present). New rules take effect from the next turn forward.
+2. If any file under `manifest/custom/actors/` changed, re-read the affected actor file(s) and apply the updated voice from the next turn forward.
+3. Surface one line: *"Pulled N commits. [list changed protocol files if any]. Rules current."* If nothing changed: *"Already up to date."*
 
-**Hardcoded personality file lists in sync flow are a protocol violation.** Earlier alpha sync flows used hardcoded checkout lists which silently dropped framework personalities the list-author forgot to update — alpha.4 missed `PERSONALITY-CASUAL.md` (Bob → Casey rename), alpha.6 missed `PERSONALITY-CHUCK-NORRIS.md`, and the resulting drift accumulated on user clones across multiple sync cycles before being caught (see records `2026-04-28-1631-bug-personality-sync-drift.md`). Live enumeration prevents this — every sync includes every framework personality currently on upstream/main, no matter what was added in the most recent release.
+If a merge conflict occurs, stop and walk the user through resolving it.
 
-Update `.cortex-version` to match upstream version.
+**Never touch `manifest/custom/` during sync** — user-owned territory. Never pull from upstream into custom.
 
-**Step 3b — Pull custom personality updates from origin (v4.3.0+):**
+### Update flow (`update`)
 
-After syncing framework files from upstream, check origin for custom personality updates (covers own actors and any imported actors in subdirectories):
-```
-git fetch origin
-git diff HEAD origin/main -- manifest/custom/actors/
-```
-If any file under `manifest/custom/actors/` on `origin/main` differs from local HEAD, pull it:
-```
-git checkout origin/main -- manifest/custom/actors/
-```
-Only pull files that differ — do not overwrite files that are already current. These are user-owned and origin is authoritative for them (upstream never has them).
+**`update` = pull framework files from upstream.** Separate from `sync`.
 
-Then commit and push everything together:
+Triggers: "update" · "update cortex" · "install update" · "apply framework update"
+
 ```
-git add manifest/framework/protocol/ manifest/framework/templates/ manifest/framework/scripts/*.ts manifest/custom/actors/ .cortex-version
-git commit -m "sync: framework vX.Y.Z"
+git fetch upstream --tags
+```
+Resolve the latest release tag. If upstream is ahead of `.cortex-version`:
+
+1. Apply framework files from upstream (never `manifest/custom/`):
+```
+git checkout upstream/main -- manifest/framework/protocol/ manifest/framework/templates/ manifest/framework/scripts/*.ts manifest/framework/actors/*.md manifest/framework/VERBS.md
+```
+2. Update `.cortex-version` to match upstream version.
+3. Commit and push:
+```
+git add manifest/framework/ .cortex-version
+git commit -m "update: framework vX.Y.Z"
 git push origin main
 ```
+4. Reread all protocol files. Report every file that changed. New rules effective from next turn.
 
-**Step 3c — Data path migration check (v4.6.0+)**
-
-After the framework sync commit, check whether this instance still has pre-v4.6.0 data layout at the repo root. If any of the old top-level directories exist AND their `data/` equivalents do not, run the migration automatically:
-
-```
-# Run each only if source exists and destination does not
-[ -d sessions ] && [ ! -d data/sessions ]     && git mv sessions data/sessions
-[ -d records ] && [ ! -d data/records ]       && git mv records data/records
-[ -d attachments ] && [ ! -d data/attachments ] && git mv attachments data/attachments
-[ -d archive/sessions ] && [ ! -d archive/data/sessions ] && git mv archive/sessions archive/data/sessions
-```
-
-If any moves were made, commit them separately:
-```
-git add -A
-git commit -m "migrate: move sessions/, records/, attachments/ under data/ (v4.6.0)"
-git push origin main
-```
-
-Surface in the sync report: *"Data migration complete — sessions/, records/, attachments/ moved under data/."*
-
-If the old directories exist AND `data/` already has the content (both exist simultaneously), do not move — surface a warning instead: *"Migration conflict: both `records/` and `data/records/` exist. Manual review needed before migrating."*
-
-**Step 4 — Accurate sync report (v4.0.0-alpha.13+)**
-
-After the apply/commit completes, the scribe MUST report **all** files actually pulled — not a sample, not a summary. Use one of three formats based on the change count:
-
-- **0 files changed:** *"No framework changes — already on v[X.Y.Z]."*
-- **1 file changed:** *"Synced. 1 change applied: `<filename>`. Now on v[X.Y.Z]."*
-- **2+ files changed:** *"Synced. N changes applied:*
-  *  - `<file 1>`*
-  *  - `<file 2>`*
-  *  ...*
-  *Now on v[X.Y.Z]."*
-
-Reporting only one file when more changed (e.g., reporting `PERSONALITY-YODA.md` when ten files were updated) is a protocol violation. The user must be able to verify what came in.
-
-**Personality cache invalidation and actor reload after sync (v4.3.0+):** if any file under `manifest/custom/actors/` was pulled in this sync: (1) re-scan `manifest/custom/actors/` recursively from disk and refresh the in-session personality list; (2) re-read each currently-loaded actor's personality file from disk and adopt the updated voice from the next turn forward. Do not rely on hello-time cache after sync. Surface a one-line acknowledgement alongside the sync report: *"Actor(s) reloaded: [names]. Updated voice effective from this turn."*
-
-**Pre-sync drift check (v4.0.0-alpha.15+):** before pulling, the scribe MUST diff every framework-scope path between local `HEAD` and `upstream/main`. If any file in framework scope (excluding `*-CUSTOM.md` patterns) differs in a way the current sync wouldn't update, surface the count in the sync report:
-
-> *"Drift detected: N file(s) differ from upstream beyond what this sync resolves. Run `reconcile` to resolve."*
-
-This catches the historical-drift class of bugs that the post-sync cache invalidation can't catch — files that were silently dropped from earlier hardcoded sync lists and have stayed wrong across multiple sync cycles. See `data/records/2026-04-28-1631-bug-personality-sync-drift.md` for the surfacing incident.
+If already on the latest version: *"Already on v[X.Y.Z] — nothing to update."*
 
 ### Reconcile flow (v4.0.0-alpha.19+)
 
