@@ -1077,7 +1077,7 @@ Every named actor's response (in any mode — single-actor reply, panel block, i
 **[Name]** — YYYY-MM-DD HH:MM TZ
 ```
 
-**Name rendering:** if the actor's file has both a `metadata.alias` (human name) and a `name:` frontmatter field (functional name) and they differ, render as `Alias [functional-name]` — e.g. `Lester [guitar-tone-advisor]`. If alias is absent or identical to the functional name, render the functional name alone.
+**Name rendering:** if the actor's file has both a `metadata.alias` (human name) and a `name:` frontmatter field (functional name) and they differ, render as `functional-name [alias]` — e.g. `guitar-tone-advisor [Lester]`. If alias is absent or identical to the functional name, render the functional name alone.
 
 Format is bold name, em dash, full datetime with timezone (per ROE Rule 17 and the Time Resolution contract). Single-actor sessions also get headers (no exemption — consistency wins). Bootstrap responses are exempt — Bootstrap is operational, not conversational, and is identified by the `Bootstrap:` prefix already in spec.
 
@@ -1438,7 +1438,7 @@ Example:
 **[Casey — main session]** — 2026-04-27 16:45 EDT
 ```
 
-- **Actor** — the active actor's `name` field from their personality file. If a custom personality with `parent:` inheritance is active, use the child's `name` (which may match the parent — Rule 18 inheritance pattern).
+- **Actor** — the active actor's functional `name` field from their personality file. If the actor also has a `metadata.alias`, render as `functional-name [alias]` (e.g. `guitar-tone-advisor [Lester]`). If a custom personality with `parent:` inheritance is active, use the child's `name`.
 - **Session** — the user-facing session name. For the singleton (default), always renders as **`main session`**. For scoped sessions (Phase 6+), renders as the user-chosen friendly name. The internal GUID is not shown unless the user explicitly asks (`what's the session guid?`).
 - **Datetime** — must include time and timezone. Resolved via the Time Resolution contract. Date-only is forbidden.
 
