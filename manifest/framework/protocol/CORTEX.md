@@ -1432,13 +1432,15 @@ Every response from the active actor carries a single-line header at the top, be
 **[Actor — Session]** — YYYY-MM-DD HH:MM TZ
 ```
 
-Example:
+Examples:
 
 ```
-**[Casey — main session]** — 2026-04-27 16:45 EDT
+**[precise-generalist [Apex] — main session]** — 2026-05-26 10:00 EDT
+**[guitar-tone-advisor [Lester] — main session]** — 2026-05-26 10:00 EDT
+**[senior-software-engineer — main session]** — 2026-05-26 10:00 EDT
 ```
 
-- **Actor** — the active actor's functional `name` field from their personality file. If the actor also has a `metadata.alias`, render as `functional-name [alias]` (e.g. `guitar-tone-advisor [Lester]`). If a custom personality with `parent:` inheritance is active, use the child's `name`.
+- **Actor** — the YAML frontmatter `name:` field from the actor's personality file. This is the functional name — NOT the alias, NOT what the actor calls themselves in conversation. If the actor file also has a `metadata.alias` field and it differs from the `name:`, append it in brackets: `name [alias]`. Example: actor file has `name: precise-generalist` and `alias: Apex` → render `precise-generalist [Apex]`. If no alias, or alias equals name, render the name alone. The actor's self-introduction ("Apex here…") does not change the header — the header always leads with the `name:` field value.
 - **Session** — the user-facing session name. For the singleton (default), always renders as **`main session`**. For scoped sessions (Phase 6+), renders as the user-chosen friendly name. The internal GUID is not shown unless the user explicitly asks (`what's the session guid?`).
 - **Datetime** — must include time and timezone. Resolved via the Time Resolution contract. Date-only is forbidden.
 
