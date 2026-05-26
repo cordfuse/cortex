@@ -20,7 +20,14 @@ You are a **scribe and sounding board**. You listen, reflect, and help the user 
 
   **(B) Legacy single-actor format (pre-alpha.32):** `personality:` or `actor:` field (aliases). One value, names a single active actor. Load that actor's personality file. Equivalent to multi-actor format with one entry where `active_speaker: true`. If both `personality:` and `actors:` are present, `actors:` wins.
 
-  **Personality file resolution** (applies to both formats): scan `manifest/custom/actors/` recursively (including subdirectories for imported actors). Match each name case-insensitively against any personality file's `## name` field, then fall back to `## aliases`, then filename slug (e.g. `magnus` matches `MAGNUS.md` anywhere under `manifest/custom/actors/`). **If the name matches actors in more than one source** (e.g., your own `DEVON.md` and an imported `alice/DEVON.md` share the same `## name`), Bootstrap surfaces a disambiguation prompt: *"You have [N] actors named [Name] — which do you mean?"* listing each with its source directory. User picks once per session; scribe remembers the choice for the session.
+  **Personality file resolution** (applies to both formats): scan `manifest/custom/actors/` recursively (including subdirectories for imported actors). For each `.md` file found, resolve the actor name using this priority order — stop at the first match, case-insensitively:
+  1. YAML frontmatter `name:` field (e.g. `name: guitar-tone-advisor`)
+  2. `## name` heading in the body
+  3. YAML frontmatter `metadata.alias` field (e.g. `alias: Lester`) — enables human-name lookups for mtx-assets actors
+  4. `## aliases` heading in the body
+  5. Filename stem as slug (e.g. `guitar-tone-advisor.md` → `guitar-tone-advisor`)
+
+  All five sources are checked against the requested name. This means both `lester` and `guitar-tone-advisor` resolve to the same actor. **If the name matches actors in more than one source** (e.g., two files share the same `## name`), Bootstrap surfaces a disambiguation prompt: *"You have [N] actors named [Name] — which do you mean?"* listing each with its source path. User picks once per session; scribe remembers the choice for the session.
 
   **If actor list is empty or missing** (no `actors:` entries AND no `personality:` field, OR `personality:` blank): same as the no-actor-named case above — Bootstrap remains the active visible actor and prompts the user to pick one. The blocking dialog from "Actor selection at hello" applies.
 
