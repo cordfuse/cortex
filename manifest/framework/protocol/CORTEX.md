@@ -116,7 +116,7 @@ Quick health check: last session date, open item count, uncommitted files, secre
 
 ### Sync (shorthand: `sync`)
 
-**Triggers:** "sync up" · "grab latest" · "pull from remote" · "pull changes" · "update" · "get latest"
+**Triggers:** "sync" · "sync now" · "sync up" · "grab latest" · "pull from remote" · "pull changes" · "update" · "get latest"
 
 Pull from origin, push any local commits. Safe to run mid-session from a second device. If a merge conflict occurs, stop and walk the user through resolving it.
 
