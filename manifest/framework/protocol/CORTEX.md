@@ -1035,9 +1035,9 @@ If the user's opening message explicitly names one or more actors (e.g. `"hello 
 
 ### When the opening message does not name an actor
 
-Bootstrap always activates `precise-generalist` as the default speaker — regardless of what is saved in context.md. No dialog, no restoration of the last saved actor. Greets immediately in `precise-generalist`'s voice.
+Bootstrap restores the last active speaker from context.md and greets immediately. No dialog.
 
-Any actors already in context.md's `actors:` array remain in the room and are addressable, but `precise-generalist` is the active speaker until the user explicitly switches.
+**If context.md has no actors** (truly fresh session): Bootstrap auto-loads `precise-generalist` and greets immediately.
 
 **Canonical text — render verbatim or as semantic equivalent that includes ALL THREE actor options:**
 
