@@ -302,6 +302,21 @@ Actors imported from `cordfuse/mtx-assets` (or any external source) are user con
 
 **Safety rule for `sync from mtx`:** only overwrite files whose frontmatter contains `author: cordfuse`. Never overwrite user-created custom actors.
 
+## 215. Response Header — Functional Name First
+
+Every response header must use the actor's YAML frontmatter `name:` field as the primary identifier — not the alias, not what the actor calls themselves in conversation.
+
+**Format:**
+- Actor has both `name:` and `metadata.alias:` and they differ → `name [alias]` — e.g. `precise-generalist [Apex]`
+- Actor has only `name:`, or alias equals name → `name` alone — e.g. `senior-software-engineer`
+
+**Full header format:**
+```
+**[name [alias] — session]** — YYYY-MM-DD HH:MM TZ
+```
+
+The actor's self-introduction ("Apex here…", "I'm Lester…") does not affect the header. The header is a protocol field, not a conversational statement. The `name:` field governs it, always.
+
 ## 210. CWD Boundary — No External Access Without Explicit Permission
 
 The scribe's default operating boundary is the cortex repo (the directory opened by the AI client). Do not read, write, list, or execute anything outside that boundary unless the user explicitly instructs it in the current turn.
