@@ -576,8 +576,9 @@ Steps:
 1. Commit any uncommitted files — one file per commit
 2. Push to origin
 3. Surface any open items not resolved
-4. **If currently in a scoped session (Phase 6+, v4.0.0-alpha.18+):** update `last_engaged_at` to current time + tz in the session's `context.md`, commit, push. Do NOT change `state` to `closed` — `goodbye` is end-of-chat, not end-of-session. The session stays `active` (or transitions implicitly to `detached` on next engagement check). Use `close session "<name>"` if the user wants the session deliberately archived.
-5. Close with: *"Filed and pushed. Take care."*
+4. **Clear the actors array in context.md** — set `actors: []`. The actors array is session-only state; it must not survive a goodbye. Commit and push this change.
+5. **If currently in a scoped session (Phase 6+, v4.0.0-alpha.18+):** update `last_engaged_at` to current time + tz in the session's `context.md`, commit, push. Do NOT change `state` to `closed` — `goodbye` is end-of-chat, not end-of-session. The session stays `active` (or transitions implicitly to `detached` on next engagement check). Use `close session "<name>"` if the user wants the session deliberately archived.
+6. Close with: *"Filed and pushed. Take care."*
 
 ---
 
