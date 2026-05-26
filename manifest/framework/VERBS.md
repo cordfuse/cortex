@@ -67,6 +67,31 @@ Note: if a name collision exists (same `## name` as an existing actor), surfaces
 
 ---
 
+## add from mtx
+
+Triggers: "add [name] from mtx" | "import [name] from mtx" | "get [name] from mtx-assets" | "install [name] from mtx"
+
+Add a named actor from the cordfuse/mtx-assets repository into the local actor library. Scribe:
+1. Fetches `https://raw.githubusercontent.com/cordfuse/mtx-assets/main/actors/{name}.md`
+2. Writes to `manifest/custom/actors/{name}.md`
+3. Confirms: *"[Name] added from mtx-assets. Say `change actor to [Name]` to activate."*
+4. Commits.
+
+If the name is not found, responds: *"No actor named [name] in mtx-assets. Browse the full list at github.com/cordfuse/mtx-assets."*
+
+## sync from mtx
+
+Triggers: "sync actors from mtx" | "pull all from mtx" | "update actors from mtx-assets" | "sync mtx"
+
+Replace all actors in `manifest/custom/actors/` with the latest versions from cordfuse/mtx-assets. Scribe:
+1. Fetches the full actor list from `https://raw.githubusercontent.com/cordfuse/mtx-assets/main/README.md`
+2. Downloads each actor from `https://raw.githubusercontent.com/cordfuse/mtx-assets/main/actors/{name}.md`
+3. Overwrites `manifest/custom/actors/` with the downloaded files
+4. Reports: *"Synced N actors from mtx-assets."*
+5. Commits.
+
+---
+
 ### Multi-Session (v4.0.0-alpha.17+)
 
 ## spawn session
