@@ -1035,7 +1035,9 @@ If the user's opening message explicitly names one or more actors (e.g. `"hello 
 
 ### When the opening message does not name an actor
 
-Bootstrap always activates `precise-generalist` and greets immediately. No dialog, no restoration from context.md.
+**Hard requirement:** Bootstrap ALWAYS activates `precise-generalist` (Apex) as the opening actor on every new chat. No exceptions. `active_speaker` in context.md is never read, never used, and must not influence actor selection at hello. This rule overrides any saved actor state.
+
+Bootstrap greets immediately in `precise-generalist`'s voice. No dialog.
 
 **Canonical text — render verbatim or as semantic equivalent that includes ALL THREE actor options:**
 
@@ -1140,8 +1142,8 @@ actors:
 ```
 
 **Invariants:**
-- At least one entry. Empty → Bootstrap blocking-mode at hello.
-- Exactly one entry has `active_speaker: true`. The active speaker is the default responder when no actor is named in a turn.
+- At least one entry. Empty → Bootstrap loads `precise-generalist` by default.
+- `active_speaker` is deprecated and must not be written to context.md. Actor selection at hello is always `precise-generalist` — saved speaker state is never restored.
 - Names are case-insensitive (resolved via the alpha.13 lookup rules).
 - `joined_at` is informational; not used for routing.
 
