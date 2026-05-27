@@ -29,7 +29,7 @@ One default actor ships with the framework: **Apex** — a generic, precise, gen
 
 ## ⚠️ Permissions are wide-open by default — and that's deliberate
 
-Cortex ships with `.claude/settings.json` carrying a comprehensive allow-list (`Read`, `Edit`, `Write`, `Glob`, `Grep`, `Bash(*)`, `WebSearch`, `WebFetch`). **Claude Code will run every tool call the cortex hello flow needs without per-prompt approval.** Other CLI agents in scope (Codex CLI, Gemini CLI, OpenCode, Qwen Code, GitHub Copilot CLI) have their own auto-accept flags — see each agent's docs for the equivalent.
+Cortex ships with `.claude/settings.json` carrying a comprehensive allow-list (`Read`, `Edit`, `Write`, `Glob`, `Grep`, `Bash(*)`, `WebSearch`, `WebFetch`). **Claude Code will run every tool call the cortex hello flow needs without per-prompt approval.** Other CLI agents in scope (Codex CLI, Gemini CLI, Antigravity CLI, OpenCode, Qwen Code, GitHub Copilot CLI) have their own auto-accept flags — see each agent's docs for the equivalent.
 
 **Why:** the cortex value proposition depends on the scribe being able to read records, write files, run git commands, and execute integrations without per-prompt friction. Per-call approval would make every session unusable. The protocol files in `manifest/framework/protocol/` (`CORTEX.md`, `GUARDRAILS.md`, `ROE.md`, `DISCLAIMER.md`) define what the scribe is allowed to do — those rules are LLM-enforced. There is no second OS-level safety layer.
 
@@ -45,7 +45,7 @@ Cortex ships with `.claude/settings.json` carrying a comprehensive allow-list (`
 
 `.claude/settings.json` ships with a comprehensive `deny` list covering every framework file: `manifest/framework/protocol/`, `manifest/framework/templates/`, `manifest/framework/scripts/*.ts`, `version.txt`, `.cortex-version`, `LICENSE`, `ROADMAP.md`, `README.md`, `manifest/framework/README-SIMPLE.md`, `manifest/framework/CORTEX-CHANGELOG.md`, `manifest/framework/VERBS.md`, `manifest/framework/CORTEX-DEV.md`, the install/setup scripts, and `.claude/settings.json` itself.
 
-**Agent pointer files are intentionally NOT in the deny list.** `CLAUDE.md`, `AGENTS.md`, `GEMINI.md`, `OPENCODE.md`, `QWEN.md` exist as one-line pointers to `manifest/framework/protocol/CORTEX.md` — but users customize them with personal blocks below the pointer (per-project session backlogs, per-host instructions, etc.). They're user-territory in user clones, even though they ship with the framework.
+**Agent pointer files are intentionally NOT in the deny list.** `CLAUDE.md`, `AGENTS.md`, `GEMINI.md`, `ANTIGRAVITY.md`, `OPENCODE.md`, `QWEN.md` exist as one-line pointers to `manifest/framework/protocol/CORTEX.md` — but users customize them with personal blocks below the pointer (per-project session backlogs, per-host instructions, etc.). They're user-territory in user clones, even though they ship with the framework.
 
 **Why:** ROE Rule 18 already says framework files are read-only for the scribe (LLM-enforced). The `deny` list operationalizes the same rule at the tool layer (OS-enforced). Defense in depth — even if the scribe's LLM compliance drifts, the tool layer holds. Framework files only mutate via the sync flow's `git checkout upstream/main` (a `Bash(*)` call), which IS allowed and which IS the correct path for framework changes.
 
@@ -73,7 +73,7 @@ Cortex behaves **differently** depending on where you run it. The difference is 
 
 | Environment | Git operations (clone, read, commit, push, merge) | Third-party APIs (Google, Microsoft 365, Notion, Slack, Spotify, etc.) |
 |---|---|---|
-| **CLI agents** (Claude Code, Gemini CLI, OpenCode, Qwen, Codex) | Yes | **Yes — full connector functionality** |
+| **CLI agents** (Claude Code, Gemini CLI, Antigravity CLI, OpenCode, Qwen, Codex) | Yes | **Yes — full connector functionality** |
 | **Self-hosted / cron / scheduled scripts** on your machine | Yes | **Yes — full connector functionality** |
 | **Claude Cowork / Dispatch** (cloud Claude Code dispatched from Claude.ai) | Yes | **Yes — but Cowork is flaky and unfinished. Hung tooling calls are common. Out of cortex's control. Treat as experimental.** |
 | **Claude.ai web and mobile** (Free/Pro/Max) | Yes | **NO. Sandbox blocks all third-party APIs.** |
@@ -84,7 +84,7 @@ Cortex behaves **differently** depending on where you run it. The difference is 
 
 **For full connector functionality on a phone or tablet:** connectors run from a CLI agent on your laptop, scheduled scripts on a home server, or Claude Cowork / Dispatch (with the flakiness caveat above).
 
-**On UX verbosity:** CLI agents (Claude Code, Gemini CLI, OpenCode, Qwen) are the least verbose session experience — no tool-call accordion UI, scribe reads files directly, and the user sees only the curated greeting. Web project mode on claude.ai and ChatGPT has inherent startup verbosity (file-listing UI, tool-call expansions) that Cordfuse cannot suppress — that's the AI provider's UI, not a cortex protocol issue. If a clean, quiet session is the goal, run cortex from a CLI agent.
+**On UX verbosity:** CLI agents (Claude Code, Gemini CLI, Antigravity CLI, OpenCode, Qwen) are the least verbose session experience — no tool-call accordion UI, scribe reads files directly, and the user sees only the curated greeting. Web project mode on claude.ai and ChatGPT has inherent startup verbosity (file-listing UI, tool-call expansions) that Cordfuse cannot suppress — that's the AI provider's UI, not a cortex protocol issue. If a clean, quiet session is the goal, run cortex from a CLI agent.
 
 ---
 
@@ -293,7 +293,8 @@ archive/               # Retired files -- read only on explicit request
 install/               # Bootstrap installers + setup scripts
 .claude/               # Claude Code settings
 CLAUDE.md              # Claude Code + Claude Desktop
-GEMINI.md              # Gemini CLI
+GEMINI.md              # Gemini CLI (sunsets 2026-06-18)
+ANTIGRAVITY.md         # Antigravity CLI (Gemini CLI successor)
 AGENTS.md              # OpenAI Codex + generic agents
 OPENCODE.md            # OpenCode
 QWEN.md                # Qwen Code
@@ -396,7 +397,7 @@ The Bootstrap RWDX guardrail (v4.0.0-alpha.7+) blocks all read/write/delete/exec
 ## Requirements
 
 - Git
-- An AI agent ([Claude Code](https://claude.ai/download), [Gemini CLI](https://github.com/google-gemini/gemini-cli), [OpenCode](https://opencode.ai), Codex CLI, Qwen Code) or web interface (claude.ai, ChatGPT)
+- An AI agent ([Claude Code](https://claude.ai/download), [Gemini CLI](https://github.com/google-gemini/gemini-cli) (sunsets 2026-06-18), [Antigravity CLI](https://github.com/google-antigravity/antigravity-cli), [OpenCode](https://opencode.ai), Codex CLI, Qwen Code) or web interface (claude.ai, ChatGPT)
 - **Model recommendation: Claude Sonnet, or a mid-tier GPT equivalent.** Validated on Claude Sonnet — clean startup, fast, follows the silent-load protocol correctly. Claude Opus is more capable but more verbose at session start and slower. GPT-4o is untested; GPT-4o-mini is likely the right tier for the same reason (less narration, faster). Frontier/largest models are not always better for Cortex — instruction-following on the bootstrap rules matters more than raw capability.
 - **Session startup is verbose — this is expected and cannot be suppressed.** When you open a new chat and say `hello`, the AI reads your protocol files, runs Gate 3 (`git fetch origin` + version check), and runs an opening scan before greeting you. You will see tool-call activity during this process. This is the AI doing its job — not an error. The greeting itself is clean. The loading activity is a limitation of how AI providers expose tool use in their interfaces and is outside Cordfuse's control.
 - **Gemini web and mobile are not supported.** Gemini's web and mobile interfaces do not support the tool-calling and file access flow Cortex requires. Gemini CLI works fine.
