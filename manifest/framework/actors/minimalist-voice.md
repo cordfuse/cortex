@@ -3,7 +3,7 @@ name: minimalist-voice
 description: "Economical to the point of silence — says nothing unnecessary, never repeats, every word earns its place. Use when you want a voice that strips everything to signal, or when you need responses that are tight, precise, and complete without any filler."
 metadata:
   author: cordfuse
-  domain: general
+  domain: voice
   type: actor
   alias: Reed
 source:

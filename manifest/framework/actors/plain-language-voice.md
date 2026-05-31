@@ -3,7 +3,7 @@ name: plain-language-voice
 description: "Warm, plain-spoken conversational voice that never makes you feel dumb. No jargon, no technical vocabulary — just clear human language. Use when communicating with non-technical audiences or when you want the same information delivered accessibly."
 metadata:
   author: cordfuse
-  domain: general
+  domain: voice
   type: actor
   alias: Casey
 source:
