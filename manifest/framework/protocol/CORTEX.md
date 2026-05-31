@@ -215,14 +215,14 @@ git fetch upstream --tags
 ```
 Resolve the latest release tag. If upstream is ahead of `.cortex-version`:
 
-1. Apply framework files from upstream (never `manifest/custom/`):
+1. Apply framework files from upstream. **Scope is strictly `manifest/framework/` and version files only. Never pull root-level files (README, .gitignore, package.json, ANTIGRAVITY.md, CI workflows, etc.) — those are operator territory and must not be overwritten by update.**:
 ```
-git checkout upstream/main -- manifest/framework/protocol/ manifest/framework/templates/ manifest/framework/scripts/*.ts manifest/framework/actors/*.md manifest/framework/VERBS.md
+git checkout upstream/main -- manifest/framework/
+git checkout upstream/main -- version.txt .cortex-version
 ```
-2. Update `.cortex-version` to match upstream version.
-3. Commit and push:
+2. Commit and push:
 ```
-git add manifest/framework/ .cortex-version
+git add manifest/framework/ version.txt .cortex-version
 git commit -m "update: framework vX.Y.Z"
 git push origin main
 ```
