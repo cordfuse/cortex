@@ -75,12 +75,12 @@ Triggers:
 - By domain: "show me [domain] actors" | "any [domain] personalities?" | "who do you have for [domain]?" | "what [domain] options are there?" — where [domain] is engineering, health, finance, spiritual, music, productivity, communication, general
 - By need: "I need someone more [trait]" | "is there a [role type] I can add?" | "who would be good for [topic]?" | "I'm looking for a [descriptor]"
 
-Browse and selectively import actors from cordfuse/mtx-assets. Scribe:
-1. Fetches `https://raw.githubusercontent.com/cordfuse/mtx-assets/main/README.md` to get the current actor roster
+Browse and selectively import actors from cordfuse/agent-assets. Scribe:
+1. Fetches `https://raw.githubusercontent.com/cordfuse/agent-assets/main/README.md` to get the current actor roster
 2. Presents the full list grouped by domain, with each actor's name, alias, and one-line description
 3. If the user named a domain or trait, filter to matching actors only
 4. Prompts: *"Which would you like to add? Name one or more — or say 'all' for everything."*
-5. For each selected actor, fetches `https://raw.githubusercontent.com/cordfuse/mtx-assets/main/actors/{name}.md` and writes to `manifest/custom/actors/{name}.md`
+5. For each selected actor, fetches `https://raw.githubusercontent.com/cordfuse/agent-assets/main/actors/{name}.md` and writes to `manifest/custom/actors/{name}.md`
 6. On name collision with an existing custom actor, surfaces: *"You already have [name] — overwrite? (yes / skip)"*
 7. Confirms: *"Added: [list]. Say `change actor to [name]` to activate any of them."*
 8. Commits all new files in a single commit.
@@ -88,11 +88,11 @@ Browse and selectively import actors from cordfuse/mtx-assets. Scribe:
 ## add from mtx
 
 Triggers:
-- Power user: "add [name] from mtx" | "import [name] from mtx" | "get [name] from mtx-assets" | "install [name] from mtx"
+- Power user: "add [name] from mtx" | "import [name] from mtx" | "get [name] from agent-assets" | "install [name] from mtx"
 - Natural language: "add a [role]" | "bring in a [role]" | "I want to talk to a [role]" | "add someone who [does/knows/specializes in X]" | "give me a [descriptor] voice" | "I need a [role type]"
 
-Add a single named actor from cordfuse/mtx-assets directly (no browse step). Scribe:
-1. If a name was given directly, fetches `https://raw.githubusercontent.com/cordfuse/mtx-assets/main/actors/{name}.md`
+Add a single named actor from cordfuse/agent-assets directly (no browse step). Scribe:
+1. If a name was given directly, fetches `https://raw.githubusercontent.com/cordfuse/agent-assets/main/actors/{name}.md`
 2. If a role or description was given (NL path), scans the README roster and finds the closest match — surfaces it to the user for confirmation before adding: *"Closest match: [Name] — [one-line description]. Add them? (yes / browse more)"*
 3. Writes to `manifest/custom/actors/{name}.md`
 4. Confirms: *"[Name] added. Say `change actor to [name]` to activate."*
@@ -103,14 +103,14 @@ If not found: *"No actor matched '[query]'. Say 'show me who's available' to bro
 ## sync from mtx
 
 Triggers:
-- Power user: "sync actors from mtx" | "pull all from mtx" | "update actors from mtx-assets" | "sync mtx"
+- Power user: "sync actors from mtx" | "pull all from mtx" | "update actors from agent-assets" | "sync mtx"
 - Natural language: "update my actors" | "refresh available actors" | "are my actors up to date?"
 
 Update all currently-installed mtx actors to their latest versions. Scribe:
 1. Scans `manifest/custom/actors/` for files whose frontmatter has `author: cordfuse`
-2. For each, fetches the latest from `https://raw.githubusercontent.com/cordfuse/mtx-assets/main/actors/{name}.md`
+2. For each, fetches the latest from `https://raw.githubusercontent.com/cordfuse/agent-assets/main/actors/{name}.md`
 3. Overwrites only cordfuse-authored files — never touches user-created custom actors
-4. Reports: *"Updated N actors from mtx-assets. [list of names]"*
+4. Reports: *"Updated N actors from agent-assets. [list of names]"*
 5. Commits.
 
 ---

@@ -23,7 +23,7 @@ You are a **scribe and sounding board**. You listen, reflect, and help the user 
 **Actor name resolution** — for each `.md` file in `manifest/custom/actors/`, resolve the actor name using this priority (stop at first match, case-insensitively):
 1. YAML frontmatter `name:` field
 2. `## name` heading in the body
-3. YAML frontmatter `metadata.alias` field — enables human-name lookups for mtx-assets actors
+3. YAML frontmatter `metadata.alias` field — enables human-name lookups for agent-assets actors
 4. `## aliases` heading in the body
 5. Filename stem as slug (e.g. `guitar-tone-advisor.md` → `guitar-tone-advisor`)
 

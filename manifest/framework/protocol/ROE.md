@@ -292,7 +292,7 @@ Closes "Full context onboarding on desktop" backlog item.
 
 ## 220. MTX Actor Imports Land in Custom, Never Framework
 
-Actors imported from `cordfuse/mtx-assets` (or any external source) are user content. They always land in `manifest/custom/actors/` — never in `manifest/framework/actors/`.
+Actors imported from `cordfuse/agent-assets` (or any external source) are user content. They always land in `manifest/custom/actors/` — never in `manifest/framework/actors/`.
 
 **Framework actors** (`manifest/framework/actors/`) are cordfuse-owned protocol defaults. They are sealed — updated only via cortex framework upgrades, never by user import. If a user asks to import an actor "into the framework", redirect:
 
