@@ -1766,10 +1766,10 @@ Switches the current chat to an existing session. Steps:
    > - *`list sessions all` — see everything (incl. archived)*
    > - *Cancel — stay in current session*
 
-   Wait for the user to pick one. **Silent fallback to spawn is a protocol violation.** If you (the agent reading this) are about to invoke `spawn` because lookup returned empty, stop — that's the alpha.X bug class this Hard requirement was added to close (filed 2026-05-03 by Steve in personal cortex, `data/records/2026-05-03-1714-bug-engage-spawned-instead.md`).
+   Wait for the user to pick one. **Silent fallback to spawn is a protocol violation.** If you (the agent reading this) are about to invoke `spawn` because lookup returned empty, stop — that's the alpha.X bug class this Hard requirement was added to close (filed 2026-05-03 by the maintainer in their personal cortex).
 
 3. **Cross-machine race check** — if `last_engaged_at` is within last 30 minutes AND `last_engaged_by` is a different machine, warn user:
-   > *"This session was last engaged 18 minutes ago by `steves-air`. Possible concurrent use. Continue anyway, abort, or wait?"*
+   > *"This session was last engaged 18 minutes ago by `your-other-machine`. Possible concurrent use. Continue anyway, abort, or wait?"*
    - User confirms `continue` → proceed; let git's rebase mechanism resolve any concurrent writes
    - User chooses `wait` → re-check every 60s, surface when stale
    - User chooses `abort` → no engage

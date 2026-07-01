@@ -91,7 +91,7 @@ Filed in the same conceptual rack as Fluid Protocol and CNAC: a doctrine that ex
 Tiny follow-on to alpha.24. Two path updates:
 
 - **`cortex-upgrade.md` → `customs/cortex-upgrade.md`** — protocol/CORTEX.md sync-flow upgrade-preference section updated (5 path references). User-territory file moves to `customs/` for consistency with the alpha.24 cleanup. The file itself doesn't ship with framework (it's user-owned upgrade preferences); only the path reference in the protocol changes.
-- **Framework `CLAUDE.md` `Dev Session Backlog` pointer updated** — was `~/Repos/steve-krisjanovs/cortex/cortex-backlog.md`, now `~/Repos/steve-krisjanovs/cortex/customs/backlogs/cortex-backlog.md`. Reflects the personal-cortex cleanup that moved 6 backlog files into `customs/backlogs/`.
+- **Framework `CLAUDE.md` `Dev Session Backlog` pointer updated** — was `<your cortex repo>/cortex-backlog.md`, now `<your cortex repo>/customs/backlogs/cortex-backlog.md`. Reflects a personal-cortex cleanup that moved 6 backlog files into `customs/backlogs/`.
 
 No other framework changes. Personal cortex needs to physically move `cortex-upgrade.md` into `customs/` as part of the alpha.25 sync (separate commit after this).
 
@@ -105,7 +105,7 @@ Reduces repo root from 13 to 10 files. Introduces `customs/` as the single home 
 - `GUARDRAILS-LOCAL.md` → `customs/GUARDRAILS-LOCAL.md`
 - `docs/VERBS-CUSTOM.md` → `customs/VERBS-CUSTOM.md` (consistency move; alpha.23 had moved it from root to docs/, now to customs/)
 
-**ROADMAP.md stays at root** per Steve's preference (OSS convention — most contributors expect ROADMAP at repo root).
+**ROADMAP.md stays at root** per the maintainer's preference (OSS convention — most contributors expect ROADMAP at repo root).
 
 **Protocol updated:**
 - Loading Order steps 2a, 3a, 5a updated for new `customs/` paths
@@ -143,7 +143,7 @@ Reduces the repo root from 18 root-level files to 13. All five moves are framewo
 - version.txt, context.md
 - ROE-CUSTOM.md and GUARDRAILS-LOCAL.md (user-territory; loading order reads from root)
 
-**Why now:** Steve flagged root was visually busy after returning to the filesystem. Path B (the more aggressive cleanup, including VERBS-CUSTOM.md) was picked because Steve is currently the only cortex user, so backwards-compatibility hedging isn't load-bearing.
+**Why now:** the maintainer flagged root was visually busy after returning to the filesystem. Path B (the more aggressive cleanup, including VERBS-CUSTOM.md) was picked because the maintainer is currently the only cortex user, so backwards-compatibility hedging isn't load-bearing.
 
 ### v4.0.0-alpha.22 — Repo cleanup (filename casing, install/ folder, dead artifacts removed)
 
@@ -157,7 +157,7 @@ A small grooming alpha. No protocol changes, no new features.
 - **`scripts/make_pdf.py` removed** — generator for the deleted PDF; not needed in framework scope.
 - **Path references updated everywhere:** README.md (repo structure), docs/SETUP-DESKTOP.md (sync example + release URL note), protocol/GUARDRAILS.md (bootstrap shell whitelist), .claude/settings.json (deny list).
 
-**Why now:** Steve flagged repo filesystem looked cluttered after he started looking at it more closely post-discharge. Filename casing inconsistency, install scripts at root, dead PDF. All cleanup, no functional change.
+**Why now:** the maintainer flagged the repo filesystem looked cluttered after looking at it more closely post-discharge. Filename casing inconsistency, install scripts at root, dead PDF. All cleanup, no functional change.
 
 ### v4.0.0-alpha.21 — Documentation alignment pass
 
@@ -172,7 +172,7 @@ A focused docs grooming alpha. README + interlinked markdown documents brought t
 
 **Known follow-up:** the "Other Framework Personalities" section in manifest/framework/PERSONALITIES.md combines Workplace, Creative & Visionary, Wisdom & Reflection, and Distinctive Voices entries from the pre-alpha.6 "General" section. A full per-category split of that section is queued for a follow-up alignment pass.
 
-**Why now:** Steve flagged docs likely "horribly stale" — they were. Five-day v4 alpha sprint shipped 13 protocol/feature alphas without docs catching up; alpha.21 is the catch-up.
+**Why now:** the maintainer flagged docs likely "horribly stale" — they were. Five-day v4 alpha sprint shipped 13 protocol/feature alphas without docs catching up; alpha.21 is the catch-up.
 
 ### v4.0.0-alpha.20 — Bootstrap actor + Operational/Conversational mode split + Dr. Mira
 
@@ -302,7 +302,7 @@ Two targeted fixes to the sync flow surfaced by the personality-sync-drift bug r
 
 **`reconcile` verb (Fix A) is alpha.16 candidate** — full reconciliation flow with three-category surfacing (behind / ahead / removed) and user gating per file. The pre-sync drift check in alpha.15 surfaces the count; `reconcile` will resolve.
 
-**One-time reconciliation already applied:** Steve's personal cortex had three documented drifts (CASUAL.md, CHUCK-NORRIS.md, OSCAR.md). Resolved in personal cortex commit `befac99` per Fix C of the bug record. Alpha.15 prevents recurrence.
+**One-time reconciliation already applied:** the maintainer's personal cortex had three documented drifts (CASUAL.md, CHUCK-NORRIS.md, OSCAR.md). Resolved in a personal cortex commit per Fix C of the bug record. Alpha.15 prevents recurrence.
 
 **Why now:** ironbound + alpha.13 lessons compounded — *"a spec without an enforcement path is a wish"*. Alpha.13 hardened detection. Alpha.15 hardens the underlying file enumeration so detection has correct ground truth.
 
@@ -414,7 +414,7 @@ Kills the deferred-switch UX papercut that's been live since v3.4.0. The active 
 
 ### v4.0.0-alpha.7 — Bootstrap RWDX guardrail
 
-New Hard Stop in `protocol/GUARDRAILS.md`: until the repo is cloned, protocol files are loaded, AND `git fetch origin` confirms local is current — the scribe refuses **all** RWDX operations (Read, Write, Delete, Execute, including personality loads, verb execution, integration scripts). "Partial bootstrap is not bootstrap." Closes a silent failure mode where an unbootstrapped scribe would offer to fabricate personalities or read records from training data instead of the actual repo. Surfaced when Steve pre-bootstrap asked the scribe to switch to "Yoda" and got an offer to *create* a Yoda personality.
+New Hard Stop in `protocol/GUARDRAILS.md`: until the repo is cloned, protocol files are loaded, AND `git fetch origin` confirms local is current — the scribe refuses **all** RWDX operations (Read, Write, Delete, Execute, including personality loads, verb execution, integration scripts). "Partial bootstrap is not bootstrap." Closes a silent failure mode where an unbootstrapped scribe would offer to fabricate personalities or read records from training data instead of the actual repo. Surfaced when the maintainer, pre-bootstrap, asked the scribe to switch to "Yoda" and got an offer to *create* a Yoda personality.
 
 ### v4.0.0-alpha.6 — General split + 8 new personalities + 3 new categories + faith axis
 
@@ -428,7 +428,7 @@ New Hard Stop in `protocol/GUARDRAILS.md`: until the repo is cloned, protocol fi
 - **Dr. Walsh** (Clinical & wellness) — family doctor / GP, fills the long-flagged gap
 - **AA Sponsor** (Recovery & Peer Support) — peer-to-peer 12-step, Big Book grounded, faith axis configurable
 - **SAA Sponsor** (Recovery & Peer Support) — same model, trauma-informed, Green Book grounded
-- **Terry** (Family & Friends) — best friend, dry-sarcastic, always shows up. Homage to Steve's real-life best friend.
+- **Terry** (Family & Friends) — best friend, dry-sarcastic, always shows up. Homage to the maintainer's real-life best friend.
 - **Mama** (Family & Friends) — mom-energy, warmth + authority
 - **Pop** (Family & Friends) — dad-energy, steady + practical
 - **Mindfulness Teacher** (Mindfulness & Stoicism) — secular contemplative practice
@@ -505,10 +505,10 @@ Spec: [`data/records/2026-04-26-v4-phase-1-hidden-scribe-spec.md`](data/records/
 ### v3.4.13 — Sandbox Limitation Callout in README
 - **Plain-language warning at top of both READMEs.** Users now know up front: on Claude.ai or ChatGPT web/mobile, Cortex can only do git operations (clone, read, commit, push, merge). All third-party APIs (Google, Microsoft, Notion, Slack, etc.) are blocked by the platforms' tool sandboxes — by design, not configurable.
 - **Pointer to AgentBox.** For users who want full connector functionality on phone/tablet without a developer setup, the README points at `cordfuse/agentbox` (in development) — a local Electron app that exposes a CLI agent's chat UI to any device, no sandbox restrictions.
-- **Trigger:** prevents future users from hitting the same 3-hour cliff Steve hit on 2026-04-25 trying to make `googleapis.com` reachable from Claude.ai web.
+- **Trigger:** prevents future users from hitting the same 3-hour cliff the maintainer hit on 2026-04-25 trying to make `googleapis.com` reachable from Claude.ai web.
 
 ### v3.4.12 — Google Connector Smoke Test Fixes
-- **Google connector validated end-to-end.** All five Google products (Calendar, Gmail, Drive, Tasks, Contacts) tested live against Steve's account via Penguin. Real data flowing in clean markdown. OAuth refresh token persists in vault.
+- **Google connector validated end-to-end.** All five Google products (Calendar, Gmail, Drive, Tasks, Contacts) tested live against the maintainer's account. Real data flowing in clean markdown. OAuth refresh token persists in vault.
 - **`scripts/integrations/google.py` shadowing fix.** Script is named `google.py` — Python adds its directory to `sys.path[0]`, making `from google.oauth2 import ...` resolve to the script itself instead of the real google PyPI package. Script now strips its own dir from sys.path before the imports.
 - **Docstring usage fix in google.py + microsoft.py.** `--passphrase` is a top-level argparse flag and must come BEFORE the subcommand. Old docstring showed it after, causing "unrecognized arguments" errors. Now: `python google.py --passphrase X auth` (correct).
 - **Auth output stale wording fix.** Both google.py and microsoft.py printed "Commit cortex.secrets.enc to persist across devices" — but the vault format changed from monolithic `.enc` file to per-secret `cortex.secrets/` folder. Updated to "Commit cortex.secrets/".
