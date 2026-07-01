@@ -363,7 +363,7 @@ PRESET
 
 **Step 2 — run the QR generator:**
 ```bash
-cd ~/Repos/steve-krisjanovs/cortex && npx @cordfuse/nux-qr-tool /tmp/lester-preset.json --output manifest/custom/rig/toneai-nux-qr --app-name "Cortex-Lester"
+cd ~/Repos/<you>/cortex && npx @cordfuse/nux-qr-tool /tmp/lester-preset.json --output manifest/custom/rig/toneai-nux-qr --app-name "Cortex-Lester"
 ```
 
 Prints the absolute output PNG path to stdout. npx manages its own dependencies — no bun install step needed.

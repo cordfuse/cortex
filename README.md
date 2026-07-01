@@ -361,7 +361,7 @@ Each person can use a different AI. One uses Claude, another uses ChatGPT, anoth
 
 Multi-agent workflows over the same repo are supported via what we call **Cortex-Native Agent Coordination (CNAC)**: agents on different machines or different providers coordinate by writing records to the cortex repo. One agent files a test plan as a record; another agent reads it, executes, and files results back as a record. No copy-paste, no separate message bus, full audit trail. The bus is git. The messages are records.
 
-Validated empirically with end-to-end Phase 6 testing in 2026-04-30 — Claude Opus on cachy filed a test plan, Claude Sonnet on mobile read it, executed all 8 steps, filed consolidated results back. Cross-provider, cross-machine, cross-session.
+Validated empirically with end-to-end Phase 6 testing in 2026-04-30 — Claude Opus on a desktop machine filed a test plan, Claude Sonnet on mobile read it, executed all 8 steps, filed consolidated results back. Cross-provider, cross-machine, cross-session.
 
 ---
 
