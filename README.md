@@ -1,6 +1,6 @@
 # Cortex
 
-[![Version](https://img.shields.io/badge/version-4.6.5-blue)](manifest/framework/CORTEX-CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-4.9.1-blue)](manifest/framework/CORTEX-CHANGELOG.md)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
 > **Using the template:** tap the green **Use this template** button (desktop GitHub) to create your own cortex. GitHub's mobile view hides that button — on mobile, either switch your browser to desktop view, or run `gh repo create my-cortex --template cordfuse/cortex` from a terminal.

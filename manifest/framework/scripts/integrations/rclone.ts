@@ -26,7 +26,7 @@ import { tmpdir, homedir } from 'node:os'
 import { writeFileSync, unlinkSync, mkdirSync } from 'node:fs'
 import * as readline from 'node:readline'
 
-const ROOT = join(dirname(fileURLToPath(import.meta.url)), '../..')
+const ROOT = join(dirname(fileURLToPath(import.meta.url)), '../../../..')
 const DOCS_DIR = join(ROOT, 'docs')
 
 // --- Arg parser ---

@@ -29,7 +29,7 @@ import { join, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import * as readline from 'node:readline'
 
-const ROOT = join(dirname(fileURLToPath(import.meta.url)), '../..')
+const ROOT = join(dirname(fileURLToPath(import.meta.url)), '../../../..')
 const GRAPH_BASE = 'https://graph.microsoft.com/v1.0'
 
 const SCOPES = [

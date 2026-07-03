@@ -4,6 +4,9 @@ One line per change. Newest at top. Append in the same commit as the change.
 
 Format: `YYYY-MM-DD HH:MM TZ | file | what changed`
 
+2026-07-03 UTC | version.txt | **bump to 4.9.1** — integration ROOT-path fix (secrets.ts resolution)
+2026-07-03 UTC | scripts/integrations/{google,microsoft,rclone,tailscale}.ts + scripts/make_private.ts | **fix**: ROOT climb-count broken by the 2026-05-05 scripts→manifest/framework/scripts move — integrations built a bogus doubled path (manifest/framework/manifest/framework/scripts/secrets.ts), breaking every secret get/store (Google, Microsoft, rclone, Tailscale, make_private). Fixed depths: integrations `../..`→`../../../..`; make_private `..`→`../../..`
+
 2026-05-20 UTC | version.txt | **bump to 4.6.6** — sync-diff scope discipline + vault decryption surface GUARDRAILS hard stop
 2026-05-20 UTC | protocol/GUARDRAILS.md | new section "Vault Decryption Surface (v4.6.6+)" — cloud surfaces unconditionally refuse `secrets.ts get`; refusal is a property of the surface, not the actor; cannot be waved through by user request; scribe-level enforcement until code-level guard ships in secrets.ts
 2026-05-20 UTC | protocol/ROE.md | Rule 100 (Secrets) — add "Cloud surface decryption is forbidden" sub-section pointing to GUARDRAILS; ensures active actor routes to local CLI before hitting GUARDRAILS refusal
