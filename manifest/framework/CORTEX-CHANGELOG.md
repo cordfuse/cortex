@@ -6,6 +6,10 @@ Format: `YYYY-MM-DD HH:MM TZ | file | what changed`
 
 2026-07-03 UTC | version.txt | **bump to 4.9.1** — integration ROOT-path fix (secrets.ts resolution)
 2026-07-03 UTC | scripts/integrations/{google,microsoft,rclone,tailscale}.ts + scripts/make_private.ts | **fix**: ROOT climb-count broken by the 2026-05-05 scripts→manifest/framework/scripts move — integrations built a bogus doubled path (manifest/framework/manifest/framework/scripts/secrets.ts), breaking every secret get/store (Google, Microsoft, rclone, Tailscale, make_private). Fixed depths: integrations `../..`→`../../../..`; make_private `..`→`../../..`
+2026-07-03 UTC | .cortex-version | reconcile `4.6.2` → `4.9.1` — had drifted (not bumped through the 4.7–4.9 releases); now matches version.txt so upgrade detection reports the true framework version
+2026-06-20 UTC | version.txt | **bump to 4.9.0** — refactor: split general domain → voice/philosophy/creative/relational; flow-scoping fix; agent-assets rename *(backfilled 2026-07-03)*
+2026-05-31 UTC | version.txt | **bump to 4.8.0** — sync all 63 agent-assets actors into framework/actors/ *(backfilled 2026-07-03)*
+2026-05-26 UTC | version.txt | **bump to 4.7.0** — version bump *(backfilled 2026-07-03; no detailed changelog captured at the time)*
 
 2026-05-20 UTC | version.txt | **bump to 4.6.6** — sync-diff scope discipline + vault decryption surface GUARDRAILS hard stop
 2026-05-20 UTC | protocol/GUARDRAILS.md | new section "Vault Decryption Surface (v4.6.6+)" — cloud surfaces unconditionally refuse `secrets.ts get`; refusal is a property of the surface, not the actor; cannot be waved through by user request; scribe-level enforcement until code-level guard ships in secrets.ts
