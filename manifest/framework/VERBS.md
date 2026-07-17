@@ -209,6 +209,10 @@ Summarise the month from its weekly rollups (falling back to raw records for any
 Triggers: "patterns" | "any patterns" | "what do you see" | "what patterns" | "connect the dots"
 Read across rollups (monthly, then weekly) and drill into raw records for specifics — surface recurring themes, correlations, escalations, and connections you might not have noticed. **Observational only, never advice** (see the Patterns section in `protocol/CORTEX.md`). Every observation cites the records/rollups behind it. Scope defaults to all history via rollups; narrow with "patterns this month". Nothing filed unless you ask.
 
+## handoff
+Triggers: "handoff" | "prep for appointment" | "appointment prep" | "prep for my doctor" | "summary for my doctor" | "clinician summary"
+Compile a one-page current-state summary for a clinician from your own records — current meds, recent trends, active concerns, relevant history, changes since last visit, questions to raise. Ask who it's for (scopes the content). Files to `data/handoffs/YYYY-MM-DD-[who].md`. **Organises your records for a clinician; never diagnoses or advises** (see the Appointment Handoff section in `protocol/CORTEX.md`).
+
 <!--
 ## open items
 List every open, unresolved, or flagged item across all records. Nothing filed, just a list. (Alias: *open*.)
