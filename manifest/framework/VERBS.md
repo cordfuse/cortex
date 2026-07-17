@@ -213,6 +213,10 @@ Read across rollups (monthly, then weekly) and drill into raw records for specif
 Triggers: "handoff" | "prep for appointment" | "appointment prep" | "prep for my doctor" | "summary for my doctor" | "clinician summary"
 Compile a one-page current-state summary for a clinician from your own records — current meds, recent trends, active concerns, relevant history, changes since last visit, questions to raise. Ask who it's for (scopes the content). Files to `data/handoffs/YYYY-MM-DD-[who].md`. **Organises your records for a clinician; never diagnoses or advises** (see the Appointment Handoff section in `protocol/CORTEX.md`).
 
+## safety
+Triggers: "safety" | "safety plan" | "my safety plan" | "crisis resources" | "I need support"
+Surface your own safety plan (`manifest/custom/protocol/SAFETY.md`, if you've made one) plus standard crisis lines — on demand, any time, nothing filed. If you haven't made a plan yet, offers to help build one from the safety-plan template. The calm, on-demand companion to the reactive crisis response in GUARDRAILS. **Cortex routes to help; it is not a crisis service.** See the Safety Plan section in `protocol/CORTEX.md`.
+
 <!--
 ## open items
 List every open, unresolved, or flagged item across all records. Nothing filed, just a list. (Alias: *open*.)
