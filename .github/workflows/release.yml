@@ -28,7 +28,7 @@ jobs:
 
             ---
 
-            ## How to install
+            ## Install on your computer (Mac · Linux · Windows)
 
             ### Mac or Linux
 
@@ -58,6 +58,16 @@ jobs:
 
             ---
 
+            ## On your phone or in a browser? (Claude / ChatGPT)
+
+            No install needed — Cortex runs from a Claude Project or a Custom GPT. Create the project, add a GitHub token, say **hello**.
+
+            **→ Mobile & web setup guide:** https://github.com/cordfuse/cortex/blob/main/manifest/framework/SETUP-MOBILE.md
+
+            Works on Claude (claude.ai) and ChatGPT, web and mobile. Journaling and recall work fully; live connectors (Google, Microsoft 365, etc.) are desktop/CLI only. (Gemini web and mobile aren't supported.)
+
+            ---
+
             ## Don't have a repo yet?
 
             1. Go to https://github.com/cordfuse/cortex
@@ -78,7 +88,7 @@ jobs:
 
             ## What the installer does
 
-            - Checks what's installed on your machine (git, Python, etc.)
+            - Checks what's installed on your machine (git, Bun, etc.)
             - Installs anything that's missing
             - Asks for your repo URL and where to clone it
             - Warns you if your repo is public (it should be private)

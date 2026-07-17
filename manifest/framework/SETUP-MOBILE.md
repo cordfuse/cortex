@@ -6,6 +6,18 @@ Set up once — every new chat in the project opens a session automatically.
 
 ---
 
+## What works here first
+
+On Claude (claude.ai) and ChatGPT — web and mobile — Cortex does **git**: clone your repo, read your records, log new entries, commit, and push. That's the whole capture-and-recall loop, and it works fully on your phone.
+
+What does **not** work here: live connectors (Google, Microsoft 365, Notion, etc.). The AI provider's sandbox blocks outbound network to anything but its own package registries, so connector scripts fail at the proxy — this is Anthropic's and OpenAI's restriction, not something Cortex can work around. Run connectors from a **CLI agent or desktop** instead (see [SETUP-DESKTOP.md](SETUP-DESKTOP.md)); they sync through the same git repo, so a connector run on your laptop shows up in your next mobile session.
+
+Short version: **journaling, records, and recall work everywhere; live integrations are a desktop/CLI thing.**
+
+> ChatGPT is supported but less battle-tested than Claude — the protocol is validated primarily on Claude. If something behaves oddly on ChatGPT, that's the likely reason.
+
+---
+
 ## Step 1 — Create your repo
 
 **New to Cortex:**
