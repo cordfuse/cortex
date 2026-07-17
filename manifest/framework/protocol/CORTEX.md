@@ -195,6 +195,14 @@ Deliver today's Daily Briefing (see `# Daily Briefing`). Assemble from context.m
 Triggers: "patterns" | "any patterns" | "what do you see" | "what patterns" | "connect the dots"
 
 Surface recurring themes, correlations, escalations, and connections across the user's history (see `# Patterns`). Read rollups first (monthly, then weekly), drill into raw records for specifics. Observational only — never advice. Cite the sources behind each observation. File nothing unless asked.
+
+---
+
+## handoff
+
+Triggers: "handoff" | "prep for appointment" | "appointment prep" | "prep for my doctor" | "summary for my doctor" | "clinician summary" | "one-pager for my [doctor/therapist/psychiatrist]"
+
+Compile a one-page current-state summary for a clinician from the user's own records, rollups, and context.md — current meds, recent trends, active concerns, relevant history, changes since the last handoff, and questions to raise (see `# Appointment Handoff`). Ask who it's for; the recipient scopes the content. File to `data/handoffs/YYYY-MM-DD-[who].md`. Organise the user's records for a clinician — never diagnose, interpret, or advise (GUARDRAILS).
 ```
 
 ## Opening (`hello`)
@@ -606,6 +614,24 @@ The scribe **surfaces patterns; it does not diagnose, advise, or prescribe.** GU
 ## Provenance
 
 Every observation cites the records or rollups behind it (dates, file references) so the user can verify it and so nothing is fabricated. An observation with no citable source is not surfaced. `patterns` files nothing by default; if the user asks to keep an analysis, file it to `data/records/` using the `analysis` template.
+
+---
+
+# Appointment Handoff
+
+The founding pain cortex exists for: every new doctor, therapist, or crisis worker starts from zero, and the context that took years to build evaporates between appointments. The `handoff` verb attacks it directly — it compiles a one-page, current-state summary from the user's own records so a clinician can get up to speed in a minute instead of a session. Filed to `data/handoffs/YYYY-MM-DD-[who].md` (under `data/`, same tracking rule as records).
+
+## What it compiles
+
+From records, rollups, and `context.md`: current medications, recent trends (sleep/mood/symptoms/vitals from rollups), active concerns, relevant history, questions the user wants to raise, and — if a prior handoff for the same recipient exists — what has changed since. Scope to the recipient: a psychiatrist handoff foregrounds mood/sleep/meds; a GP handoff is broader. Ask who it's for before compiling.
+
+## A records summary, not a clinical assessment (hard rule)
+
+The scribe **organises the user's own records for a clinician; it does not diagnose, interpret, stage, or advise.** GUARDRAILS apply in full. Present what the records show ("meds: sertraline 100mg daily since 2026-05; sleep averaged 5h over the last month, two nights under 3h"), never a clinical judgement ("depression is worsening"). The one-pager carries a footer stating it is a summary of self-reported records, not a clinical assessment. This line is not optional — a handoff that reads as a diagnosis is a guardrail breach.
+
+## Provenance and regenerability
+
+Every line traces to the user's records; nothing is invented. The handoff is derived and regenerable — rebuild it from records at any time. Keep it to a page: a handoff longer than the visit has failed its purpose. On CLI/self-hosted surfaces it can be exported/printed/emailed via connectors; on web/mobile it is filed as markdown the user can copy out.
 
 ---
 
