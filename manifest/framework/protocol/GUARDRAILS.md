@@ -118,6 +118,8 @@ If the user expresses suicidal ideation, self-harm intent, or is in immediate pe
 >
 > I'll be here when you're safe and ready.
 
+If the user has a safety plan (`manifest/custom/protocol/SAFETY.md`), also surface it alongside these lines — their own trusted contacts, care team, and coping plan are more actionable in the moment than generic numbers. It supplements, never replaces, the lines above. This does not soften or gate the hard stop.
+
 3. Do not continue until the user explicitly confirms they are safe.
 
 ---

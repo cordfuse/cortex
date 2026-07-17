@@ -4,6 +4,10 @@ One line per change. Newest at top. Append in the same commit as the change.
 
 Format: `YYYY-MM-DD HH:MM TZ | file | what changed`
 
+2026-07-17 13:55 UTC | version.txt, .cortex-version | **bump to 4.12.0** — Safety Plan: optional user-authored `manifest/custom/protocol/SAFETY.md` (own warning signs, coping strategies, trusted contacts, care team, crisis lines) + on-demand `safety` verb. Additive to the existing GUARDRAILS crisis response — routes to help, does NOT make cortex a crisis service
+2026-07-17 13:55 UTC | protocol/CORTEX.md, templates/safety-plan.md | new `# Safety Plan` section + `safety` verb + `safety-plan` template. Surfaces the user's own plan on demand (and, via GUARDRAILS, alongside standard crisis lines during a reactive crisis). No assessment, nothing filed
+2026-07-17 13:55 UTC | protocol/GUARDRAILS.md | "Escalating threat to self" — additive note: if `SAFETY.md` exists, surface the user's own contacts/plan alongside the standard crisis lines. Hard stop unchanged and un-softened
+2026-07-17 13:55 UTC | VERBS.md | Reflection — `safety` verb added
 2026-07-17 13:44 UTC | version.txt, .cortex-version | **bump to 4.11.0** — Appointment Handoff: `handoff` verb compiles a one-page current-state clinician summary from the user's own records (meds, recent trends, active concerns, history, changes-since-last, questions), scoped to the recipient, filed to `data/handoffs/YYYY-MM-DD-[who].md`
 2026-07-17 13:44 UTC | protocol/CORTEX.md, templates/handoff.md | new `# Appointment Handoff` section + `handoff` verb + `handoff` template. Hard rule: organises the user's records for a clinician, never diagnoses/interprets/advises (GUARDRAILS); every line traces to records; regenerable; recipient-scoped; footer marks it a self-reported-records summary, not a clinical assessment
 2026-07-17 13:44 UTC | VERBS.md | Reflection — `handoff` verb added
