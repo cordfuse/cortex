@@ -64,11 +64,11 @@ This is the complete system prompt — repo URL, PAT, and protocol instructions 
 2. **Instructions:** paste your full system prompt (connection block + CORTEX-PROJECT.md contents)
 3. Open a new chat in the project
 
-### ChatGPT (chat.openai.com)
+### ChatGPT (chatgpt.com)
 
-1. Explore GPTs → Create a GPT → Configure
+1. chatgpt.com → Projects → New project
 2. **Instructions:** paste your full system prompt (connection block + CORTEX-PROJECT.md contents)
-3. Save and open a chat
+3. Open a new chat in the project
 
 No project knowledge or file uploads needed.
 

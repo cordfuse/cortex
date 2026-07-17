@@ -4,6 +4,9 @@ One line per change. Newest at top. Append in the same commit as the change.
 
 Format: `YYYY-MM-DD HH:MM TZ | file | what changed`
 
+2026-07-17 15:03 UTC | version.txt, .cortex-version | **bump to 4.12.2** — ChatGPT setup uses Projects (parallel to Claude Projects), not Custom GPT
+2026-07-17 15:03 UTC | SETUP-MOBILE.md | ChatGPT step now uses chatgpt.com → Projects → New project (was Explore GPTs → Create a GPT); mirrors the Claude Projects flow
+2026-07-17 15:03 UTC | .github/workflows/release.yml | release-notes template: "Claude Project or a Custom GPT" → "Claude project or a ChatGPT project" (matches the v4.12.1 notes amendment)
 2026-07-17 14:19 UTC | version.txt, .cortex-version | **bump to 4.12.1** — surface mobile/web setup: release notes were CLI-pipe-installer-only; add a Claude/ChatGPT mobile+web path + link SETUP-MOBILE.md, and add a "what works here" expectations note to SETUP-MOBILE.md
 2026-07-17 14:19 UTC | SETUP-MOBILE.md | new "What works here first" section — sets expectations that git/records/recall work on Claude+ChatGPT web+mobile but live connectors are desktop/CLI only (provider sandbox blocks outbound network); note that ChatGPT is less battle-tested than Claude
 2026-07-17 14:19 UTC | .github/workflows/release.yml | release-notes template: add "On your phone or in a browser? (Claude / ChatGPT)" section linking SETUP-MOBILE.md (was CLI-installer-only); rename install heading to "Install on your computer"; fix stale "Python" → "Bun" in the installer description

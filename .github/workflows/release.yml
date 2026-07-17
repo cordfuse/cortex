@@ -60,7 +60,7 @@ jobs:
 
             ## On your phone or in a browser? (Claude / ChatGPT)
 
-            No install needed — Cortex runs from a Claude Project or a Custom GPT. Create the project, add a GitHub token, say **hello**.
+            No install needed — Cortex runs from a Claude project or a ChatGPT project. Create the project, add a GitHub token, say **hello**.
 
             **→ Mobile & web setup guide:** https://github.com/cordfuse/cortex/blob/main/manifest/framework/SETUP-MOBILE.md
 
