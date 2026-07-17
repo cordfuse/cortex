@@ -4,6 +4,8 @@ One line per change. Newest at top. Append in the same commit as the change.
 
 Format: `YYYY-MM-DD HH:MM TZ | file | what changed`
 
+2026-07-17 15:59 UTC | version.txt, .cortex-version | **bump to 4.13.0** — `sync` upgraded: rebase pull + explicit push + conflict-abort-and-ask + changed-file report
+2026-07-17 15:59 UTC | protocol/CORTEX.md | Sync flow now `git pull --rebase origin main` + `git push origin main` (linear history; implements the push the intent blurb already promised); on conflict abort the rebase and ask (no auto-resolution); report lists changed files. Intent-routing Sync entry updated to match. (Folded in the useful mechanics from a proposed `pull` verb rather than adding a second near-synonym.)
 2026-07-17 15:03 UTC | version.txt, .cortex-version | **bump to 4.12.2** — ChatGPT setup uses Projects (parallel to Claude Projects), not Custom GPT
 2026-07-17 15:03 UTC | SETUP-MOBILE.md | ChatGPT step now uses chatgpt.com → Projects → New project (was Explore GPTs → Create a GPT); mirrors the Claude Projects flow
 2026-07-17 15:03 UTC | .github/workflows/release.yml | release-notes template: "Claude Project or a Custom GPT" → "Claude project or a ChatGPT project" (matches the v4.12.1 notes amendment)
