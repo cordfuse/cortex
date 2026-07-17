@@ -105,7 +105,7 @@ Quick health check: last session date, open item count, uncommitted files, secre
 
 **Triggers:** "sync" · "sync now" · "sync up" · "grab latest" · "pull from remote" · "pull changes" · "update" · "get latest"
 
-Pull from origin, push any local commits. Safe to run mid-session from a second device. If a merge conflict occurs, stop and walk the user through resolving it.
+Pull from origin **with rebase**, then push any local commits. Safe to run mid-session from a second device. On conflict, **abort the rebase and ask how to proceed** — never auto-resolve.
 
 ### Search (shorthand: `search [term]`)
 
@@ -231,18 +231,21 @@ On demand, surface the user's own safety plan from `manifest/custom/protocol/SAF
 
 ### Sync flow
 
-**`sync` = pull from origin.** Nothing more.
+**`sync` = get current with origin: pull (rebase), then push local commits.**
 
 ```
-git pull origin main
+git pull --rebase origin main
+git push origin main
 ```
+
+Rebase keeps history linear (no stray merge commits) when another device has committed since this session started. Safe to run mid-session.
 
 After pulling:
 1. Reread any changed protocol files: `CORTEX.md`, `ROE.md`, `GUARDRAILS.md`, `VERBS.md` (custom variants too if present). New rules take effect from the next turn forward.
 2. If any file under `manifest/custom/actors/` changed, re-read the affected actor file(s) and apply the updated voice from the next turn forward.
-3. Surface one line: *"Pulled N commits. [list changed protocol files if any]. Rules current."* If nothing changed: *"Already up to date."*
+3. Surface one line: *"Pulled N commit(s). Changed: [file list]. Rules current."* If nothing changed: *"Already up to date."*
 
-If a merge conflict occurs, stop and walk the user through resolving it.
+**On conflict:** abort the rebase (`git rebase --abort`) and report the conflicting files. Do **not** attempt auto-resolution — ask the user how they'd like to proceed.
 
 **Never touch `manifest/custom/` during sync** — user-owned territory. Never pull from upstream into custom.
 
