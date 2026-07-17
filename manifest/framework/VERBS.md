@@ -169,6 +169,10 @@ Deep three-category diff against `upstream/main` with per-file gating. Catches h
 
 ### Work & projects
 
+## morning
+Triggers: "morning" | "good morning" | "brief me" | "daily brief" | "morning brief" | "what's on today"
+Deliver today's Daily Briefing — appointments, carried open items, a health note, heads-up — assembled from context.md, records, rollups, and connectors where reachable. Files to `data/briefings/YYYY-MM-DD.md`. Also auto-surfaces at the first hello of a new day; this verb is the on-demand form and the primary path for continuous-thread/mobile users. See the Daily Briefing section in `protocol/CORTEX.md`.
+
 <!--
 ## standup
 Run a quick standup: what I did yesterday, what I'm doing today, any blockers. File as a tasks entry.
@@ -193,16 +197,19 @@ Fast idea capture. Ask what the idea is, file it immediately, no polish required
 
 ### Reflection
 
-<!--
 ## weekly review
-Read all records from the past 7 days. Surface patterns, open items, anything unresolved. Ask if I want to file a summary. (Alias: *weekly*.)
+Triggers: "weekly review" | "weekly" | "rollup" | "roll up the week" | "how was my week" | "week in review"
+Read this ISO week's records, surface patterns and open items, and file the canonical weekly rollup to `data/rollups/YYYY-Www.md`. See the Rollup Layer in `protocol/CORTEX.md`. Cortex also files weekly rollups automatically at the start of the first session of a new week — this verb is the on-demand form.
 
 ## monthly review
-Read all records from the past 30 days. Summarise themes, progress, and anything I want to carry forward. (Alias: *monthly*.)
+Triggers: "monthly review" | "monthly" | "how was my month" | "month in review"
+Summarise the month from its weekly rollups (falling back to raw records for any gap) and file the canonical monthly rollup to `data/rollups/YYYY-MM.md`.
 
 ## patterns
-Look across all records and tell me what you see — recurring themes, escalations, connections I might have missed.
+Triggers: "patterns" | "any patterns" | "what do you see" | "what patterns" | "connect the dots"
+Read across rollups (monthly, then weekly) and drill into raw records for specifics — surface recurring themes, correlations, escalations, and connections you might not have noticed. **Observational only, never advice** (see the Patterns section in `protocol/CORTEX.md`). Every observation cites the records/rollups behind it. Scope defaults to all history via rollups; narrow with "patterns this month". Nothing filed unless you ask.
 
+<!--
 ## open items
 List every open, unresolved, or flagged item across all records. Nothing filed, just a list. (Alias: *open*.)
 
