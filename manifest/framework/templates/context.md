@@ -4,6 +4,14 @@ Read at every `hello`. Update in the same commit whenever people, situations, or
 
 ---
 
+## Me
+
+- **Name / call me:**
+- **Pronouns:**
+- **Location / timezone:**
+
+---
+
 ## Active Actors
 
 actors:
@@ -53,7 +61,7 @@ What's going on right now that the scribe needs to know.
 
 <!-- 
 SPLITTING: when any section grows large enough to be unwieldy, ask the scribe to split it out.
-Sub-files follow the pattern: context-people.md, context-medical.md, context-projects.md, etc.
+Sub-files follow the pattern: context-preferences.md, context-people.md, context-work.md, context-creative.md, context-research.md, context-medical.md, etc.
 This file becomes the TOC — each section gets a one-liner and a link to its sub-file.
 The scribe suggests splits. You decide the name and timing.
 -->

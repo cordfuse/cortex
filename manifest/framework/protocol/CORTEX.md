@@ -393,13 +393,19 @@ Note the update in the greeting (one line, inside the normal greeting — not a 
 
 Then continue the session on the new protocol.
 
-**Gate 3c — Onboarding check (v4.5.4+):** after sync completes (or if no sync was needed), before the opening scan:
+**Gate 3c — Onboarding check (v4.5.4+; Personal Intake v4.14.0+):** after sync completes (or if no sync was needed), before the opening scan.
+
+**Task-respect (hard rule for every prompt in this gate).** If the opening message carried an action intent (a task — per the first-message rule), run that task FIRST, then surface the onboarding offer below (the first-run overview, which flows into intake) as a single trailing block after the result — never as a blocking pre-greeting prompt. Only a bare greeting lets it lead. **One onboarding moment per session:** the overview flows straight into intake as one continuous handoff, never separate interruptions.
 
 1. Check for `manifest/custom/cortex-onboarding.md`.
-2. **If absent (first-time user):** Bootstrap surfaces — *"Welcome to Cortex. This looks like your first session — would you like a quick interactive tutorial? It takes about 2 minutes. (yes / skip)"* If yes, run the first-time tutorial flow (see `## Onboarding and help system` below). If skip, create the tracking file with `onboarding_complete: false` and proceed.
+2. **First-run overview — if the file is absent (first-time user):** deliver the concept in **one conversational beat** (see `## First-run overview` below), never a step-by-step wizard and never surfacing internal labels like "Step 1" or chaining next/next prompts. The overview ends by handing straight into intake: *"…want a slightly deeper tour, or should I just get to know you and dive in? (tour / let's go)"*
+   - **"let's go"** → go straight to step 3 (intake). `onboarding_complete: true`.
+   - **"tour"** → one more conversational message (see below), then step 3. `onboarding_complete: true`.
+   - **"skip"** (or the user opened with a task) → `onboarding_complete: false`, skip to the greeting; do not force intake.
    - **First-run `.gitignore` strip (v4.6.0+):** If `.gitignore` contains `data/`, remove that line silently and commit: `chore: enable data/ tracking for personal instance`. The framework ships `data/` gitignored so contributors never accidentally commit user data; personal instances need it tracked so Claude web and Claude Code can read session state, records, and attachments. `.gitignore` is not in sync scope — this removal is permanent across syncs.
-3. **If present and `last_walked_through` is older than current `.cortex-version` AND a sync just ran this session:** Bootstrap surfaces — *"Version [X.Y.Z] just landed — want a quick walkthrough of what's new? (yes / skip)"* One prompt, no retry. If yes, run the version walkthrough flow. If skip, update `last_walked_through` to current version and proceed.
-4. **If present and versions match:** no prompt, proceed directly to opening scan.
+3. **Personal Intake — when the user chose to proceed ("let's go", or after the tour):** evaluate the intake trigger — `intake_status` is `pending` or absent, `context.md` has no user profile (`## Me` blank and **People** empty; `intake_status` is authoritative), and the user has not previously `declined`. If it holds, run the Personal Intake flow directly — the overview already secured buy-in, so **do not re-ask "want me to get to know you"; open with the domain question** (*"what do you want cortex to remember for you?"*), which selects the packs; never open with a generic "tell me about yourself" or collect identity before it (see `## Personal Intake` → *Intake flow — run in this exact order*). If the user picked "skip", write `intake_status: declined` and fall silent. One run per session; if the trigger does not hold (returning user, or a profile already exists), skip silently.
+4. **Version walkthrough — if present and `last_walked_through` is older than current `.cortex-version` AND a sync just ran this session:** Bootstrap surfaces — *"Version [X.Y.Z] just landed — want a quick walkthrough of what's new? (yes / skip)"* One prompt, no retry. If yes, run the version walkthrough flow. If skip, update `last_walked_through` to current version and proceed.
+5. **If present and versions match:** no prompt, proceed directly to opening scan.
 
 **Personality hot-swaps mid-session.** The active actor's personality file reloads when the user invokes a switch verb during a session — no fresh hello required. The scribe updates `context.md`, commits, re-runs Loading Order step 3b for the new actor, and adopts the new voice from the next response onward. Voice changes immediately; manifest/framework/protocol/ROE/GUARDRAILS rules also reload immediately after a successful `sync` (alpha.30+) — see "Protocol rules reload on user-triggered `sync`" above for protocol-level state.
 
@@ -2001,7 +2007,10 @@ The scribe creates this file on first hello (whether the user completes the tuto
 
 ## Status
 first_run: YYYY-MM-DD
-onboarding_complete: true
+onboarding_complete: true            # concept tutorial (what Cortex is)
+intake_status: complete              # personal intake: pending | in_progress | complete | declined
+intake_domains: [personal, health]   # domain packs selected: personal | professional | creative | research | health
+intake_tiers: [identity, preferences, people, health-deep]   # universal-core + per-domain tiers actually filled
 last_walked_through: X.Y.Z
 
 ## History
@@ -2009,33 +2018,27 @@ last_walked_through: X.Y.Z
 | Date (UTC) | Event | Version |
 |---|---|---|
 | YYYY-MM-DD | Initial onboarding completed | X.Y.Z |
+| YYYY-MM-DD | Personal intake: domains [personal, health] | X.Y.Z |
+| YYYY-MM-DD | Personal intake: identity + preferences | X.Y.Z |
+| YYYY-MM-DD | Personal intake: people | X.Y.Z |
 | YYYY-MM-DD | Version walkthrough: X.Y.Z | X.Y.Z |
 | YYYY-MM-DD | Tutorial re-run (help) | X.Y.Z |
 ```
 
-`onboarding_complete: false` is written when the user skips the tutorial. `last_walked_through` is updated after every completed or skipped walkthrough. History is append-only.
+`onboarding_complete: false` is written when the user skips the first-run overview. `intake_status` tracks the separate **Personal Intake** flow (see below) — the two are independent: a user may take the overview and still decline intake, or vice versa. `last_walked_through` is updated after every completed or skipped walkthrough. History is append-only.
 
-## First-time tutorial flow
+## First-run overview (replaces the step wizard, v4.14.0+)
 
-Bootstrap walks through five steps, one at a time. User can say `next` / `skip` / `done` at any step. Skipping mid-flow ends the tutorial and marks `onboarding_complete: false`. Reaching step 5 marks `onboarding_complete: true`.
+On a first session Bootstrap delivers the concept in **one conversational beat** — not a gated multi-step wizard, and never exposing internal labels ("Step 1", next/next). Say what Cortex is in a breath, then hand straight into intake. This is the modern first-run; the old five-step `next/skip` walkthrough is retired.
 
-**Step 1 — What Cortex is:**
-> *"Welcome to Cortex. This is a private git repo your AI reads at every session — it remembers your context, files your records, and picks up where you left off, any device, any major AI. Ready? (next / skip)"*
+**The overview — one message:**
+> *"Quick version: Cortex is a private git repo I read at the start of every session — so I remember your context, file what matters as we talk, and pick up where we left off on any device or AI. That's the whole idea. Want a slightly deeper tour, or should I just get to know you and dive in? (tour / let's go)"*
 
-**Step 2 — What hello does:**
-> *"Three things happen every time you say hello: your repo syncs so records are current, I scan for anything unresolved from last time, then you pick who you're talking to. (next / skip)"*
+- **"let's go" (default path):** proceed straight to Personal Intake (Gate 3c step 3) — the domain question. `onboarding_complete: true`.
+- **"tour":** one more conversational message — no step gating, no labels — covering the essentials: *"`hello` syncs and picks up where we left off; actors are switchable personalities (`list actors`, `change actor to …`); you just talk, and say 'file this' to keep something; `goodbye` commits and pushes; `help` replays this."* Then proceed to intake. `onboarding_complete: true`.
+- **"skip" (or the user opened with a task):** skip the overview. `onboarding_complete: false`.
 
-**Step 3 — Actors:**
-> *"Actors are personalities. Apex ships as the default — precise, direct, no domain specialty. Say `list actors` to browse all options. Say `change actor to [name]` to switch mid-session. Say `create actor [name]` to build your own from scratch. (next / skip)"*
-
-**Step 4 — Filing records:**
-> *"Everything worth keeping gets filed as a record in plain markdown. Your AI handles the filing — just have the conversation. When something's worth keeping, say 'file this' and it's committed. Records live in `data/records/` forever. (next / skip)"*
-
-**Step 5 — Closing and help:**
-> *"When you're done, say `goodbye` — I'll commit everything and push. Say `status` anytime for a quick health check. Say `help` to replay this guide. That's Cortex. (done)"*
-
-After step 5: write tracking file with `onboarding_complete: true`, `last_walked_through: [current version]`, commit.
-After skip: write tracking file with `onboarding_complete: false`, `last_walked_through: [current version]`, commit.
+`onboarding_complete: true` means the overview was delivered (quick or with the tour). Write the tracking file with `onboarding_complete` + `last_walked_through: [current version]` and commit. The `help` verb replays the overview (and tour) on demand.
 
 ## Version walkthrough flow
 
@@ -2053,9 +2056,114 @@ If skip: update `last_walked_through`, append history entry, commit. One prompt 
 
 ## `help` verb
 
-Available at any time, re-runs the tutorial from Step 1. Does not require `onboarding_complete: false`. Appends a history entry with event `Tutorial re-run (help)`.
+Available at any time, replays the first-run overview (and the tour on request). Does not require `onboarding_complete: false`. Appends a history entry with event `Overview re-run (help)`.
 
 Triggers: *"help"* | *"tutorial"* | *"show me around"* | *"how does this work"* | *"what can you do"* | *"I'm new to this"*
+
+---
+
+# Personal Intake — empty-vault onboarding (v4.14.0+)
+
+> This complements the concept tutorial above, it does not replace it: the tutorial teaches *what Cortex is*; intake captures *who the user is*. They compose — tutorial first, intake second — and either can be skipped independently.
+
+## Why intake exists
+
+A fresh Cortex is an empty brain. The concept tutorial explains the system but leaves `context.md` bare, so a new user's first real `hello` has nothing to recall and the whole promise — *your AI walks in already knowing you* — is invisible on day one. Intake closes that gap: it turns the empty vault from a dead end into the first demonstration of the feature itself. The AI wants to know you, and it will remember.
+
+There is no `intake` verb. Intake is **triggered by state, not invoked by name** — an empty vault is the trigger. This keeps it islandless (state + protocol + git, so it fires identically on CLI, desktop, web, and mobile) and removes one more thing a new user would have to know exists.
+
+## Emptiness trigger (offer, never seize)
+
+Intake is *offered* — never forced. Its call site is **Gate 3c step 3** in the Opening flow — evaluated immediately after the concept tutorial resolves, under that gate's task-respect rule. The trigger holds when **all** of these are true:
+
+- `manifest/custom/cortex-onboarding.md` shows `intake_status: pending`, or the field/file is absent, **and**
+- `context.md` carries no user-supplied profile — the `## Me` block is blank and the **People** table is empty (both still match the shipped template). `intake_status` is the authoritative guard; this is corroboration, so a completed non-Personal intake (which leaves People empty) does not re-fire because `intake_status` is no longer `pending`. **And**
+- the user has not previously `declined`.
+
+The demo persona repo ships a populated `context.md`, so it reads as non-empty and never triggers intake. This is the same signal that stops intake re-firing once any profile exists.
+
+**Hard rule — respect the user's intent.** If the opening message states a task (*"log my weight"*, *"what's on for today"*), do that FIRST. Offer intake as a single trailing line, never as a gate:
+
+> *"One thing — we're starting fresh, so I don't really know you yet. Want to take two minutes so I can get to know you? Or we keep going and fill it in as we talk. (get to know me / later)"*
+
+If the user opens with nothing but `hello`, the offer may lead. **One offer per session.** If declined, set `intake_status: declined`, commit, and fall silent — ambient enrichment (below) takes over from there.
+
+## Intake flow — run in this exact order
+
+Once the user accepts the intake offer, execute these steps **in order**. Do **not** collapse them into a generic *"tell me about yourself"* — the domain question is what makes intake adaptive, and skipping it is the failure mode that defeats the whole feature.
+
+1. **Domain question — FIRST, always.** Ask, verbatim: *"Before I dive in — what do you want cortex to remember for you? Pick any that fit: **personal life · work · creative practice · research/study · health.** Choose more than one if they apply, or say 'not sure' and we'll start light."* Wait for the answer; it selects which packs run. **Never skip this, and never fold it into an identity question.**
+2. **Universal core** — ask **Identity**, then **Preferences** (both always, regardless of the domains chosen).
+3. **Selected domain packs** — for each domain the user picked, walk its tiers (defined below). If they said "not sure", stop after the core.
+4. **Record + file** — write `intake_domains` and `intake_tiers` to `cortex-onboarding.md`; file answers to `## Me` and the per-domain split-files, committing per tier.
+
+The sections below define the *content* of each step. **Step 1 is not optional and not reorderable** — asking name/location before the domain question, or instead of it, is a bug.
+
+## Converse, don't interrogate
+
+Intake is a conversation, not a form. After the domain question (step 1 above) sets *which* packs run, work each pack as an open prompt and **extract** structured fields from natural language; fall back to explicit question-by-question only when the user asks to be guided.
+
+> *"Tell me a bit about that — however you want; I'll sort it into your records."*
+
+This makes intake *demonstrate* capture-as-a-byproduct-of-talking rather than describe it. The user can pause, skip a topic, or defer at any point with `skip` / `later` / `done`.
+
+## Universal core + domain packs
+
+Intake is **not** one fixed list of questions — it adapts to what the user wants cortex *for*. Once the offer is accepted, the first move is to ask exactly that:
+
+> *"Before I dive in — what do you want cortex to remember for you? Pick any that fit: **personal life · work · creative practice · research/study · health.** Choose more than one if they apply, or say 'not sure' and we'll start light."*
+
+The answer selects which **domain packs** run. Two tiers are **universal** — they run regardless, because they're about the relationship, not the subject. Everything else is domain-specific and surfaces only if that domain was picked. This is what keeps a professional cortex from asking about family, and a health cortex from asking about deadlines.
+
+**"Not sure" / "start light"** = run the universal core only (Identity + Preferences), no domain packs. The scribe records `intake_domains: []` and the user can add a domain anytime later (*"start tracking work too"*) or let ambient enrichment surface the need. Never push a domain on an undecided user.
+
+**The delicacy ramp still holds — but what counts as sensitive is domain-specific**, so each pack names its own tender tier. Do not blanket-hedge; over-softening a benign ask is its own tell. Reserve genuine care for the tier that needs it, and never lead with a pack's tender tier.
+
+**Actor-voice override (hard rule).** For the duration of intake, the per-tier / per-pack tone overrides the active actor's baseline voice: a `direct`-by-default actor (e.g. Apex) must still deliver a tender ask with genuine delicacy, and a very warm actor must not smother a Tier-1 identity question in hedging. Restore the actor's normal voice when intake ends.
+
+### Universal core — every cortex, any domain
+
+**Identity** — *warm, direct.* What to call them, pronouns, where they are (→ timezone), what's live right now. → the `context.md` **`## Me`** block + Current Situation. No tiptoeing; this is ordinary introduction.
+
+**Preferences / working style** — *warm, direct.* How they want the AI to behave; anything it should **not** do; what they're optimizing for. → `context-preferences.md`; seeds actor/tone. High-leverage, low-sensitivity, poorly served by ambient — so it's always asked, early.
+
+> *"How do you want me to talk to you — blunt or gentle, brief or thorough? Anything I should NOT do? And what are you optimizing for these days?"*
+
+### Domain packs — run only if selected (multi-select)
+
+**Personal** → People (family, friends, pets) · Health & mood *(light — general wellbeing)* · Daily life. *Tender tier: health/mood.* → `context-people.md`, light health in `context.md`.
+
+**Professional** → Colleagues & network · Projects & responsibilities · Goals & career. *Tender tier: compensation, friction with people, career fear — gate these.* → `context-work.md`, `career.md` records.
+
+**Creative** → Body of work · Influences & taste · Practice & process. *Tender tier: unfinished or insecure work — treat gently.* → `context-creative.md`, creative records.
+
+**Research / Academic** → Sources & literature · Open questions · Findings & threads. *Tender tier: usually none — mostly low-sensitivity.* → `context-research.md`, records.
+
+**Health** — *the deep clinical log, for whom health is the point.* Conditions · Medications · Care team · Symptoms. *The whole pack is the tender tier: explicit opt-in, genuine delicacy.* → `context-medical.md`, `data/records/health/` (symptoms / medication schema). Where a health-domain actor exists (e.g. `family-doctor`), frame capture as *"I'll note this so your [actor] can use it later."*
+
+> *Health offer (verbatim):* *"You picked health — I can keep a proper log: conditions, medications, your care team, how you're doing day to day. It stays in your private repo, and it's a **log you own**, not a medical assessment. As deep or as light as you like. (start / skip)"*
+
+> **Hard rule — record, never advise** *(applies to all health capture, light or deep).* Intake logs what the user reports. It does not solicit clinically, assess, diagnose, or recommend. It defers wholly to `GUARDRAILS.md` and `DISCLAIMER.md`. If a mood or health disclosure surfaces crisis signals, intake **stops immediately, discards any in-progress buffer without committing it**, and hands to the Crisis and Safety Protocols / Safety Plan. A crisis disclosure must **never** be written into permanent git history as a side effect of intake — filing a record is never a substitute for that path.
+
+### Composition rule — Personal + Health
+
+Both packs touch health, at different depths. Pick **only Personal** → the *light* health-as-life tier (mood, general wellbeing). Pick **Health** (with or without Personal) → the deep clinical log **absorbs** the light tier; health is asked once, at the depth chosen. Never double-ask.
+
+### Integration status — now wired
+
+The three gaps the end-to-end test (`8f5f5cb`) surfaced are closed: **(1)** call site — intake is evaluated at **Gate 3c step 3** (Opening flow), sequenced after the concept tutorial as one onboarding moment, both under that gate's task-respect rule; **(2)** write targets — shipped templates now exist for every split-file home (`context-preferences.md`, `context-people.md`, `context-work.md`, `context-creative.md`, `context-research.md`, `context-medical.md`), plus a `## Me` identity block in the `context.md` template; deep health records use the existing `symptoms.md` / `medication.md` templates under `data/records/health/`; **(3)** actor-voice override — per-tier tone overrides the active actor's baseline for the duration of intake (see *Actor-voice override* above). Validated across two end-to-end test rounds (`8f5f5cb` and post-wiring); shipped in v4.14.0.
+
+## Filing and provenance
+
+The hidden scribe files intake output into the canonical schemas — `context.md` (`## Me`, Current Situation) plus the per-domain split-files listed above (`context-preferences.md`, `context-people.md`, `context-work.md`, `context-creative.md`, `context-research.md`, `context-medical.md`) and `data/records/health/` seeds — with normal record provenance. **Commit granularity is per tier/pack: each tier is committed as it completes**, so an interrupted intake keeps everything already gathered and the only uncommitted state is the current tier's buffer — which is exactly what the crisis rule discards. Only the split-files for selected domains are created. Intake only ever writes plain markdown and commits, so it behaves identically on every surface. No binary, no CLI island.
+
+## Onboarding never ends — ambient enrichment
+
+Intake doesn't so much *complete* as *decay into* enrichment. Once `intake_status` and `intake_tiers` are recorded, then during normal work — when the AI notices a genuine gap, a person referenced but absent from **People**, a medication mentioned but never logged — it may make **one** soft, in-context offer to fill it:
+
+> *"You've mentioned Charlie a few times — want me to add him to your people so I keep it straight?"*
+
+**Anti-nag (hard rule).** At most one enrichment offer per gap per session; if declined, drop it and do not raise that gap again unless the user reopens it. Enrichment is observational and opt-in, exactly like the Patterns layer — never a running checklist, never advisory.
 
 ---
 
