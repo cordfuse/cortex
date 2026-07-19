@@ -124,6 +124,8 @@ If this has been useful to you — or if you just believe mental health infrastr
 
 **Context that carries.** At session start the scribe reads your recent records. It knows what you were working through, what's unresolved, what patterns have been building. Every session picks up where the last one left off.
 
+**Onboarding that adapts to you (v4.14.0+).** A fresh cortex doesn't dump you into a blank vault — on the first session it asks what you want cortex *for* (personal life · work · creative practice · research · health) and only asks about what fits. A professional cortex never asks about your family; a health cortex never asks about deadlines. Pick more than one, or skip it and just start. Sensitive tiers (health, mood) are always opt-in and delicately gated — and everything is *recorded, never advised*.
+
 **Always in sync.** Every `hello` runs `git fetch origin` and `git fetch upstream` before the greeting renders. Local behind remote? Scribe surfaces the delta and applies your `auto_upgrade:` preference (always / ask / never). Silent stale-state operation is a protocol violation as of v4.0.0-alpha.13.
 
 **Hot-swap personalities mid-session (v4.0.0-alpha.8+).** Say *"change actor to [name]"* and the next response is in that actor's voice. No fresh hello required.
@@ -410,7 +412,9 @@ The Bootstrap RWDX guardrail (v4.0.0-alpha.7+) blocks all read/write/delete/exec
 
 [→ Full roadmap](ROADMAP.md)
 
-**v4.5.4 (current)** — Onboarding + help system. First-time users get an interactive 5-step tutorial at hello. Version walkthroughs offered automatically after each sync that lands a new version. `help` verb re-runs the tutorial any time. State tracked in `manifest/custom/cortex-onboarding.md`.
+**v4.14.0 (current)** — Personal Intake: empty-vault onboarding that adapts to what you use cortex *for*. Universal core (identity, preferences) plus opt-in domain packs — personal · professional · creative · research · health, multi-select. Health is its own domain; sensitive capture is delicately gated and records-never-advises; a crisis signal hands to your Safety Plan and never writes to git. The first-run concept intro is now one conversational beat, not a step wizard.
+
+**v4.5.4** — Onboarding + help system. First-time users get a conversational first-run overview at hello (originally a 5-step tutorial; de-wizardified in v4.14.0). Version walkthroughs offered automatically after each sync that lands a new version. `help` verb replays the overview any time. State tracked in `manifest/custom/cortex-onboarding.md`.
 
 **v4.5.3** — Deprecated actors + imported actor namespaces. `## deprecated: true` retires an actor without deleting it — stays in `list actors` with a `[deprecated]` label, warns before activation, keeps inheritance chains intact. `import actor from [link]` places someone else's actor in `manifest/custom/actors/[source-handle]/` automatically — name collisions resolved by Bootstrap asking which you mean, once per session.
 
