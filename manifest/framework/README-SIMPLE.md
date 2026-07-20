@@ -64,9 +64,13 @@ No downloads. No app store. No subscription to Cordfuse. We don't make money fro
 
 Go to [github.com/cordfuse/cortex](https://github.com/cordfuse/cortex) → click **Use this template** → name your repo (e.g. `my-cortex`) → set it to **Private** → create it.
 
-**2. Get a GitHub access token**
+**2. Let the AI reach your repo**
 
-This lets the AI read and write to your private repo.
+**On Claude — install the Personal Cortex app (easiest, no tokens):**
+
+Go to [github.com/apps/personal-cortex](https://github.com/apps/personal-cortex) → **Install** → pick **only your cortex repo**. Done — no token to create, copy, or save. Each session you'll approve access with one tap on your phone.
+
+**On ChatGPT — get a GitHub access token:**
 
 GitHub → your profile photo → Settings → Developer settings → Personal access tokens → Fine-grained tokens → Generate new token.
 
@@ -80,14 +84,25 @@ Copy the token. It starts with `github_pat_`. Save it somewhere — you only see
 
 Go to your GitHub repo → `manifest/framework/protocol/CORTEX-PROJECT.md` → copy the full contents.
 
-At the very top, add your connection block:
+At the very top, add your connection block — on Claude (app method):
 
 ```
 repo: https://github.com/YOUR-USERNAME/my-cortex
+auth: github-device-flow
+client_id: Iv23liec4HPiUGJQe7Fs
+```
+
+*(That `client_id` is public — it just names the Personal Cortex app. It is not a secret.)*
+
+— or on ChatGPT (token method):
+
+```
+repo: https://github.com/YOUR-USERNAME/my-cortex
+auth: pat
 pat: github_pat_YOUR_TOKEN_HERE
 ```
 
-Replace with your actual username and token. This combined text is your complete system prompt.
+Replace with your actual username (and token if using one). This combined text is your complete system prompt.
 
 **On Claude (claude.ai):**
 - Go to Projects → New project
