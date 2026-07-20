@@ -40,7 +40,7 @@ Remove a named actor from the session (multi-actor mode, v4.0.0-alpha.32+). Scri
 
 Triggers: "help" | "tutorial" | "show me around" | "how does this work" | "what can you do" | "I'm new to this"
 
-Re-run the interactive onboarding tutorial from Step 1. Available at any time regardless of onboarding state. Bootstrap walks through all five steps at the user's pace. Appends a `Tutorial re-run (help)` entry to `manifest/custom/cortex-onboarding.md`. (v4.5.4+.)
+Replay the first-run overview — one conversational beat covering what Cortex is, then the optional deeper tour. Available at any time regardless of onboarding state. Never a step-by-step wizard; never surface internal labels like "Step 1". Appends an `Overview re-run (help)` entry to `manifest/custom/cortex-onboarding.md`. (v4.5.4+; de-wizardified in v4.14.0.)
 
 ---
 
