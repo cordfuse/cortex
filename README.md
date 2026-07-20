@@ -182,6 +182,8 @@ model: claude-sonnet-4-6
 
 Both guides cover new users and existing Cortex repos.
 
+**Web/mobile auth (v4.16.0+):** on Claude, no tokens needed — install the [Personal Cortex GitHub App](https://github.com/apps/personal-cortex) on your repo once, and each session authenticates via GitHub's device flow (approve on your phone, ~10 seconds; nothing secret stored anywhere). Validated on Opus 4.8, Sonnet 5, and Fable 5. A fine-grained PAT remains the fallback (and the ChatGPT method).
+
 ---
 
 ## Session commands
