@@ -4,6 +4,7 @@ One line per change. Newest at top. Append in the same commit as the change.
 
 Format: `YYYY-MM-DD HH:MM TZ | file | what changed`
 
+2026-07-20 18:29 UTC | protocol/CORTEX.md, version | **4.15.2 hotfix**: opening-scan Step B keyed on git-mtime made hello read the whole vault after a full-corpus weave (391/395 records re-committed) and hang. Now keyed on filename date
 2026-07-20 17:50 UTC | version.txt, .cortex-version | **bump to 4.15.1** — weave convention-matching + web verb-loading fix
 2026-07-20 17:50 UTC | protocol/CORTEX.md | Record Linking: new 'Match the existing convention first' rule — read 2-3 already-linked same-type records and follow their pattern before writing links; generalises the dated-series rule to any record type
 2026-07-20 17:50 UTC | protocol/CORTEX-PROJECT.md | **fix**: web/project startup now reads VERBS.md so verbs (weave/patterns/handoff/…) are recognised on Claude/ChatGPT web (was omitted from the read list)
