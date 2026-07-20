@@ -634,6 +634,88 @@ Every observation cites the records or rollups behind it (dates, file references
 
 ---
 
+# Record Linking (Weave)
+
+**New in v4.15.0.** Cortex records accumulate as a flat pile — capture is effortless, but nothing connects, so the history is a *list*, not a *web*. Linking closes that gap: related records reference each other with `[[wikilinks]]`, so **Obsidian's graph view** fills in and the scribe gains explicit forward pointers to follow. Like the rollup layer, this makes the record *more* useful with age.
+
+## Link format
+
+A link is the target record's **exact filename with `.md` removed — never reconstructed**. Cortex filenames are usually `YYYY-MM-DD-HHMM-slug`, but **many are `YYYY-MM-DD-slug` (no time)** — both are valid, used verbatim. Links live in a `## Related` block, each with a one-line reason:
+
+```
+## Related
+- [[2026-07-03-1621-politik-plan-review]] — prior findings this builds on
+- [[2026-07-12-canada-life-policy]] — same policy thread (no HHMM in the filename — that's fine)
+```
+
+**Hard rule — no dead edges.** Before writing any `[[link]]`, confirm the target file exists: on CLI/desktop, list `data/records/`; on web/mobile (no full index), link **only** to records actually read this session. A link whose stem does not match an existing file byte-for-byte is a protocol violation — never guess or reconstruct a filename.
+
+## Where the block goes
+
+`## Related` sits **immediately above the record's provenance footer**, above the footer's leading `---` separator. If there is no footer, place it at end-of-file. **Never split, duplicate, or write below the footer.**
+
+**Recognising the footer.** A provenance footer is a run of italic metadata lines at the end of a record. It opens with any of — this list is not exhaustive, match the *shape*, not one literal:
+
+`*Actor: …*` · `*Filed: …*` · `*Filed by …*` · `*Recorded by …*` · `*Imported: …*` · `*Session: …*`
+
+Real corpora carry all of these and more. Do **not** hard-match a single pattern.
+
+**Placement hazards — all six observed in a real 394-record vault:**
+
+1. **Content after the footer.** Some records have sections appended *below* the footer (corrections, action plans, retroactive logs). Insert above the **first** footer line, never at raw EOF.
+2. **Never write inside a fenced code block.** A record may contain a *sample* provenance footer inside ``` fences (docs about Cortex itself do this). Matching it will insert the block into the code example and corrupt it. Always confirm the match is outside any fenced region.
+3. **Footer under a heading.** If the footer sits beneath a `## Provenance` (or similar) heading, placing above its `---` orphans the block *inside* that section. Place above the **heading**.
+4. **Bare footers.** A footer may have no leading `---` at all — then the block goes directly above the first footer line.
+5. **Whitespace tolerance.** Footer lines often end in trailing double-spaces (markdown hard breaks), and may have blank lines between the `---` and the first line. Exact-string anchors break on these — match whitespace-tolerantly.
+6. **Header fields are not footers.** A bold `**Filed:**` field near the *top* of a record is a header field, not a provenance footer. Only a trailing run qualifies.
+
+## Capture-time linking (automatic, conservative)
+
+**Hard rule — on every new-record file write, the scribe evaluates for links** (hidden-scribe duty, alongside provenance — see `# Hidden Scribe`). It links the new record to the **genuinely related** records it already holds in context this session — a shared named person, an explicit reference in the text, a direct continuation of a thread, the same project / appointment / policy.
+
+- **High-confidence only.** Better to under-link than clutter. No clear relation → no `## Related` block. Silence beats a weak or guessed link.
+- **Cap ~5** links; keep the strongest.
+- **Outgoing only, from the new record.** Obsidian computes backlinks for the graph, so one direction suffices there. The scribe itself has **no backlink index** — when it needs what points *to* a record it greps; links are a forward-traversal aid, not a replacement for search. (Do not hand-write reciprocal links at capture time.)
+- **Silent.** Part of filing, no prompt.
+
+## The `weave` verb — backfill the existing corpus
+
+**Triggers:** "weave" · "link my records" · "build the graph" · "cross-link everything" · "connect my records" *(note: "connect the dots" belongs to `patterns` — finding themes, not adding links)*
+
+Backfills `## Related` across records that predate linking. A large corpus (hundreds of records) **cannot be related in one pass** — weave works in **clusters**:
+
+1. **Cluster first (cheap).** Group candidates by signals that don't require reading every file in full — shared slug-stem, named people, date-adjacency, same policy/project. This produces the plan and the estimate *without* an all-pairs read.
+2. **Confirm.** Summarise the plan — *"~8 clusters (people · health thread · Politik · Canada Life · …), ~340 links across ~120 records"* — and confirm before writing.
+3. **Process cluster by cluster, commit per cluster** (`weave: linked <cluster> (N records)`) — like intake's per-tier commits, so an interrupted run keeps everything already done. **Never one giant squashed commit.**
+4. **Cap / resumability.** On a very large corpus, weave the most-connected clusters first and offer to continue; state what was left.
+
+**Never clobber hand-authored link sections.** Records commonly carry user-written "related" sections under a *variety* of headings — all observed in a real vault:
+
+`## Related` · `## Related records` · `## Related backlog` · `## Related ideas or entries` · `## See Also` · `## Cross-references` · an inline `**Related:**` header field
+
+They often use a different format too — backticked filenames, plain paths, or free-text references that aren't records at all (e.g. "ROE Rule 18", an external project). **Any such line the scribe did not author is user content:** never rewrite, reformat, or delete it. Weave may *append* verified `[[wikilinks]]` beneath it, or place its own `## Related` block separately, or skip the file — never overwrite. The regenerable property below applies **only to scribe-authored wikilink lines.**
+
+**Dated series — link the chain, not the clique.** Daily/serial records (weight logs, meals, health dailies, numbered test rounds, same-day working threads) must be woven as a **chain**: each record links its immediate predecessor and successor only, plus at most one genuine cross-link. Never link every member of a family to every other — an 11-record thread becomes 55 meaningless edges. **Cap 3 for serial records** (not 5). Where the series has a gap, link the actual nearest existing neighbour and say so in the reason ("next log in the series — none filed 05-02 to 05-04") so the gap is legible rather than looking like a broken link. Endpoints get one link.
+
+**Never guess between ambiguous candidates.** If two same-date records could equally be the target (e.g. a correction pair `1715-medication-current` / `1730-medication-current`), do not pick one arbitrarily — link the unambiguous record instead, or omit. A guessed link is worse than a missing one.
+
+## Immutability
+
+Cortex's rule is *never edit a committed record's content*. A `## Related` block of scribe-authored `[[wikilinks]]` is **derived navigation metadata**, not content — the scribe may add or refresh it in place, and that is not a content edit. This is bounded: the scribe touches only its own wikilink lines, never the record body and never user-authored `## Related` content. Scribe-authored links are regenerable (re-running weave recomputes them); everything else is left exactly as found.
+
+## Principles
+
+- **Structural, not interpretive.** A link says *these relate*, never *here's what it means about you*. Observational, like `# Patterns`.
+- **Conservative / anti-nag.** Never re-add a link the user removed; never pad with weak links; never guess a filename.
+- **Provenance.** Each link carries its one-line reason, so the connection is legible.
+- **Islandless.** Pure protocol + git; CLI/desktop/web/mobile — with the surface-specific existence check above (full index on CLI; session-read-only on web).
+
+## The payoff
+
+As links accumulate, Obsidian's graph view fills in and backlinks light up — Cortex stops being a log and becomes a connected second brain, and the graph becomes a genuinely shareable artifact.
+
+---
+
 # Appointment Handoff
 
 The founding pain cortex exists for: every new doctor, therapist, or crisis worker starts from zero, and the context that took years to build evaporates between appointments. The `handoff` verb attacks it directly — it compiles a one-page, current-state summary from the user's own records so a clinician can get up to speed in a minute instead of a session. Filed to `data/handoffs/YYYY-MM-DD-[who].md` (under `data/`, same tracking rule as records).
@@ -720,7 +802,7 @@ All records go in `data/records/`. Filenames include date and time.
 | Medication log | `data/records/YYYY-MM-DD-HHMM-medication.md` |
 | Insight or pattern | `data/records/YYYY-MM-DD-HHMM-theory-[slug].md` |
 
-Use 24-hour time. One topic per file. One commit per file. Never edit a committed file — corrections go in a new dated file.
+Use 24-hour time. One topic per file. One commit per file. Never edit a committed file — corrections go in a new dated file. One exception: the scribe-maintained `## Related` links block is derived navigation metadata, not record content, so adding or refreshing scribe-authored links there is not a content edit (see `# Record Linking`).
 
 Attachments for a record go in `data/attachments/YYYY-MM-DD-HHMM-[slug]/`.
 
@@ -835,6 +917,7 @@ Every operation in the cortex protocol that touches the repo or runs without a u
 - Running the 3x opening scan and 3x closing scan
 - Resolving time via `get_current_time`
 - Appending the provenance block to every filed record
+- Evaluating every newly filed record for `[[wikilink]]` cross-links, adding a `## Related` block when genuinely related records exist (see `# Record Linking`)
 - Surfacing open items at hello
 - Pulling and syncing
 - Vault read/write operations
