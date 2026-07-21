@@ -1,6 +1,6 @@
 # Cortex — Mobile & Web Setup
 
-> **Gemini web and mobile do not support the tool-calling flow required by Cortex.** Use Claude or ChatGPT.
+> **Claude (claude.ai) is the only supported web/mobile surface.** ChatGPT web/mobile is **not supported**: its sandbox has no network route to GitHub at all — `git clone` fails with `Could not resolve host: github.com` (verified 2026-07-20). This is OpenAI's platform restriction, not a Cortex or model issue. Gemini web/mobile lacks the tool-calling flow Cortex needs.
 
 Set up once — every new chat in the project opens a session automatically.
 
@@ -8,13 +8,13 @@ Set up once — every new chat in the project opens a session automatically.
 
 ## What works here first
 
-On Claude (claude.ai) and ChatGPT — web and mobile — Cortex does **git**: clone your repo, read your records, log new entries, commit, and push. That's the whole capture-and-recall loop, and it works fully on your phone.
+On Claude (claude.ai) — web and mobile — Cortex does **git**: clone your repo, read your records, log new entries, commit, and push. That's the whole capture-and-recall loop, and it works fully on your phone.
 
 What does **not** work here: live connectors (Google, Microsoft 365, Notion, etc.). The AI provider's sandbox blocks outbound network to anything but its own package registries, so connector scripts fail at the proxy — this is Anthropic's and OpenAI's restriction, not something Cortex can work around. Run connectors from a **CLI agent or desktop** instead (see [SETUP-DESKTOP.md](SETUP-DESKTOP.md)); they sync through the same git repo, so a connector run on your laptop shows up in your next mobile session.
 
 Short version: **journaling, records, and recall work everywhere; live integrations are a desktop/CLI thing.**
 
-> ChatGPT is supported but less battle-tested than Claude — the protocol is validated primarily on Claude. If something behaves oddly on ChatGPT, that's the likely reason.
+> Want an OpenAI model instead? Use **Codex CLI on desktop** — the web/mobile surface for Cortex is Claude only (see note above).
 
 ---
 
@@ -38,7 +38,7 @@ Go to [github.com/apps/personal-cortex](https://github.com/apps/personal-cortex)
 
 With this method there is **no token to generate, save, rotate, or paste** — each session, the scribe requests a device code and you approve it on your phone (~10 seconds). Nothing secret is ever stored in your project instructions.
 
-**On ChatGPT — generate a fine-grained PAT** (the device flow is validated on Claude only):
+**Fallback — generate a fine-grained PAT** (only if you can't use the app; note that current Claude models require the in-chat consent step and may decline autonomous PAT use):
 
 GitHub → Settings → Developer settings → Personal access tokens → Fine-grained tokens → Generate new token.
 
@@ -63,7 +63,7 @@ client_id: Iv23liec4HPiUGJQe7Fs
 
 *(The `client_id` is a public identifier for the Personal Cortex app — not a secret.)*
 
-— or **PAT** (ChatGPT, or as fallback):
+— or **PAT** (fallback):
 
 ```
 repo: https://github.com/you/your-repo-name
@@ -80,12 +80,6 @@ This is the complete system prompt — connection block and protocol instruction
 ### Claude (claude.ai)
 
 1. claude.ai → Projects → New project
-2. **Instructions:** paste your full system prompt (connection block + CORTEX-PROJECT.md contents)
-3. Open a new chat in the project
-
-### ChatGPT (chatgpt.com)
-
-1. chatgpt.com → Projects → New project
 2. **Instructions:** paste your full system prompt (connection block + CORTEX-PROJECT.md contents)
 3. Open a new chat in the project
 
