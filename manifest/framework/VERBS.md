@@ -67,6 +67,7 @@ Note: if a name collision exists (same `## name` as an existing actor), surfaces
 
 ---
 
+<!--
 ## browse mtx
 
 Triggers:
@@ -112,6 +113,7 @@ Update all currently-installed mtx actors to their latest versions. Scribe:
 3. Overwrites only cordfuse-authored files — never touches user-created custom actors
 4. Reports: *"Updated N actors from agent-assets. [list of names]"*
 5. Commits.
+-->
 
 ---
 

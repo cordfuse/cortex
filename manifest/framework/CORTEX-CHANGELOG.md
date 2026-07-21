@@ -4,6 +4,8 @@ One line per change. Newest at top. Append in the same commit as the change.
 
 Format: `YYYY-MM-DD HH:MM TZ | file | what changed`
 
+2026-07-21 14:38 UTC | version.txt, .cortex-version | **bump to 4.16.2** — verb catalog cleanup: retire the three mtx verbs (framework)
+2026-07-21 14:38 UTC | VERBS.md | **retire `browse mtx` / `add from mtx` / `sync from mtx`** (commented out, matching the standup/tasks dead-verb style): MTX is deferred — private, planning-only, gated behind unshipped work — so all three fetch from a source that isn't live. Per decision record 2026-07-21-1035-decision-verb-catalog-cleanup
 2026-07-21 00:49 UTC | version.txt, .cortex-version | **bump to 4.16.1** — docs: ChatGPT web/mobile is not supported (no network route to GitHub); web/mobile is Claude-only
 2026-07-21 00:49 UTC | SETUP-MOBILE.md, README-SIMPLE.md, README.md, protocol/CORTEX-PROJECT.md | **correction**: live test on ChatGPT (2026-07-20) — `git clone` fails with `Could not resolve host: github.com` (exit 128); the sandbox has no DNS/network route to GitHub AT ALL, so the long-standing "ChatGPT: git works" claim was wrong and the PAT setup path we documented for it cannot run. All ~20 ChatGPT-as-supported references corrected across the four surfaces: compatibility table row flipped to not-supported, ChatGPT setup sections removed, PAT reframed as generic fallback, OpenAI users pointed at Codex CLI (desktop). Notable: the GPT model complied without hesitation — the wall is OpenAI platform infrastructure, not model policy
 2026-07-20 23:55 UTC | version.txt, .cortex-version | **bump to 4.16.0** — device-flow web auth: tokenless GitHub authentication for Claude web/mobile via the Personal Cortex GitHub App
