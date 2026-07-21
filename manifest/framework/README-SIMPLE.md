@@ -47,12 +47,12 @@ If this has been useful to you — please consider donating to [CAMH Foundation]
 ## What you need
 
 - A free [GitHub](https://github.com) account — this is where your notes are stored
-- A [Claude](https://claude.ai) or [ChatGPT](https://chat.openai.com) account — this is the AI you talk to
+- A [Claude](https://claude.ai) account — this is the AI you talk to
 - That's it
 
-> **Note:** Gemini web and mobile do not work with Cortex. Gemini's web interface doesn't support the file access Cortex needs to read and write your records. Use Claude or ChatGPT.
+> **Note:** Use Claude. ChatGPT web/mobile cannot reach GitHub at all (its sandbox blocks the connection — verified July 2026), and Gemini web/mobile doesn't support the file access Cortex needs. On a computer, OpenAI models work via Codex CLI.
 
-> **Model matters:** If you're on Claude, use **Claude Sonnet** — it's faster and cleaner than Opus for Cortex. If you're on ChatGPT, try **GPT-4o-mini** (untested, but likely the right tier for the same reason). The biggest/most powerful model isn't always the best choice here — the protocol works better with models that follow instructions quietly rather than narrating everything they do.
+> **Model matters:** On Claude, any current model works — the setup below authenticates with a quick approve-on-your-phone step each session.
 
 No downloads. No app store. No subscription to Cordfuse. We don't make money from this and we don't see your data.
 
@@ -66,25 +66,15 @@ Go to [github.com/cordfuse/cortex](https://github.com/cordfuse/cortex) → click
 
 **2. Let the AI reach your repo**
 
-**On Claude — install the Personal Cortex app (easiest, no tokens):**
+**Install the Personal Cortex app (no tokens needed):**
 
 Go to [github.com/apps/personal-cortex](https://github.com/apps/personal-cortex) → **Install** → pick **only your cortex repo**. Done — no token to create, copy, or save. Each session you'll approve access with one tap on your phone.
-
-**On ChatGPT — get a GitHub access token:**
-
-GitHub → your profile photo → Settings → Developer settings → Personal access tokens → Fine-grained tokens → Generate new token.
-
-- Name: `cortex` (or any name you'll recognise)
-- Repository access: only your cortex repo
-- Permissions: Contents → Read and write
-
-Copy the token. It starts with `github_pat_`. Save it somewhere — you only see it once.
 
 **3. Set up your AI project**
 
 Go to your GitHub repo → `manifest/framework/protocol/CORTEX-PROJECT.md` → copy the full contents.
 
-At the very top, add your connection block — on Claude (app method):
+At the very top, add your connection block:
 
 ```
 repo: https://github.com/YOUR-USERNAME/my-cortex
@@ -94,25 +84,14 @@ client_id: Iv23liec4HPiUGJQe7Fs
 
 *(That `client_id` is public — it just names the Personal Cortex app. It is not a secret.)*
 
-— or on ChatGPT (token method):
-
-```
-repo: https://github.com/YOUR-USERNAME/my-cortex
-auth: pat
-pat: github_pat_YOUR_TOKEN_HERE
-```
-
-Replace with your actual username (and token if using one). This combined text is your complete system prompt.
+Replace with your actual username. This combined text is your complete system prompt.
 
 **On Claude (claude.ai):**
 - Go to Projects → New project
 - **Instructions:** paste your complete system prompt (connection block + CORTEX-PROJECT.md contents)
 - No file uploads needed
 
-**On ChatGPT:**
-- Create a GPT → Configure
-- **Instructions:** paste your complete system prompt (connection block + CORTEX-PROJECT.md contents)
-- No file uploads needed
+
 
 **4. Say hello**
 
@@ -134,9 +113,9 @@ You talk. It files. Next session, it remembers.
 
 ---
 
-## What Cortex CAN'T do on Claude or ChatGPT (web or mobile)
+## What Cortex CAN'T do on web or mobile
 
-Cortex on Claude.ai web, Claude mobile, ChatGPT web, or ChatGPT mobile is **limited to your records**. Talk to your scribe, it reads your files, it writes new entries, it saves them. That's it.
+Cortex on Claude.ai web or Claude mobile is **limited to your records**. Talk to your scribe, it reads your files, it writes new entries, it saves them. That's it.
 
 **It cannot:**
 - Read your Gmail, Calendar, Drive, Tasks, or Contacts
@@ -144,7 +123,7 @@ Cortex on Claude.ai web, Claude mobile, ChatGPT web, or ChatGPT mobile is **limi
 - Pull your Notion, Slack, Linear, or Spotify
 - Connect to anything outside your private cortex repo
 
-**Why:** Claude and ChatGPT's web/mobile apps run their tools inside a locked-down environment that **only allows specific websites** (GitHub, where your records live). Connecting to anything else — like Google or Microsoft — is **blocked by the platform itself**. This is intentional security, not something Cortex can change.
+**Why:** Claude's web/mobile app runs its tools inside a locked-down environment that **only allows specific websites** (GitHub, where your records live). Connecting to anything else — like Google or Microsoft — is **blocked by the platform itself**. This is intentional security, not something Cortex can change.
 
 **If you want connectors (Gmail, Calendar, etc.) in chat:**
 - Use Cortex from a developer terminal (Claude Code, Gemini CLI, etc.).
@@ -158,7 +137,7 @@ For the journal-and-scribe experience, web and mobile are perfectly fine. They j
 
 - Your notes are in **your private GitHub repo** — only you can see them
 - Cordfuse has zero access to your data
-- The AI (Claude or ChatGPT) processes your messages under their own privacy policies — same as any chat you have with them
+- The AI processes your messages under its own privacy policy — same as any chat you have with it
 - If you stop using Cortex, your notes are still there, in plain text, forever
 
 ---

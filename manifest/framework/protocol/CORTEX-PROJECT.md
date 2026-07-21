@@ -12,7 +12,7 @@ client_id: Iv23liec4HPiUGJQe7Fs
 
 Requires the [Personal Cortex GitHub App](https://github.com/apps/personal-cortex) installed on your repo (one-time, ~1 minute). The `client_id` is a public identifier, not a secret — the default above is the Cordfuse-registered app.
 
-**Option B — Fine-grained PAT (ChatGPT, or as fallback):**
+**Option B — Fine-grained PAT (fallback, for environments where the device flow is unavailable):**
 
 ```
 repo: https://github.com/you/your-repo-name

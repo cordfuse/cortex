@@ -77,14 +77,14 @@ Cortex behaves **differently** depending on where you run it. The difference is 
 | **Self-hosted / cron / scheduled scripts** on your machine | Yes | **Yes — full connector functionality** |
 | **Claude Cowork / Dispatch** (cloud Claude Code dispatched from Claude.ai) | Yes | **Yes — but Cowork is flaky and unfinished. Hung tooling calls are common. Out of cortex's control. Treat as experimental.** |
 | **Claude.ai web and mobile** (Free/Pro/Max) | Yes | **NO. Sandbox blocks all third-party APIs.** |
-| **ChatGPT web and mobile** | Yes | **NO. Sandbox has zero outbound network.** |
+| **ChatGPT web and mobile** | **No — sandbox cannot resolve github.com at all (verified 2026-07-20). Not supported.** | **NO.** |
 | **Gemini web and mobile** | Not supported (no tool-call file access) | N/A |
 
-**On Claude.ai and ChatGPT web/mobile, cortex can ONLY do git operations — clone, read your records, commit, push, merge.** Connector scripts will fail at the network proxy. **There is no third-party API access. None at all.** This is by design on Anthropic's and OpenAI's side — their sandboxes only allow specific package-registry domains. Cortex cannot work around this.
+**On Claude.ai web/mobile, cortex can ONLY do git operations — clone, read your records, commit, push, merge.** Connector scripts will fail at the network proxy. **There is no third-party API access. None at all.** This is by design on Anthropic's and OpenAI's side — their sandboxes only allow specific package-registry domains. Cortex cannot work around this.
 
 **For full connector functionality on a phone or tablet:** connectors run from a CLI agent on your laptop, scheduled scripts on a home server, or Claude Cowork / Dispatch (with the flakiness caveat above).
 
-**On UX verbosity:** CLI agents (Claude Code, Gemini CLI, Antigravity CLI, OpenCode, Qwen) are the least verbose session experience — no tool-call accordion UI, scribe reads files directly, and the user sees only the curated greeting. Web project mode on claude.ai and ChatGPT has inherent startup verbosity (file-listing UI, tool-call expansions) that Cordfuse cannot suppress — that's the AI provider's UI, not a cortex protocol issue. If a clean, quiet session is the goal, run cortex from a CLI agent.
+**On UX verbosity:** CLI agents (Claude Code, Gemini CLI, Antigravity CLI, OpenCode, Qwen) are the least verbose session experience — no tool-call accordion UI, scribe reads files directly, and the user sees only the curated greeting. Web project mode on claude.ai has inherent startup verbosity (file-listing UI, tool-call expansions) that Cordfuse cannot suppress — that's the AI provider's UI, not a cortex protocol issue. If a clean, quiet session is the goal, run cortex from a CLI agent.
 
 ---
 
@@ -178,11 +178,11 @@ model: claude-sonnet-4-6
 ## Getting started
 
 **[→ Desktop setup](manifest/framework/SETUP-DESKTOP.md)** — agent CLI, Claude Desktop, any OS
-**[→ Mobile & web setup](manifest/framework/SETUP-MOBILE.md)** — Claude project, ChatGPT project
+**[→ Mobile & web setup](manifest/framework/SETUP-MOBILE.md)** — Claude project (web/mobile is Claude-only)
 
 Both guides cover new users and existing Cortex repos.
 
-**Web/mobile auth (v4.16.0+):** on Claude, no tokens needed — install the [Personal Cortex GitHub App](https://github.com/apps/personal-cortex) on your repo once, and each session authenticates via GitHub's device flow (approve on your phone, ~10 seconds; nothing secret stored anywhere). Validated on Opus 4.8, Sonnet 5, and Fable 5. A fine-grained PAT remains the fallback (and the ChatGPT method).
+**Web/mobile auth (v4.16.0+):** on Claude, no tokens needed — install the [Personal Cortex GitHub App](https://github.com/apps/personal-cortex) on your repo once, and each session authenticates via GitHub's device flow (approve on your phone, ~10 seconds; nothing secret stored anywhere). Validated on Opus 4.8, Sonnet 5, and Fable 5. A fine-grained PAT remains the fallback.
 
 ---
 
@@ -263,7 +263,7 @@ manifest/
       GUARDRAILS.md    # Hard stops, safety rules -- overrides everything
       ROE.md           # Rules of engagement
       DISCLAIMER.md    # Honest framing, legal warnings, crisis resources
-      CORTEX-PROJECT.md  # Self-contained prompt for Claude/ChatGPT projects
+      CORTEX-PROJECT.md  # Self-contained prompt for Claude projects
     templates/         # Record skeletons + install scaffolding
     actors/            # Built-in actors (APEX.md default)
     BOOTSTRAP.md       # Operational scribe voice (auto-loaded)
@@ -357,7 +357,7 @@ Cortex works for one person. It also works for any number of people sharing a re
 
 Clone the same repo, run your own AI agent against it, commit your entries. Everyone pushes, everyone pulls, everyone sees the full record. Git handles the collaboration. The AI handles the scribing.
 
-Each person can use a different AI. One uses Claude, another uses ChatGPT, another uses Qwen. Same repo. Same protocol. Same truth.
+Each person can use a different AI. One uses Claude, another uses Codex, another uses Qwen. Same repo. Same protocol. Same truth.
 
 ---
 
@@ -371,7 +371,7 @@ Validated empirically with end-to-end Phase 6 testing in 2026-04-30 — Claude O
 
 ## Cloud vs offline
 
-**Cloud:** GitHub + Claude/ChatGPT. Five-minute setup. Frontier models. Tradeoff: records pass through your AI provider.
+**Cloud:** GitHub + Claude. Five-minute setup. Frontier models. Tradeoff: records pass through your AI provider.
 
 **Offline:** self-hosted git ([Gitea](https://gitea.io) / [Forgejo](https://forgejo.org)) + [Ollama](https://ollama.com). Nothing leaves your machine. Tradeoff: harder setup, weaker instruction-following.
 
@@ -401,11 +401,11 @@ The Bootstrap RWDX guardrail (v4.0.0-alpha.7+) blocks all read/write/delete/exec
 ## Requirements
 
 - Git
-- An AI agent ([Claude Code](https://claude.ai/download), [Gemini CLI](https://github.com/google-gemini/gemini-cli) (sunsets 2026-06-18), [Antigravity CLI](https://github.com/google-antigravity/antigravity-cli), [OpenCode](https://opencode.ai), Codex CLI, Qwen Code) or web interface (claude.ai, ChatGPT)
+- An AI agent ([Claude Code](https://claude.ai/download), [Gemini CLI](https://github.com/google-gemini/gemini-cli) (sunsets 2026-06-18), [Antigravity CLI](https://github.com/google-antigravity/antigravity-cli), [OpenCode](https://opencode.ai), Codex CLI, Qwen Code) or web interface (claude.ai — the only web surface with GitHub access)
 - **Model recommendation: Claude Sonnet, or a mid-tier GPT equivalent.** Validated on Claude Sonnet — clean startup, fast, follows the silent-load protocol correctly. Claude Opus is more capable but more verbose at session start and slower. GPT-4o is untested; GPT-4o-mini is likely the right tier for the same reason (less narration, faster). Frontier/largest models are not always better for Cortex — instruction-following on the bootstrap rules matters more than raw capability.
 - **Session startup is verbose — this is expected and cannot be suppressed.** When you open a new chat and say `hello`, the AI reads your protocol files, runs Gate 3 (`git fetch origin` + version check), and runs an opening scan before greeting you. You will see tool-call activity during this process. This is the AI doing its job — not an error. The greeting itself is clean. The loading activity is a limitation of how AI providers expose tool use in their interfaces and is outside Cordfuse's control.
 - **Gemini web and mobile are not supported.** Gemini's web and mobile interfaces do not support the tool-calling and file access flow Cortex requires. Gemini CLI works fine.
-- **ChatGPT compatibility is untested.** The protocol is designed to be provider-agnostic but has been primarily validated on Claude. ChatGPT may behave differently — reports welcome.
+- **ChatGPT web/mobile is not supported.** Its sandbox has no network route to GitHub — `git clone` fails with `Could not resolve host: github.com` (verified 2026-07-20). OpenAI models work via **Codex CLI** on desktop; the protocol itself remains provider-agnostic.
 - For offline: [Ollama](https://ollama.com) + self-hosted git
 
 ---
