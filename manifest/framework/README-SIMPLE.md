@@ -1,9 +1,5 @@
 # Cortex — Plain English
 
-[![Donate to CAMH](https://img.shields.io/badge/Donate-CAMH%20Foundation-blue)](https://camhfoundation.ca/donate)
-
----
-
 ## The short version
 
 Every time you open ChatGPT, Claude, or any AI — it has no idea who you are. You start from zero. Again.
@@ -18,13 +14,11 @@ And unlike every other app that promises this — **you own the data. Not us. No
 
 I built Cortex because I kept losing the thread.
 
-Every new doctor, every new appointment, every AI conversation — you start from zero. Re-explain your history. Your context. What matters, what doesn't. The understanding you'd built over time disappears the moment you walk through a new door.
-
-AI could fix this. These tools are extraordinary at holding context, spotting patterns, asking the right questions. But every conversation still starts from zero — because there's nowhere for that context to live between sessions.
+Every AI conversation starts from zero. Re-explain your history. Your context. What matters, what doesn't. The understanding you build up disappears the moment the chat ends — because there's nowhere for it to live between sessions. AI is extraordinary at holding context, spotting patterns, asking the right questions. It just forgets all of it overnight.
 
 I know I'm not the only one who's felt this.
 
-If this has been useful to you — please consider donating to [CAMH Foundation](https://camhfoundation.ca/donate).
+If Cortex has been useful to you, consider donating to [CAMH Foundation](https://camhfoundation.ca/donate) — continuity of care is where this project started.
 
 — Steve Krisjanovs
 
@@ -40,7 +34,7 @@ If this has been useful to you — please consider donating to [CAMH Foundation]
 
 4. **You own it.** Your notes live in a private GitHub repository — like a folder in the cloud that only you control. Plain text files. No lock-in. Readable forever.
 
-5. **It has a personality.** Cortex actually has three AI layers working together. The **active actor** is who you talk to — that's the one with the personality. One framework actor ships by default: **Apex** — precise, curious, direct, no domain specialty. But you can describe any personality in plain English and it gets created on the spot, or install one someone else built. The second layer — the **Bootstrap actor** — handles the operational stuff (sync, version checks, session management) in a clean clinical voice and steps out for normal conversation. The third layer — the **hidden scribe** — is silent. It just files things. You won't ever see it in chat. It works the same in every session no matter which active actor you pick.
+5. **It has a personality.** Cortex actually has three AI layers working together. The **active actor** is who you talk to — that's the one with the personality. **63 ready-made personalities ship with it** — engineers, doctors, coaches, philosophers, creative voices — with **Apex** (precise, curious, direct) as the default. Or describe any personality in plain English and it gets created on the spot, or install one someone else built. The second layer — the **Bootstrap actor** — handles the operational stuff (sync, version checks, session management) in a clean clinical voice and steps out for normal conversation. The third layer — the **hidden scribe** — is silent. It just files things. You won't ever see it in chat. It works the same in every session no matter which active actor you pick.
 
 ---
 
