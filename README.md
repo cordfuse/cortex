@@ -1,19 +1,11 @@
 # Cortex
 
-[![Version](https://img.shields.io/badge/version-4.9.1-blue)](manifest/framework/CORTEX-CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-4.16.3-blue)](manifest/framework/CORTEX-CHANGELOG.md)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
-> **Using the template:** tap the green **Use this template** button (desktop GitHub) to create your own cortex. GitHub's mobile view hides that button — on mobile, either switch your browser to desktop view, or run `gh repo create my-cortex --template cordfuse/cortex` from a terminal.
+> **Your AI forgets you every session.** Cortex is a private git repo your AI reads at the start of every conversation — so it remembers your context, files what matters as you talk, and connects it all together automatically. Any device, any major AI. **You own the memory; you rent the intelligence.**
 
-**Not a developer?** [Read the plain English version →](manifest/framework/README-SIMPLE.md)
-
-> ⚠️ **Framework files — do not edit.** This file and all linked docs are overwritten when the framework updates. Put your personal notes in the `manifest/custom/` folder instead — files like `manifest/custom/VERBS.md`, `manifest/custom/protocol/ROE.md`, and `manifest/custom/protocol/GUARDRAILS.md` are never touched by the framework.
->
-> | Your notes | Framework doc |
-> |---|---|
-> | [manifest/custom/README.md](manifest/custom/README.md) | This file |
-> | [manifest/custom/actors/](manifest/custom/actors/) | [manifest/framework/PERSONALITIES.md](manifest/framework/PERSONALITIES.md) |
-> | [manifest/custom/VERBS.md](manifest/custom/VERBS.md) | [manifest/framework/VERBS.md](manifest/framework/VERBS.md) |
+**Not a developer?** [Read the plain-English version →](manifest/framework/README-SIMPLE.md)
 
 ## The problem
 
@@ -21,9 +13,25 @@ Every AI chat starts from zero. You re-explain your context, your projects, your
 
 ## The solution
 
-Cortex is a private git repo your AI scribe reads at the start of every session. It files your records, tracks your threads, remembers your context. Next session it picks up where you left off — any device, any major AI. Nothing goes to Cordfuse. You own the repo.
+Cortex is a private git repo your AI scribe reads at the start of every session. It files your records as you talk, tracks your threads, and **automatically links related records together** — so your history becomes a connected web instead of a flat pile, and the scribe follows the thread instead of re-searching it. Next session it picks up where you left off, any device, any major AI.
 
-One default actor ships with the framework: **Apex** — a generic, precise, general-purpose voice. Everything else is yours to build. Skill actors, custom voices, specialist modes all live in `manifest/custom/actors/` and are never overwritten by framework updates.
+**You own everything.** It's plain markdown in your own git repo — no vendor database, nothing sent to Cordfuse, readable by any tool, portable the day you want out. The model is rented; the memory is yours. Move from one frontier AI to the next and your second brain comes with you.
+
+**63 ready-made actors ship with the framework** — engineers, doctors, advisors, creative voices, spiritual guides — with **Apex** (a precise generalist) as the default. Build your own in plain English in `manifest/custom/actors/`; custom actors are never overwritten by framework updates.
+
+---
+
+## Using this repo
+
+**Create your own:** tap the green **Use this template** button (desktop GitHub) to make your own cortex. GitHub's mobile view hides it — on mobile, switch your browser to desktop view, or run `gh repo create my-cortex --template cordfuse/cortex` from a terminal.
+
+> ⚠️ **Framework files — do not edit.** This file and all linked docs are overwritten when the framework updates. Put your personal notes in `manifest/custom/` instead — files like `manifest/custom/VERBS.md`, `manifest/custom/protocol/ROE.md`, and `manifest/custom/protocol/GUARDRAILS.md` are never touched.
+>
+> | Your notes | Framework doc |
+> |---|---|
+> | [manifest/custom/README.md](manifest/custom/README.md) | This file |
+> | [manifest/custom/actors/](manifest/custom/actors/) | [manifest/framework/PERSONALITIES.md](manifest/framework/PERSONALITIES.md) |
+> | [manifest/custom/VERBS.md](manifest/custom/VERBS.md) | [manifest/framework/VERBS.md](manifest/framework/VERBS.md) |
 
 ---
 
@@ -104,13 +112,11 @@ Cortex behaves **differently** depending on where you run it. The difference is 
 
 I built Cortex because I kept losing the thread.
 
-Every new doctor, every new therapist, every crisis worker — you start from zero. You re-explain your history, your medications, your patterns, your people. The context that took years to build evaporates between appointments. Every AI conversation is the same — it doesn't know you, and it never will unless you tell it again.
-
-For most things that's annoying. For mental health it's dangerous. The people who most need continuity are the ones least likely to get it.
+Every new AI conversation starts from zero. So does every new professional you sit across — doctor, accountant, contractor, advisor. You re-explain your context, your history, your people, and the understanding you'd built evaporates at every handoff. The context that matters most is the context that never carries.
 
 Cortex is a small fix to a big problem. You own your records. Your AI picks up where you left off. Nothing disappears.
 
-If this has been useful to you — or if you just believe mental health infrastructure deserves better — consider donating to [CAMH Foundation](https://camhfoundation.ca/donate), Canada's largest mental health hospital and research centre.
+If Cortex has been useful to you, consider a donation to [CAMH Foundation](https://camhfoundation.ca/donate) — continuity of care is where this project started.
 
 — Steve Krisjanovs
 
@@ -126,6 +132,8 @@ If this has been useful to you — or if you just believe mental health infrastr
 
 **Onboarding that adapts to you (v4.14.0+).** A fresh cortex doesn't dump you into a blank vault — on the first session it asks what you want cortex *for* (personal life · work · creative practice · research · health) and only asks about what fits. A professional cortex never asks about your family; a health cortex never asks about deadlines. Pick more than one, or skip it and just start. Sensitive tiers (health, mood) are always opt-in and delicately gated — and everything is *recorded, never advised*.
 
+**A connected record, not a pile (v4.15.0+).** Every new record gets a `## Related` block of `[[wikilinks]]` to the records it continues or touches, and the `weave` verb backfills the whole vault. The scribe follows threads instead of re-searching them — and graph tools (Obsidian, Logseq, Foam) light up for free.
+
 **Always in sync.** Every `hello` runs `git fetch origin` and `git fetch upstream` before the greeting renders. Local behind remote? Scribe surfaces the delta and applies your `auto_upgrade:` preference (always / ask / never). Silent stale-state operation is a protocol violation as of v4.0.0-alpha.13.
 
 **Hot-swap personalities mid-session (v4.0.0-alpha.8+).** Say *"change actor to [name]"* and the next response is in that actor's voice. No fresh hello required.
@@ -134,7 +142,7 @@ If this has been useful to you — or if you just believe mental health infrastr
 
 **Multi-parent personality inheritance (v4.0.0-alpha.11+).** Custom personalities can inherit from multiple parents simultaneously — useful for "everything-guy" SMEs who span developer + infrastructure + cloud architect + functional consultant in one role.
 
-**Your active actor has a personality.** One framework default ships: **Apex** — generic, precise, no domain specialty. Build your own in plain English and commit them to `manifest/custom/actors/`. Credit your work with an `## author` field. [Full personality reference →](manifest/framework/PERSONALITIES.md)
+**Your active actor has a personality.** 63 ship ready-made — from `senior-software-engineer` to `family-doctor` to `stoic-philosopher` — with **Apex** as the generic default. Build your own in plain English and commit them to `manifest/custom/actors/`. Credit your work with an `## author` field. [Full personality reference →](manifest/framework/PERSONALITIES.md)
 
 **Natural language intent routing (v4.5.0+).** Say "sync me up" or "what's the status?" — the scribe classifies intent before matching verb shorthand. No need to remember exact command names; natural phrasing works throughout.
 
@@ -150,15 +158,16 @@ If this has been useful to you — or if you just believe mental health infrastr
 
 ## Personalities
 
-Cortex ships with **one framework actor** plus the **Bootstrap actor** that handles operational reporting.
+Cortex ships with **63 framework actors** plus the **Bootstrap actor** that handles operational reporting.
 
-| Category | Actor |
+| Category | Actors |
 |---|---|
 | **Bootstrap** | Bootstrap (auto-loaded; never user-selected; clinical operational voice) |
-| **Defaults** | Apex — generic, precise, no domain specialty |
+| **Default** | Apex (`precise-generalist`) — generic, precise, no domain specialty |
+| **Framework roster (63)** | Engineering (`senior-software-engineer`, `devops-engineer`, `cloud-architect`, …), health (`family-doctor`, `clinical-psychiatrist`, `registered-dietitian`, …), advisory (`financial-planner`, `legal-advisor`, `executive-coach`, …), creative (`creative-director`, `songwriter`, …), philosophy & faith (`stoic-philosopher`, `buddhist-guide`, and guides across major traditions), voices (`minimalist-voice`, `plain-language-voice`, …) — say `list actors` for the full set |
 | **Custom** | Any actor file in `manifest/custom/actors/` |
 
-The framework is deliberately minimal. Specialty actors — skill-based, character-based, domain-specific — belong in `manifest/custom/actors/`. They're never overwritten by framework sync. Add an `## author` field to credit yourself or anyone you're sharing with.
+Framework actors sync from [`cordfuse/agent-assets`](https://github.com/cordfuse/agent-assets). Custom actors are never overwritten by framework sync. Add an `## author` field to credit yourself or anyone you're sharing with.
 
 Every personality has tunable sliders across vibe, virtues, vices, soft skills, and hard skills — all 0–100. Create your own with a description. The scribe writes the file and commits it.
 
@@ -168,7 +177,7 @@ Every personality has tunable sliders across vibe, virtues, vices, soft skills, 
 # context.md
 actors: []               ← Bootstrap always prompts — name an actor in your opening message to skip the dialog
 provider: Anthropic Claude
-model: claude-sonnet-4-6
+model: claude-opus-4-8
 ```
 
 [Full personality reference →](manifest/framework/PERSONALITIES.md)
@@ -198,6 +207,11 @@ Both guides cover new users and existing Cortex repos.
 | `sync` | Pull framework updates from upstream + apply (Bootstrap voice) |
 | `reconcile` | Deep three-category drift resolution against upstream/main with per-file user gating (v4.0.0-alpha.19+) |
 | `search [term]` | Search all records |
+| `weave` | Backfill `[[wikilink]]` cross-links across existing records (v4.15.0+) |
+| `morning` | Daily briefing — appointments, open items, heads-up |
+| `patterns` | Cross-record pattern analysis |
+| `handoff` | Compile a clinician/professional summary from your records |
+| `help` | Replay the first-run overview |
 | `list verbs` | Show built-in and custom verbs |
 | `list personalities` / `list actors` | Show active personality and all available |
 | `spawn session "<name>"` | Create scoped session (v4.0.0-alpha.17+) |
@@ -213,8 +227,8 @@ Define your own in `manifest/custom/VERBS.md`. Invoke by name in natural languag
 |---|---|
 | `change actor to <name>` | Hot-swap active personality (takes effect immediately, next response). Aliases: *switch personality*, *use [name]*. (v4.0.0-alpha.8+) |
 | `weekly review` | Weekly review across all records |
-| `daily log` | Open a daily log entry |
-| `bills` | Review upcoming bills |
+| `meds` | Log medications taken today |
+| `therapy` | Log a therapy or counselling session |
 | *...and any verb you define* | |
 
 ---
@@ -265,7 +279,7 @@ manifest/
       DISCLAIMER.md    # Honest framing, legal warnings, crisis resources
       CORTEX-PROJECT.md  # Self-contained prompt for Claude projects
     templates/         # Record skeletons + install scaffolding
-    actors/            # Built-in actors (APEX.md default)
+    actors/            # 63 built-in actors (precise-generalist "Apex" = default)
     BOOTSTRAP.md       # Operational scribe voice (auto-loaded)
     VERBS.md           # Framework verbs (managed by scribe)
     PERSONALITIES.md   # Full personality reference
@@ -297,7 +311,7 @@ archive/               # Retired files -- read only on explicit request
 install/               # Bootstrap installers + setup scripts
 .claude/               # Claude Code settings
 CLAUDE.md              # Claude Code + Claude Desktop
-GEMINI.md              # Gemini CLI (sunsets 2026-06-18)
+GEMINI.md              # Gemini CLI (sunset 2026-06-18 — use ANTIGRAVITY.md)
 ANTIGRAVITY.md         # Antigravity CLI (Gemini CLI successor)
 AGENTS.md              # OpenAI Codex + generic agents
 OPENCODE.md            # OpenCode
@@ -315,7 +329,7 @@ version.txt            # Current framework version (framework dev only)
 
 A common first instinct is to set up multiple cortexes — one for health, one for programming, one for business, one for family. **Don't.** That instinct reproduces the exact problem cortex exists to solve.
 
-Cortex was built because every new doctor, every new therapist, every new AI conversation re-starts from zero. The continuity loss is the pain. Splitting your own cortex by topic re-creates that loss internally — the scribe can't see your sleep patterns alongside your project deadlines if those records live in separate repos.
+Cortex was built because every new professional handoff and every new AI conversation re-starts from zero. The continuity loss is the pain. Splitting your own cortex by topic re-creates that loss internally — the scribe can't see your sleep patterns alongside your project deadlines if those records live in separate repos.
 
 **The rule:** split cortexes by **access boundary**, not by **topic**.
 
@@ -343,7 +357,7 @@ In all of these the boundary is **who can see what**, not **what is it about**.
 
 Within a monocortex, topic context is handled by:
 
-- **Personalities** — `change actor to Dr. Quinn` for health/reflection mode; `change actor to Magnus` for BC engineering; `change actor to AA Sponsor` for recovery work. The voice + lens shifts naturally.
+- **Personalities** — `change actor to family-doctor` for health mode; `change actor to senior-software-engineer` for engineering; `change actor to financial-planner` for money. The voice + lens shifts naturally.
 - **Phase 6 scoped sessions** — `spawn session "phase 2 design"` keeps a programming sprint's runtime state isolated from main; `spawn session "weekly checkin"` keeps a health journal's actor and context separate. Records still file to the unified `data/records/` folder with `Session: phase 2 design` in provenance, so cross-domain searches still work.
 - **Records folder** — naturally chronological + searchable across all topics
 
@@ -365,7 +379,7 @@ Each person can use a different AI. One uses Claude, another uses Codex, another
 
 Multi-agent workflows over the same repo are supported via what we call **Cortex-Native Agent Coordination (CNAC)**: agents on different machines or different providers coordinate by writing records to the cortex repo. One agent files a test plan as a record; another agent reads it, executes, and files results back as a record. No copy-paste, no separate message bus, full audit trail. The bus is git. The messages are records.
 
-Validated empirically with end-to-end Phase 6 testing in 2026-04-30 — Claude Opus on a desktop machine filed a test plan, Claude Sonnet on mobile read it, executed all 8 steps, filed consolidated results back. Cross-provider, cross-machine, cross-session.
+Validated empirically with end-to-end Phase 6 testing in 2026-04-30 — Claude Opus on cachy filed a test plan, Claude Sonnet on mobile read it, executed all 8 steps, filed consolidated results back. Cross-provider, cross-machine, cross-session.
 
 ---
 
@@ -401,8 +415,8 @@ The Bootstrap RWDX guardrail (v4.0.0-alpha.7+) blocks all read/write/delete/exec
 ## Requirements
 
 - Git
-- An AI agent ([Claude Code](https://claude.ai/download), [Gemini CLI](https://github.com/google-gemini/gemini-cli) (sunsets 2026-06-18), [Antigravity CLI](https://github.com/google-antigravity/antigravity-cli), [OpenCode](https://opencode.ai), Codex CLI, Qwen Code) or web interface (claude.ai — the only web surface with GitHub access)
-- **Model recommendation: Claude Sonnet, or a mid-tier GPT equivalent.** Validated on Claude Sonnet — clean startup, fast, follows the silent-load protocol correctly. Claude Opus is more capable but more verbose at session start and slower. GPT-4o is untested; GPT-4o-mini is likely the right tier for the same reason (less narration, faster). Frontier/largest models are not always better for Cortex — instruction-following on the bootstrap rules matters more than raw capability.
+- An AI agent ([Claude Code](https://claude.ai/download), [Gemini CLI](https://github.com/google-gemini/gemini-cli) (sunset 2026-06-18 — superseded by Antigravity), [Antigravity CLI](https://github.com/google-antigravity/antigravity-cli), [OpenCode](https://opencode.ai), Codex CLI, Qwen Code) or web interface (claude.ai — the only web surface with GitHub access)
+- **Model recommendation: any current Claude model.** Validated end-to-end on Opus 4.8, Sonnet 5, and Fable 5 (v4.16.0 web-auth run), and on earlier Sonnet generations throughout. On web, session start is consent-first — the scribe says what opening your vault involves and waits for your yes. For OpenAI models, use Codex CLI on desktop.
 - **Session startup is verbose — this is expected and cannot be suppressed.** When you open a new chat and say `hello`, the AI reads your protocol files, runs Gate 3 (`git fetch origin` + version check), and runs an opening scan before greeting you. You will see tool-call activity during this process. This is the AI doing its job — not an error. The greeting itself is clean. The loading activity is a limitation of how AI providers expose tool use in their interfaces and is outside Cordfuse's control.
 - **Gemini web and mobile are not supported.** Gemini's web and mobile interfaces do not support the tool-calling and file access flow Cortex requires. Gemini CLI works fine.
 - **ChatGPT web/mobile is not supported.** Its sandbox has no network route to GitHub — `git clone` fails with `Could not resolve host: github.com` (verified 2026-07-20). OpenAI models work via **Codex CLI** on desktop; the protocol itself remains provider-agnostic.
@@ -414,15 +428,13 @@ The Bootstrap RWDX guardrail (v4.0.0-alpha.7+) blocks all read/write/delete/exec
 
 [→ Full roadmap](ROADMAP.md)
 
-**v4.14.0 (current)** — Personal Intake: empty-vault onboarding that adapts to what you use cortex *for*. Universal core (identity, preferences) plus opt-in domain packs — personal · professional · creative · research · health, multi-select. Health is its own domain; sensitive capture is delicately gated and records-never-advises; a crisis signal hands to your Safety Plan and never writes to git. The first-run concept intro is now one conversational beat, not a step wizard.
+**v4.16 (current)** — Tokenless web auth: GitHub device flow via the [Personal Cortex app](https://github.com/apps/personal-cortex) — no PATs to create or store, consent-first session open, validated on Opus 4.8 / Sonnet 5 / Fable 5. Plus: ChatGPT web/mobile confirmed unsupported (sandbox has no route to GitHub), and a verb-catalog cleanup.
 
-**v4.5.4** — Onboarding + help system. First-time users get a conversational first-run overview at hello (originally a 5-step tutorial; de-wizardified in v4.14.0). Version walkthroughs offered automatically after each sync that lands a new version. `help` verb replays the overview any time. State tracked in `manifest/custom/cortex-onboarding.md`.
+**v4.15** — Record Linking (Weave): automatic `[[wikilink]]` cross-links on capture + a `weave` backfill verb. The flat record becomes a navigable graph — no dead edges, hand-authored content never touched.
 
-**v4.5.3** — Deprecated actors + imported actor namespaces. `## deprecated: true` retires an actor without deleting it — stays in `list actors` with a `[deprecated]` label, warns before activation, keeps inheritance chains intact. `import actor from [link]` places someone else's actor in `manifest/custom/actors/[source-handle]/` automatically — name collisions resolved by Bootstrap asking which you mean, once per session.
+**v4.14** — Personal Intake: empty-vault onboarding that adapts to what you use cortex *for*. Universal core (identity, preferences) plus opt-in domain packs — personal · professional · creative · research · health, multi-select; sensitive capture delicately gated, recorded-never-advised. First-run intro is one conversational beat, not a step wizard.
 
-**Recent shipped:** → **v4.5.1** (Bootstrap-always-prompts, manifest/ restructure) → **v4.5.2** (abstract actors) → **v4.5.3** (deprecated actors + actor namespaces via import).
-
-**Coming:** Phase 2 multi-actor sessions (spawn named actors mid-session, multiple voices in the same session), Phase 3 panel vs independent modes, integrations expansion (Notion, Slack, GitHub, Linear, Health, Spotify), MTX (markdown package manager).
+**Coming:** Phase 2 multi-actor sessions (spawn named actors mid-session, multiple voices in the same session), Phase 3 panel vs independent modes, integrations expansion (Notion, Slack, GitHub, Linear, Health, Spotify).
 
 ---
 

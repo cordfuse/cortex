@@ -8,7 +8,7 @@
 >
 > **Personality files configure the Bootstrap actor and the active actor only.** The hidden scribe's behavior is the same in every session, regardless of which active actor you've loaded.
 
-Cortex ships with **one framework active actor (Apex)** plus the Bootstrap actor. Everything else is yours to build.
+Cortex ships with **63 framework actors** (synced from [`cordfuse/agent-assets`](https://github.com/cordfuse/agent-assets)) plus the Bootstrap actor, with **Apex** as the default. Say `list actors` for the full roster; everything beyond it is yours to build.
 
 **Hard rule:** Personality files control tone and language only. GUARDRAILS, ROE, and crisis protocol are never overridden by a personality file. Every personality respects all safety rules in full.
 
@@ -52,7 +52,7 @@ You don't pick Bootstrap — it picks itself. It never engages in conversation a
 ### Apex — `PERSONALITY-APEX.md`
 *Precise, curious, direct. Thinks clearly, speaks plainly.*
 
-The one framework default. Generic, no domain specialty. Adapts to planning, analysis, writing, technical work, thinking out loud. The reliable starting point before you build custom actors for specific needs.
+The framework default. Generic, no domain specialty. Adapts to planning, analysis, writing, technical work, thinking out loud. The reliable starting point before you build custom actors for specific needs.
 
 > Archetype: ANALYST · Vibe: moderate humor, moderate warmth, moderately serious
 
