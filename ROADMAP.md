@@ -2,13 +2,28 @@
 
 What's shipped, what's in progress, and what's coming.
 
-**Current version:** 4.6.5 *(stable)* — [Changelog](manifest/framework/CORTEX-CHANGELOG.md)
+**Current version:** 4.16.4 *(stable)* — [Changelog](manifest/framework/CORTEX-CHANGELOG.md)
 
 ---
 
 ## Shipped
 
-### v4.0.0 — Multi-actor sessions, Phase 6 v2 personality, full-stack v4 *(current — stable)*
+### v4.7 – v4.16 — the frontier set + onboarding, linking, and web auth *(current — stable)*
+
+Shipped since the v4.0 headline below. One line each; full detail in the [Changelog](manifest/framework/CORTEX-CHANGELOG.md).
+
+- **v4.10.0 — Rollup Layer + Daily Briefing + Patterns.** Tiered weekly/monthly rollups (auto-backfilled at the first hello of a new week), a morning briefing, and pattern surfacing — cortex gets *better* with age instead of slower.
+- **v4.11.0 — Appointment Handoff.** A one-page clinician summary built from the user's own records; organises, never diagnoses.
+- **v4.12.0 — Safety Plan.** Optional user-authored crisis plan + `safety` verb; routes to help, never infers risk. (v4.12.1–.2: mobile-setup fixes.)
+- **v4.13.0 — Rebase-sync.** Sync uses `--rebase` for linear history.
+- **v4.14.0 — Personal Intake.** Empty-vault onboarding: a universal core + five domain packs (Personal / Professional / Creative / Research / Health), state-triggered, delicacy scaled to sensitivity.
+- **v4.15.0 — Record Linking ("Weave").** Automatic `[[wikilink]]` cross-linking at capture time plus a `weave` backfill verb; exact-stem matching, no dead edges, dated-series chains.
+- **v4.16.0 — Device-flow web auth.** Tokenless GitHub onboarding via device flow (PAT is now a fallback); consent-first session open.
+- **v4.16.1 — ChatGPT unsupported.** Web/mobile is Claude-only (no network route to GitHub from ChatGPT); OpenAI models via Codex CLI on desktop.
+- **v4.16.2 — MTX verbs retired** (MTX deferred). **v4.16.3–.4 — 63-actor roster corrected** across docs.
+
+
+### v4.0.0 — Multi-actor sessions, Phase 6 v2 personality, full-stack v4
 
 The v4 headline shipped. Cortex sessions can now host multiple named actors simultaneously, address them individually or as panels, blend their voices, tune them mid-session, and capture per-session personality history. Plus the alpha series' protocol hardening (verb precedence, hello collisions, runtime canonical text, mid-session protocol reload, sync-scope mirror rule, full-context onboarding, fail-gracefully ROE rule).
 
@@ -587,12 +602,11 @@ Spec: [`data/records/2026-04-26-v4-phase-1-hidden-scribe-spec.md`](data/records/
 
 ## In Progress
 
-Patch-level refinements and operator-feedback fixes against v4.6.x. No major
-new features are in active development — the v4 surface (multi-actor
-sessions, Phase 6 v2 personality system, full-context onboarding, Bun
-runtime, data layout consolidation) is shipped and stable. See
-[CORTEX-CHANGELOG.md](manifest/framework/CORTEX-CHANGELOG.md) for the
-current patch trail.
+Patch-level refinements and operator-feedback fixes against v4.16.x. The v4
+surface — multi-actor sessions, Phase 6 v2 personality, Personal Intake,
+Record Linking (Weave), rollups/briefings, device-flow web auth, Bun runtime —
+is shipped and stable. See [CORTEX-CHANGELOG.md](manifest/framework/CORTEX-CHANGELOG.md)
+for the current patch trail.
 
 ---
 
