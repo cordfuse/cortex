@@ -2101,7 +2101,7 @@ The scribe creates this file on first hello (whether the user completes the tuto
 first_run: YYYY-MM-DD
 onboarding_complete: true            # concept tutorial (what Cortex is)
 intake_status: complete              # personal intake: pending | in_progress | complete | declined
-intake_domains: [personal, health]   # domain packs selected: personal | professional | creative | research | health
+intake_domains: [personal, health]   # domain packs selected: personal | professional | creative | research | health | financial
 intake_tiers: [identity, preferences, people, health-deep]   # universal-core + per-domain tiers actually filled
 last_walked_through: X.Y.Z
 
@@ -2184,7 +2184,7 @@ If the user opens with nothing but `hello`, the offer may lead. **One offer per 
 
 Once the user accepts the intake offer, execute these steps **in order**. Do **not** collapse them into a generic *"tell me about yourself"* — the domain question is what makes intake adaptive, and skipping it is the failure mode that defeats the whole feature.
 
-1. **Domain question — FIRST, always.** Ask, verbatim: *"Before I dive in — what do you want cortex to remember for you? Pick any that fit: **personal life · work · creative practice · research/study · health.** Choose more than one if they apply, or say 'not sure' and we'll start light."* Wait for the answer; it selects which packs run. **Never skip this, and never fold it into an identity question.**
+1. **Domain question — FIRST, always.** Ask, verbatim: *"Before I dive in — what do you want cortex to remember for you? Pick any that fit: **personal life · work · creative practice · research/study · health · finances.** Choose more than one if they apply, or say 'not sure' and we'll start light."* Wait for the answer; it selects which packs run. **Never skip this, and never fold it into an identity question.**
 2. **Universal core** — ask **Identity**, then **Preferences** (both always, regardless of the domains chosen).
 3. **Selected domain packs** — for each domain the user picked, walk its tiers (defined below). If they said "not sure", stop after the core.
 4. **Record + file** — write `intake_domains` and `intake_tiers` to `cortex-onboarding.md`; file answers to `## Me` and the per-domain split-files, committing per tier.
@@ -2203,7 +2203,7 @@ This makes intake *demonstrate* capture-as-a-byproduct-of-talking rather than de
 
 Intake is **not** one fixed list of questions — it adapts to what the user wants cortex *for*. Once the offer is accepted, the first move is to ask exactly that:
 
-> *"Before I dive in — what do you want cortex to remember for you? Pick any that fit: **personal life · work · creative practice · research/study · health.** Choose more than one if they apply, or say 'not sure' and we'll start light."*
+> *"Before I dive in — what do you want cortex to remember for you? Pick any that fit: **personal life · work · creative practice · research/study · health · finances.** Choose more than one if they apply, or say 'not sure' and we'll start light."*
 
 The answer selects which **domain packs** run. Two tiers are **universal** — they run regardless, because they're about the relationship, not the subject. Everything else is domain-specific and surfaces only if that domain was picked. This is what keeps a professional cortex from asking about family, and a health cortex from asking about deadlines.
 
@@ -2231,6 +2231,8 @@ The answer selects which **domain packs** run. Two tiers are **universal** — t
 
 **Research / Academic** → Sources & literature · Open questions · Findings & threads. *Tender tier: usually none — mostly low-sensitivity.* → `context-research.md`, records.
 
+**Financial** → Income & sources · Recurring obligations · Assets & savings · Financial goals. *Tender tier: debt, precarity, being behind on money, financial fear or shame — gate these; money is a log the user owns, never a judgement.* → `context-finance.md`, `finance.md` (monthly) records.
+
 **Health** — *the deep clinical log, for whom health is the point.* Conditions · Medications · Care team · Symptoms. *The whole pack is the tender tier: explicit opt-in, genuine delicacy.* → `context-medical.md`, `data/records/health/` (symptoms / medication schema). Where a health-domain actor exists (e.g. `family-doctor`), frame capture as *"I'll note this so your [actor] can use it later."*
 
 > *Health offer (verbatim):* *"You picked health — I can keep a proper log: conditions, medications, your care team, how you're doing day to day. It stays in your private repo, and it's a **log you own**, not a medical assessment. As deep or as light as you like. (start / skip)"*
@@ -2243,11 +2245,11 @@ Both packs touch health, at different depths. Pick **only Personal** → the *li
 
 ### Integration status — now wired
 
-The three gaps the end-to-end test (`8f5f5cb`) surfaced are closed: **(1)** call site — intake is evaluated at **Gate 3c step 3** (Opening flow), sequenced after the concept tutorial as one onboarding moment, both under that gate's task-respect rule; **(2)** write targets — shipped templates now exist for every split-file home (`context-preferences.md`, `context-people.md`, `context-work.md`, `context-creative.md`, `context-research.md`, `context-medical.md`), plus a `## Me` identity block in the `context.md` template; deep health records use the existing `symptoms.md` / `medication.md` templates under `data/records/health/`; **(3)** actor-voice override — per-tier tone overrides the active actor's baseline for the duration of intake (see *Actor-voice override* above). Validated across two end-to-end test rounds (`8f5f5cb` and post-wiring); shipped in v4.14.0.
+The three gaps the end-to-end test (`8f5f5cb`) surfaced are closed: **(1)** call site — intake is evaluated at **Gate 3c step 3** (Opening flow), sequenced after the concept tutorial as one onboarding moment, both under that gate's task-respect rule; **(2)** write targets — shipped templates now exist for every split-file home (`context-preferences.md`, `context-people.md`, `context-work.md`, `context-creative.md`, `context-research.md`, `context-medical.md`, `context-finance.md`), plus a `## Me` identity block in the `context.md` template; deep health records use the existing `symptoms.md` / `medication.md` templates under `data/records/health/`; **(3)** actor-voice override — per-tier tone overrides the active actor's baseline for the duration of intake (see *Actor-voice override* above). Validated across two end-to-end test rounds (`8f5f5cb` and post-wiring); shipped in v4.14.0.
 
 ## Filing and provenance
 
-The hidden scribe files intake output into the canonical schemas — `context.md` (`## Me`, Current Situation) plus the per-domain split-files listed above (`context-preferences.md`, `context-people.md`, `context-work.md`, `context-creative.md`, `context-research.md`, `context-medical.md`) and `data/records/health/` seeds — with normal record provenance. **Commit granularity is per tier/pack: each tier is committed as it completes**, so an interrupted intake keeps everything already gathered and the only uncommitted state is the current tier's buffer — which is exactly what the crisis rule discards. Only the split-files for selected domains are created. Intake only ever writes plain markdown and commits, so it behaves identically on every surface. No binary, no CLI island.
+The hidden scribe files intake output into the canonical schemas — `context.md` (`## Me`, Current Situation) plus the per-domain split-files listed above (`context-preferences.md`, `context-people.md`, `context-work.md`, `context-creative.md`, `context-research.md`, `context-medical.md`, `context-finance.md`) and `data/records/health/` seeds — with normal record provenance. **Commit granularity is per tier/pack: each tier is committed as it completes**, so an interrupted intake keeps everything already gathered and the only uncommitted state is the current tier's buffer — which is exactly what the crisis rule discards. Only the split-files for selected domains are created. Intake only ever writes plain markdown and commits, so it behaves identically on every surface. No binary, no CLI island.
 
 ## Onboarding never ends — ambient enrichment
 
