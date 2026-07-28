@@ -296,13 +296,29 @@ async function cmdStore(name: string, value?: string, passphrase?: string, descr
     console.error('ERROR: Value cannot be empty.')
     process.exit(1)
   }
+  const existing = unifiedList()
   if (!passphrase) {
-    const existing = unifiedList()
     if (existing.length > 0) {
       passphrase = await promptSecret('Vault passphrase')
     } else {
       console.log('No vault found — creating a new one.')
       passphrase = await promptSecret('Choose a passphrase', 'Confirm passphrase')
+    }
+  }
+  // Verify the passphrase against an existing secret before writing. Without
+  // this, a mistyped passphrase silently stores the new secret under a
+  // different key than the rest of the vault — the entry then fails to decrypt
+  // later with "wrong passphrase or corrupt", and the mistake is unrecoverable.
+  // Mirrors the decrypt-first-then-abort discipline in `cmdRepassphrase`.
+  if (existing.length > 0) {
+    try {
+      perfileGet(existing[0], passphrase)
+    } catch {
+      console.error(
+        `ERROR: passphrase does not match the existing vault — aborting. No changes made.\n` +
+        `       (Storing under a different passphrase would corrupt the vault.)`,
+      )
+      process.exit(1)
     }
   }
   ensureVaultDir()
