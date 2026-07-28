@@ -20,6 +20,8 @@
 
 import { join, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { tmpdir } from 'node:os'
+import { writeFileSync, unlinkSync } from 'node:fs'
 import * as readline from 'node:readline'
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '../../../..')
@@ -177,18 +179,39 @@ async function cmdUp(passphrase: string): Promise<void> {
   requireTailscale()
   const authKey = await getSecret(VAULT_KEY, passphrase)
 
-  console.log('Bringing Tailscale up...')
-  const proc = Bun.spawnSync(['tailscale', 'up', '--authkey', authKey], {
-    stdout: 'pipe',
-    stderr: 'pipe',
-  })
+  // Passing the key as `--authkey <value>` exposes it in the tailscale
+  // process's argv — readable via `ps` / /proc/<pid>/cmdline by any local
+  // user for the life of the call. Hand it over through a mode-0600 temp file
+  // and tailscale's `file:` form instead, and scrub the file even on interrupt.
+  const keyPath = join(tmpdir(), `cortex_tsauth_${process.pid}_${Date.now()}.key`)
+  const scrub = () => { try { unlinkSync(keyPath) } catch { /* already gone */ } }
+  let scrubbing = false
+  const onSignal = (sig: string) => {
+    if (scrubbing) return
+    scrubbing = true
+    scrub()
+    process.exit(sig === 'SIGTERM' ? 143 : 130)
+  }
+  process.on('SIGINT', () => onSignal('SIGINT'))
+  process.on('SIGTERM', () => onSignal('SIGTERM'))
 
-  if (proc.exitCode === 0) {
-    console.log('Tailscale is up.')
-    cmdStatus()
-  } else {
-    console.error(`ERROR: ${proc.stderr.toString().trim()}`)
-    process.exit(1)
+  writeFileSync(keyPath, authKey, { mode: 0o600 })
+  console.log('Bringing Tailscale up...')
+  try {
+    const proc = Bun.spawnSync(['tailscale', 'up', '--authkey', `file:${keyPath}`], {
+      stdout: 'pipe',
+      stderr: 'pipe',
+    })
+
+    if (proc.exitCode === 0) {
+      console.log('Tailscale is up.')
+      cmdStatus()
+    } else {
+      console.error(`ERROR: ${proc.stderr.toString().trim()}`)
+      process.exit(1)
+    }
+  } finally {
+    scrub()
   }
 }
 
