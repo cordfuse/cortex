@@ -146,7 +146,7 @@ At session open, read `manifest/framework/VERBS.md` and `manifest/custom/VERBS.m
 
 **Reserved intent names.** A custom verb's shorthand must not collide with the name (or trigger) of anything the scribe already routes as a built-in — otherwise the custom verb silently shadows the framework one. The reserved set is **every built-in intent and every active verb in `manifest/framework/VERBS.md`** — do not treat it as a fixed list, because it grows every time a verb ships (that is exactly how this rule went stale before). The check is behavioural: *would this name already resolve to a built-in intent or an active framework verb?* If yes, it is reserved.
 
-The core built-in intents defined in this protocol — reserved regardless of what `framework/VERBS.md` has activated — currently include (non-exhaustive): `hello`, `goodbye`, `sync`, `status`, `search`, `update`, `help`, `list verbs`, `list personalities`, `list actors`, `morning`, `briefing`, `rollup`, `patterns`, `weave`, `handoff`, `safety-plan`, `intake`, and the multi-session verbs `spawn session` / `list sessions` / `engage session` / `close session`.
+The core built-in intents defined in this protocol — reserved regardless of what `framework/VERBS.md` has activated — currently include (non-exhaustive): `hello`, `goodbye`, `sync`, `status`, `search`, `update`, `help`, `list verbs`, `list personalities`, `list actors`, `morning`, `briefing`, `rollup`, `patterns`, `weave`, `handoff`, `safety-plan`, `intake`, and the multi-session verbs `spawn session` / `list sessions` / `engage session` / `close session` / `rename session`.
 
 If a verb file uses a reserved name, ignore that verb (the built-in wins) and warn the user:
 
@@ -1962,7 +1962,7 @@ Working session for Phase 2 multi-actor design pass.
 
 ## Session verbs
 
-Four built-in verbs (`spawn` and `list` shipped in v4.0.0-alpha.17; `engage` and `close` shipped in v4.0.0-alpha.18; lifecycle transitions enforced from v4.0.0-alpha.18+).
+Five built-in verbs (`spawn` and `list` shipped in v4.0.0-alpha.17; `engage` and `close` shipped in v4.0.0-alpha.18; lifecycle transitions enforced from v4.0.0-alpha.18+; `rename` shipped in v4.16.7, formalising the mid-engage rename the earlier flows already referenced).
 
 ### `spawn session "<name>"`
 
@@ -2060,7 +2060,19 @@ Archives a session. Steps:
 
 Closing is non-destructive — folder + records preserved. Re-engage allowed via GUID.
 
-## Session-record relationship
+### `rename session "<old>" "<new>"`
+
+Changes a session's friendly name. The **GUID is immutable** — it is the durable identity; only the human-facing `## name` label changes. Steps:
+
+1. **Find session** by `<old>` name (or GUID), same exhaustive lookup as `engage` (live → archived → git history). If `<old>` is omitted, target the currently-engaged session.
+2. **Collision check** — if `<new>` already exists as an **active** session, refuse (same rule as `spawn`): *"A session named `<new>` already exists (guid prefix: {prefix}). Pick another name."* Closed/archived names are reusable.
+3. Update the `## name` field in that session's `context.md` (in `data/sessions/{guid}/`, or `archive/…` if archived). Do **not** touch the GUID, timestamps, or any record's provenance — historical records keep the name they were filed under; provenance is a point-in-time fact, not a live pointer.
+4. Commit: `session: rename "<old>" → "<new>" ({guid})`
+5. Push
+6. If the renamed session is the one currently engaged, hot-swap the header/provenance rendering to `<new>` from the next turn.
+7. Confirm: *"Renamed `<old>` → `<new>` ({guid-prefix}). Past records keep their original session label."*
+
+**Aliases:** *rename this session to <new>* (targets the current session). This is the verb the "user may rename mid-engage" notes in `spawn`/`engage` refer to.
 
 Records filed during a scoped session carry the session's friendly name in their provenance block (`*Session: phase 2 design*`). Records filed against the singleton carry `*Session: main*`.
 
