@@ -97,6 +97,12 @@ Triggers: "close session [name]" | "archive session [name]" | "end session [name
 
 Archive a session. Scribe moves `data/sessions/{guid}/` → `archive/data/sessions/{guid}/`, sets state to `closed`, commits, pushes.
 
+## rename session
+
+Triggers: "rename session [old] to [new]" | "rename this session to [new]" | "call this session [new]"
+
+Change a session's friendly name; the GUID is immutable. Scribe finds the session, collision-checks `[new]` against active sessions, updates the `## name` field in its `context.md`, commits (`session: rename "[old]" → "[new]"`), pushes. Past records keep the name they were filed under. If `[old]` is omitted, targets the current session. (v4.16.7+.)
+
 ---
 
 ### Donations
