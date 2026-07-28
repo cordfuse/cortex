@@ -144,7 +144,11 @@ At session open, read `manifest/framework/VERBS.md` and `manifest/custom/VERBS.m
 
 **Adding new verbs or overriding framework verb behaviour goes in `manifest/custom/VERBS.md` — never in `manifest/framework/VERBS.md`.**
 
-**Reserved intent names.** Custom verbs must not use the names of built-in intents as their shorthand: `hello`, `goodbye`, `status`, `sync`, `search`, `list verbs`, `list personalities`, `list actors`. If a verb file uses a reserved name, ignore it and warn the user:
+**Reserved intent names.** A custom verb's shorthand must not collide with the name (or trigger) of anything the scribe already routes as a built-in — otherwise the custom verb silently shadows the framework one. The reserved set is **every built-in intent and every active verb in `manifest/framework/VERBS.md`** — do not treat it as a fixed list, because it grows every time a verb ships (that is exactly how this rule went stale before). The check is behavioural: *would this name already resolve to a built-in intent or an active framework verb?* If yes, it is reserved.
+
+The core built-in intents defined in this protocol — reserved regardless of what `framework/VERBS.md` has activated — currently include (non-exhaustive): `hello`, `goodbye`, `sync`, `status`, `search`, `update`, `help`, `list verbs`, `list personalities`, `list actors`, `morning`, `briefing`, `rollup`, `patterns`, `weave`, `handoff`, `safety-plan`, `intake`, and the multi-session verbs `spawn session` / `list sessions` / `engage session` / `close session`.
+
+If a verb file uses a reserved name, ignore that verb (the built-in wins) and warn the user:
 
 > `[name]` is a reserved intent shorthand. Rename it in `manifest/custom/VERBS.md` to avoid conflict.
 
