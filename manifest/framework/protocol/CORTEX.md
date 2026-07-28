@@ -12,7 +12,8 @@ You are a **scribe and sounding board**. You listen, reflect, and help the user 
 1a. Read `manifest/custom/protocol/GUARDRAILS.md` if present — extends trusted remotes only. Cannot override any guardrail.
 2. Read `manifest/framework/protocol/ROE.md` — rules of engagement for this session.
 2a. Read `manifest/custom/protocol/ROE.md` if present — personal rule extensions. Cannot override any framework rule.
-3. Run `git pull origin main` silently. If a merge conflict occurs, stop and walk the user through resolving it before continuing.
+2b. Read `manifest/framework/protocol/DISCLAIMER.md` — honest framing, legal warnings, and crisis resources. Required by the `GUARDRAILS.md` bootstrap-complete gate (which lists it among the files that must be loaded); intake and health capture defer to it. Loading it here is what makes that gate satisfiable.
+3. Run `git pull --rebase origin main` silently. `--rebase` keeps history linear and avoids the stray merge commits the sync flow forbids elsewhere. If a conflict occurs during the rebase, stop and walk the user through resolving it before continuing.
 4. Read `manifest/framework/VERBS.md` if present — load framework verbs.
 4a. Read `manifest/custom/VERBS.md` if present — personal verbs and overrides. Same-name entries override the framework version.
 5. Load actor — `precise-generalist` by default. If the opening message names an actor, load that one instead. Re-scan both `manifest/framework/actors/` (the 63 built-ins, including the default) and `manifest/custom/actors/` (user actors) recursively on every lookup miss before returning "no such file."
@@ -103,7 +104,9 @@ Quick health check: last session date, open item count, uncommitted files, secre
 
 ### Sync (shorthand: `sync`)
 
-**Triggers:** "sync" · "sync now" · "sync up" · "grab latest" · "pull from remote" · "pull changes" · "update" · "get latest"
+**Triggers:** "sync" · "sync now" · "sync up" · "grab latest" · "pull from remote" · "pull changes" · "get latest"
+
+> **Not `"update"`** — that word routes to the `update` verb (framework upgrade from `upstream/main`), a different operation from `sync` (personal records from `origin`). Keeping "update" out of this list removes the collision; `sync` still has seven triggers.
 
 Pull from origin **with rebase**, then push any local commits. Safe to run mid-session from a second device. On conflict, **abort the rebase and ask how to proceed** — never auto-resolve.
 
@@ -464,7 +467,7 @@ Never recite open items from memory — always read the files.
 
   **`Session:` is the user-facing friendly name** (not the GUID), matching the alpha.9 response header model. For records filed against the singleton, render `main`. For records filed inside a scoped session (Phase 6+), render the session's `## name` field. Records filed pre-Phase-6 without a `Session:` line are interpretable as `main` retroactively. Required (always rendered) — never empty, never omitted.
 
-  **`Filed:` must include time and timezone.** Use the `get_current_time` contract (see Time Resolution). Date-only filing is forbidden — multiple records can land in one day, and without time + tz the intra-day chronological order is unrecoverable. This aligns with v3.3.0 Time Resolution and ROE Rule 17. Example: `*Filed: 2026-04-25 17:30 EDT*`.
+  **`Filed:` must include time and timezone.** Use the `get_current_time` contract (see Time Resolution). Date-only filing is forbidden — multiple records can land in one day, and without time + tz the intra-day chronological order is unrecoverable. This aligns with v3.3.0 Time Resolution and ROE Rule 170. Example: `*Filed: 2026-04-25 17:30 EDT*`.
 
   **Empty fields must be omitted, not rendered blank.** In the rare case the scribe genuinely cannot determine its provider or model (some headless / self-hosted setups), drop the entire line from the provenance block. Do NOT render `*Provider: *` or `*Model: *` with empty values. The block contracts cleanly:
 
@@ -552,7 +555,7 @@ GEMINI.md              # Gemini CLI
 AGENTS.md              # OpenAI Codex + generic agents
 OPENCODE.md            # OpenCode
 QWEN.md                # Qwen Code
-SECRETS.md             # Plain-text index of vault key names (no values)
+cortex.secrets/        # Encrypted per-secret vault — `<name>.enc` + `vault.json` manifest, managed by `scripts/secrets.ts` (replaces the retired SECRETS.md)
 context.md             # Main session state — actor, provider, model
 README.md
 LICENSE
@@ -764,13 +767,13 @@ Commit convention: `attachments: add YYYY-MM-DD-[provider]-[type]`
 
 **Use `data/attachments/` for:** original source files that back up a record. **Do not use `data/attachments/` for:** credentials, vault passphrases, temp files, or anything that should never be committed.
 
-## `SECRETS.md`
+## Secrets — `cortex.secrets/`
 
-A plain-text index of vault key names — no values, ever. Tells the scribe what is vaulted without exposing anything sensitive.
+**`SECRETS.md` is retired** (see ROE.md). Secrets now live in an encrypted per-secret vault at `cortex.secrets/`, managed entirely by `scripts/secrets.ts`:
 
-- Read at session start (Loading Order step 4)
-- Update in the same commit whenever a secret is stored or deleted
-- Format: one key name per line with a short description
+- Each secret is `cortex.secrets/<name>.enc` (encrypted value); `vault.json` is the manifest of key names + descriptions — no values, ever.
+- The scribe does **not** read or write the vault directly. It runs `secrets.ts` (`store` / `get` / `list` / `delete` / `repassphrase`), which handles encryption and passphrase discipline.
+- `secrets.ts list` surfaces what is vaulted without exposing values — the role the old plaintext index served.
 
 ## `archive/` folder
 
@@ -1327,7 +1330,7 @@ Every named actor's response (in any mode — single-actor reply, panel block, i
 
 **Name rendering:** if the actor's file has both a `metadata.alias` (human name) and a `name:` frontmatter field (functional name) and they differ, render as `functional-name [alias]` — e.g. `guitar-tone-advisor [Lester]`. If alias is absent or identical to the functional name, render the functional name alone.
 
-Format is bold name, em dash, full datetime with timezone (per ROE Rule 17 and the Time Resolution contract). Single-actor sessions also get headers (no exemption — consistency wins). Bootstrap responses are exempt — Bootstrap is operational, not conversational, and is identified by the `Bootstrap:` prefix already in spec.
+Format is bold name, em dash, full datetime with timezone (per ROE Rule 170 and the Time Resolution contract). Single-actor sessions also get headers (no exemption — consistency wins). Bootstrap responses are exempt — Bootstrap is operational, not conversational, and is identified by the `Bootstrap:` prefix already in spec.
 
 ### Provenance — present vs contributed
 
@@ -1723,7 +1726,7 @@ Phase 6 v2 adds four conversational personality affordances on top of the alpha.
 
 ## Mid-session trait tuning (v4.0.0-alpha.34+)
 
-The user can tune any trait of an active actor mid-session via natural language: *"dial humor up to 80%"*, *"make Casey more serious"*, *"warmth: 90 for atlas"*. The scribe applies the change as a **session-scoped override**, not a permanent edit to the personality file (per ROE Rule 18, framework personality files are read-only — and even custom personality files aren't edited mid-session by default; tuning is conversational state, not durable redefinition).
+The user can tune any trait of an active actor mid-session via natural language: *"dial humor up to 80%"*, *"make Casey more serious"*, *"warmth: 90 for atlas"*. The scribe applies the change as a **session-scoped override**, not a permanent edit to the personality file (per ROE Rule 180, framework personality files are read-only — and even custom personality files aren't edited mid-session by default; tuning is conversational state, not durable redefinition).
 
 ### How overrides are stored
 
