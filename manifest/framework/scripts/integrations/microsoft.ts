@@ -165,6 +165,13 @@ async function getAccessToken(passphrase: string): Promise<{ token: string; pass
         client_secret: clientSecret,
         refresh_token: refreshToken,
         grant_type: 'refresh_token',
+        // FOOTGUN: `.default` requests the app registration's *statically
+        // configured* permissions, which can differ from the delegated scopes
+        // actually consented at auth time — on a dynamic-consent flow
+        // (`common` tenant / personal accounts) this can silently drop or
+        // change scopes vs. the original grant. It works for the current
+        // registration; if scope-related 401s ever appear, refresh with the
+        // original `SCOPES` (or omit `scope` to inherit the prior grant).
         scope: 'https://graph.microsoft.com/.default offline_access',
       }),
     }
@@ -421,8 +428,13 @@ async function cmdOnedrive(count: number, passphrase: string): Promise<void> {
 async function cmdTeams(count: number, passphrase: string): Promise<void> {
   const { token } = await getAccessToken(passphrase)
 
+  // `--count` = number of chats to summarise, uniform with the other
+  // subcommands where it means "N items". Each chat shows its most recent
+  // messages. Previously `count` was treated as a message budget while the
+  // chat query was hardcoded to `$top: 10`, so any `--count` above ~10 chats'
+  // worth of messages was silently capped regardless of what the user asked.
   const chatsData = await graph(token, '/me/chats', {
-    $top: 10,
+    $top: count,
     $expand: 'members',
     $select: 'id,topic,chatType,lastUpdatedDateTime',
   }) as { value?: Array<{ id?: string; topic?: string }> }
@@ -434,9 +446,7 @@ async function cmdTeams(count: number, passphrase: string): Promise<void> {
   }
 
   console.log('# Microsoft Teams — recent messages\n')
-  let shown = 0
   for (const chat of chats) {
-    if (shown >= count) break
     const chatId = chat.id ?? ''
     const topic = chat.topic ?? 'Direct message'
     const msgsData = await graph(token, `/me/chats/${chatId}/messages`, {
@@ -460,7 +470,6 @@ async function cmdTeams(count: number, passphrase: string): Promise<void> {
       console.log(`  ${created} ${sender}: ${body}`)
     }
     console.log()
-    shown += msgs.length
   }
 }
 
