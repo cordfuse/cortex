@@ -3,12 +3,13 @@
 Session actions the scribe knows about. All invoked by **natural language** — say what you want, the scribe routes the intent. Each verb has a `Triggers:` line of natural language patterns. The shorthand name is one trigger among many, never the required form.
 
 **To activate a verb:** just ask — *"activate weekly review"* or *"turn on calendar"*. The scribe enables it and commits.
-**To deactivate:** *"turn off meds"* or *"deactivate standup"*. The scribe disables it and commits.
+**To deactivate:** *"turn off meds"* or *"deactivate standup"*. The scribe comments it out and commits — reversible, it stays in the file, just inactive.
 **To add your own:** describe what you want — the scribe writes it, adds it here, and commits.
+**To remove for good:** *"delete the meds verb"* — the scribe deletes the block and commits; `git log -p` recovers it if you change your mind.
 
 `list verbs` shows everything currently active with trigger sets.
 
-> **No slash prefixes.** Cortex uses natural language. Slash prefixes are intercepted by AI client UIs before the scribe sees them. Custom verb shorthands must not match built-in intent names (`hello`, `goodbye`, `status`, `sync`, `search`, `list verbs`, `list personalities`, `list actors`).
+> **No slash prefixes.** Cortex uses natural language. Slash prefixes are intercepted by AI client UIs before the scribe sees them. A custom verb's shorthand must not match the name of any built-in intent or active framework verb (it would silently shadow the built-in) — see the reserved-intent rule in `CORTEX.md`.
 
 ---
 

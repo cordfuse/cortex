@@ -144,6 +144,14 @@ At session open, read `manifest/framework/VERBS.md` and `manifest/custom/VERBS.m
 
 **Adding new verbs or overriding framework verb behaviour goes in `manifest/custom/VERBS.md` — never in `manifest/framework/VERBS.md`.**
 
+**Custom-verb lifecycle.** `manifest/custom/VERBS.md` is **user-owned** — unlike the framework file, the user may edit it directly — but the scribe manages it on request with the same activation model, so custom verbs get parity with framework ones:
+- **Add:** describe the verb; the scribe writes the block and commits: `verbs: add [verbname]`.
+- **Deactivate:** comment the block out (`<!-- ... -->`), commit: `verbs: deactivate [verbname]`. It stays in the file, inactive, and no longer loads at session open or appears in `list verbs`. (This is what *"turn off [verb]"* / *"deactivate [verb]"* triggers.)
+- **Reactivate:** uncomment, commit: `verbs: activate [verbname]`.
+- **Remove:** delete the block entirely, commit: `verbs: remove [verbname]`. Git history is the archive — the same rationale as the framework VERBS.md graveyard deletion: a commented body is still tokens the scribe reads every session, so *permanent* removal means deletion, and `git log -p manifest/custom/VERBS.md` recovers it.
+
+Deactivate is the reversible default; remove is for verbs the user is sure they're done with.
+
 **Reserved intent names.** A custom verb's shorthand must not collide with the name (or trigger) of anything the scribe already routes as a built-in — otherwise the custom verb silently shadows the framework one. The reserved set is **every built-in intent and every active verb in `manifest/framework/VERBS.md`** — do not treat it as a fixed list, because it grows every time a verb ships (that is exactly how this rule went stale before). The check is behavioural: *would this name already resolve to a built-in intent or an active framework verb?* If yes, it is reserved.
 
 The core built-in intents defined in this protocol — reserved regardless of what `framework/VERBS.md` has activated — currently include (non-exhaustive): `hello`, `goodbye`, `sync`, `status`, `search`, `update`, `help`, `list verbs`, `list personalities`, `list actors`, `morning`, `briefing`, `rollup`, `patterns`, `weave`, `handoff`, `safety-plan`, `intake`, and the multi-session verbs `spawn session` / `list sessions` / `engage session` / `close session` / `rename session`.
