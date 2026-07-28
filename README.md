@@ -130,7 +130,7 @@ If Cortex has been useful to you, consider a donation to [CAMH Foundation](https
 
 **Context that carries.** At session start the scribe reads your recent records. It knows what you were working through, what's unresolved, what patterns have been building. Every session picks up where the last one left off.
 
-**Onboarding that adapts to you (v4.14.0+).** A fresh cortex doesn't dump you into a blank vault — on the first session it asks what you want cortex *for* (personal life · work · creative practice · research · health) and only asks about what fits. A professional cortex never asks about your family; a health cortex never asks about deadlines. Pick more than one, or skip it and just start. Sensitive tiers (health, mood) are always opt-in and delicately gated — and everything is *recorded, never advised*.
+**Onboarding that adapts to you (v4.14.0+).** A fresh cortex doesn't dump you into a blank vault — on the first session it asks what you want cortex *for* (personal life · work · creative practice · research · health · finances) and only asks about what fits. A professional cortex never asks about your family; a health cortex never asks about deadlines. Pick more than one, or skip it and just start. Sensitive tiers (health, mood) are always opt-in and delicately gated — and everything is *recorded, never advised*.
 
 **A connected record, not a pile (v4.15.0+).** Every new record gets a `## Related` block of `[[wikilinks]]` to the records it continues or touches, and the `weave` verb backfills the whole vault. The scribe follows threads instead of re-searching them — and graph tools (Obsidian, Logseq, Foam) light up for free.
 
@@ -218,6 +218,7 @@ Both guides cover new users and existing Cortex repos.
 | `list sessions [filter]` | Show all sessions with state metadata |
 | `engage session "<name>"` | Attach to existing session (v4.0.0-alpha.18+) |
 | `close session "<name>"` | Archive a session (v4.0.0-alpha.18+) |
+| `rename session "<old>" "<new>"` | Rename a session; GUID stays, past records keep their label (v4.16.7+) |
 
 ### Custom verbs
 
@@ -428,11 +429,11 @@ The Bootstrap RWDX guardrail (v4.0.0-alpha.7+) blocks all read/write/delete/exec
 
 [→ Full roadmap](ROADMAP.md)
 
-**v4.16 (current)** — Tokenless web auth: GitHub device flow via the [Personal Cortex app](https://github.com/apps/personal-cortex) — no PATs to create or store, consent-first session open, validated on Opus 4.8 / Sonnet 5 / Fable 5. Plus: ChatGPT web/mobile confirmed unsupported (sandbox has no route to GitHub), and a verb-catalog cleanup.
+**v4.16 (current)** — Tokenless web auth: GitHub device flow via the [Personal Cortex app](https://github.com/apps/personal-cortex) — no PATs to create or store, consent-first session open, validated on Opus 4.8 / Sonnet 5 / Fable 5. The line has since added: a **Financial** intake domain (income · obligations · assets · goals, tender tier gated); a **`rename session`** verb; a documented **custom-verb lifecycle** (deactivate/reactivate/remove); reserved-verb-name enforcement across *all* built-ins; standardised template heading conventions; and a hardening pass (secrets-vault corruption guard, rclone/tailscale credential-exposure fixes, protocol-defect cleanup). Plus earlier: ChatGPT web/mobile confirmed unsupported (sandbox has no route to GitHub), and a verb-catalog cleanup.
 
 **v4.15** — Record Linking (Weave): automatic `[[wikilink]]` cross-links on capture + a `weave` backfill verb. The flat record becomes a navigable graph — no dead edges, hand-authored content never touched.
 
-**v4.14** — Personal Intake: empty-vault onboarding that adapts to what you use cortex *for*. Universal core (identity, preferences) plus opt-in domain packs — personal · professional · creative · research · health, multi-select; sensitive capture delicately gated, recorded-never-advised. First-run intro is one conversational beat, not a step wizard.
+**v4.14** — Personal Intake: empty-vault onboarding that adapts to what you use cortex *for*. Universal core (identity, preferences) plus opt-in domain packs — personal · professional · creative · research · health · financial, multi-select; sensitive capture delicately gated, recorded-never-advised. First-run intro is one conversational beat, not a step wizard.
 
 **Coming:** Phase 2 multi-actor sessions (spawn named actors mid-session, multiple voices in the same session), Phase 3 panel vs independent modes, integrations expansion (Notion, Slack, GitHub, Linear, Health, Spotify).
 
