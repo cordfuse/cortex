@@ -145,11 +145,38 @@ async function storeSecret(name: string, value: string, passphrase: string): Pro
 
 // --- Config temp file ---
 
+// Every temp config holds the *decrypted* rclone config (cloud credentials) in
+// plaintext at mode 0600. The finally blocks scrub it on normal exit, but a
+// SIGINT/SIGTERM (Ctrl+C during `mount`, or a long `pull`/`push`) kills the
+// process before finally runs and leaves the credentials in /tmp. Track live
+// temp configs and scrub them from a signal handler so an interrupt can't leak.
+const activeConfigs = new Set<string>()
+
 function writeTempConfig(configData: string): string {
   const tmpPath = join(tmpdir(), `cortex_rclone_${Date.now()}.conf`)
   writeFileSync(tmpPath, configData, { mode: 0o600 })
+  activeConfigs.add(tmpPath)
   return tmpPath
 }
+
+function discardTempConfig(tmpPath: string): void {
+  activeConfigs.delete(tmpPath)
+  try { unlinkSync(tmpPath) } catch { /* already gone */ }
+}
+
+let scrubbing = false
+function scrubOnSignal(signal: string): void {
+  if (scrubbing) return
+  scrubbing = true
+  for (const p of activeConfigs) {
+    try { unlinkSync(p) } catch { /* already gone */ }
+  }
+  activeConfigs.clear()
+  // 128 + signal number, the conventional interrupted-process exit code.
+  process.exit(signal === 'SIGTERM' ? 143 : 130)
+}
+process.on('SIGINT', () => scrubOnSignal('SIGINT'))
+process.on('SIGTERM', () => scrubOnSignal('SIGTERM'))
 
 async function runRclone(args: string[], configPath: string): Promise<number> {
   const proc = Bun.spawn(['rclone', '--config', configPath, ...args], {
@@ -195,7 +222,7 @@ async function cmdAuth(passphrase: string): Promise<void> {
     })
     await listProc.exited
   } finally {
-    unlinkSync(tmpPath)
+    discardTempConfig(tmpPath)
   }
 }
 
@@ -209,7 +236,7 @@ async function cmdRemotes(passphrase: string): Promise<void> {
     console.log('# Configured remotes\n')
     await runRclone(['listremotes'], tmpPath)
   } finally {
-    unlinkSync(tmpPath)
+    discardTempConfig(tmpPath)
   }
 }
 
@@ -223,7 +250,7 @@ async function cmdLs(remotePath: string, passphrase: string): Promise<void> {
     console.log(`# ${remotePath}\n`)
     await runRclone(['lsf', '--human-readable', remotePath], tmpPath)
   } finally {
-    unlinkSync(tmpPath)
+    discardTempConfig(tmpPath)
   }
 }
 
@@ -245,7 +272,7 @@ async function cmdPull(remotePath: string, dest: string, passphrase: string): Pr
       process.exit(code)
     }
   } finally {
-    unlinkSync(tmpPath)
+    discardTempConfig(tmpPath)
   }
 }
 
@@ -265,7 +292,7 @@ async function cmdPush(remotePath: string, src: string, passphrase: string): Pro
       process.exit(code)
     }
   } finally {
-    unlinkSync(tmpPath)
+    discardTempConfig(tmpPath)
   }
 }
 
@@ -286,7 +313,7 @@ async function cmdMount(remotePath: string, mountpoint: string, passphrase: stri
       console.log('\nUnmounted.')
     }
   } finally {
-    try { unlinkSync(tmpPath) } catch { /* already gone */ }
+    discardTempConfig(tmpPath)
   }
 }
 
