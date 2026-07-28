@@ -54,14 +54,15 @@ What's going on right now that the scribe needs to know.
 
 ---
 
-*Last updated: YYYY-MM-DD*
-*Update this file in the same commit whenever people, situations, or threads change.*
+## Last updated
+YYYY-MM-DD
+<!-- Update this file in the same commit whenever people, situations, or threads change. -->
 
 ---
 
 <!-- 
 SPLITTING: when any section grows large enough to be unwieldy, ask the scribe to split it out.
-Sub-files follow the pattern: context-preferences.md, context-people.md, context-work.md, context-creative.md, context-research.md, context-medical.md, etc.
+Sub-files follow the pattern: context-preferences.md, context-people.md, context-work.md, context-creative.md, context-research.md, context-medical.md, context-finance.md, etc.
 This file becomes the TOC — each section gets a one-liner and a link to its sub-file.
 The scribe suggests splits. You decide the name and timing.
 -->

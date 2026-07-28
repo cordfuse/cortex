@@ -825,6 +825,11 @@ Attachments for a record go in `data/attachments/YYYY-MM-DD-HHMM-[slug]/`.
 
 Source documents go in `data/attachments/` — see File Structure above.
 
+**Template heading conventions** (so a record's structure is predictable across types):
+- **`## Source documents`** — the standard section for a record's supporting files, followed by the comment `<!-- Files in data/attachments/ related to this record. Format: data/attachments/YYYY-MM-DD-[provider]-[type].[ext] -->`. Use this exact heading (not "Attachments", "Files", "Evidence") on any record type that can carry external files.
+- **`## Last updated`** (heading + an ISO `YYYY-MM-DD` line) — for **living documents only** (the `context*.md` standing packs and registry records like `person`, `medication`, `inventory`, `supplies`, `project`, `career` that are revised in place). Immutable dated records never carry it — they are never edited, so "last updated" is meaningless for them.
+- **`## Related`** — the canonical Weave anchor for scribe-maintained `[[wikilinks]]`. Record types that suggest their own cross-links use this exact heading (not a bespoke variant like "Related ideas"), so the scribe has one consistent home for derived link metadata.
+
 ## Timestamps
 
 Git commit timestamps are the canonical record. Do not duplicate timestamps in file body unless the event occurred at a different time than the session — in that case, note the event time explicitly in the file.

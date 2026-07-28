@@ -15,8 +15,8 @@
 ## Risks or obstacles
 <!-- -->
 
-## Related ideas or entries
-<!-- Links to other files if relevant. -->
+## Related
+<!-- Scribe-maintained [[wikilinks]] to related records (see Record Linking / Weave). One per line with a short reason. -->
 
 ## Status
 <!-- Raw / Developing / Shelved / In progress / Abandoned -->
