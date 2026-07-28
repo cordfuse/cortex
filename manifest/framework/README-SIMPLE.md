@@ -97,7 +97,7 @@ That's it. Your Cortex is live.
 
 ## What happens next
 
-**On your very first session**, the AI gets to know you — it asks what you want Cortex *for* (your personal life, work, a creative project, research, or your health) and only asks about what fits. Pick more than one, or skip it and just start. Health and mood are always opt-in. Whatever you share becomes the memory it carries forward.
+**On your very first session**, the AI gets to know you — it asks what you want Cortex *for* (your personal life, work, a creative project, research, your health, or your finances) and only asks about what fits. Pick more than one, or skip it and just start. Health and mood are always opt-in. Whatever you share becomes the memory it carries forward.
 
 Every time you open a new chat after that, the AI reads your repo, checks what's happened recently, and asks what's on your mind.
 
