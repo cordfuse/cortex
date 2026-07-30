@@ -116,7 +116,7 @@ Cortex on Claude.ai web or Claude mobile is **limited to your records**. Talk to
 **It cannot:**
 - Read your Gmail, Calendar, Drive, Tasks, or Contacts
 - Send email
-- Pull your Notion, Slack, Linear, or Spotify
+- Reach Microsoft 365 (Mail, Calendar, OneDrive, Teams)
 - Connect to anything outside your private cortex repo
 
 **Why:** Claude's web/mobile app runs its tools inside a locked-down environment that **only allows specific websites** (GitHub, where your records live). Connecting to anything else — like Google or Microsoft — is **blocked by the platform itself**. This is intentional security, not something Cortex can change.

@@ -80,7 +80,7 @@ This is the same pattern used in `cordfuse/ironbound`. Lifted directly.
 
 Cortex behaves **differently** depending on where you run it. The difference is hard, not soft, and it's not a configuration issue — it's the platforms.
 
-| Environment | Git operations (clone, read, commit, push, merge) | Third-party APIs (Google, Microsoft 365, Notion, Slack, Spotify, etc.) |
+| Environment | Git operations (clone, read, commit, push, merge) | Third-party APIs (Google, Microsoft 365) |
 |---|---|---|
 | **CLI agents** (Claude Code, Gemini CLI, Antigravity CLI, OpenCode, Qwen, Codex) | Yes | **Yes — full connector functionality** |
 | **Self-hosted / cron / scheduled scripts** on your machine | Yes | **Yes — full connector functionality** |
@@ -207,16 +207,20 @@ Both guides cover new users and existing Cortex repos.
 | `hello` | Open session — Bootstrap runs Gate 3, sync check, scans open items, then prompts for actor selection (or activates named actor from opening message) (v4.5.1+) |
 | `goodbye` | Close session — commit pending, push, surface unresolved |
 | `status` | Last session, open items, uncommitted files, vault |
-| `sync` | Pull framework updates from upstream + apply (Bootstrap voice) |
+| `sync` | Pull your own records from origin + push local commits — cross-device vault sync |
+| `update` | Pull framework updates from upstream + apply the upgrade |
 | `reconcile` | Deep three-category drift resolution against upstream/main with per-file user gating (v4.0.0-alpha.19+) |
 | `search [term]` | Search all records |
 | `weave` | Backfill `[[wikilink]]` cross-links across existing records (v4.15.0+) |
 | `morning` | Daily briefing — appointments, open items, heads-up |
 | `patterns` | Cross-record pattern analysis |
 | `handoff` | Compile a clinician/professional summary from your records |
+| `safety` | Surface your safety plan + crisis resources, on demand |
 | `help` | Replay the first-run overview |
 | `list verbs` | Show built-in and custom verbs |
 | `list personalities` / `list actors` | Show active personality and all available |
+| `change actor to <name>` | Hot-swap the active personality (immediate). Aliases: *switch personality*, *use [name]* (v4.0.0-alpha.8+) |
+| `weekly review` | Structured weekly review across your records |
 | `spawn session "<name>"` | Create scoped session (v4.0.0-alpha.17+) |
 | `list sessions [filter]` | Show all sessions with state metadata |
 | `engage session "<name>"` | Attach to existing session (v4.0.0-alpha.18+) |
@@ -229,8 +233,6 @@ Define your own in `manifest/custom/VERBS.md`. Invoke by name in natural languag
 
 | Verb | What it does |
 |---|---|
-| `change actor to <name>` | Hot-swap active personality (takes effect immediately, next response). Aliases: *switch personality*, *use [name]*. (v4.0.0-alpha.8+) |
-| `weekly review` | Weekly review across all records |
 | `meds` | Log medications taken today |
 | `therapy` | Log a therapy or counselling session |
 | *...and any verb you define* | |
@@ -249,16 +251,12 @@ Cortex ships with an AES-256 encrypted secrets vault. One passphrase governs eve
 | **rclone** | Built — any filesystem, 70+ backends |
 | **Google** | Built — Calendar, Gmail, Drive, Tasks, Contacts |
 | **Microsoft 365** | Built — Mail, Calendar, OneDrive, Teams, SharePoint, To Do, Planner, OneNote |
-| Notion, Slack, GitHub, Linear | Roadmap |
-| Apple Health, Spotify, Banking | Roadmap |
-| Plex, Jellyfin | Roadmap |
-| 1Password, Bitwarden | Roadmap |
 
 ---
 
 ## Templates
 
-19 templates across every domain worth recording:
+19 record types you create, across every domain:
 
 | Category | Templates |
 |---|---|
@@ -306,6 +304,10 @@ manifest/
     CONNECTORS.md      # Personal connector setup notes
     cortex-upgrade.md  # Auto-upgrade preferences
 data/records/               # Dated entries -- one file per topic per commit
+data/rollups/               # Weekly/monthly digests (created by rollup)
+data/briefings/             # Daily briefings (created by morning)
+data/handoffs/              # Clinician/professional summaries (created by handoff)
+data/sessions/{guid}/       # Scoped multi-session state
 data/attachments/           # Source documents + record attachments
   YYYY-MM-DD-HHMM-[slug]/   # Record-specific attachments
   YYYY-MM-DD-[provider]-[type].[ext]  # Standalone source docs
@@ -437,7 +439,7 @@ The Bootstrap RWDX guardrail (v4.0.0-alpha.7+) blocks all read/write/delete/exec
 
 **v4.14** — Personal Intake: empty-vault onboarding that adapts to what you use cortex *for*. Universal core (identity, preferences) plus opt-in domain packs — personal · professional · creative · research · health · financial, multi-select; sensitive capture delicately gated, recorded-never-advised. First-run intro is one conversational beat, not a step wizard.
 
-**Coming:** Phase 2 multi-actor sessions (spawn named actors mid-session, multiple voices in the same session), Phase 3 panel vs independent modes, integrations expansion (Notion, Slack, GitHub, Linear, Health, Spotify).
+**Coming:** Phase 2 multi-actor sessions (spawn named actors mid-session, multiple voices in the same session), Phase 3 panel vs independent modes.
 
 ---
 

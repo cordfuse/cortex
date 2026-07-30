@@ -80,19 +80,4 @@ bun manifest/framework/scripts/integrations/microsoft.ts onenote --count 20
 
 ---
 
-## Roadmap
-
-| Connector | What it will do |
-|---|---|
-| Notion | Pages, databases, tasks |
-| Apple iCloud | Calendar, Reminders, Notes |
-| Slack | Messages, channels, threads |
-| GitHub | Issues, PRs, notifications |
-| Linear | Issues, projects, cycles |
-| Apple Health | Activity, sleep, vitals |
-| Fitbit / Garmin | Activity, sleep, heart rate |
-| Spotify | Listening history, playlists |
-| Banking (OFX/CSV) | Transactions, balances |
-| WhatsApp / SMS | Message history (export-based) |
-
-> Want a connector that isn't listed? [Open an issue](https://github.com/cordfuse/cortex/issues).
+> Want a connector that isn't built yet? [Open an issue](https://github.com/cordfuse/cortex/issues) — but note the four above are the shipped set; there's no roadmap list.
