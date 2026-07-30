@@ -2,6 +2,7 @@
 
 [![Version](https://img.shields.io/badge/version-4.16.7-blue)](manifest/framework/CORTEX-CHANGELOG.md)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
+[![Support CAMH](https://img.shields.io/badge/support-CAMH%20Foundation-e4002b)](https://camhfoundation.ca/donate)
 
 > **Your AI forgets you every session.** Cortex is a private git repo your AI reads at the start of every conversation — so it remembers your context, files what matters as you talk, and connects it all together automatically. Any device, any major AI. **You own the memory; you rent the intelligence.**
 
