@@ -12,13 +12,13 @@ And unlike every other app that promises this — **you own the data. Not us. No
 
 ## Why I built this
 
-I built Cortex because I kept losing the thread.
+Start a new chat with any AI and it has no idea who you are. You explain yourself all over again — who you are, what you're working on, what you said last time. You can reopen an old chat, but nothing you built up comes with you into a new one. Every time, from scratch.
 
-Every AI conversation starts from zero. Re-explain your history. Your context. What matters, what doesn't. The understanding you build up disappears the moment the chat ends — because there's nowhere for it to live between sessions. AI is extraordinary at holding context, spotting patterns, asking the right questions. It just forgets all of it overnight.
+I built Cortex because I needed it to not work like that. My own memory isn't something I can always count on, so starting over isn't a minor annoyance for me — it's the actual problem. I wanted something that remembers for me, that I own, that doesn't vanish between conversations.
 
 I know I'm not the only one who's felt this.
 
-If Cortex has been useful to you, consider donating to [CAMH Foundation](https://camhfoundation.ca/donate) — continuity of care is where this project started.
+If Cortex has been useful to you, consider donating to [CAMH Foundation](https://camhfoundation.ca/donate) — that's where this started.
 
 <a href="https://camhfoundation.ca/donate"><img src="../../assets/camh-logo.png" alt="Support CAMH Foundation" height="40"></a>
 

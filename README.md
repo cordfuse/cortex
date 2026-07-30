@@ -111,13 +111,13 @@ Cortex behaves **differently** depending on where you run it. The difference is 
 
 ## Why this exists
 
-I built Cortex because I kept losing the thread.
+Start a new chat with any AI and you're a stranger again. It has no memory of who you are, what you're working on, or what you told it last time. You can scroll back to an old conversation — but nothing carries forward into a new one, and it can't connect the dots across them. Every time, from scratch.
 
-Every new AI conversation starts from zero. So does every new professional you sit across — doctor, accountant, contractor, advisor. You re-explain your context, your history, your people, and the understanding you'd built evaporates at every handoff. The context that matters most is the context that never carries.
+I built Cortex because I needed it to *not* work like that. My own memory isn't something I can always rely on, so starting over from scratch isn't a small annoyance for me — it's the actual problem. I wanted something that remembers for me, that I own, that doesn't disappear between conversations.
 
-Cortex is a small fix to a big problem. You own your records. Your AI picks up where you left off. Nothing disappears.
+That's all it is. Your records live in your own repo. Your AI reads them at the start of every chat and picks up where you left off. Nothing gets lost.
 
-If Cortex has been useful to you, consider a donation to [CAMH Foundation](https://camhfoundation.ca/donate) — continuity of care is where this project started.
+If Cortex has been useful to you, consider donating to [CAMH Foundation](https://camhfoundation.ca/donate) — that's where this started.
 
 <a href="https://camhfoundation.ca/donate"><img src="assets/camh-logo.png" alt="Support CAMH Foundation" height="40"></a>
 
