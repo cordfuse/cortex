@@ -119,6 +119,8 @@ Cortex is a small fix to a big problem. You own your records. Your AI picks up w
 
 If Cortex has been useful to you, consider a donation to [CAMH Foundation](https://camhfoundation.ca/donate) — continuity of care is where this project started.
 
+<a href="https://camhfoundation.ca/donate"><img src="assets/camh-logo.png" alt="Support CAMH Foundation" height="40"></a>
+
 — Steve Krisjanovs
 
 ---
