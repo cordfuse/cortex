@@ -307,7 +307,7 @@ The `reconcile` verb performs a deep three-category diff between local and `upst
 
 ```
 git fetch upstream
-git diff --name-status upstream/main HEAD -- manifest/framework/protocol/ manifest/framework/templates/ 'manifest/framework/scripts/*.ts' 'manifest/framework/actors/*.md' README.md README-SIMPLE.md ROADMAP.md manifest/framework/PERSONALITIES.md manifest/framework/CONNECTORS.md manifest/framework/SETUP-DESKTOP.md manifest/framework/SETUP-MOBILE.md manifest/framework/VERBS.md manifest/framework/CORTEX-DEV.md manifest/framework/CORTEX-CHANGELOG.md
+git diff --name-status upstream/main HEAD -- manifest/framework/protocol/ manifest/framework/templates/ 'manifest/framework/scripts/*.ts' 'manifest/framework/actors/*.md' manifest/framework/PERSONALITIES.md manifest/framework/CONNECTORS.md manifest/framework/SETUP-DESKTOP.md manifest/framework/SETUP-MOBILE.md manifest/framework/VERBS.md manifest/framework/CORTEX-DEV.md manifest/framework/CORTEX-CHANGELOG.md
 ```
 
 Categorize each line:
@@ -329,7 +329,7 @@ Reconcile diff (local vs upstream/main):
 Behind upstream — N file(s) need pulling:
   M  manifest/framework/protocol/CORTEX.md
   A  manifest/custom/actors/NEW-PERSONALITY.md
-  M  README.md
+  M  manifest/framework/BOOTSTRAP.md
 
 Removed upstream — N file(s) deprecated:
   D  manifest/custom/actors/OLD-PERSONALITY.md  (last upstream version: alpha.X)
@@ -568,7 +568,8 @@ OPENCODE.md            # OpenCode
 QWEN.md                # Qwen Code
 cortex.secrets/        # Encrypted per-secret vault — `<name>.enc` + `vault.json` manifest, managed by `scripts/secrets.ts` (replaces the retired SECRETS.md)
 context.md             # Main session state — actor, provider, model
-README.md
+README.md              # Public landing page — operator-owned, not synced
+README-SIMPLE.md       # Plain-English version — operator-owned, not synced
 LICENSE
 version.txt
 cortex.secrets.enc     # Encrypted secrets vault (committed — AES-256)
@@ -1449,12 +1450,10 @@ What's on your mind?
 User: sync
 
 [Bootstrap]:
-Synced. 5 changes applied:
+Synced. 3 changes applied:
   - manifest/framework/protocol/CORTEX.md
   - manifest/framework/BOOTSTRAP.md
-  - README.md
-  - ROADMAP.md
-  - CORTEX-CHANGELOG.md
+  - manifest/framework/CORTEX-CHANGELOG.md
 Now on v4.0.0-alpha.20.
 
 [Hot-swap back to Sully]
