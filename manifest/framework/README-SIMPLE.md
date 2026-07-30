@@ -50,7 +50,7 @@ If Cortex has been useful to you, consider donating to [CAMH Foundation](https:/
 
 > **Model matters:** On Claude, any current model works — the setup below authenticates with a quick approve-on-your-phone step each session.
 
-No downloads. No app store. No subscription to Cordfuse. We don't make money from this and we don't see your data.
+No downloads. No app store. No subscription. We don't make money from this, and we never see your data.
 
 ---
 
@@ -132,7 +132,7 @@ For the journal-and-scribe experience, web and mobile are perfectly fine. They j
 ## Is my data safe?
 
 - Your notes are in **your private GitHub repo** — only you can see them
-- Cordfuse has zero access to your data
+- We have zero access to your data — there's no server in the middle
 - The AI processes your messages under its own privacy policy — same as any chat you have with it
 - If you stop using Cortex, your notes are still there, in plain text, forever
 
