@@ -20,7 +20,7 @@ I know I'm not the only one who's felt this.
 
 If Cortex has been useful to you, consider donating to [CAMH Foundation](https://camhfoundation.ca/donate) — that's where this started.
 
-<a href="https://camhfoundation.ca/donate"><img src="../../assets/camh-logo.png" alt="Support CAMH Foundation" height="40"></a>
+<a href="https://camhfoundation.ca/donate"><img src="assets/camh-logo.png" alt="Support CAMH Foundation" height="40"></a>
 
 — Steve Krisjanovs
 
