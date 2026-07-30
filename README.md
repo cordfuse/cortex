@@ -6,7 +6,7 @@
 
 > **Your AI forgets you every session.** Cortex is a private git repo your AI reads at the start of every conversation — so it remembers your context, files what matters as you talk, and connects it all together automatically. Any device, any major AI. **You own the memory; you rent the intelligence.**
 
-**Not a developer?** [Read the plain-English version →](manifest/framework/README-SIMPLE.md)
+**Not a developer?** [Read the plain-English version →](README-SIMPLE.md)
 
 ## The problem
 
@@ -52,7 +52,7 @@ Cortex ships with `.claude/settings.json` carrying a comprehensive allow-list (`
 
 ### Framework files are protected at the OS layer (v4.0.0-alpha.16+)
 
-`.claude/settings.json` ships with a comprehensive `deny` list covering every framework file: `manifest/framework/protocol/`, `manifest/framework/templates/`, `manifest/framework/scripts/*.ts`, `version.txt`, `.cortex-version`, `LICENSE`, `ROADMAP.md`, `README.md`, `manifest/framework/README-SIMPLE.md`, `manifest/framework/CORTEX-CHANGELOG.md`, `manifest/framework/VERBS.md`, `manifest/framework/CORTEX-DEV.md`, the install/setup scripts, and `.claude/settings.json` itself.
+`.claude/settings.json` ships with a comprehensive `deny` list covering every framework file: `manifest/framework/protocol/`, `manifest/framework/templates/`, `manifest/framework/scripts/*.ts`, `version.txt`, `.cortex-version`, `LICENSE`, `ROADMAP.md`, `README.md`, `README-SIMPLE.md`, `manifest/framework/CORTEX-CHANGELOG.md`, `manifest/framework/VERBS.md`, `manifest/framework/CORTEX-DEV.md`, the install/setup scripts, and `.claude/settings.json` itself.
 
 **Agent pointer files are intentionally NOT in the deny list.** `CLAUDE.md`, `AGENTS.md`, `GEMINI.md`, `ANTIGRAVITY.md`, `OPENCODE.md`, `QWEN.md` exist as one-line pointers to `manifest/framework/protocol/CORTEX.md` — but users customize them with personal blocks below the pointer (per-project session backlogs, per-host instructions, etc.). They're user-territory in user clones, even though they ship with the framework.
 
@@ -292,7 +292,6 @@ manifest/
     SETUP-MOBILE.md
     CORTEX-CHANGELOG.md
     CORTEX-DEV.md
-    README-SIMPLE.md
     scripts/           # Environment-aware tools (setup, healthcheck, secrets, etc.)
       integrations/    # Connector scripts
   custom/              # User territory -- never synced from upstream

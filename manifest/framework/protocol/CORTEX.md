@@ -307,7 +307,7 @@ The `reconcile` verb performs a deep three-category diff between local and `upst
 
 ```
 git fetch upstream
-git diff --name-status upstream/main HEAD -- manifest/framework/protocol/ manifest/framework/templates/ 'manifest/framework/scripts/*.ts' 'manifest/framework/actors/*.md' README.md ROADMAP.md manifest/framework/README-SIMPLE.md manifest/framework/PERSONALITIES.md manifest/framework/CONNECTORS.md manifest/framework/SETUP-DESKTOP.md manifest/framework/SETUP-MOBILE.md manifest/framework/VERBS.md manifest/framework/CORTEX-DEV.md manifest/framework/CORTEX-CHANGELOG.md
+git diff --name-status upstream/main HEAD -- manifest/framework/protocol/ manifest/framework/templates/ 'manifest/framework/scripts/*.ts' 'manifest/framework/actors/*.md' README.md README-SIMPLE.md ROADMAP.md manifest/framework/PERSONALITIES.md manifest/framework/CONNECTORS.md manifest/framework/SETUP-DESKTOP.md manifest/framework/SETUP-MOBILE.md manifest/framework/VERBS.md manifest/framework/CORTEX-DEV.md manifest/framework/CORTEX-CHANGELOG.md
 ```
 
 Categorize each line:
@@ -539,7 +539,6 @@ manifest/
     SETUP-MOBILE.md
     CORTEX-CHANGELOG.md
     CORTEX-DEV.md
-    README-SIMPLE.md
     scripts/           # Environment-aware tools (setup, healthcheck, secrets, etc.)
       integrations/    # Connector scripts (Google, Microsoft, rclone, Tailscale)
   custom/              # User territory — never synced from upstream
