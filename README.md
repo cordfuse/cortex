@@ -16,7 +16,7 @@ Every AI chat starts from zero. You re-explain your context, your projects, your
 
 Cortex is a private git repo your AI scribe reads at the start of every session. It files your records as you talk, tracks your threads, and **automatically links related records together** — so your history becomes a connected web instead of a flat pile, and the scribe follows the thread instead of re-searching it. Next session it picks up where you left off, any device, any major AI.
 
-**You own everything.** It's plain markdown in your own git repo — no vendor database, nothing sent to Cordfuse, readable by any tool, portable the day you want out. The model is rented; the memory is yours. Move from one frontier AI to the next and your second brain comes with you.
+**You own everything.** It's plain markdown in your own git repo — no vendor database, no server in the middle, readable by any tool, portable the day you want out. The model is rented; the memory is yours. Move from one frontier AI to the next and your second brain comes with you.
 
 **63 ready-made actors ship with the framework** — engineers, doctors, advisors, creative voices, spiritual guides — with **Apex** (a precise generalist) as the default. Build your own in plain English in `manifest/custom/actors/`; custom actors are never overwritten by framework updates.
 
