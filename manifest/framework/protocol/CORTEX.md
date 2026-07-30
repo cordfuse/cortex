@@ -1450,11 +1450,11 @@ What's on your mind?
 User: sync
 
 [Bootstrap]:
-Synced. 3 changes applied:
-  - manifest/framework/protocol/CORTEX.md
-  - manifest/framework/BOOTSTRAP.md
-  - manifest/framework/CORTEX-CHANGELOG.md
-Now on v4.0.0-alpha.20.
+Pulled 3 commits from origin. Changed:
+  - data/records/2026-07-30-0915-standup.md
+  - context.md
+  - manifest/custom/actors/therapist.md
+Rules current.
 
 [Hot-swap back to Sully]
 
